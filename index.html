@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMI Student Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-brand">IMI Student Portal</div>
+            <ul class="nav-links">
+                <li><a onclick="showPage('dashboard')" class="active" id="nav-dashboard">Dashboard</a></li>
+                <li><a onclick="showPage('courses')" id="nav-courses">Courses & Projects</a></li>
+                <li><a onclick="showPage('career')" id="nav-career">Career Hub</a></li>
+                <li><a onclick="showPage('network')" id="nav-network">Network</a></li>
+                <li><a onclick="showPage('resources')" id="nav-resources">Resources</a></li>
+            </ul>
+            <div class="user-menu">
+                <div class="notification-icon">
+                    <span>🔔</span>
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="user-avatar">JD</div>
+            </div>
+        </nav>
+        
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="page-section active">
+            <div class="dashboard-grid">
+                <div class="main-content">
+                    <!-- Profile Card -->
+                    <div class="profile-card">
+                        <div class="profile-avatar">JD</div>
+                        <div class="profile-info">
+                            <h2>Welcome back, Jane!</h2>
+                            <div class="profile-details">Summer 2025 Co-op Stream • TechCorp Partnership</div>
+                            <div>
+                                <span style="font-weight: 600;">Course Progress: 65%</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <div class="stat-value">24</div>
+                                <div class="stat-label">Tasks Done</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">Companies</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">156</div>
+                                <div class="stat-label">Hours</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Tasks -->
+                    <div class="tasks-section">
+                        <div class="section-header">
+                            <h3 class="section-title">📋 Active Tasks & Assignments</h3>
+                            <a class="view-all-btn" onclick="showPage('courses')">View All →</a>
+                        </div>
+                        <div class="task-list">
+                            <div class="task-item">
+                                <div class="task-content">
+                                    <div class="task-title">Design Marketing Flyer for Product Launch</div>
+                                    <div class="task-meta">
+                                        <span>🏢 TechCorp</span>
+                                        <span>📅 Due Tomorrow</span>
+                                        <span>👥 Team Project</span>
+                                    </div>
+                                </div>
+                                <span class="task-priority priority-high">High</span>
+                            </div>
+                            <div class="task-item">
+                                <div class="task-content">
+                                    <div class="task-title">Weekly Reflection: Bloomberg Tech Article</div>
+                                    <div class="task-meta">
+                                        <span>📚 Course Assignment</span>
+                                        <span>📅 Due in 3 days</span>
+                                    </div>
+                                </div>
+                                <span class="task-priority priority-medium">Medium</span>
+                            </div>
+                            <div class="task-item">
+                                <div class="task-content">
+                                    <div class="task-title">Market Research: Competitor Analysis</div>
+                                    <div class="task-meta">
+                                        <span>🏢 StartupXYZ</span>
+                                        <span>📅 Due Next Week</span>
+                                    </div>
+                                </div>
+                                <span class="task-priority priority-low">Low</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <div class="section-header">
+                            <h3 class="section-title">⚡ Quick Actions</h3>
+                        </div>
+                        <div class="action-grid">
+                            <button class="action-btn" onclick="openModal('idea')">
+                                <div class="action-icon">💡</div>
+                                <div class="action-label">Submit New Idea</div>
+                            </button>
+                            <button class="action-btn" onclick="openModal('reference')">
+                                <div class="action-icon">📝</div>
+                                <div class="action-label">Request Reference</div>
+                            </button>
+                            <button class="action-btn" onclick="showPage('career')">
+                                <div class="action-icon">🎯</div>
+                                <div class="action-label">Explore Careers</div>
+                            </button>
+                            <button class="action-btn" onclick="openModal('apply')">
+                                <div class="action-icon">💼</div>
+                                <div class="action-label">Apply to Co-op</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Calendar Widget -->
+                    <div class="calendar-widget">
+                        <div class="section-header">
+                            <h3 class="section-title">📅 Upcoming Events</h3>
+                            <a class="view-all-btn" onclick="showPage('network')">View Calendar →</a>
+                        </div>
+                        <div class="event-list">
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <div>15</div>
+                                    <div style="font-size: 10px;">MAR</div>
+                                </div>
+                                <div class="event-details">
+                                    <div class="event-title">CEO Networking Lunch</div>
+                                    <div class="event-time">12:00 PM - 2:00 PM</div>
+                                </div>
+                            </div>
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <div>18</div>
+                                    <div style="font-size: 10px;">MAR</div>
+                                </div>
+                                <div class="event-details">
+                                    <div class="event-title">AI Workshop</div>
+                                    <div class="event-time">3:00 PM - 5:00 PM</div>
+                                </div>
+                            </div>
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <div>22</div>
+                                    <div style="font-size: 10px;">MAR</div>
+                                </div>
+                                <div class="event-details">
+                                    <div class="event-title">Project Presentation</div>
+                                    <div class="event-time">10:00 AM - 11:00 AM</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Articles Feed -->
+                    <div class="articles-feed">
+                        <div class="section-header">
+                            <h3 class="section-title">📰 Recommended Reading</h3>
+                            <a class="view-all-btn" onclick="showPage('resources')">See More →</a>
+                        </div>
+                        <div class="article-list">
+                            <div class="article-item">
+                                <div class="article-source">WALL STREET JOURNAL</div>
+                                <div class="article-title">How AI is Transforming Marketing</div>
+                                <div class="article-meta">Matches your interests • 5 min read</div>
+                            </div>
+                            <div class="article-item">
+                                <div class="article-source">BLOOMBERG</div>
+                                <div class="article-title">Tech Startups See Record Funding</div>
+                                <div class="article-meta">Trending in network • 8 min read</div>
+                            </div>
+                            <div class="article-item">
+                                <div class="article-source">TECHCRUNCH</div>
+                                <div class="article-title">The Future of Remote Work</div>
+                                <div class="article-meta">Career insights • 6 min read</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Courses & Projects Page -->
+        <div id="courses-page" class="page-section">
+            <h2 style="color: white; margin-bottom: 30px;">Courses & Projects</h2>
+            
+            <div class="courses-grid">
+                <div class="course-card">
+                    <span class="course-status status-active">Active</span>
+                    <h3 class="course-title">Digital Marketing Fundamentals</h3>
+                    <div class="course-company">🏢 TechCorp Partnership</div>
+                    <div class="progress-bar" style="margin: 15px 0;">
+                        <div class="progress-fill" style="width: 65%;"></div>
+                    </div>
+                    <div class="course-stats">
+                        <span>📚 8/12 Modules</span>
+                        <span>⭐ 92% Average</span>
+                        <span>📅 2 months left</span>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <span class="course-status status-completed">Completed</span>
+                    <h3 class="course-title">Introduction to Business Strategy</h3>
+                    <div class="course-company">🏢 StartupXYZ</div>
+                    <div class="progress-bar" style="margin: 15px 0;">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="course-stats">
+                        <span>📚 12/12 Modules</span>
+                        <span>⭐ 88% Average</span>
+                        <span>✅ Certified</span>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <span class="course-status status-completed">Completed</span>
+                    <h3 class="course-title">Data Analysis Basics</h3>
+                    <div class="course-company">🏢 DataCo</div>
+                    <div class="progress-bar" style="margin: 15px 0;">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="course-stats">
+                        <span>📚 10/10 Modules</span>
+                        <span>⭐ 95% Average</span>
+                        <span>✅ Certified</span>
+                    </div>
+                </div>
+                
+                <div class="course-card" style="background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%); border: 2px dashed #cbd5e0; cursor: pointer;" onclick="openModal('apply')">
+                    <div style="text-align: center; padding: 40px 0;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">➕</div>
+                        <h3 class="course-title">Apply for New Course</h3>
+                        <p style="color: #718096;">Summer 2025 Applications Open</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px;">
+                <h3 style="color: white; margin-bottom: 20px;">Recent Projects</h3>
+                <div class="tasks-section">
+                    <div class="task-list">
+                        <div class="task-item">
+                            <div class="task-content">
+                                <div class="task-title">Social Media Campaign Strategy</div>
+                                <div class="task-meta">
+                                    <span>🏢 TechCorp</span>
+                                    <span>✅ Completed</span>
+                                    <span>⭐ Grade: A+</span>
+                                    <span>📝 CEO Feedback Available</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-content">
+                                <div class="task-title">Product Launch Marketing Materials</div>
+                                <div class="task-meta">
+                                    <span>🏢 StartupXYZ</span>
+                                    <span>✅ Completed</span>
+                                    <span>⭐ Grade: A</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-content">
+                                <div class="task-title">Customer Survey Analysis</div>
+                                <div class="task-meta">
+                                    <span>🏢 DataCo</span>
+                                    <span>✅ Completed</span>
+                                    <span>⭐ Grade: B+</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Career Hub Page -->
+        <div id="career-page" class="page-section">
+            <h2 style="color: white; margin-bottom: 30px;">Career Hub</h2>
+            
+            <div class="career-grid">
+                <div class="job-listings">
+                    <div class="section-header">
+                        <h3 class="section-title">🎯 Recommended Opportunities</h3>
+                        <span style="color: #667eea; font-size: 14px;">Based on your interests</span>
+                    </div>
+                    
+                    <div class="job-item">
+                        <div class="job-company">TechCorp - Your Partner Company</div>
+                        <div class="job-title">Junior Marketing Analyst Internship</div>
+                        <div class="job-details">
+                            <span>📍 Toronto, ON</span> • 
+                            <span>💰 $20-25/hour</span> • 
+                            <span>🎓 Perfect match for your profile</span>
+                        </div>
+                    </div>
+                    
+                    <div class="job-item">
+                        <div class="job-company">StartupXYZ</div>
+                        <div class="job-title">Business Development Intern</div>
+                        <div class="job-details">
+                            <span>📍 Remote</span> • 
+                            <span>💰 $18-22/hour</span> • 
+                            <span>🔥 New posting</span>
+                        </div>
+                    </div>
+                    
+                    <div class="job-item">
+                        <div class="job-company">InnovateCo</div>
+                        <div class="job-title">Digital Marketing Co-op</div>
+                        <div class="job-details">
+                            <span>📍 Mississauga, ON</span> • 
+                            <span>💰 $19-24/hour</span> • 
+                            <span>⚡ Fast-growing company</span>
+                        </div>
+                    </div>
+                    
+                    <div class="job-item">
+                        <div class="job-company">DataCo</div>
+                        <div class="job-title">Data Analysis Intern</div>
+                        <div class="job-details">
+                            <span>📍 Toronto, ON</span> • 
+                            <span>💰 $22-28/hour</span> • 
+                            <span>📊 Matches your coursework</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="career-tools">
+                    <div class="tool-card">
+                        <div class="tool-icon">📄</div>
+                        <div class="tool-title">Resume Builder</div>
+                        <div class="tool-description">AI-powered resume optimization</div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">✉️</div>
+                        <div class="tool-title">Reference Letters</div>
+                        <div class="tool-description">3 available from past co-ops</div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🎯</div>
+                        <div class="tool-title">Career Explorer</div>
+                        <div class="tool-description">Discover paths aligned with interests</div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🎤</div>
+                        <div class="tool-title">Interview Prep</div>
+                        <div class="tool-description">Practice with AI coach</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 20px;">🎯 Your Career Interest Profile</h3>
+                <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">Top Industries</h4>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 8px; border-radius: 10px; flex: 0 0 80%;"></div>
+                                <span>Technology (80%)</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 8px; border-radius: 10px; flex: 0 0 65%;"></div>
+                                <span>Marketing (65%)</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 8px; border-radius: 10px; flex: 0 0 45%;"></div>
+                                <span>Data Analytics (45%)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 300px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">Suggested Majors</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 8px 0;">🎓 Business Technology Management</li>
+                            <li style="padding: 8px 0;">🎓 Marketing & Digital Strategy</li>
+                            <li style="padding: 8px 0;">🎓 Data Science & Business Analytics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Network Page -->
+        <div id="network-page" class="page-section">
+            <h2 style="color: white; margin-bottom: 30px;">Professional Network</h2>
+            
+            <div class="network-grid">
+                <!-- Connections Section -->
+                <div class="network-main">
+                    <div class="network-card">
+                        <div class="section-header">
+                            <h3 class="section-title">🤝 Your Connections</h3>
+                            <span class="connection-count">47 connections</span>
+                        </div>
+                        
+                        <div class="connection-filters">
+                            <button class="filter-btn active">All</button>
+                            <button class="filter-btn">Companies</button>
+                            <button class="filter-btn">Mentors</button>
+                            <button class="filter-btn">Peers</button>
+                            <button class="filter-btn">Alumni</button>
+                        </div>
+                        
+                        <div class="connections-grid">
+                            <div class="connection-card">
+                                <div class="connection-avatar">MS</div>
+                                <div class="connection-info">
+                                    <div class="connection-name">Michael Smith</div>
+                                    <div class="connection-title">CEO at TechCorp</div>
+                                    <div class="connection-meta">
+                                        <span class="connection-tag">Mentor</span>
+                                        <span class="connection-tag">Reference Available</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="connection-card">
+                                <div class="connection-avatar">SJ</div>
+                                <div class="connection-info">
+                                    <div class="connection-name">Sarah Johnson</div>
+                                    <div class="connection-title">Marketing Director at StartupXYZ</div>
+                                    <div class="connection-meta">
+                                        <span class="connection-tag">Project Supervisor</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="connection-card">
+                                <div class="connection-avatar">DL</div>
+                                <div class="connection-info">
+                                    <div class="connection-name">David Lee</div>
+                                    <div class="connection-title">Data Analyst at DataCo</div>
+                                    <div class="connection-meta">
+                                        <span class="connection-tag">Industry Expert</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="connection-card">
+                                <div class="connection-avatar">EP</div>
+                                <div class="connection-info">
+                                    <div class="connection-name">Emily Park</div>
+                                    <div class="connection-title">IMI Alumni • UofT Business</div>
+                                    <div class="connection-meta">
+                                        <span class="connection-tag">Alumni</span>
+                                        <span class="connection-tag">2023 Graduate</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Events Gallery -->
+                    <div class="network-card">
+                        <div class="section-header">
+                            <h3 class="section-title">📸 Event Highlights</h3>
+                            <a class="view-all-btn">View Gallery →</a>
+                        </div>
+                        
+                        <div class="event-gallery">
+                            <div class="gallery-item">
+                                <div class="gallery-image">
+                                    <span style="font-size: 48px;">🏆</span>
+                                </div>
+                                <div class="gallery-caption">
+                                    <div class="gallery-title">Q4 Awards Ceremony</div>
+                                    <div class="gallery-date">March 10, 2025</div>
+                                </div>
+                            </div>
+                            
+                            <div class="gallery-item">
+                                <div class="gallery-image">
+                                    <span style="font-size: 48px;">🤝</span>
+                                </div>
+                                <div class="gallery-caption">
+                                    <div class="gallery-title">CEO Networking Lunch</div>
+                                    <div class="gallery-date">March 5, 2025</div>
+                                </div>
+                            </div>
+                            
+                            <div class="gallery-item">
+                                <div class="gallery-image">
+                                    <span style="font-size: 48px;">💡</span>
+                                </div>
+                                <div class="gallery-caption">
+                                    <div class="gallery-title">Innovation Workshop</div>
+                                    <div class="gallery-date">February 28, 2025</div>
+                                </div>
+                            </div>
+                            
+                            <div class="gallery-item">
+                                <div class="gallery-image">
+                                    <span style="font-size: 48px;">🎯</span>
+                                </div>
+                                <div class="gallery-caption">
+                                    <div class="gallery-title">Career Fair 2025</div>
+                                    <div class="gallery-date">February 20, 2025</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="network-sidebar">
+                    <!-- Upcoming Events -->
+                    <div class="network-card">
+                        <div class="section-header">
+                            <h3 class="section-title">🗓️ Upcoming Events</h3>
+                        </div>
+                        
+                        <div class="network-events">
+                            <div class="network-event">
+                                <div class="network-event-date">MAR 20</div>
+                                <div class="network-event-info">
+                                    <div class="network-event-title">Tech Industry Panel</div>
+                                    <div class="network-event-details">5 speakers • Virtual</div>
+                                    <button class="btn-primary-small">RSVP</button>
+                                </div>
+                            </div>
+                            
+                            <div class="network-event">
+                                <div class="network-event-date">MAR 25</div>
+                                <div class="network-event-info">
+                                    <div class="network-event-title">Spring Networking Mixer</div>
+                                    <div class="network-event-details">In-person • Toronto</div>
+                                    <button class="btn-primary-small">RSVP</button>
+                                </div>
+                            </div>
+                            
+                            <div class="network-event">
+                                <div class="network-event-date">APR 2</div>
+                                <div class="network-event-info">
+                                    <div class="network-event-title">Alumni Mentorship Day</div>
+                                    <div class="network-event-details">1-on-1 sessions</div>
+                                    <button class="btn-primary-small">RSVP</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Peer Achievements -->
+                    <div class="network-card">
+                        <div class="section-header">
+                            <h3 class="section-title">🌟 Peer Achievements</h3>
+                        </div>
+                        
+                        <div class="achievements-list">
+                            <div class="achievement-item">
+                                <div class="achievement-icon">🏆</div>
+                                <div class="achievement-content">
+                                    <div class="achievement-text"><strong>Alex Chen</strong> won Best Project Award for AI Marketing Campaign</div>
+                                    <div class="achievement-date">2 days ago</div>
+                                </div>
+                            </div>
+                            
+                            <div class="achievement-item">
+                                <div class="achievement-icon">💼</div>
+                                <div class="achievement-content">
+                                    <div class="achievement-text"><strong>Maria Garcia</strong> landed internship at Microsoft</div>
+                                    <div class="achievement-date">1 week ago</div>
+                                </div>
+                            </div>
+                            
+                            <div class="achievement-item">
+                                <div class="achievement-icon">📈</div>
+                                <div class="achievement-content">
+                                    <div class="achievement-text"><strong>James Wilson</strong> completed 100+ hours of co-op work</div>
+                                    <div class="achievement-date">2 weeks ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resources Page -->
+        <div id="resources-page" class="page-section">
+            <h2 style="color: white; margin-bottom: 30px;">Resources & Learning</h2>
+            
+            <div class="resources-grid">
+                <!-- Learning Materials -->
+                <div class="resource-section">
+                    <div class="resource-card">
+                        <div class="section-header">
+                            <h3 class="section-title">📚 Learning Library</h3>
+                            <input type="text" class="search-input" placeholder="Search resources...">
+                        </div>
+                        
+                        <div class="resource-categories">
+                            <div class="resource-category">
+                                <div class="category-header">
+                                    <span class="category-icon">💻</span>
+                                    <span class="category-title">Technical Skills</span>
+                                    <span class="category-count">24 resources</span>
+                                </div>
+                                <div class="resource-list">
+                                    <div class="resource-item">
+                                        <span class="resource-type">VIDEO</span>
+                                        <span class="resource-title">Introduction to AI Tools</span>
+                                        <span class="resource-duration">45 min</span>
+                                    </div>
+                                    <div class="resource-item">
+                                        <span class="resource-type">GUIDE</span>
+                                        <span class="resource-title">Excel for Data Analysis</span>
+                                        <span class="resource-duration">Read</span>
+                                    </div>
+                                    <div class="resource-item">
+                                        <span class="resource-type">WORKSHOP</span>
+                                        <span class="resource-title">Web Design Basics</span>
+                                        <span class="resource-duration">2 hours</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="resource-category">
+                                <div class="category-header">
+                                    <span class="category-icon">📊</span>
+                                    <span class="category-title">Business Skills</span>
+                                    <span class="category-count">18 resources</span>
+                                </div>
+                                <div class="resource-list">
+                                    <div class="resource-item">
+                                        <span class="resource-type">COURSE</span>
+                                        <span class="resource-title">Marketing Fundamentals</span>
+                                        <span class="resource-duration">6 modules</span>
+                                    </div>
+                                    <div class="resource-item">
+                                        <span class="resource-type">TEMPLATE</span>
+                                        <span class="resource-title">Business Plan Template</span>
+                                        <span class="resource-duration">Download</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="resource-category">
+                                <div class="category-header">
+                                    <span class="category-icon">🎯</span>
+                                    <span class="category-title">Career Development</span>
+                                    <span class="category-count">31 resources</span>
+                                </div>
+                                <div class="resource-list">
+                                    <div class="resource-item">
+                                        <span class="resource-type">GUIDE</span>
+                                        <span class="resource-title">Resume Writing Best Practices</span>
+                                        <span class="resource-duration">Read</span>
+                                    </div>
+                                    <div class="resource-item">
+                                        <span class="resource-type">VIDEO</span>
+                                        <span class="resource-title">Interview Preparation</span>
+                                        <span class="resource-duration">1 hour</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Sidebar -->
+                <div class="resources-sidebar">
+                    <!-- Reading List -->
+                    <div class="resource-card">
+                        <div class="section-header">
+                            <h3 class="section-title">📖 Your Reading List</h3>
+                        </div>
+                        
+                        <div class="reading-list">
+                            <div class="reading-item">
+                                <div class="reading-progress">
+                                    <div class="progress-circle">75%</div>
+                                </div>
+                                <div class="reading-info">
+                                    <div class="reading-title">The Lean Startup</div>
+                                    <div class="reading-author">Eric Ries</div>
+                                </div>
+                            </div>
+                            
+                            <div class="reading-item">
+                                <div class="reading-progress">
+                                    <div class="progress-circle">30%</div>
+                                </div>
+                                <div class="reading-info">
+                                    <div class="reading-title">Zero to One</div>
+                                    <div class="reading-author">Peter Thiel</div>
+                                </div>
+                            </div>
+                            
+                            <div class="reading-item">
+                                <div class="reading-progress">
+                                    <div class="progress-circle">NEW</div>
+                                </div>
+                                <div class="reading-info">
+                                    <div class="reading-title">The Design of Everyday Things</div>
+                                    <div class="reading-author">Don Norman</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Company Resources -->
+                    <div class="resource-card">
+                        <div class="section-header">
+                            <h3 class="section-title">🏢 Company Resources</h3>
+                        </div>
+                        
+                        <div class="company-resources">
+                            <div class="company-resource">
+                                <div class="company-logo">TC</div>
+                                <div class="company-info">
+                                    <div class="company-name">TechCorp</div>
+                                    <div class="company-resources-count">12 resources</div>
+                                </div>
+                            </div>
+                            
+                            <div class="company-resource">
+                                <div class="company-logo">SX</div>
+                                <div class="company-info">
+                                    <div class="company-name">StartupXYZ</div>
+                                    <div class="company-resources-count">8 resources</div>
+                                </div>
+                            </div>
+                            
+                            <div class="company-resource">
+                                <div class="company-logo">DC</div>
+                                <div class="company-info">
+                                    <div class="company-name">DataCo</div>
+                                    <div class="company-resources-count">15 resources</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Support -->
+                    <div class="resource-card">
+                        <div class="section-header">
+                            <h3 class="section-title">💬 Need Help?</h3>
+                        </div>
+                        
+                        <div class="support-options">
+                            <button class="support-btn">
+                                <span class="support-icon">💬</span>
+                                <span class="support-text">Chat with Support</span>
+                            </button>
+                            <button class="support-btn">
+                                <span class="support-icon">📧</span>
+                                <span class="support-text">Email Advisor</span>
+                            </button>
+                            <button class="support-btn">
+                                <span class="support-icon">📅</span>
+                                <span class="support-text">Book 1-on-1</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Container -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
