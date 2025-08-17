@@ -34,112 +34,217 @@ function openModal(type) {
     let content = '';
     
     switch(type) {
-        case 'idea':
+        case 'profile':
             content = `
-                <h2>Submit New Idea</h2>
-                <p style="color: #718096; margin-bottom: 20px;">Share your innovative ideas for projects or improvements</p>
+                <h2>Edit Your Profile</h2>
+                <p style="color: #718096; margin-bottom: 20px;">Update your public profile and interests</p>
                 <form>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Idea Title</label>
-                        <input type="text" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;" placeholder="Enter your idea title">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Display Name</label>
+                        <input type="text" value="Jane Doe" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Category</label>
-                        <select style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
-                            <option>Product Improvement</option>
-                            <option>New Business Idea</option>
-                            <option>Marketing Strategy</option>
-                            <option>Process Optimization</option>
-                        </select>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Bio</label>
+                        <textarea style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px; height: 100px;" placeholder="Tell others about yourself...">High school student passionate about technology and sustainability. Currently exploring AI applications in environmental solutions.</textarea>
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Description</label>
-                        <textarea style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px; height: 100px;" placeholder="Describe your idea in detail"></textarea>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Interests (for peer matching)</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" checked> Machine Learning
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" checked> Sustainability
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox"> Marketing
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" checked> Data Science
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox"> UX Design
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox"> Finance
+                            </label>
+                        </div>
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Collaborate with peers?</label>
-                        <input type="checkbox" id="collaborate"> <label for="collaborate">Open for collaboration</label>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">LinkedIn Profile</label>
+                        <input type="url" placeholder="https://linkedin.com/in/..." style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
                     </div>
-                    <button type="submit" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Submit Idea</button>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Portfolio Website</label>
+                        <input type="url" placeholder="https://..." style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
+                    </div>
+                    <button type="submit" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Save Profile</button>
                 </form>
             `;
             break;
             
-        case 'reference':
+        case 'add-connection':
             content = `
-                <h2>Request Reference Letter</h2>
-                <p style="color: #718096; margin-bottom: 20px;">Request a reference letter from your mentors or supervisors</p>
+                <h2>Add New Connection</h2>
+                <p style="color: #718096; margin-bottom: 20px;">Record details about your professional connection</p>
                 <form>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Select Referee</label>
-                        <select style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
-                            <option>Michael Smith - CEO at TechCorp</option>
-                            <option>Sarah Johnson - Marketing Director at StartupXYZ</option>
-                            <option>David Lee - Data Analyst at DataCo</option>
-                        </select>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Name</label>
+                        <input type="text" placeholder="Full name" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Purpose</label>
-                        <select style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
-                            <option>University Application</option>
-                            <option>Internship Application</option>
-                            <option>Job Application</option>
-                            <option>Scholarship Application</option>
-                        </select>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Title & Company</label>
+                        <input type="text" placeholder="e.g., CEO at TechCorp" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Deadline</label>
-                        <input type="date" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">How did you meet?</label>
+                        <textarea style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px; height: 80px;" placeholder="e.g., Met at Q3 networking event, discussed AI in healthcare..."></textarea>
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Additional Notes</label>
-                        <textarea style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px; height: 80px;" placeholder="Any specific points to highlight?"></textarea>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Key Topics Discussed</label>
+                        <input type="text" placeholder="e.g., AI, Product Strategy, Mentorship" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
                     </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Upload Photos</label>
+                        <div style="border: 2px dashed #e2e8f0; border-radius: 10px; padding: 20px; text-align: center;">
+                            <p style="color: #718096;">📷 Drop photos here or click to browse</p>
+                            <input type="file" multiple accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; gap: 5px;">
+                            <input type="checkbox"> Can provide reference letter
+                        </label>
+                    </div>
+                    <button type="submit" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Add Connection</button>
+                </form>
+            `;
+            break;
+            
+        case 'connection-detail':
+            content = `
+                <h2>Michael Smith</h2>
+                <p style="color: #718096; margin-bottom: 20px;">CEO at TechCorp</p>
+                
+                <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px;">Connection Notes</h4>
+                    <p style="color: #4a5568; line-height: 1.6;">Met at Q3 networking event on September 15, 2024. Had an engaging discussion about AI applications in healthcare. Michael showed interest in my project on predictive analytics for patient care. He offered to mentor me on product strategy and scaling technology solutions.</p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px;">Key Topics</h4>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span style="padding: 5px 12px; background: #e8ecff; color: #667eea; border-radius: 15px; font-size: 13px;">AI in Healthcare</span>
+                        <span style="padding: 5px 12px; background: #e8ecff; color: #667eea; border-radius: 15px; font-size: 13px;">Product Strategy</span>
+                        <span style="padding: 5px 12px; background: #e8ecff; color: #667eea; border-radius: 15px; font-size: 13px;">Mentorship</span>
+                        <span style="padding: 5px 12px; background: #e8ecff; color: #667eea; border-radius: 15px; font-size: 13px;">Scaling Solutions</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px;">Photos from Events</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <div style="background: #e2e8f0; border-radius: 8px; padding: 30px; text-align: center;">📷</div>
+                        <div style="background: #e2e8f0; border-radius: 8px; padding: 30px; text-align: center;">📷</div>
+                        <div style="background: #e2e8f0; border-radius: 8px; padding: 30px; text-align: center;">📷</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Request Reference</button>
+                    <button style="background: white; color: #667eea; padding: 12px 24px; border: 2px solid #667eea; border-radius: 10px; font-weight: 600; cursor: pointer;">Send Message</button>
+                </div>
+            `;
+            break;
+            
+        case 'perplexity-training':
+            content = `
+                <h2>Perplexity AI Training Guide</h2>
+                <div style="margin: 20px 0;">
+                    <h3 style="margin-bottom: 15px;">Getting Started with Perplexity</h3>
+                    
                     <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                        <p style="font-size: 14px; color: #4a5568;"><strong>Note:</strong> Your achievements and projects will be automatically included in the request.</p>
+                        <h4 style="color: #667eea; margin-bottom: 10px;">1. Basic Search Queries</h4>
+                        <p style="color: #4a5568; line-height: 1.6;">Learn how to formulate effective search queries to get accurate, sourced information. Perplexity excels at providing citations and multiple perspectives.</p>
                     </div>
-                    <button type="submit" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Send Request</button>
-                </form>
+                    
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">2. Focus Modes</h4>
+                        <ul style="color: #4a5568; margin-left: 20px; line-height: 1.8;">
+                            <li><strong>Web:</strong> Search across the entire internet</li>
+                            <li><strong>Academic:</strong> Focus on scholarly articles</li>
+                            <li><strong>Writing:</strong> Get help with content creation</li>
+                            <li><strong>Wolfram|Alpha:</strong> For computational queries</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">3. Best Practices</h4>
+                        <ul style="color: #4a5568; margin-left: 20px; line-height: 1.8;">
+                            <li>Use specific, detailed queries</li>
+                            <li>Ask follow-up questions to dive deeper</li>
+                            <li>Verify important information with citations</li>
+                            <li>Use collections to organize research</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin-right: 10px;">Watch Video Tutorial</button>
+                        <button style="background: white; color: #667eea; padding: 12px 24px; border: 2px solid #667eea; border-radius: 10px; font-weight: 600; cursor: pointer;">Download PDF Guide</button>
+                    </div>
+                </div>
             `;
             break;
             
-        case 'apply':
+        case 'gemini-training':
             content = `
-                <h2>Apply for Co-op Position</h2>
-                <p style="color: #718096; margin-bottom: 20px;">Apply for upcoming co-op opportunities</p>
-                <form>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Select Stream</label>
-                        <select style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;">
-                            <option>Summer 2025 - Technology Stream</option>
-                            <option>Summer 2025 - Business Stream</option>
-                            <option>Fall 2025 - Marketing Stream</option>
-                            <option>Fall 2025 - Data Analytics Stream</option>
-                        </select>
+                <h2>Google Gemini Training Guide</h2>
+                <div style="margin: 20px 0;">
+                    <h3 style="margin-bottom: 15px;">Mastering Gemini for Projects</h3>
+                    
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">1. Creative Content Generation</h4>
+                        <p style="color: #4a5568; line-height: 1.6;">Use Gemini for brainstorming, creative writing, and generating marketing content. Learn prompt engineering for better outputs.</p>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Preferred Companies (Select up to 3)</label>
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <label><input type="checkbox"> TechCorp</label>
-                            <label><input type="checkbox"> StartupXYZ</label>
-                            <label><input type="checkbox"> DataCo</label>
-                            <label><input type="checkbox"> InnovateCo</label>
-                            <label><input type="checkbox"> MarketPro</label>
-                        </div>
+                    
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">2. Code Assistance</h4>
+                        <p style="color: #4a5568; line-height: 1.6;">Get help with coding projects, debugging, and understanding complex algorithms. Gemini can explain code in simple terms.</p>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Why do you want to join this co-op?</label>
-                        <textarea style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px; height: 100px;" placeholder="Tell us about your motivation and goals"></textarea>
+                    
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">3. Multimodal Capabilities</h4>
+                        <p style="color: #4a5568; line-height: 1.6;">Upload images for analysis, generate visuals from descriptions, and work with multiple types of content simultaneously.</p>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Resume</label>
-                        <div style="background: #f7fafc; padding: 15px; border-radius: 10px; border: 2px dashed #e2e8f0; text-align: center;">
-                            <p style="color: #718096;">📄 Your current resume on file</p>
-                            <button type="button" style="margin-top: 10px; padding: 5px 15px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer;">Update Resume</button>
-                        </div>
+                    
+                    <button style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Start Interactive Tutorial</button>
+                </div>
+            `;
+            break;
+            
+        case 'notebook-training':
+            content = `
+                <h2>NotebookLM Training Guide</h2>
+                <div style="margin: 20px 0;">
+                    <h3 style="margin-bottom: 15px;">Organize Your Research with NotebookLM</h3>
+                    
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">1. Document Upload & Analysis</h4>
+                        <p style="color: #4a5568; line-height: 1.6;">Upload PDFs, Google Docs, and other documents. NotebookLM will analyze and help you understand complex materials.</p>
                     </div>
-                    <button type="submit" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Submit Application</button>
-                </form>
+                    
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">2. AI-Powered Note Taking</h4>
+                        <p style="color: #4a5568; line-height: 1.6;">Generate summaries, key points, and study guides from your uploaded materials automatically.</p>
+                    </div>
+                    
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">3. Citation Management</h4>
+                        <p style="color: #4a5568; line-height: 1.6;">Keep track of sources and generate proper citations for your research projects.</p>
+                    </div>
+                    
+                    <button style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Access Training Materials</button>
+                </div>
             `;
             break;
     }
@@ -152,7 +257,7 @@ function openModal(type) {
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Form submitted successfully! (Demo)');
+            alert('Changes saved successfully! (Demo)');
             closeModal();
         });
     }
@@ -171,9 +276,100 @@ window.onclick = function(event) {
     }
 }
 
-// Animate progress bars on load
-window.addEventListener('load', () => {
-    // Animate all progress bars
+// Innovation Challenge Functions
+function updateWordCount(textarea) {
+    const wordCount = textarea.value.split(/\s+/).filter(word => word.length > 0).length;
+    const maxWords = 100;
+    const countElement = textarea.parentElement.querySelector('.word-count');
+    if (countElement) {
+        countElement.textContent = `${wordCount}/${maxWords} words`;
+    }
+    
+    // Update section status
+    const statusElement = textarea.parentElement.querySelector('.section-status');
+    if (statusElement && wordCount > 0) {
+        statusElement.textContent = '✓ In progress';
+        statusElement.classList.add('in-progress');
+    }
+}
+
+// Company Filtering
+function filterCompanies() {
+    const searchInput = document.querySelector('.company-search');
+    const chips = document.querySelectorAll('.chip');
+    
+    chips.forEach(chip => {
+        chip.addEventListener('click', function() {
+            // Toggle active state
+            if (this.classList.contains('active')) {
+                this.classList.remove('active');
+            } else {
+                // Remove active from all chips if selecting a specific filter
+                if (this.textContent !== 'All') {
+                    document.querySelector('.chip:first-child').classList.remove('active');
+                }
+                this.classList.add('active');
+            }
+            
+            // Here you would filter the actual company cards
+            console.log('Filter applied:', this.textContent);
+        });
+    });
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            console.log('Searching companies for:', searchTerm);
+            // Implement actual search functionality here
+        });
+    }
+}
+
+// Time Tracking Functions
+function initTimeTracking() {
+    // Auto-track time on page
+    let startTime = Date.now();
+    let currentPage = 'dashboard';
+    
+    setInterval(() => {
+        const elapsedMinutes = Math.floor((Date.now() - startTime) / 60000);
+        // Update session timer in UI if needed
+    }, 60000); // Update every minute
+    
+    // Track page changes
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', function() {
+            const page = this.id.replace('nav-', '');
+            logPageTime(currentPage, Date.now() - startTime);
+            currentPage = page;
+            startTime = Date.now();
+        });
+    });
+}
+
+function logPageTime(page, duration) {
+    // Log time spent on each page
+    console.log(`Time spent on ${page}: ${Math.floor(duration / 1000)} seconds`);
+    // Here you would send this data to your backend
+}
+
+// Initialize all features on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize word counters for Innovation Challenge
+    const textareas = document.querySelectorAll('.submission-textarea');
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            updateWordCount(this);
+        });
+    });
+    
+    // Initialize company filtering
+    filterCompanies();
+    
+    // Initialize time tracking
+    initTimeTracking();
+    
+    // Animate progress bars
     setTimeout(() => {
         document.querySelectorAll('.progress-fill').forEach(bar => {
             const width = bar.style.width;
@@ -184,125 +380,201 @@ window.addEventListener('load', () => {
         });
     }, 100);
     
-    // Add hover effects to cards
-    addCardHoverEffects();
-    
-    // Initialize filter buttons
-    initializeFilterButtons();
-});
-
-// Add hover effects to interactive cards
-function addCardHoverEffects() {
-    // Add click feedback to cards
-    const clickableCards = document.querySelectorAll('.task-item, .article-item, .connection-card, .job-item');
-    clickableCards.forEach(card => {
-        card.addEventListener('click', function() {
-            this.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 200);
-        });
-    });
-}
-
-// Initialize filter buttons functionality
-function initializeFilterButtons() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    filterButtons.forEach(btn => {
+    // Handle collaboration requests
+    document.querySelectorAll('.btn-collaborate').forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remove active class from all buttons
-            filterButtons.forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
-            this.classList.add('active');
-            
-            // Here you would typically filter the content
-            // For demo purposes, we're just changing the active state
-            console.log('Filter applied: ' + this.textContent);
+            alert('Collaboration request sent! The project owner will be notified. (Demo)');
         });
     });
-}
-
-// Simulate notification updates
-function updateNotifications() {
-    const badge = document.querySelector('.notification-badge');
-    if (badge) {
-        setInterval(() => {
-            const count = Math.floor(Math.random() * 10);
-            badge.textContent = count;
-            badge.style.display = count > 0 ? 'flex' : 'none';
-        }, 30000); // Update every 30 seconds
-    }
-}
-
-// Initialize notifications
-updateNotifications();
-
-// Add smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+    
+    // Handle RSVP buttons
+    document.querySelectorAll('.btn-primary-small').forEach(btn => {
+        if (btn.textContent === 'RSVP') {
+            btn.addEventListener('click', function() {
+                this.textContent = 'Registered ✓';
+                this.style.background = '#48bb78';
             });
         }
     });
-});
-
-// Simulate real-time updates for demonstration
-function simulateRealTimeUpdates() {
-    // Update task count periodically
-    setInterval(() => {
-        const taskCount = document.querySelector('.stat-value');
-        if (taskCount && Math.random() > 0.7) {
-            const currentCount = parseInt(taskCount.textContent);
-            taskCount.textContent = currentCount + 1;
-        }
-    }, 60000); // Update every minute
-}
-
-// Initialize real-time updates
-simulateRealTimeUpdates();
-
-// Handle search functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.querySelector('.search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            // Here you would implement actual search functionality
-            console.log('Searching for: ' + searchTerm);
+    
+    // Handle peer connection requests
+    document.querySelectorAll('.btn-connect').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.textContent = 'Request Sent';
+            this.disabled = true;
+            this.style.opacity = '0.6';
+        });
+    });
+    
+    // Handle referral program buttons
+    document.querySelectorAll('.btn-referral').forEach(btn => {
+        btn.addEventListener('click', function() {
+            openModal('referral-details');
+        });
+    });
+    
+    // Leaderboard tab switching
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            tabButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Switch leaderboard content based on selected tab
+            if (this.textContent === 'Streaks') {
+                updateLeaderboardForStreaks();
+            } else {
+                updateLeaderboardForPoints();
+            }
+        });
+    });
+    
+    // Auto-save Innovation Challenge drafts
+    let autoSaveTimer;
+    document.querySelectorAll('.submission-textarea').forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            clearTimeout(autoSaveTimer);
+            const statusElement = this.parentElement.querySelector('.section-status');
+            
+            autoSaveTimer = setTimeout(() => {
+                if (this.value.length > 0) {
+                    statusElement.textContent = '✓ Saved';
+                    statusElement.classList.add('completed');
+                    console.log('Auto-saved section:', this.parentElement.querySelector('h4').textContent);
+                }
+            }, 2000); // Auto-save after 2 seconds of inactivity
+        });
+    });
+    
+    // Handle time entry form submission
+    const timeEntryForm = document.querySelector('.time-entry-form');
+    if (timeEntryForm) {
+        timeEntryForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Hours logged successfully! Your volunteer hours certificate has been updated. (Demo)');
+            this.reset();
         });
     }
+    
+    // Simulate real-time updates
+    simulateRealTimeUpdates();
 });
 
-// Mobile menu toggle (for responsive design)
-function toggleMobileMenu() {
-    const navLinks = document.querySelector('.nav-links');
-    if (navLinks) {
-        navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-    }
+// Update leaderboard functions
+function updateLeaderboardForStreaks() {
+    console.log('Showing streak leaderboard');
+    // Update leaderboard display for streaks
 }
 
-// Add keyboard navigation
+function updateLeaderboardForPoints() {
+    console.log('Showing points leaderboard');
+    // Update leaderboard display for points
+}
+
+// Simulate real-time updates
+function simulateRealTimeUpdates() {
+    // Update notification badge
+    setInterval(() => {
+        const badge = document.querySelector('.notification-badge');
+        if (badge && Math.random() > 0.8) {
+            const currentCount = parseInt(badge.textContent);
+            badge.textContent = Math.max(0, currentCount + Math.floor(Math.random() * 3) - 1);
+        }
+    }, 30000);
+    
+    // Update leaderboard positions
+    setInterval(() => {
+        if (document.getElementById('innovation-page').classList.contains('active')) {
+            // Simulate minor position changes
+            const positions = document.querySelectorAll('.leaderboard-item .points');
+            positions.forEach(pos => {
+                if (Math.random() > 0.7) {
+                    const current = parseInt(pos.textContent);
+                    pos.textContent = current + Math.floor(Math.random() * 20);
+                }
+            });
+        }
+    }, 60000);
+}
+
+// Handle keyboard shortcuts
 document.addEventListener('keydown', function(e) {
     // ESC to close modal
     if (e.key === 'Escape') {
         closeModal();
     }
     
-    // Ctrl/Cmd + K for search focus
+    // Ctrl/Cmd + K for search
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
-        const searchInput = document.querySelector('.search-input');
+        const searchInput = document.querySelector('.company-search');
         if (searchInput) {
             searchInput.focus();
         }
     }
+    
+    // Ctrl/Cmd + S to save Innovation Challenge draft
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        if (document.getElementById('innovation-page').classList.contains('active')) {
+            const statusElements = document.querySelectorAll('.section-status');
+            statusElements.forEach(status => {
+                if (status.parentElement.querySelector('textarea').value.length > 0) {
+                    status.textContent = '✓ Saved';
+                    status.classList.add('completed');
+                }
+            });
+            alert('All sections saved! (Demo)');
+        }
+    }
 });
 
-// Print current date for demo
-console.log('IMI Student Dashboard loaded successfully');
+// Track active project switching
+function switchActiveProject(projectElement) {
+    // Remove active state from all projects
+    document.querySelectorAll('.project-card').forEach(card => {
+        card.classList.remove('active');
+    });
+    
+    // Add active state to selected project
+    projectElement.classList.add('active');
+    
+    // Update the dashboard view
+    updateDashboardActiveProject();
+}
+
+function updateDashboardActiveProject() {
+    // Update the active project shown on the dashboard
+    console.log('Active project switched');
+}
+
+// Initialize tooltips for help icons
+function initTooltips() {
+    // Add tooltips for various UI elements
+    const tooltipElements = document.querySelectorAll('[data-tooltip]');
+    tooltipElements.forEach(element => {
+        element.addEventListener('mouseenter', showTooltip);
+        element.addEventListener('mouseleave', hideTooltip);
+    });
+}
+
+function showTooltip(e) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+    tooltip.textContent = e.target.getAttribute('data-tooltip');
+    document.body.appendChild(tooltip);
+    
+    const rect = e.target.getBoundingClientRect();
+    tooltip.style.left = rect.left + 'px';
+    tooltip.style.top = (rect.bottom + 5) + 'px';
+}
+
+function hideTooltip() {
+    const tooltip = document.querySelector('.tooltip');
+    if (tooltip) {
+        tooltip.remove();
+    }
+}
+
+console.log('IMI Student Dashboard v0.2 loaded successfully');
 console.log('Current date:', new Date().toLocaleDateString());

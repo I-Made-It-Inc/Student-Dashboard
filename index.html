@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMI Student Dashboard</title>
+    <title>IMI Student Dashboard v0.2</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,17 +13,19 @@
             <div class="nav-brand">IMI Student Portal</div>
             <ul class="nav-links">
                 <li><a onclick="showPage('dashboard')" class="active" id="nav-dashboard">Dashboard</a></li>
-                <li><a onclick="showPage('courses')" id="nav-courses">Courses & Projects</a></li>
-                <li><a onclick="showPage('career')" id="nav-career">Career Hub</a></li>
+                <li><a onclick="showPage('innovation')" id="nav-innovation">Innovation Challenge</a></li>
+                <li><a onclick="showPage('projects')" id="nav-projects">Co-op Projects</a></li>
+                <li><a onclick="showPage('companies')" id="nav-companies">Companies</a></li>
                 <li><a onclick="showPage('network')" id="nav-network">Network</a></li>
                 <li><a onclick="showPage('resources')" id="nav-resources">Resources</a></li>
+                <li><a onclick="showPage('tracking')" id="nav-tracking">Time Tracking</a></li>
             </ul>
             <div class="user-menu">
                 <div class="notification-icon">
                     <span>🔔</span>
                     <div class="notification-badge">3</div>
                 </div>
-                <div class="user-avatar">JD</div>
+                <div class="user-avatar" onclick="openModal('profile')">JD</div>
             </div>
         </nav>
         
@@ -31,62 +33,109 @@
         <div id="dashboard-page" class="page-section active">
             <div class="dashboard-grid">
                 <div class="main-content">
-                    <!-- Profile Card -->
+                    <!-- Enhanced Profile Card with Gamification -->
                     <div class="profile-card">
                         <div class="profile-avatar">JD</div>
                         <div class="profile-info">
                             <h2>Welcome back, Jane!</h2>
                             <div class="profile-details">Summer 2025 Co-op Stream • TechCorp Partnership</div>
-                            <div>
-                                <span style="font-weight: 600;">Course Progress: 65%</span>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 65%;"></div>
+                            <div class="gamification-stats">
+                                <div class="stat-badge">
+                                    <span class="stat-icon">🔥</span>
+                                    <div>
+                                        <div class="stat-main">12 day streak</div>
+                                        <div class="stat-sub">Innovation Challenge</div>
+                                    </div>
+                                </div>
+                                <div class="stat-badge">
+                                    <span class="stat-icon">⭐</span>
+                                    <div>
+                                        <div class="stat-main">1,850 pts</div>
+                                        <div class="stat-sub">This Season</div>
+                                    </div>
+                                </div>
+                                <div class="stat-badge">
+                                    <span class="stat-icon">🏆</span>
+                                    <div>
+                                        <div class="stat-main">#24</div>
+                                        <div class="stat-sub">Global Rank</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="stats-row">
                             <div class="stat-item">
-                                <div class="stat-value">24</div>
-                                <div class="stat-label">Tasks Done</div>
+                                <div class="stat-value">324</div>
+                                <div class="stat-label">Total Hours</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">5</div>
+                                <div class="stat-label">Active Projects</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-value">3</div>
                                 <div class="stat-label">Companies</div>
                             </div>
-                            <div class="stat-item">
-                                <div class="stat-value">156</div>
-                                <div class="stat-label">Hours</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Innovation Challenge Preview -->
+                    <div class="innovation-preview">
+                        <div class="section-header">
+                            <h3 class="section-title">🚀 This Week's Innovation Challenge</h3>
+                            <a class="view-all-btn" onclick="showPage('innovation')">Start Writing →</a>
+                        </div>
+                        <div class="challenge-preview-card">
+                            <h4>Topic: The Future of Sustainable Cities</h4>
+                            <p style="color: #718096; margin: 10px 0;">Explore how technology and innovation can create more sustainable urban environments.</p>
+                            <div class="challenge-progress">
+                                <div class="progress-sections">
+                                    <div class="progress-section completed">
+                                        <span>✓</span>
+                                        <span>Innovation Catalyst</span>
+                                    </div>
+                                    <div class="progress-section">
+                                        <span>○</span>
+                                        <span>Trend Spotter</span>
+                                    </div>
+                                    <div class="progress-section">
+                                        <span>○</span>
+                                        <span>Future Visionist</span>
+                                    </div>
+                                    <div class="progress-section">
+                                        <span>○</span>
+                                        <span>Connector</span>
+                                    </div>
+                                    <div class="progress-section">
+                                        <span>○</span>
+                                        <span>Growth Hacker</span>
+                                    </div>
+                                </div>
+                                <div style="text-align: right; margin-top: 10px; color: #667eea; font-weight: 600;">
+                                    20/100 points earned
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Active Tasks -->
+                    <!-- Active Co-op Projects -->
                     <div class="tasks-section">
                         <div class="section-header">
-                            <h3 class="section-title">📋 Active Tasks & Assignments</h3>
-                            <a class="view-all-btn" onclick="showPage('courses')">View All →</a>
+                            <h3 class="section-title">💼 Active Co-op Projects</h3>
+                            <a class="view-all-btn" onclick="showPage('projects')">View All Projects →</a>
                         </div>
                         <div class="task-list">
-                            <div class="task-item">
+                            <div class="task-item active-project">
                                 <div class="task-content">
-                                    <div class="task-title">Design Marketing Flyer for Product Launch</div>
+                                    <div class="active-indicator">ACTIVE</div>
+                                    <div class="task-title">Design Marketing Campaign for Product Launch</div>
                                     <div class="task-meta">
                                         <span>🏢 TechCorp</span>
-                                        <span>📅 Due Tomorrow</span>
-                                        <span>👥 Team Project</span>
-                                    </div>
-                                </div>
-                                <span class="task-priority priority-high">High</span>
-                            </div>
-                            <div class="task-item">
-                                <div class="task-content">
-                                    <div class="task-title">Weekly Reflection: Bloomberg Tech Article</div>
-                                    <div class="task-meta">
-                                        <span>📚 Course Assignment</span>
                                         <span>📅 Due in 3 days</span>
+                                        <span>⏱️ 12 hours logged</span>
                                     </div>
                                 </div>
-                                <span class="task-priority priority-medium">Medium</span>
+                                <button class="btn-secondary">View Details</button>
                             </div>
                             <div class="task-item">
                                 <div class="task-content">
@@ -94,102 +143,116 @@
                                     <div class="task-meta">
                                         <span>🏢 StartupXYZ</span>
                                         <span>📅 Due Next Week</span>
+                                        <span>⏱️ 5 hours logged</span>
                                     </div>
                                 </div>
-                                <span class="task-priority priority-low">Low</span>
+                                <button class="btn-secondary">Request to Join</button>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Quick Actions -->
-                    <div class="quick-actions">
+                    <!-- Company Recommendations -->
+                    <div class="recommendations-section">
                         <div class="section-header">
-                            <h3 class="section-title">⚡ Quick Actions</h3>
+                            <h3 class="section-title">🎯 Recommended Companies for You</h3>
+                            <a class="view-all-btn" onclick="showPage('companies')">Browse All →</a>
                         </div>
-                        <div class="action-grid">
-                            <button class="action-btn" onclick="openModal('idea')">
-                                <div class="action-icon">💡</div>
-                                <div class="action-label">Submit New Idea</div>
-                            </button>
-                            <button class="action-btn" onclick="openModal('reference')">
-                                <div class="action-icon">📝</div>
-                                <div class="action-label">Request Reference</div>
-                            </button>
-                            <button class="action-btn" onclick="showPage('career')">
-                                <div class="action-icon">🎯</div>
-                                <div class="action-label">Explore Careers</div>
-                            </button>
-                            <button class="action-btn" onclick="openModal('apply')">
-                                <div class="action-icon">💼</div>
-                                <div class="action-label">Apply to Co-op</div>
-                            </button>
+                        <div class="company-recommendations">
+                            <div class="mini-company-card">
+                                <div class="company-icon">DC</div>
+                                <div class="company-details">
+                                    <h4>DataCo Analytics</h4>
+                                    <div class="company-rating">⭐ 4.8 (15 reviews)</div>
+                                    <p style="font-size: 13px; color: #718096;">Matches your interest in data science</p>
+                                    <span class="match-badge">95% Match</span>
+                                </div>
+                            </div>
+                            <div class="mini-company-card">
+                                <div class="company-icon">GH</div>
+                                <div class="company-details">
+                                    <h4>GreenTech Hub</h4>
+                                    <div class="company-rating">⭐ 4.6 (8 reviews)</div>
+                                    <p style="font-size: 13px; color: #718096;">Aligns with sustainability interests</p>
+                                    <span class="match-badge">88% Match</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Sidebar -->
+                <!-- Enhanced Sidebar -->
                 <div class="sidebar">
-                    <!-- Calendar Widget -->
-                    <div class="calendar-widget">
+                    <!-- Leaderboard Widget -->
+                    <div class="leaderboard-widget">
                         <div class="section-header">
-                            <h3 class="section-title">📅 Upcoming Events</h3>
-                            <a class="view-all-btn" onclick="showPage('network')">View Calendar →</a>
+                            <h3 class="section-title">🏆 Season Leaderboard</h3>
+                            <span style="font-size: 12px; color: #718096;">Ends in 6 weeks</span>
                         </div>
-                        <div class="event-list">
-                            <div class="event-item">
-                                <div class="event-date">
-                                    <div>15</div>
-                                    <div style="font-size: 10px;">MAR</div>
-                                </div>
-                                <div class="event-details">
-                                    <div class="event-title">CEO Networking Lunch</div>
-                                    <div class="event-time">12:00 PM - 2:00 PM</div>
-                                </div>
+                        <div class="leaderboard-list">
+                            <div class="leaderboard-item">
+                                <span class="rank">#1</span>
+                                <span class="name">Alex Chen</span>
+                                <span class="points">3,240 pts</span>
                             </div>
-                            <div class="event-item">
-                                <div class="event-date">
-                                    <div>18</div>
-                                    <div style="font-size: 10px;">MAR</div>
-                                </div>
-                                <div class="event-details">
-                                    <div class="event-title">AI Workshop</div>
-                                    <div class="event-time">3:00 PM - 5:00 PM</div>
-                                </div>
+                            <div class="leaderboard-item">
+                                <span class="rank">#2</span>
+                                <span class="name">Maria G.</span>
+                                <span class="points">3,180 pts</span>
                             </div>
-                            <div class="event-item">
-                                <div class="event-date">
-                                    <div>22</div>
-                                    <div style="font-size: 10px;">MAR</div>
-                                </div>
-                                <div class="event-details">
-                                    <div class="event-title">Project Presentation</div>
-                                    <div class="event-time">10:00 AM - 11:00 AM</div>
-                                </div>
+                            <div class="leaderboard-item">
+                                <span class="rank">#3</span>
+                                <span class="name">James W.</span>
+                                <span class="points">2,950 pts</span>
+                            </div>
+                            <div class="leaderboard-separator">...</div>
+                            <div class="leaderboard-item you">
+                                <span class="rank">#24</span>
+                                <span class="name">You</span>
+                                <span class="points">1,850 pts</span>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Articles Feed -->
-                    <div class="articles-feed">
+                    <!-- Referral Opportunities -->
+                    <div class="referral-widget">
                         <div class="section-header">
-                            <h3 class="section-title">📰 Recommended Reading</h3>
-                            <a class="view-all-btn" onclick="showPage('resources')">See More →</a>
+                            <h3 class="section-title">💰 Active Referral Programs</h3>
                         </div>
-                        <div class="article-list">
-                            <div class="article-item">
-                                <div class="article-source">WALL STREET JOURNAL</div>
-                                <div class="article-title">How AI is Transforming Marketing</div>
-                                <div class="article-meta">Matches your interests • 5 min read</div>
+                        <div class="referral-list">
+                            <div class="referral-item">
+                                <h4>TechCorp - B2B Software</h4>
+                                <p style="font-size: 13px; color: #718096;">$500 per qualified lead</p>
+                                <button class="btn-primary-small">Learn More</button>
                             </div>
-                            <div class="article-item">
-                                <div class="article-source">BLOOMBERG</div>
-                                <div class="article-title">Tech Startups See Record Funding</div>
-                                <div class="article-meta">Trending in network • 8 min read</div>
+                            <div class="referral-item">
+                                <h4>HealthTech - Clinical Trial</h4>
+                                <p style="font-size: 13px; color: #718096;">$200 per participant</p>
+                                <button class="btn-primary-small">Learn More</button>
                             </div>
-                            <div class="article-item">
-                                <div class="article-source">TECHCRUNCH</div>
-                                <div class="article-title">The Future of Remote Work</div>
-                                <div class="article-meta">Career insights • 6 min read</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Time Tracking Summary -->
+                    <div class="time-widget">
+                        <div class="section-header">
+                            <h3 class="section-title">⏱️ This Week's Hours</h3>
+                            <a class="view-all-btn" onclick="showPage('tracking')">Details →</a>
+                        </div>
+                        <div class="time-breakdown">
+                            <div class="time-item">
+                                <span class="time-category">Innovation Challenge</span>
+                                <span class="time-hours">8.5 hrs</span>
+                            </div>
+                            <div class="time-item">
+                                <span class="time-category">Co-op Projects</span>
+                                <span class="time-hours">22 hrs</span>
+                            </div>
+                            <div class="time-item">
+                                <span class="time-category">Personal Reading</span>
+                                <span class="time-hours">5 hrs</span>
+                            </div>
+                            <div class="time-total">
+                                <strong>Total: 35.5 hrs</strong>
                             </div>
                         </div>
                     </div>
@@ -197,94 +260,283 @@
             </div>
         </div>
         
-        <!-- Courses & Projects Page -->
-        <div id="courses-page" class="page-section">
-            <h2 style="color: white; margin-bottom: 30px;">Courses & Projects</h2>
+        <!-- Innovation Challenge Page -->
+        <div id="innovation-page" class="page-section">
+            <h2 style="color: white; margin-bottom: 30px;">Innovation Challenge - Season 3</h2>
             
-            <div class="courses-grid">
-                <div class="course-card">
-                    <span class="course-status status-active">Active</span>
-                    <h3 class="course-title">Digital Marketing Fundamentals</h3>
-                    <div class="course-company">🏢 TechCorp Partnership</div>
-                    <div class="progress-bar" style="margin: 15px 0;">
-                        <div class="progress-fill" style="width: 65%;"></div>
+            <div class="innovation-grid">
+                <div class="innovation-main">
+                    <!-- Challenge Stats -->
+                    <div class="challenge-stats-card">
+                        <div class="challenge-stat">
+                            <div class="challenge-stat-icon">🔥</div>
+                            <div>
+                                <div class="challenge-stat-value">12 days</div>
+                                <div class="challenge-stat-label">Current Streak</div>
+                            </div>
+                        </div>
+                        <div class="challenge-stat">
+                            <div class="challenge-stat-icon">⭐</div>
+                            <div>
+                                <div class="challenge-stat-value">1,850</div>
+                                <div class="challenge-stat-label">Season Points</div>
+                            </div>
+                        </div>
+                        <div class="challenge-stat">
+                            <div class="challenge-stat-icon">📝</div>
+                            <div>
+                                <div class="challenge-stat-value">19</div>
+                                <div class="challenge-stat-label">Submissions</div>
+                            </div>
+                        </div>
+                        <div class="challenge-stat">
+                            <div class="challenge-stat-icon">🏆</div>
+                            <div>
+                                <div class="challenge-stat-value">#24</div>
+                                <div class="challenge-stat-label">Global Rank</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="course-stats">
-                        <span>📚 8/12 Modules</span>
-                        <span>⭐ 92% Average</span>
-                        <span>📅 2 months left</span>
+                    
+                    <!-- Writing Submission Area -->
+                    <div class="submission-card">
+                        <div class="section-header">
+                            <h3 class="section-title">This Week's Topic: The Future of Sustainable Cities</h3>
+                            <span class="deadline">Due: Sunday 11:59 PM</span>
+                        </div>
+                        
+                        <div class="submission-sections">
+                            <div class="submission-section">
+                                <div class="section-header-small">
+                                    <h4>🚀 Innovation Catalyst (20 points)</h4>
+                                    <span class="word-count">0/100 words</span>
+                                </div>
+                                <textarea placeholder="What breakthrough innovation could transform sustainable cities?" class="submission-textarea"></textarea>
+                                <div class="section-status completed">✓ Saved</div>
+                            </div>
+                            
+                            <div class="submission-section">
+                                <div class="section-header-small">
+                                    <h4>🔍 Trend Spotter (20 points)</h4>
+                                    <span class="word-count">0/100 words</span>
+                                </div>
+                                <textarea placeholder="What current trends are shaping sustainable urban development?" class="submission-textarea"></textarea>
+                                <div class="section-status">Not started</div>
+                            </div>
+                            
+                            <div class="submission-section">
+                                <div class="section-header-small">
+                                    <h4>🔮 Future Visionist (20 points)</h4>
+                                    <span class="word-count">0/100 words</span>
+                                </div>
+                                <textarea placeholder="How will sustainable cities look in 2050?" class="submission-textarea"></textarea>
+                                <div class="section-status">Not started</div>
+                            </div>
+                            
+                            <div class="submission-section">
+                                <div class="section-header-small">
+                                    <h4>🔗 Connector (20 points)</h4>
+                                    <span class="word-count">0/100 words</span>
+                                </div>
+                                <textarea placeholder="How can different stakeholders collaborate for sustainable cities?" class="submission-textarea"></textarea>
+                                <div class="section-status">Not started</div>
+                            </div>
+                            
+                            <div class="submission-section">
+                                <div class="section-header-small">
+                                    <h4>📈 Growth Hacker (20 points)</h4>
+                                    <span class="word-count">0/100 words</span>
+                                </div>
+                                <textarea placeholder="How can we scale sustainable city solutions globally?" class="submission-textarea"></textarea>
+                                <div class="section-status">Not started</div>
+                            </div>
+                        </div>
+                        
+                        <div class="submission-actions">
+                            <button class="btn-secondary">Save Draft</button>
+                            <button class="btn-primary">Submit for AI Review</button>
+                            <span style="margin-left: auto; color: #718096;">Points Earned: 20/100</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Past Seasons -->
+                    <div class="past-seasons-card">
+                        <h3 class="section-title">Past Season Performance</h3>
+                        <div class="seasons-grid">
+                            <div class="season-card">
+                                <h4>Season 2 - Winter 2024</h4>
+                                <div class="season-stats">
+                                    <div>⭐ Total Points: 2,450</div>
+                                    <div>🔥 Longest Streak: 18 days</div>
+                                    <div>🏆 Final Rank: #31</div>
+                                </div>
+                            </div>
+                            <div class="season-card">
+                                <h4>Season 1 - Fall 2024</h4>
+                                <div class="season-stats">
+                                    <div>⭐ Total Points: 1,820</div>
+                                    <div>🔥 Longest Streak: 14 days</div>
+                                    <div>🏆 Final Rank: #45</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="course-card">
-                    <span class="course-status status-completed">Completed</span>
-                    <h3 class="course-title">Introduction to Business Strategy</h3>
-                    <div class="course-company">🏢 StartupXYZ</div>
-                    <div class="progress-bar" style="margin: 15px 0;">
-                        <div class="progress-fill" style="width: 100%;"></div>
+                <div class="innovation-sidebar">
+                    <!-- Global Leaderboard -->
+                    <div class="global-leaderboard">
+                        <h3 class="section-title">🌍 Global Leaderboard</h3>
+                        <div class="leaderboard-tabs">
+                            <button class="tab-btn active">Points</button>
+                            <button class="tab-btn">Streaks</button>
+                        </div>
+                        <div class="leaderboard-extended">
+                            <div class="leaderboard-item gold">
+                                <span class="rank">🥇</span>
+                                <span class="name">Alex Chen</span>
+                                <span class="points">3,240</span>
+                            </div>
+                            <div class="leaderboard-item silver">
+                                <span class="rank">🥈</span>
+                                <span class="name">Maria Garcia</span>
+                                <span class="points">3,180</span>
+                            </div>
+                            <div class="leaderboard-item bronze">
+                                <span class="rank">🥉</span>
+                                <span class="name">James Wilson</span>
+                                <span class="points">2,950</span>
+                            </div>
+                            <!-- More leaderboard items... -->
+                        </div>
                     </div>
-                    <div class="course-stats">
-                        <span>📚 12/12 Modules</span>
-                        <span>⭐ 88% Average</span>
-                        <span>✅ Certified</span>
-                    </div>
-                </div>
-                
-                <div class="course-card">
-                    <span class="course-status status-completed">Completed</span>
-                    <h3 class="course-title">Data Analysis Basics</h3>
-                    <div class="course-company">🏢 DataCo</div>
-                    <div class="progress-bar" style="margin: 15px 0;">
-                        <div class="progress-fill" style="width: 100%;"></div>
-                    </div>
-                    <div class="course-stats">
-                        <span>📚 10/10 Modules</span>
-                        <span>⭐ 95% Average</span>
-                        <span>✅ Certified</span>
-                    </div>
-                </div>
-                
-                <div class="course-card" style="background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%); border: 2px dashed #cbd5e0; cursor: pointer;" onclick="openModal('apply')">
-                    <div style="text-align: center; padding: 40px 0;">
-                        <div style="font-size: 48px; margin-bottom: 15px;">➕</div>
-                        <h3 class="course-title">Apply for New Course</h3>
-                        <p style="color: #718096;">Summer 2025 Applications Open</p>
+                    
+                    <!-- Recent Feedback -->
+                    <div class="feedback-card">
+                        <h3 class="section-title">📝 Recent Feedback</h3>
+                        <div class="feedback-list">
+                            <div class="feedback-item">
+                                <h4>AI in Healthcare</h4>
+                                <div class="feedback-score">Score: 95/100</div>
+                                <p class="feedback-comment">"Excellent innovation insights and practical growth strategies."</p>
+                            </div>
+                            <div class="feedback-item">
+                                <h4>Climate Tech Trends</h4>
+                                <div class="feedback-score">Score: 88/100</div>
+                                <p class="feedback-comment">"Good trend analysis. Could expand on connector aspects."</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Co-op Projects Page -->
+        <div id="projects-page" class="page-section">
+            <h2 style="color: white; margin-bottom: 30px;">Co-op Projects Workspace</h2>
             
-            <div style="margin-top: 40px;">
-                <h3 style="color: white; margin-bottom: 20px;">Recent Projects</h3>
-                <div class="tasks-section">
-                    <div class="task-list">
-                        <div class="task-item">
-                            <div class="task-content">
-                                <div class="task-title">Social Media Campaign Strategy</div>
-                                <div class="task-meta">
-                                    <span>🏢 TechCorp</span>
-                                    <span>✅ Completed</span>
-                                    <span>⭐ Grade: A+</span>
-                                    <span>📝 CEO Feedback Available</span>
+            <div class="projects-grid">
+                <!-- Active Project -->
+                <div class="project-card active">
+                    <div class="project-header">
+                        <div class="active-badge">CURRENTLY ACTIVE</div>
+                        <h3>Marketing Campaign Design</h3>
+                        <div class="project-company">🏢 TechCorp</div>
+                    </div>
+                    <div class="project-details">
+                        <div class="project-meta">
+                            <span>📅 Due: Dec 20, 2024</span>
+                            <span>⏱️ 45 hours logged</span>
+                            <span>👥 3 team members</span>
+                        </div>
+                        <div class="project-description">
+                            Design and implement a comprehensive marketing campaign for TechCorp's new AI product launch, including social media strategy, content creation, and performance metrics.
+                        </div>
+                        <div class="project-progress">
+                            <div class="progress-label">Progress: 65%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%;"></div>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-primary">Open in Teams</button>
+                            <button class="btn-secondary">View Details</button>
+                            <button class="btn-secondary">Log Time</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Other Projects at Same Company -->
+                <div class="company-projects-section">
+                    <h3 class="section-title">Other Projects at TechCorp</h3>
+                    <div class="other-projects-grid">
+                        <div class="project-card">
+                            <h4>UI/UX Redesign</h4>
+                            <div class="project-meta">
+                                <span>👥 2 members</span>
+                                <span>📅 3 weeks</span>
+                            </div>
+                            <p>Redesigning the customer dashboard for better user experience.</p>
+                            <button class="btn-collaborate">Request to Collaborate</button>
+                        </div>
+                        <div class="project-card">
+                            <h4>Data Analysis Pipeline</h4>
+                            <div class="project-meta">
+                                <span>👥 4 members</span>
+                                <span>📅 6 weeks</span>
+                            </div>
+                            <p>Building automated data analysis tools for customer insights.</p>
+                            <button class="btn-collaborate">Request to Collaborate</button>
+                        </div>
+                        <div class="project-card">
+                            <h4>Content Strategy</h4>
+                            <div class="project-meta">
+                                <span>👥 1 member</span>
+                                <span>📅 2 weeks</span>
+                            </div>
+                            <p>Developing content calendar and blog strategy for Q1 2025.</p>
+                            <button class="btn-collaborate">Request to Collaborate</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Projects at Other Companies -->
+                <div class="other-companies-section">
+                    <h3 class="section-title">Your Other Company Projects</h3>
+                    <div class="projects-list">
+                        <div class="project-card">
+                            <div class="project-header">
+                                <h3>Market Research Study</h3>
+                                <div class="project-company">🏢 StartupXYZ</div>
+                            </div>
+                            <div class="project-details">
+                                <div class="project-meta">
+                                    <span>📅 Due: Jan 5, 2025</span>
+                                    <span>⏱️ 22 hours logged</span>
+                                    <span>Progress: 40%</span>
+                                </div>
+                                <div class="project-actions">
+                                    <button class="btn-secondary">Switch to This Project</button>
+                                    <button class="btn-secondary">View Details</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="task-item">
-                            <div class="task-content">
-                                <div class="task-title">Product Launch Marketing Materials</div>
-                                <div class="task-meta">
-                                    <span>🏢 StartupXYZ</span>
-                                    <span>✅ Completed</span>
-                                    <span>⭐ Grade: A</span>
-                                </div>
+                        
+                        <div class="project-card completed">
+                            <div class="project-header">
+                                <div class="completed-badge">COMPLETED</div>
+                                <h3>Social Media Analysis</h3>
+                                <div class="project-company">🏢 DataCo</div>
                             </div>
-                        </div>
-                        <div class="task-item">
-                            <div class="task-content">
-                                <div class="task-title">Customer Survey Analysis</div>
-                                <div class="task-meta">
-                                    <span>🏢 DataCo</span>
-                                    <span>✅ Completed</span>
-                                    <span>⭐ Grade: B+</span>
+                            <div class="project-details">
+                                <div class="project-meta">
+                                    <span>✅ Completed: Nov 30, 2024</span>
+                                    <span>⏱️ 38 hours total</span>
+                                    <span>⭐ Rating: 4.8/5</span>
+                                </div>
+                                <div class="project-actions">
+                                    <button class="btn-secondary">View Report</button>
+                                    <button class="btn-secondary">Get Certificate</button>
                                 </div>
                             </div>
                         </div>
@@ -293,140 +545,197 @@
             </div>
         </div>
         
-        <!-- Career Hub Page -->
-        <div id="career-page" class="page-section">
-            <h2 style="color: white; margin-bottom: 30px;">Career Hub</h2>
+        <!-- Companies Directory Page -->
+        <div id="companies-page" class="page-section">
+            <h2 style="color: white; margin-bottom: 30px;">Partner Companies Directory</h2>
             
-            <div class="career-grid">
-                <div class="job-listings">
-                    <div class="section-header">
-                        <h3 class="section-title">🎯 Recommended Opportunities</h3>
-                        <span style="color: #667eea; font-size: 14px;">Based on your interests</span>
-                    </div>
-                    
-                    <div class="job-item">
-                        <div class="job-company">TechCorp - Your Partner Company</div>
-                        <div class="job-title">Junior Marketing Analyst Internship</div>
-                        <div class="job-details">
-                            <span>📍 Toronto, ON</span> • 
-                            <span>💰 $20-25/hour</span> • 
-                            <span>🎓 Perfect match for your profile</span>
-                        </div>
-                    </div>
-                    
-                    <div class="job-item">
-                        <div class="job-company">StartupXYZ</div>
-                        <div class="job-title">Business Development Intern</div>
-                        <div class="job-details">
-                            <span>📍 Remote</span> • 
-                            <span>💰 $18-22/hour</span> • 
-                            <span>🔥 New posting</span>
-                        </div>
-                    </div>
-                    
-                    <div class="job-item">
-                        <div class="job-company">InnovateCo</div>
-                        <div class="job-title">Digital Marketing Co-op</div>
-                        <div class="job-details">
-                            <span>📍 Mississauga, ON</span> • 
-                            <span>💰 $19-24/hour</span> • 
-                            <span>⚡ Fast-growing company</span>
-                        </div>
-                    </div>
-                    
-                    <div class="job-item">
-                        <div class="job-company">DataCo</div>
-                        <div class="job-title">Data Analysis Intern</div>
-                        <div class="job-details">
-                            <span>📍 Toronto, ON</span> • 
-                            <span>💰 $22-28/hour</span> • 
-                            <span>📊 Matches your coursework</span>
-                        </div>
-                    </div>
+            <!-- Search and Filter -->
+            <div class="companies-filter-section">
+                <input type="text" class="company-search" placeholder="Search companies by name, industry, or skills...">
+                <div class="filter-chips">
+                    <span class="chip active">All</span>
+                    <span class="chip">Technology</span>
+                    <span class="chip">Marketing</span>
+                    <span class="chip">Healthcare</span>
+                    <span class="chip">Finance</span>
+                    <span class="chip">Has Referral Program</span>
                 </div>
-                
-                <div class="career-tools">
-                    <div class="tool-card">
-                        <div class="tool-icon">📄</div>
-                        <div class="tool-title">Resume Builder</div>
-                        <div class="tool-description">AI-powered resume optimization</div>
+            </div>
+            
+            <!-- AI Recommendations -->
+            <div class="ai-recommendations-section">
+                <h3 class="section-title">🤖 AI-Recommended Companies for You</h3>
+                <div class="recommended-companies">
+                    <div class="company-recommendation-card">
+                        <div class="match-percentage">95% Match</div>
+                        <h4>DataCo Analytics</h4>
+                        <p>Perfect for your data science interests and Python skills</p>
+                        <button class="btn-primary-small">Explore</button>
                     </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">✉️</div>
-                        <div class="tool-title">Reference Letters</div>
-                        <div class="tool-description">3 available from past co-ops</div>
+                    <div class="company-recommendation-card">
+                        <div class="match-percentage">88% Match</div>
+                        <h4>GreenTech Hub</h4>
+                        <p>Aligns with your sustainability innovation focus</p>
+                        <button class="btn-primary-small">Explore</button>
                     </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">🎯</div>
-                        <div class="tool-title">Career Explorer</div>
-                        <div class="tool-description">Discover paths aligned with interests</div>
-                    </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">🎤</div>
-                        <div class="tool-title">Interview Prep</div>
-                        <div class="tool-description">Practice with AI coach</div>
+                    <div class="company-recommendation-card">
+                        <div class="match-percentage">82% Match</div>
+                        <h4>DesignFlow Studio</h4>
+                        <p>Great for developing your UX/UI skills</p>
+                        <button class="btn-primary-small">Explore</button>
                     </div>
                 </div>
             </div>
             
-            <div style="margin-top: 40px; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                <h3 style="margin-bottom: 20px;">🎯 Your Career Interest Profile</h3>
-                <div style="display: flex; gap: 30px; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 300px;">
-                        <h4 style="color: #667eea; margin-bottom: 10px;">Top Industries</h4>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 8px; border-radius: 10px; flex: 0 0 80%;"></div>
-                                <span>Technology (80%)</span>
+            <!-- Companies Grid -->
+            <div class="companies-directory">
+                <div class="company-directory-card">
+                    <div class="company-header">
+                        <div class="company-logo-large">TC</div>
+                        <div class="company-info">
+                            <h3>TechCorp</h3>
+                            <div class="company-rating">
+                                <span class="stars">⭐⭐⭐⭐⭐</span>
+                                <span>4.8 (24 reviews)</span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 8px; border-radius: 10px; flex: 0 0 65%;"></div>
-                                <span>Marketing (65%)</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 8px; border-radius: 10px; flex: 0 0 45%;"></div>
-                                <span>Data Analytics (45%)</span>
+                            <div class="company-tags">
+                                <span class="tag">Software</span>
+                                <span class="tag">AI/ML</span>
+                                <span class="tag">Remote</span>
+                                <span class="tag referral">💰 Referral Program</span>
                             </div>
                         </div>
                     </div>
-                    <div style="flex: 1; min-width: 300px;">
-                        <h4 style="color: #667eea; margin-bottom: 10px;">Suggested Majors</h4>
-                        <ul style="list-style: none; padding: 0;">
-                            <li style="padding: 8px 0;">🎓 Business Technology Management</li>
-                            <li style="padding: 8px 0;">🎓 Marketing & Digital Strategy</li>
-                            <li style="padding: 8px 0;">🎓 Data Science & Business Analytics</li>
-                        </ul>
+                    <p class="company-description">Leading software development company specializing in AI and machine learning solutions for enterprise clients.</p>
+                    
+                    <!-- Review Dimensions -->
+                    <div class="review-dimensions">
+                        <div class="dimension">
+                            <span class="dimension-label">Project Quality</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 90%;"></div>
+                            </div>
+                            <span class="dimension-score">4.5</span>
+                        </div>
+                        <div class="dimension">
+                            <span class="dimension-label">Mentorship</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 95%;"></div>
+                            </div>
+                            <span class="dimension-score">4.8</span>
+                        </div>
+                        <div class="dimension">
+                            <span class="dimension-label">Work-Life Balance</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 85%;"></div>
+                            </div>
+                            <span class="dimension-score">4.3</span>
+                        </div>
+                        <div class="dimension">
+                            <span class="dimension-label">Learning Opportunities</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 100%;"></div>
+                            </div>
+                            <span class="dimension-score">5.0</span>
+                        </div>
+                        <div class="dimension">
+                            <span class="dimension-label">Career Growth</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 88%;"></div>
+                            </div>
+                            <span class="dimension-score">4.4</span>
+                        </div>
+                    </div>
+                    
+                    <div class="company-actions">
+                        <button class="btn-primary">Apply for Co-op</button>
+                        <button class="btn-secondary">View Details</button>
+                        <button class="btn-secondary">Read Reviews</button>
+                        <button class="btn-referral">💰 Referral Info</button>
+                    </div>
+                </div>
+                
+                <!-- More company cards... -->
+                <div class="company-directory-card">
+                    <div class="company-header">
+                        <div class="company-logo-large">SX</div>
+                        <div class="company-info">
+                            <h3>StartupXYZ</h3>
+                            <div class="company-rating">
+                                <span class="stars">⭐⭐⭐⭐</span>
+                                <span>4.2 (18 reviews)</span>
+                            </div>
+                            <div class="company-tags">
+                                <span class="tag">Marketing</span>
+                                <span class="tag">Growth</span>
+                                <span class="tag">Hybrid</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="company-description">Fast-growing startup focused on innovative marketing solutions and growth hacking strategies.</p>
+                    
+                    <div class="review-dimensions">
+                        <div class="dimension">
+                            <span class="dimension-label">Project Quality</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 82%;"></div>
+                            </div>
+                            <span class="dimension-score">4.1</span>
+                        </div>
+                        <div class="dimension">
+                            <span class="dimension-label">Mentorship</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 78%;"></div>
+                            </div>
+                            <span class="dimension-score">3.9</span>
+                        </div>
+                        <div class="dimension">
+                            <span class="dimension-label">Work-Life Balance</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 70%;"></div>
+                            </div>
+                            <span class="dimension-score">3.5</span>
+                        </div>
+                        <div class="dimension">
+                            <span class="dimension-label">Learning Opportunities</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 92%;"></div>
+                            </div>
+                            <span class="dimension-score">4.6</span>
+                        </div>
+                        <div class="dimension">
+                            <span class="dimension-label">Career Growth</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 86%;"></div>
+                            </div>
+                            <span class="dimension-score">4.3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="company-actions">
+                        <button class="btn-primary">Apply for Co-op</button>
+                        <button class="btn-secondary">View Details</button>
+                        <button class="btn-secondary">Write Review</button>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Network Page -->
+        <!-- Enhanced Network Page -->
         <div id="network-page" class="page-section">
             <h2 style="color: white; margin-bottom: 30px;">Professional Network</h2>
             
             <div class="network-grid">
-                <!-- Connections Section -->
                 <div class="network-main">
+                    <!-- Connections with Notes -->
                     <div class="network-card">
                         <div class="section-header">
                             <h3 class="section-title">🤝 Your Connections</h3>
-                            <span class="connection-count">47 connections</span>
+                            <button class="btn-primary-small" onclick="openModal('add-connection')">+ Add Connection</button>
                         </div>
                         
-                        <div class="connection-filters">
-                            <button class="filter-btn active">All</button>
-                            <button class="filter-btn">Companies</button>
-                            <button class="filter-btn">Mentors</button>
-                            <button class="filter-btn">Peers</button>
-                            <button class="filter-btn">Alumni</button>
-                        </div>
-                        
-                        <div class="connections-grid">
-                            <div class="connection-card">
+                        <div class="connections-enhanced">
+                            <div class="connection-card-enhanced" onclick="openModal('connection-detail')">
                                 <div class="connection-avatar">MS</div>
                                 <div class="connection-info">
                                     <div class="connection-name">Michael Smith</div>
@@ -435,10 +744,17 @@
                                         <span class="connection-tag">Mentor</span>
                                         <span class="connection-tag">Reference Available</span>
                                     </div>
+                                    <div class="connection-note">
+                                        Met at Q3 networking event. Discussed AI in healthcare. Offered mentorship on product strategy.
+                                    </div>
+                                    <div class="connection-photos">
+                                        📷 3 photos
+                                    </div>
                                 </div>
+                                <button class="btn-action">View Details</button>
                             </div>
                             
-                            <div class="connection-card">
+                            <div class="connection-card-enhanced">
                                 <div class="connection-avatar">SJ</div>
                                 <div class="connection-info">
                                     <div class="connection-name">Sarah Johnson</div>
@@ -446,154 +762,66 @@
                                     <div class="connection-meta">
                                         <span class="connection-tag">Project Supervisor</span>
                                     </div>
-                                </div>
-                            </div>
-                            
-                            <div class="connection-card">
-                                <div class="connection-avatar">DL</div>
-                                <div class="connection-info">
-                                    <div class="connection-name">David Lee</div>
-                                    <div class="connection-title">Data Analyst at DataCo</div>
-                                    <div class="connection-meta">
-                                        <span class="connection-tag">Industry Expert</span>
+                                    <div class="connection-note">
+                                        Supervised social media campaign project. Great feedback on creative approach.
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="connection-card">
-                                <div class="connection-avatar">EP</div>
-                                <div class="connection-info">
-                                    <div class="connection-name">Emily Park</div>
-                                    <div class="connection-title">IMI Alumni • UofT Business</div>
-                                    <div class="connection-meta">
-                                        <span class="connection-tag">Alumni</span>
-                                        <span class="connection-tag">2023 Graduate</span>
-                                    </div>
-                                </div>
+                                <button class="btn-action">Request Reference</button>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Recent Events Gallery -->
+                    <!-- Peer Suggestions -->
                     <div class="network-card">
-                        <div class="section-header">
-                            <h3 class="section-title">📸 Event Highlights</h3>
-                            <a class="view-all-btn">View Gallery →</a>
-                        </div>
-                        
-                        <div class="event-gallery">
-                            <div class="gallery-item">
-                                <div class="gallery-image">
-                                    <span style="font-size: 48px;">🏆</span>
+                        <h3 class="section-title">👥 Suggested Peers to Connect</h3>
+                        <div class="peer-suggestions">
+                            <div class="peer-card">
+                                <div class="peer-avatar">AC</div>
+                                <div class="peer-info">
+                                    <h4>Alex Chen</h4>
+                                    <p>Shares interest in AI & sustainability</p>
+                                    <div class="common-interests">
+                                        <span class="interest-tag">Machine Learning</span>
+                                        <span class="interest-tag">Green Tech</span>
+                                    </div>
                                 </div>
-                                <div class="gallery-caption">
-                                    <div class="gallery-title">Q4 Awards Ceremony</div>
-                                    <div class="gallery-date">March 10, 2025</div>
-                                </div>
+                                <button class="btn-connect">Connect</button>
                             </div>
-                            
-                            <div class="gallery-item">
-                                <div class="gallery-image">
-                                    <span style="font-size: 48px;">🤝</span>
+                            <div class="peer-card">
+                                <div class="peer-avatar">MG</div>
+                                <div class="peer-info">
+                                    <h4>Maria Garcia</h4>
+                                    <p>Working at DataCo - your next co-op</p>
+                                    <div class="common-interests">
+                                        <span class="interest-tag">Data Science</span>
+                                        <span class="interest-tag">Python</span>
+                                    </div>
                                 </div>
-                                <div class="gallery-caption">
-                                    <div class="gallery-title">CEO Networking Lunch</div>
-                                    <div class="gallery-date">March 5, 2025</div>
-                                </div>
-                            </div>
-                            
-                            <div class="gallery-item">
-                                <div class="gallery-image">
-                                    <span style="font-size: 48px;">💡</span>
-                                </div>
-                                <div class="gallery-caption">
-                                    <div class="gallery-title">Innovation Workshop</div>
-                                    <div class="gallery-date">February 28, 2025</div>
-                                </div>
-                            </div>
-                            
-                            <div class="gallery-item">
-                                <div class="gallery-image">
-                                    <span style="font-size: 48px;">🎯</span>
-                                </div>
-                                <div class="gallery-caption">
-                                    <div class="gallery-title">Career Fair 2025</div>
-                                    <div class="gallery-date">February 20, 2025</div>
-                                </div>
+                                <button class="btn-connect">Connect</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Sidebar -->
                 <div class="network-sidebar">
-                    <!-- Upcoming Events -->
+                    <!-- Referral Programs Summary -->
                     <div class="network-card">
-                        <div class="section-header">
-                            <h3 class="section-title">🗓️ Upcoming Events</h3>
-                        </div>
-                        
-                        <div class="network-events">
-                            <div class="network-event">
-                                <div class="network-event-date">MAR 20</div>
-                                <div class="network-event-info">
-                                    <div class="network-event-title">Tech Industry Panel</div>
-                                    <div class="network-event-details">5 speakers • Virtual</div>
-                                    <button class="btn-primary-small">RSVP</button>
-                                </div>
+                        <h3 class="section-title">💰 Your Referral Dashboard</h3>
+                        <div class="referral-summary">
+                            <div class="referral-stat">
+                                <span class="referral-number">$1,200</span>
+                                <span class="referral-label">Total Earned</span>
                             </div>
-                            
-                            <div class="network-event">
-                                <div class="network-event-date">MAR 25</div>
-                                <div class="network-event-info">
-                                    <div class="network-event-title">Spring Networking Mixer</div>
-                                    <div class="network-event-details">In-person • Toronto</div>
-                                    <button class="btn-primary-small">RSVP</button>
-                                </div>
+                            <div class="referral-stat">
+                                <span class="referral-number">3</span>
+                                <span class="referral-label">Active Referrals</span>
                             </div>
-                            
-                            <div class="network-event">
-                                <div class="network-event-date">APR 2</div>
-                                <div class="network-event-info">
-                                    <div class="network-event-title">Alumni Mentorship Day</div>
-                                    <div class="network-event-details">1-on-1 sessions</div>
-                                    <button class="btn-primary-small">RSVP</button>
-                                </div>
+                            <div class="referral-stat">
+                                <span class="referral-number">5</span>
+                                <span class="referral-label">Programs Available</span>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Peer Achievements -->
-                    <div class="network-card">
-                        <div class="section-header">
-                            <h3 class="section-title">🌟 Peer Achievements</h3>
-                        </div>
-                        
-                        <div class="achievements-list">
-                            <div class="achievement-item">
-                                <div class="achievement-icon">🏆</div>
-                                <div class="achievement-content">
-                                    <div class="achievement-text"><strong>Alex Chen</strong> won Best Project Award for AI Marketing Campaign</div>
-                                    <div class="achievement-date">2 days ago</div>
-                                </div>
-                            </div>
-                            
-                            <div class="achievement-item">
-                                <div class="achievement-icon">💼</div>
-                                <div class="achievement-content">
-                                    <div class="achievement-text"><strong>Maria Garcia</strong> landed internship at Microsoft</div>
-                                    <div class="achievement-date">1 week ago</div>
-                                </div>
-                            </div>
-                            
-                            <div class="achievement-item">
-                                <div class="achievement-icon">📈</div>
-                                <div class="achievement-content">
-                                    <div class="achievement-text"><strong>James Wilson</strong> completed 100+ hours of co-op work</div>
-                                    <div class="achievement-date">2 weeks ago</div>
-                                </div>
-                            </div>
-                        </div>
+                        <button class="btn-primary" style="width: 100%; margin-top: 15px;">View All Programs</button>
                     </div>
                 </div>
             </div>
@@ -601,179 +829,266 @@
         
         <!-- Resources Page -->
         <div id="resources-page" class="page-section">
-            <h2 style="color: white; margin-bottom: 30px;">Resources & Learning</h2>
+            <h2 style="color: white; margin-bottom: 30px;">Resources & Tools</h2>
             
             <div class="resources-grid">
-                <!-- Learning Materials -->
                 <div class="resource-section">
+                    <!-- Publications Section -->
                     <div class="resource-card">
-                        <div class="section-header">
-                            <h3 class="section-title">📚 Learning Library</h3>
-                            <input type="text" class="search-input" placeholder="Search resources...">
+                        <h3 class="section-title">📚 Publication Access</h3>
+                        
+                        <div class="bitwarden-setup">
+                            <div class="setup-card">
+                                <h4>🔐 Password Manager Setup</h4>
+                                <p>Access premium publications through our Bitwarden vault</p>
+                                <ol class="setup-steps">
+                                    <li>Install Bitwarden browser extension</li>
+                                    <li>Create account with your IMI email</li>
+                                    <li>Join IMI organization vault (check email for invite)</li>
+                                    <li>Access shared credentials for publications</li>
+                                </ol>
+                                <div class="setup-actions">
+                                    <button class="btn-primary">Download Bitwarden</button>
+                                    <button class="btn-secondary">Request Access</button>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="resource-categories">
-                            <div class="resource-category">
-                                <div class="category-header">
-                                    <span class="category-icon">💻</span>
-                                    <span class="category-title">Technical Skills</span>
-                                    <span class="category-count">24 resources</span>
+                        <div class="publications-grid">
+                            <div class="publication-card">
+                                <div class="pub-icon">📰</div>
+                                <h4>Wall Street Journal</h4>
+                                <p>Business & Finance News</p>
+                                <button class="btn-link">Access →</button>
+                            </div>
+                            <div class="publication-card">
+                                <div class="pub-icon">💼</div>
+                                <h4>Harvard Business Review</h4>
+                                <p>Management & Strategy</p>
+                                <button class="btn-link">Access →</button>
+                            </div>
+                            <div class="publication-card">
+                                <div class="pub-icon">🔬</div>
+                                <h4>MIT Technology Review</h4>
+                                <p>Emerging Technology</p>
+                                <button class="btn-link">Access →</button>
+                            </div>
+                            <div class="publication-card">
+                                <div class="pub-icon">⚡</div>
+                                <h4>Fast Company</h4>
+                                <p>Innovation & Design</p>
+                                <button class="btn-link">Access →</button>
+                            </div>
+                            <div class="publication-card">
+                                <div class="pub-icon">🌍</div>
+                                <h4>The Economist</h4>
+                                <p>Global Affairs & Economics</p>
+                                <button class="btn-link">Access →</button>
+                            </div>
+                            <div class="publication-card">
+                                <div class="pub-icon">🚀</div>
+                                <h4>TechCrunch</h4>
+                                <p>Startup & Tech News</p>
+                                <button class="btn-link">Access →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Tools Section -->
+                    <div class="resource-card">
+                        <h3 class="section-title">🤖 AI Tools & Training</h3>
+                        
+                        <div class="ai-tools-grid">
+                            <div class="ai-tool-card">
+                                <div class="tool-header">
+                                    <div class="tool-logo">🔍</div>
+                                    <h4>Perplexity AI</h4>
                                 </div>
-                                <div class="resource-list">
-                                    <div class="resource-item">
-                                        <span class="resource-type">VIDEO</span>
-                                        <span class="resource-title">Introduction to AI Tools</span>
-                                        <span class="resource-duration">45 min</span>
-                                    </div>
-                                    <div class="resource-item">
-                                        <span class="resource-type">GUIDE</span>
-                                        <span class="resource-title">Excel for Data Analysis</span>
-                                        <span class="resource-duration">Read</span>
-                                    </div>
-                                    <div class="resource-item">
-                                        <span class="resource-type">WORKSHOP</span>
-                                        <span class="resource-title">Web Design Basics</span>
-                                        <span class="resource-duration">2 hours</span>
-                                    </div>
+                                <p>AI-powered research assistant for deep insights</p>
+                                <div class="tool-actions">
+                                    <button class="btn-primary">Open Tool</button>
+                                    <button class="btn-secondary" onclick="openModal('perplexity-training')">Training</button>
                                 </div>
                             </div>
                             
-                            <div class="resource-category">
-                                <div class="category-header">
-                                    <span class="category-icon">📊</span>
-                                    <span class="category-title">Business Skills</span>
-                                    <span class="category-count">18 resources</span>
+                            <div class="ai-tool-card">
+                                <div class="tool-header">
+                                    <div class="tool-logo">✨</div>
+                                    <h4>Google Gemini</h4>
                                 </div>
-                                <div class="resource-list">
-                                    <div class="resource-item">
-                                        <span class="resource-type">COURSE</span>
-                                        <span class="resource-title">Marketing Fundamentals</span>
-                                        <span class="resource-duration">6 modules</span>
-                                    </div>
-                                    <div class="resource-item">
-                                        <span class="resource-type">TEMPLATE</span>
-                                        <span class="resource-title">Business Plan Template</span>
-                                        <span class="resource-duration">Download</span>
-                                    </div>
+                                <p>Advanced AI for creative and analytical tasks</p>
+                                <div class="tool-actions">
+                                    <button class="btn-primary">Open Tool</button>
+                                    <button class="btn-secondary" onclick="openModal('gemini-training')">Training</button>
                                 </div>
                             </div>
                             
-                            <div class="resource-category">
-                                <div class="category-header">
-                                    <span class="category-icon">🎯</span>
-                                    <span class="category-title">Career Development</span>
-                                    <span class="category-count">31 resources</span>
+                            <div class="ai-tool-card">
+                                <div class="tool-header">
+                                    <div class="tool-logo">📔</div>
+                                    <h4>NotebookLM</h4>
                                 </div>
-                                <div class="resource-list">
-                                    <div class="resource-item">
-                                        <span class="resource-type">GUIDE</span>
-                                        <span class="resource-title">Resume Writing Best Practices</span>
-                                        <span class="resource-duration">Read</span>
-                                    </div>
-                                    <div class="resource-item">
-                                        <span class="resource-type">VIDEO</span>
-                                        <span class="resource-title">Interview Preparation</span>
-                                        <span class="resource-duration">1 hour</span>
-                                    </div>
+                                <p>AI note-taking and knowledge synthesis</p>
+                                <div class="tool-actions">
+                                    <button class="btn-primary">Open Tool</button>
+                                    <button class="btn-secondary" onclick="openModal('notebook-training')">Training</button>
                                 </div>
+                            </div>
+                            
+                            <div class="ai-tool-card">
+                                <div class="tool-header">
+                                    <div class="tool-logo">🎨</div>
+                                    <h4>DALL-E 3</h4>
+                                </div>
+                                <p>AI image generation for creative projects</p>
+                                <div class="tool-actions">
+                                    <button class="btn-primary">Open Tool</button>
+                                    <button class="btn-secondary">Training</button>
+                                </div>
+                            </div>
+                            
+                            <div class="ai-tool-card">
+                                <div class="tool-header">
+                                    <div class="tool-logo">💬</div>
+                                    <h4>Claude</h4>
+                                </div>
+                                <p>Advanced conversational AI assistant</p>
+                                <div class="tool-actions">
+                                    <button class="btn-primary">Open Tool</button>
+                                    <button class="btn-secondary">Training</button>
+                                </div>
+                            </div>
+                            
+                            <div class="ai-tool-card add-more">
+                                <div class="tool-header">
+                                    <div class="tool-logo">➕</div>
+                                    <h4>More Coming Soon</h4>
+                                </div>
+                                <p>New AI tools added regularly</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Time Tracking Page -->
+        <div id="tracking-page" class="page-section">
+            <h2 style="color: white; margin-bottom: 30px;">Time Tracking & Volunteer Hours</h2>
+            
+            <div class="tracking-grid">
+                <div class="tracking-main">
+                    <!-- Current Week Overview -->
+                    <div class="tracking-card">
+                        <h3 class="section-title">📊 This Week's Activity</h3>
+                        <div class="time-chart">
+                            <div class="time-bar-chart">
+                                <div class="time-bar" style="height: 60%;">
+                                    <span class="bar-label">Mon</span>
+                                    <span class="bar-value">4.5h</span>
+                                </div>
+                                <div class="time-bar" style="height: 80%;">
+                                    <span class="bar-label">Tue</span>
+                                    <span class="bar-value">6h</span>
+                                </div>
+                                <div class="time-bar" style="height: 70%;">
+                                    <span class="bar-label">Wed</span>
+                                    <span class="bar-value">5.5h</span>
+                                </div>
+                                <div class="time-bar" style="height: 90%;">
+                                    <span class="bar-label">Thu</span>
+                                    <span class="bar-value">7h</span>
+                                </div>
+                                <div class="time-bar" style="height: 75%;">
+                                    <span class="bar-label">Fri</span>
+                                    <span class="bar-value">5.5h</span>
+                                </div>
+                                <div class="time-bar today" style="height: 50%;">
+                                    <span class="bar-label">Today</span>
+                                    <span class="bar-value">4h</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="time-summary">
+                            <div class="summary-item">
+                                <span class="summary-label">Innovation Challenge</span>
+                                <span class="summary-value">8.5 hrs</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Co-op Projects</span>
+                                <span class="summary-value">22 hrs</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Personal Reading</span>
+                                <span class="summary-value">5 hrs</span>
+                            </div>
+                            <div class="summary-total">
+                                <span>Weekly Total</span>
+                                <span>35.5 hrs</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Manual Time Entry -->
+                    <div class="tracking-card">
+                        <h3 class="section-title">➕ Log Additional Hours</h3>
+                        <form class="time-entry-form">
+                            <div class="form-group">
+                                <label>Activity Type</label>
+                                <select class="form-select">
+                                    <option>Innovation Challenge Writing</option>
+                                    <option>Co-op Project Work</option>
+                                    <option>Personal Reading/Research</option>
+                                    <option>Networking Event</option>
+                                    <option>Training/Learning</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <input type="date" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Hours</label>
+                                    <input type="number" step="0.5" class="form-input" placeholder="0.0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-textarea" placeholder="Brief description of activity..."></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary">Log Hours</button>
+                        </form>
+                    </div>
+                </div>
                 
-                <!-- Right Sidebar -->
-                <div class="resources-sidebar">
-                    <!-- Reading List -->
-                    <div class="resource-card">
-                        <div class="section-header">
-                            <h3 class="section-title">📖 Your Reading List</h3>
-                        </div>
-                        
-                        <div class="reading-list">
-                            <div class="reading-item">
-                                <div class="reading-progress">
-                                    <div class="progress-circle">75%</div>
-                                </div>
-                                <div class="reading-info">
-                                    <div class="reading-title">The Lean Startup</div>
-                                    <div class="reading-author">Eric Ries</div>
-                                </div>
+                <div class="tracking-sidebar">
+                    <!-- Volunteer Hours Certificate -->
+                    <div class="tracking-card">
+                        <h3 class="section-title">🏆 Volunteer Hours</h3>
+                        <div class="volunteer-stats">
+                            <div class="big-stat">
+                                <span class="big-number">324</span>
+                                <span class="big-label">Total Hours</span>
                             </div>
-                            
-                            <div class="reading-item">
-                                <div class="reading-progress">
-                                    <div class="progress-circle">30%</div>
-                                </div>
-                                <div class="reading-info">
-                                    <div class="reading-title">Zero to One</div>
-                                    <div class="reading-author">Peter Thiel</div>
-                                </div>
+                            <div class="stat-breakdown">
+                                <div>Innovation: 85 hrs</div>
+                                <div>Co-op: 198 hrs</div>
+                                <div>Reading: 41 hrs</div>
                             </div>
-                            
-                            <div class="reading-item">
-                                <div class="reading-progress">
-                                    <div class="progress-circle">NEW</div>
-                                </div>
-                                <div class="reading-info">
-                                    <div class="reading-title">The Design of Everyday Things</div>
-                                    <div class="reading-author">Don Norman</div>
-                                </div>
-                            </div>
+                            <button class="btn-primary" style="width: 100%; margin-top: 15px;">Generate Certificate</button>
                         </div>
                     </div>
                     
-                    <!-- Company Resources -->
-                    <div class="resource-card">
-                        <div class="section-header">
-                            <h3 class="section-title">🏢 Company Resources</h3>
-                        </div>
-                        
-                        <div class="company-resources">
-                            <div class="company-resource">
-                                <div class="company-logo">TC</div>
-                                <div class="company-info">
-                                    <div class="company-name">TechCorp</div>
-                                    <div class="company-resources-count">12 resources</div>
-                                </div>
+                    <!-- Monthly Report -->
+                    <div class="tracking-card">
+                        <h3 class="section-title">📈 Monthly Trends</h3>
+                        <div class="trend-info">
+                            <p>You're on track to complete <strong>160 hours</strong> this month!</p>
+                            <div class="trend-comparison">
+                                <span>↑ 15% from last month</span>
                             </div>
-                            
-                            <div class="company-resource">
-                                <div class="company-logo">SX</div>
-                                <div class="company-info">
-                                    <div class="company-name">StartupXYZ</div>
-                                    <div class="company-resources-count">8 resources</div>
-                                </div>
-                            </div>
-                            
-                            <div class="company-resource">
-                                <div class="company-logo">DC</div>
-                                <div class="company-info">
-                                    <div class="company-name">DataCo</div>
-                                    <div class="company-resources-count">15 resources</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Support -->
-                    <div class="resource-card">
-                        <div class="section-header">
-                            <h3 class="section-title">💬 Need Help?</h3>
-                        </div>
-                        
-                        <div class="support-options">
-                            <button class="support-btn">
-                                <span class="support-icon">💬</span>
-                                <span class="support-text">Chat with Support</span>
-                            </button>
-                            <button class="support-btn">
-                                <span class="support-icon">📧</span>
-                                <span class="support-text">Email Advisor</span>
-                            </button>
-                            <button class="support-btn">
-                                <span class="support-icon">📅</span>
-                                <span class="support-text">Book 1-on-1</span>
-                            </button>
                         </div>
                     </div>
                 </div>
