@@ -15,6 +15,10 @@ function initializeNavigation() {
     
     // Handle browser back/forward
     setupHistoryManagement();
+    
+    // Show initial page from URL or default to dashboard
+    const initialPage = getPageFromURL();
+    showPage(initialPage, false); // Don't push state on initial load
 }
 
 // Show specific page
@@ -44,6 +48,9 @@ function showPage(pageId, pushState = true) {
     const selectedNav = document.getElementById(`nav-${pageId}`);
     if (selectedNav) {
         selectedNav.classList.add('active');
+    } else if (pageId === 'profile') {
+        // Profile page doesn't have a nav link - it's accessed via user avatar
+        console.log('Profile page accessed via user avatar');
     }
     
     // Update URL without reload (only if pushState is true)
@@ -86,6 +93,9 @@ function loadPageContent(pageId) {
             break;
         case 'tracking':
             loadTimeTrackingContent();
+            break;
+        case 'profile':
+            loadProfileContent();
             break;
     }
 }
@@ -173,14 +183,43 @@ function loadTimeTrackingContent() {
     updateTimeCharts();
 }
 
+// Profile content loader
+function loadProfileContent() {
+    console.log('Loading profile content...');
+    
+    // Load profile data
+    loadProfileData();
+    
+    // Setup form handlers
+    setupProfileForms();
+}
+
+// Load profile data
+function loadProfileData() {
+    console.log('Loading profile data...');
+    // Initialize profile functionality when page loads
+    if (typeof initializeProfile === 'function') {
+        initializeProfile();
+    }
+}
+
+// Setup profile forms
+function setupProfileForms() {
+    console.log('Setting up profile forms...');
+    // Setup form validation and submission handlers
+}
+
 // Setup navigation links
 function setupNavLinks() {
     const navLinks = document.querySelectorAll('.nav-links a');
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const pageId = link.id.replace('nav-', '');
-            showPage(pageId);
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                const pageId = href.substring(1);
+                showPage(pageId);
+            }
         });
     });
 }
@@ -241,7 +280,9 @@ function updateURL(pageId) {
 // Get page from URL hash
 function getPageFromURL() {
     const hash = window.location.hash.slice(1);
-    return hash || null;
+    // Validate that the page exists
+    const validPages = ['dashboard', 'innovation', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile'];
+    return validPages.includes(hash) ? hash : 'dashboard';
 }
 
 // Update page title
@@ -253,7 +294,8 @@ function updatePageTitle(pageId) {
         companies: 'Companies Directory',
         network: 'Professional Network',
         resources: 'Resources & Tools',
-        tracking: 'Time Tracking'
+        tracking: 'Time Tracking',
+        profile: 'Profile Settings'
     };
     
     document.title = `${titles[pageId] || 'Dashboard'} - IMI Student Portal`;
@@ -334,3 +376,5 @@ function showPageWithFilter(pageId, filter) {
 window.showPage = showPage;
 window.showPageWithFilter = showPageWithFilter;
 window.initializeNavigation = initializeNavigation;
+window.loadProfileData = loadProfileData;
+window.setupProfileForms = setupProfileForms;

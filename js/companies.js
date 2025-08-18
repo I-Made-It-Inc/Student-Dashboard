@@ -29,7 +29,7 @@ const companiesData = [
         description: 'Leading software development company specializing in AI and machine learning solutions.',
         rating: 4.8,
         reviewCount: 24,
-        tags: ['Software', 'AI/ML', 'Remote'],
+        tags: ['Technology', 'AI/ML', 'Remote'],
         hasReferral: true,
         referralAmount: '$500 per qualified lead',
         dimensions: {
@@ -64,7 +64,7 @@ const companiesData = [
         description: 'Data analytics and business intelligence solutions for enterprise clients.',
         rating: 4.8,
         reviewCount: 15,
-        tags: ['Data Science', 'Analytics', 'Remote'],
+        tags: ['Technology', 'Data Science', 'Remote'],
         hasReferral: true,
         referralAmount: '$300 per referral',
         dimensions: {
@@ -90,6 +90,41 @@ const companiesData = [
             workLifeBalance: 4.6,
             learningOpportunities: 4.4,
             careerGrowth: 4.2
+        }
+    },
+    {
+        id: 5,
+        name: 'HealthTech Solutions',
+        logo: 'HS',
+        description: 'Digital health solutions improving patient care through technology.',
+        rating: 4.7,
+        reviewCount: 12,
+        tags: ['Healthcare', 'Technology', 'Hybrid'],
+        hasReferral: true,
+        referralAmount: '$400 per clinical trial participant',
+        dimensions: {
+            projectQuality: 4.6,
+            mentorship: 4.5,
+            workLifeBalance: 4.2,
+            learningOpportunities: 4.7,
+            careerGrowth: 4.3
+        }
+    },
+    {
+        id: 6,
+        name: 'FinanceFirst',
+        logo: 'FF',
+        description: 'Innovative financial services and investment solutions for modern businesses.',
+        rating: 4.4,
+        reviewCount: 20,
+        tags: ['Finance', 'Technology', 'On-site'],
+        hasReferral: false,
+        dimensions: {
+            projectQuality: 4.3,
+            mentorship: 4.4,
+            workLifeBalance: 4.0,
+            learningOpportunities: 4.5,
+            careerGrowth: 4.6
         }
     }
 ];
@@ -133,7 +168,7 @@ function setupFilterChips() {
     
     chips.forEach(chip => {
         chip.addEventListener('click', function() {
-            const filterText = this.textContent;
+            const filterText = this.textContent.trim();
             
             if (filterText === 'All') {
                 // Clear all other filters
@@ -145,22 +180,27 @@ function setupFilterChips() {
                 // Toggle specific filter
                 if (activeFilters.has(filterText)) {
                     activeFilters.delete(filterText);
+                    this.classList.remove('active');
                 } else {
                     activeFilters.add(filterText);
                     activeFilters.delete('All');
+                    this.classList.add('active');
                 }
                 
-                // Update UI
-                document.querySelector('.chip:first-child').classList.remove('active');
-                this.classList.toggle('active');
+                // Update "All" button state
+                const allChip = document.querySelector('.chip:first-child');
+                if (allChip) {
+                    allChip.classList.remove('active');
+                }
                 
                 // If no filters active, activate "All"
                 if (activeFilters.size === 0) {
                     activeFilters.add('All');
-                    document.querySelector('.chip:first-child').classList.add('active');
+                    allChip.classList.add('active');
                 }
             }
             
+            console.log('Active filters:', Array.from(activeFilters));
             filterCompanies();
         });
     });
@@ -169,6 +209,11 @@ function setupFilterChips() {
 // Filter companies based on search and chips
 function filterCompanies() {
     let filteredCompanies = [...companiesData];
+    
+    console.log('Filtering with:', { 
+        searchQuery, 
+        activeFilters: Array.from(activeFilters) 
+    });
     
     // Apply search filter
     if (searchQuery) {
@@ -183,13 +228,20 @@ function filterCompanies() {
     if (!activeFilters.has('All')) {
         filteredCompanies = filteredCompanies.filter(company => {
             return Array.from(activeFilters).some(filter => {
+                // Handle different filter types
                 if (filter === 'Has Referral Program') {
                     return company.hasReferral;
                 }
-                return company.tags.includes(filter);
+                // Check if company tags include the filter
+                return company.tags.some(tag => 
+                    tag.toLowerCase().includes(filter.toLowerCase()) ||
+                    filter.toLowerCase().includes(tag.toLowerCase())
+                );
             });
         });
     }
+    
+    console.log('Filtered companies:', filteredCompanies.length);
     
     // Update display
     displayCompanies(filteredCompanies);

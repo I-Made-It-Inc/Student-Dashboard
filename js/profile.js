@@ -1,0 +1,562 @@
+// js/profile.js - Profile Settings Functionality
+
+// Initialize profile page
+function initializeProfile() {
+    console.log('Initializing profile page...');
+    
+    // Setup form handlers
+    setupProfileForms();
+    
+    // Setup file upload handlers
+    setupDocumentUploads();
+    
+    // Setup privacy settings
+    setupPrivacySettings();
+    
+    // Load profile data
+    loadProfileData();
+    
+    // Setup real-time preview updates
+    setupProfilePreviewUpdates();
+}
+
+// Setup profile forms
+function setupProfileForms() {
+    const personalInfoForm = document.getElementById('personal-info-form');
+    if (personalInfoForm) {
+        personalInfoForm.addEventListener('submit', handlePersonalInfoSubmit);
+    }
+    
+    const socialLinksForm = document.getElementById('social-links-form');
+    if (socialLinksForm) {
+        socialLinksForm.addEventListener('submit', handleSocialLinksSubmit);
+    }
+    
+    // Real-time validation
+    const inputs = document.querySelectorAll('.profile-form input, .profile-form textarea');
+    inputs.forEach(input => {
+        input.addEventListener('blur', validateField);
+        input.addEventListener('input', updatePreview);
+    });
+}
+
+// Handle personal info form submission
+function handlePersonalInfoSubmit(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const profileData = {
+        firstName: formData.get('firstName') || document.querySelector('input[type="text"]').value,
+        lastName: formData.get('lastName') || document.querySelectorAll('input[type="text"]')[1].value,
+        displayName: formData.get('displayName') || document.querySelectorAll('input[type="text"]')[2].value,
+        bio: formData.get('bio') || document.querySelector('textarea').value,
+        school: formData.get('school') || document.querySelectorAll('input[type="text"]')[3].value,
+        graduationYear: formData.get('graduationYear'),
+        phoneNumber: formData.get('phoneNumber'),
+        interests: getSelectedInterests()
+    };
+    
+    console.log('Saving profile data:', profileData);
+    
+    // Save to localStorage (in production, send to API)
+    localStorage.setItem('profileData', JSON.stringify(profileData));
+    
+    // Update preview
+    updateProfilePreview(profileData);
+    
+    // Show success message
+    window.IMI.utils.showNotification('Profile updated successfully!', 'success');
+}
+
+// Handle social links form submission
+function handleSocialLinksSubmit(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const socialData = {
+        linkedin: formData.get('linkedin') || '',
+        github: formData.get('github') || '',
+        portfolio: formData.get('portfolio') || '',
+        email: formData.get('email') || '',
+        twitter: formData.get('twitter') || ''
+    };
+    
+    console.log('Saving social links:', socialData);
+    
+    // Save to localStorage
+    localStorage.setItem('socialLinks', JSON.stringify(socialData));
+    
+    // Update preview
+    updateSocialLinksPreview(socialData);
+    
+    // Show success message
+    window.IMI.utils.showNotification('Social links updated successfully!', 'success');
+}
+
+// Get selected interests
+function getSelectedInterests() {
+    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
+    return Array.from(checkboxes).map(cb => cb.parentElement.textContent.trim());
+}
+
+// Validate individual fields
+function validateField(e) {
+    const field = e.target;
+    const value = field.value.trim();
+    
+    // Remove existing validation classes
+    field.classList.remove('valid', 'invalid');
+    
+    // Field-specific validation
+    switch(field.type) {
+        case 'email':
+            if (value && !isValidEmail(value)) {
+                field.classList.add('invalid');
+                showFieldError(field, 'Please enter a valid email address');
+            } else {
+                field.classList.add('valid');
+                clearFieldError(field);
+            }
+            break;
+            
+        case 'url':
+            if (value && !isValidURL(value)) {
+                field.classList.add('invalid');
+                showFieldError(field, 'Please enter a valid URL (including https://)');
+            } else {
+                field.classList.add('valid');
+                clearFieldError(field);
+            }
+            break;
+            
+        case 'tel':
+            if (value && !isValidPhone(value)) {
+                field.classList.add('invalid');
+                showFieldError(field, 'Please enter a valid phone number');
+            } else {
+                field.classList.add('valid');
+                clearFieldError(field);
+            }
+            break;
+            
+        default:
+            if (field.hasAttribute('required') && !value) {
+                field.classList.add('invalid');
+                showFieldError(field, 'This field is required');
+            } else {
+                field.classList.add('valid');
+                clearFieldError(field);
+            }
+    }
+}
+
+// Show field error
+function showFieldError(field, message) {
+    // Remove existing error
+    clearFieldError(field);
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'field-error';
+    errorDiv.textContent = message;
+    
+    field.parentElement.appendChild(errorDiv);
+}
+
+// Clear field error
+function clearFieldError(field) {
+    const existingError = field.parentElement.querySelector('.field-error');
+    if (existingError) {
+        existingError.remove();
+    }
+}
+
+// Validation helpers
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidURL(url) {
+    try {
+        new URL(url);
+        return url.startsWith('http://') || url.startsWith('https://');
+    } catch {
+        return false;
+    }
+}
+
+function isValidPhone(phone) {
+    return /^[\+]?[1-9][\d]{0,15}$/.test(phone.replace(/[\s\-\(\)]/g, ''));
+}
+
+// Setup document uploads
+function setupDocumentUploads() {
+    const uploadTriggers = ['resume', 'certificate', 'reference'];
+    
+    uploadTriggers.forEach(type => {
+        const input = document.getElementById(`${type}-upload`);
+        if (input) {
+            input.addEventListener('change', (e) => handleDocumentUpload(e, type));
+        }
+    });
+}
+
+// Handle document upload
+function handleDocumentUpload(e, type) {
+    const files = Array.from(e.target.files);
+    
+    files.forEach(file => {
+        if (validateDocumentFile(file, type)) {
+            addDocumentToList(file, type);
+        }
+    });
+    
+    // Clear input
+    e.target.value = '';
+}
+
+// Validate document file
+function validateDocumentFile(file, type) {
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    
+    // Type-specific validation
+    let allowedTypes = [];
+    switch(type) {
+        case 'resume':
+            allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            break;
+        case 'certificate':
+            allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+            break;
+        case 'reference':
+            allowedTypes = ['application/pdf'];
+            break;
+    }
+    
+    if (!allowedTypes.includes(file.type)) {
+        window.IMI.utils.showNotification(`Invalid file type for ${type}`, 'warning');
+        return false;
+    }
+    
+    if (file.size > maxSize) {
+        window.IMI.utils.showNotification('File too large (max 5MB)', 'warning');
+        return false;
+    }
+    
+    return true;
+}
+
+// Add document to list
+function addDocumentToList(file, type) {
+    const category = document.querySelector(`#${type}-upload`).closest('.document-category');
+    const documentsList = category.querySelector('.uploaded-documents');
+    
+    if (!documentsList) return;
+    
+    const documentId = Date.now() + Math.random();
+    const fileSize = (file.size / 1024 / 1024).toFixed(1);
+    const fileIcon = getDocumentIcon(file.type);
+    
+    const documentItem = document.createElement('div');
+    documentItem.className = 'document-item';
+    documentItem.dataset.documentId = documentId;
+    
+    documentItem.innerHTML = `
+        <span class="doc-icon">${fileIcon}</span>
+        <div class="doc-info">
+            <span class="doc-name">${file.name}</span>
+            <span class="doc-meta">Uploaded ${new Date().toLocaleDateString()} • ${fileSize} MB</span>
+        </div>
+        <div class="doc-actions">
+            <button class="btn-icon" title="Download" onclick="downloadDocument('${documentId}')">⬇️</button>
+            <button class="btn-icon" title="Delete" onclick="deleteDocument('${documentId}')">🗑️</button>
+        </div>
+    `;
+    
+    documentsList.appendChild(documentItem);
+    
+    // Store document data
+    storeDocument(documentId, file, type);
+    
+    window.IMI.utils.showNotification(`${type} uploaded successfully!`, 'success');
+}
+
+// Get document icon
+function getDocumentIcon(type) {
+    if (type.includes('pdf')) return '📄';
+    if (type.includes('word') || type.includes('doc')) return '📝';
+    if (type.includes('image')) return '🖼️';
+    return '📁';
+}
+
+// Store document
+function storeDocument(id, file, type) {
+    const documents = JSON.parse(localStorage.getItem('documents') || '{}');
+    
+    documents[id] = {
+        name: file.name,
+        type: type,
+        size: file.size,
+        mimeType: file.type,
+        uploadDate: new Date().toISOString()
+    };
+    
+    localStorage.setItem('documents', JSON.stringify(documents));
+}
+
+// Download document
+function downloadDocument(documentId) {
+    window.IMI.utils.showNotification('Download started...', 'info');
+    // In production, trigger actual download
+    console.log('Downloading document:', documentId);
+}
+
+// Delete document
+function deleteDocument(documentId) {
+    if (confirm('Are you sure you want to delete this document?')) {
+        const documentElement = document.querySelector(`[data-document-id="${documentId}"]`);
+        if (documentElement) {
+            documentElement.remove();
+        }
+        
+        // Remove from storage
+        const documents = JSON.parse(localStorage.getItem('documents') || '{}');
+        delete documents[documentId];
+        localStorage.setItem('documents', JSON.stringify(documents));
+        
+        window.IMI.utils.showNotification('Document deleted', 'success');
+    }
+}
+
+// Setup privacy settings
+function setupPrivacySettings() {
+    const privacyOptions = document.querySelectorAll('.privacy-option select, .privacy-option input[type="checkbox"]');
+    
+    privacyOptions.forEach(option => {
+        option.addEventListener('change', savePrivacySettings);
+    });
+    
+    // Load existing settings
+    loadPrivacySettings();
+}
+
+// Save privacy settings
+function savePrivacySettings() {
+    const settings = {
+        profileVisibility: document.querySelector('.privacy-option select').value,
+        contactVisibility: document.querySelectorAll('.privacy-option select')[1].value,
+        allowConnections: document.querySelector('.privacy-option input[type="checkbox"]').checked,
+        showInSuggestions: document.querySelectorAll('.privacy-option input[type="checkbox"]')[1].checked,
+        allowCompanyMessages: document.querySelectorAll('.privacy-option input[type="checkbox"]')[2].checked
+    };
+    
+    localStorage.setItem('privacySettings', JSON.stringify(settings));
+    console.log('Privacy settings saved:', settings);
+}
+
+// Load privacy settings
+function loadPrivacySettings() {
+    const settings = JSON.parse(localStorage.getItem('privacySettings') || '{}');
+    
+    if (Object.keys(settings).length > 0) {
+        // Apply loaded settings
+        const selects = document.querySelectorAll('.privacy-option select');
+        const checkboxes = document.querySelectorAll('.privacy-option input[type="checkbox"]');
+        
+        if (selects[0]) selects[0].value = settings.profileVisibility || 'IMI Students & Mentors';
+        if (selects[1]) selects[1].value = settings.contactVisibility || 'Mentors & Partners Only';
+        if (checkboxes[0]) checkboxes[0].checked = settings.allowConnections !== false;
+        if (checkboxes[1]) checkboxes[1].checked = settings.showInSuggestions !== false;
+        if (checkboxes[2]) checkboxes[2].checked = settings.allowCompanyMessages || false;
+    }
+}
+
+// Load profile data
+function loadProfileData() {
+    const savedProfile = localStorage.getItem('profileData');
+    if (savedProfile) {
+        const profileData = JSON.parse(savedProfile);
+        populateProfileForm(profileData);
+        updateProfilePreview(profileData);
+    }
+    
+    const savedSocial = localStorage.getItem('socialLinks');
+    if (savedSocial) {
+        const socialData = JSON.parse(savedSocial);
+        populateSocialForm(socialData);
+        updateSocialLinksPreview(socialData);
+    }
+}
+
+// Populate profile form
+function populateProfileForm(data) {
+    const inputs = document.querySelectorAll('#personal-info-form input, #personal-info-form textarea, #personal-info-form select');
+    
+    // Map data to form fields
+    const fieldMap = {
+        'firstName': data.firstName,
+        'lastName': data.lastName,
+        'displayName': data.displayName,
+        'bio': data.bio,
+        'school': data.school,
+        'graduationYear': data.graduationYear,
+        'phoneNumber': data.phoneNumber
+    };
+    
+    inputs.forEach(input => {
+        const fieldName = input.name || input.id;
+        if (fieldMap[fieldName]) {
+            input.value = fieldMap[fieldName];
+        }
+    });
+    
+    // Set interests
+    if (data.interests) {
+        const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const label = checkbox.parentElement.textContent.trim();
+            checkbox.checked = data.interests.includes(label);
+        });
+    }
+}
+
+// Populate social form
+function populateSocialForm(data) {
+    const inputs = document.querySelectorAll('#social-links-form input');
+    
+    // Map fields
+    if (inputs[0]) inputs[0].value = data.linkedin || '';
+    if (inputs[1]) inputs[1].value = data.github || '';
+    if (inputs[2]) inputs[2].value = data.portfolio || '';
+    if (inputs[3]) inputs[3].value = data.email || '';
+    if (inputs[4]) inputs[4].value = data.twitter || '';
+}
+
+// Setup profile preview updates
+function setupProfilePreviewUpdates() {
+    const formInputs = document.querySelectorAll('.profile-form input, .profile-form textarea, .profile-form select');
+    
+    formInputs.forEach(input => {
+        input.addEventListener('input', updatePreview);
+    });
+    
+    const interestCheckboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+    interestCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updatePreview);
+    });
+}
+
+// Update preview in real-time
+function updatePreview() {
+    const displayName = document.querySelector('#personal-info-form input[type="text"]')?.value || 'Jane Doe';
+    const bio = document.querySelector('#personal-info-form textarea')?.value || '';
+    const school = document.querySelector('#personal-info-form input[type="text"]')?.value || '';
+    const interests = getSelectedInterests();
+    
+    // Update preview elements
+    const previewName = document.querySelector('.profile-preview h4');
+    if (previewName) previewName.textContent = displayName;
+    
+    const previewBio = document.querySelector('.preview-bio');
+    if (previewBio) previewBio.textContent = bio || 'No bio added yet.';
+    
+    const previewSchool = document.querySelector('.preview-school');
+    if (previewSchool) previewSchool.textContent = school ? `${school} • Class of 2025` : 'School not specified';
+    
+    const previewInterests = document.querySelector('.preview-interests');
+    if (previewInterests) {
+        previewInterests.innerHTML = interests.map(interest => 
+            `<span class="interest-tag">${interest}</span>`
+        ).join('');
+    }
+}
+
+// Update profile preview
+function updateProfilePreview(data) {
+    const previewName = document.querySelector('.profile-preview h4');
+    if (previewName) previewName.textContent = data.displayName;
+    
+    const previewBio = document.querySelector('.preview-bio');
+    if (previewBio) previewBio.textContent = data.bio;
+    
+    const previewSchool = document.querySelector('.preview-school');
+    if (previewSchool) {
+        previewSchool.textContent = data.school ? 
+            `${data.school} • Class of ${data.graduationYear || '2025'}` : 
+            'School not specified';
+    }
+    
+    const previewInterests = document.querySelector('.preview-interests');
+    if (previewInterests && data.interests) {
+        previewInterests.innerHTML = data.interests.map(interest => 
+            `<span class="interest-tag">${interest}</span>`
+        ).join('');
+    }
+}
+
+// Update social links preview
+function updateSocialLinksPreview(data) {
+    const previewLinks = document.querySelector('.preview-links');
+    if (!previewLinks) return;
+    
+    const links = [];
+    if (data.linkedin) links.push('<a href="#" class="social-link">💼</a>');
+    if (data.github) links.push('<a href="#" class="social-link">🐙</a>');
+    if (data.portfolio) links.push('<a href="#" class="social-link">🌐</a>');
+    
+    previewLinks.innerHTML = links.join('');
+}
+
+// Account action functions
+function exportProfile() {
+    const profileData = localStorage.getItem('profileData') || '{}';
+    const socialData = localStorage.getItem('socialLinks') || '{}';
+    const privacyData = localStorage.getItem('privacySettings') || '{}';
+    const documentsData = localStorage.getItem('documents') || '{}';
+    
+    const exportData = {
+        profile: JSON.parse(profileData),
+        socialLinks: JSON.parse(socialData),
+        privacy: JSON.parse(privacyData),
+        documents: JSON.parse(documentsData),
+        exportDate: new Date().toISOString()
+    };
+    
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'imi_profile_export.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    window.IMI.utils.showNotification('Profile data exported successfully!', 'success');
+}
+
+function changePassword() {
+    window.IMI.utils.showNotification('Password change functionality coming soon!', 'info');
+    // In production, open password change modal
+}
+
+function confirmDeleteAccount() {
+    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        if (confirm('This will permanently delete all your data, projects, and connections. Continue?')) {
+            window.IMI.utils.showNotification('Account deletion requested. You will receive a confirmation email.', 'info');
+            // In production, trigger account deletion process
+        }
+    }
+}
+
+// File upload trigger
+function triggerFileUpload(type) {
+    const input = document.getElementById(`${type}-upload`);
+    if (input) input.click();
+}
+
+// Export functions
+window.initializeProfile = initializeProfile;
+window.exportProfile = exportProfile;
+window.changePassword = changePassword;
+window.confirmDeleteAccount = confirmDeleteAccount;
+window.triggerFileUpload = triggerFileUpload;
+window.downloadDocument = downloadDocument;
+window.deleteDocument = deleteDocument;

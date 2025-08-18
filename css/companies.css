@@ -86,6 +86,10 @@
 .company-recommendation-card .company-rating {
     margin-bottom: var(--spacing-xs);
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
 }
 
 .company-recommendation-card p {

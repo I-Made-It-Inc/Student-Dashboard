@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeCompanies();
     initializeTimeTracking();
     
+    // Initialize profile if on profile page
+    if (window.location.hash === '#profile') {
+        initializeProfile();
+    }
+    
     // Set up global event listeners
     setupGlobalEventListeners();
     
@@ -37,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (userAvatar) {
         userAvatar.addEventListener('click', function(e) {
             e.stopPropagation();
-            openModal('profile');
+            showPage('profile'); // Navigate to profile page instead of opening modal
         });
     }
     
@@ -204,7 +209,9 @@ function handleFormSubmit(e) {
     console.log(`Form submitted: ${formId}`, Object.fromEntries(formData));
     
     // Show success message
-    showNotification('Changes saved successfully!', 'success');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('Changes saved successfully!', 'success');
+    }
     
     // In production, send to API
     // submitForm(formId, formData);
@@ -231,24 +238,6 @@ function autoSave(e) {
     }
 }
 
-// Show notification
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => notification.classList.add('show'), 10);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
 // Focus search input
 function focusSearch() {
     const searchInput = document.querySelector('.company-search, .search-input');
@@ -269,7 +258,9 @@ function saveCurrentWork() {
             }
         });
         
-        showNotification('All changes saved!', 'success');
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification('All changes saved!', 'success');
+        }
     }
 }
 
@@ -299,15 +290,13 @@ function throttle(func, limit) {
 }
 
 // Export for use in other modules
-window.IMI = {
-    config: IMI_CONFIG,
-    utils: {
-        debounce,
-        throttle,
-        showNotification
-    },
-    data: {
-        userData: null,
-        sessionData: null
-    }
+window.IMI = window.IMI || {};
+window.IMI.config = IMI_CONFIG;
+window.IMI.utils = window.IMI.utils || {
+    debounce,
+    throttle
+};
+window.IMI.data = {
+    userData: null,
+    sessionData: null
 };

@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/network.css">
     <link rel="stylesheet" href="css/resources.css">
     <link rel="stylesheet" href="css/tracking.css">
+    <link rel="stylesheet" href="css/profile.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
 </head>
@@ -27,20 +28,21 @@
                 <span>Student Portal</span>
             </div>
             <ul class="nav-links">
-                <li><a onclick="showPage('dashboard')" class="active" id="nav-dashboard">Dashboard</a></li>
-                <li><a onclick="showPage('innovation')" id="nav-innovation">Innovation Challenge</a></li>
-                <li><a onclick="showPage('projects')" id="nav-projects">Co-op Projects</a></li>
-                <li><a onclick="showPage('companies')" id="nav-companies">Companies</a></li>
-                <li><a onclick="showPage('network')" id="nav-network">Network</a></li>
-                <li><a onclick="showPage('resources')" id="nav-resources">Resources</a></li>
-                <li><a onclick="showPage('tracking')" id="nav-tracking">Time Tracking</a></li>
+                <li><a href="#dashboard" class="active" id="nav-dashboard">Dashboard</a></li>
+                <li><a href="#innovation" id="nav-innovation">Innovation Challenge</a></li>
+                <li><a href="#projects" id="nav-projects">Co-op Projects</a></li>
+                <li><a href="#companies" id="nav-companies">Companies</a></li>
+                <li><a href="#network" id="nav-network">Network</a></li>
+                <li><a href="#resources" id="nav-resources">Resources</a></li>
+                <li><a href="#tracking" id="nav-tracking">Time Tracking</a></li>
+                <li><a href="#profile" id="nav-profile">Profile</a></li>
             </ul>
             <div class="user-menu">
                 <div class="notification-icon">
                     <span>🔔</span>
                     <div class="notification-badge">3</div>
                 </div>
-                <div class="user-avatar">JD</div>
+                <div class="user-avatar" title="Profile Settings">JD</div>
             </div>
         </nav>
         
@@ -954,10 +956,18 @@
                     <!-- Manual Time Entry -->
                     <div class="card tracking-card">
                         <h3 class="section-title">➕ Log Additional Hours</h3>
+                        <div class="proof-requirement-notice">
+                            <span class="notice-icon">⚠️</span>
+                            <div>
+                                <strong>Proof of Work Required</strong>
+                                <p>To receive volunteer hours credit, you must provide proof of work completed (documents, links, screenshots, etc.)</p>
+                            </div>
+                        </div>
                         <form class="time-entry-form">
                             <div class="form-group">
                                 <label>Activity Type</label>
-                                <select name="activity" class="form-select">
+                                <select name="activity" class="form-select" required>
+                                    <option value="">Select activity type</option>
                                     <option>Innovation Challenge Writing</option>
                                     <option>Co-op Project Work</option>
                                     <option>Personal Reading/Research</option>
@@ -968,21 +978,75 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Date</label>
-                                    <input type="date" name="date" class="form-input">
+                                    <input type="date" name="date" class="form-input" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Hours</label>
-                                    <input type="number" name="hours" step="0.5" class="form-input" placeholder="0.0">
+                                    <input type="number" name="hours" step="0.5" min="0.5" max="24" class="form-input" placeholder="0.0" required>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>Description</label>
-                                <textarea name="description" class="form-textarea" placeholder="Brief description of activity..."></textarea>
+                                <textarea name="description" class="form-textarea" placeholder="Brief description of activity..." required></textarea>
                             </div>
+                            
+                            <!-- Proof of Work Section -->
+                            <div class="proof-of-work-section">
+                                <label class="section-label">
+                                    <span class="required-star">*</span>
+                                    Proof of Work (Required)
+                                </label>
+                                <p class="help-text">Upload documents, provide links to your work, or attach screenshots as evidence of completed work.</p>
+                                
+                                <div class="proof-options">
+                                    <div class="proof-option">
+                                        <h4>📁 Upload Files</h4>
+                                        <div class="file-upload-area">
+                                            <input type="file" id="proof-files" name="proofFiles" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" style="display: none;">
+                                            <div class="upload-zone" onclick="document.getElementById('proof-files').click()">
+                                                <span class="upload-icon">📁</span>
+                                                <p>Drop files here or click to browse</p>
+                                                <small>PDF, DOC, images up to 10MB each</small>
+                                            </div>
+                                            <div class="uploaded-files-list">
+                                                <!-- Uploaded files will appear here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="proof-divider">OR</div>
+                                    
+                                    <div class="proof-option">
+                                        <h4>🔗 Provide Links</h4>
+                                        <div class="links-input-area">
+                                            <input type="url" name="workLink1" class="form-input" placeholder="https://github.com/your-project">
+                                            <input type="url" name="workLink2" class="form-input" placeholder="https://docs.google.com/your-document">
+                                            <input type="url" name="workLink3" class="form-input" placeholder="Additional link (optional)">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="proof-examples">
+                                    <details>
+                                        <summary>Examples of acceptable proof</summary>
+                                        <ul>
+                                            <li>📄 Project documents, reports, or presentations</li>
+                                            <li>💻 Code repositories or commits (GitHub, GitLab)</li>
+                                            <li>🎨 Design files or creative work</li>
+                                            <li>📝 Research notes or written analysis</li>
+                                            <li>📊 Data analysis or spreadsheets</li>
+                                            <li>🖼️ Screenshots of completed work</li>
+                                            <li>📱 Social media posts or articles you created</li>
+                                            <li>🎯 Meeting notes or collaboration evidence</li>
+                                        </ul>
+                                    </details>
+                                </div>
+                            </div>
+                            
                             <div class="quick-time-buttons">
                                 <!-- Will be populated by JavaScript -->
                             </div>
-                            <button type="submit" class="btn btn-primary">Log Hours</button>
+                            <button type="submit" class="btn btn-primary" id="submit-time-entry">Log Hours with Proof</button>
                         </form>
                     </div>
                 </div>
@@ -1018,6 +1082,329 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Profile Settings Page -->
+        <div id="profile-page" class="page-section">
+            <h2>Profile Settings</h2>
+            
+            <div class="profile-settings-grid">
+                <div class="profile-main">
+                    <!-- Personal Information -->
+                    <div class="card profile-settings-card">
+                        <div class="section-header">
+                            <h3 class="section-title">👤 Personal Information</h3>
+                            <span class="text-muted">This information will be visible to your peers and mentors</span>
+                        </div>
+                        
+                        <form id="personal-info-form" class="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" value="Jane" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" value="Doe" class="form-input" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Display Name</label>
+                                <input type="text" value="Jane Doe" class="form-input" required>
+                                <small class="help-text">This is how your name appears to others</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Bio</label>
+                                <textarea class="form-textarea" rows="4" placeholder="Tell others about yourself, your interests, and goals...">High school student passionate about technology and sustainability. Currently exploring AI applications in environmental solutions.</textarea>
+                                <small class="help-text">Share your interests, goals, and what you're working on</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>School</label>
+                                <input type="text" value="Lincoln High School" class="form-input">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Graduation Year</label>
+                                    <select class="form-select">
+                                        <option>2025</option>
+                                        <option>2026</option>
+                                        <option>2027</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input type="tel" placeholder="(555) 123-4567" class="form-input">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Career Interests</label>
+                                <div class="interest-tags">
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label"><input type="checkbox" checked> Machine Learning</label>
+                                        <label class="checkbox-label"><input type="checkbox" checked> Sustainability</label>
+                                        <label class="checkbox-label"><input type="checkbox"> Marketing</label>
+                                        <label class="checkbox-label"><input type="checkbox" checked> Data Science</label>
+                                        <label class="checkbox-label"><input type="checkbox"> UX Design</label>
+                                        <label class="checkbox-label"><input type="checkbox"> Finance</label>
+                                        <label class="checkbox-label"><input type="checkbox"> Healthcare</label>
+                                        <label class="checkbox-label"><input type="checkbox"> Education</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="reset" class="btn btn-secondary">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Documents & Certificates -->
+                    <div class="card profile-settings-card">
+                        <div class="section-header">
+                            <h3 class="section-title">📄 Documents & Certificates</h3>
+                            <span class="text-muted">Upload and manage your professional documents</span>
+                        </div>
+                        
+                        <div class="documents-section">
+                            <div class="document-category">
+                                <h4>📋 Resumes</h4>
+                                <div class="document-upload-area">
+                                    <div class="upload-zone" onclick="triggerFileUpload('resume')">
+                                        <span class="upload-icon">📄</span>
+                                        <p>Drop your resume here or click to browse</p>
+                                        <small>PDF, DOC, DOCX up to 5MB</small>
+                                    </div>
+                                    <input type="file" id="resume-upload" accept=".pdf,.doc,.docx" style="display: none;">
+                                </div>
+                                
+                                <div class="uploaded-documents">
+                                    <div class="document-item">
+                                        <span class="doc-icon">📄</span>
+                                        <div class="doc-info">
+                                            <span class="doc-name">Jane_Doe_Resume_2024.pdf</span>
+                                            <span class="doc-meta">Uploaded Dec 1, 2024 • 2.3 MB</span>
+                                        </div>
+                                        <div class="doc-actions">
+                                            <button class="btn-icon" title="Download">⬇️</button>
+                                            <button class="btn-icon" title="Delete">🗑️</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="document-category">
+                                <h4>🏆 Certificates & Awards</h4>
+                                <div class="document-upload-area">
+                                    <div class="upload-zone" onclick="triggerFileUpload('certificate')">
+                                        <span class="upload-icon">🏆</span>
+                                        <p>Upload certificates and awards</p>
+                                        <small>PDF, JPG, PNG up to 5MB</small>
+                                    </div>
+                                    <input type="file" id="certificate-upload" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                                </div>
+                                
+                                <div class="uploaded-documents">
+                                    <div class="document-item">
+                                        <span class="doc-icon">🏆</span>
+                                        <div class="doc-info">
+                                            <span class="doc-name">AI_Course_Certificate.pdf</span>
+                                            <span class="doc-meta">Uploaded Nov 15, 2024 • 1.1 MB</span>
+                                        </div>
+                                        <div class="doc-actions">
+                                            <button class="btn-icon" title="Download">⬇️</button>
+                                            <button class="btn-icon" title="Delete">🗑️</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="document-item">
+                                        <span class="doc-icon">🥇</span>
+                                        <div class="doc-info">
+                                            <span class="doc-name">Science_Fair_First_Place.jpg</span>
+                                            <span class="doc-meta">Uploaded Oct 20, 2024 • 3.2 MB</span>
+                                        </div>
+                                        <div class="doc-actions">
+                                            <button class="btn-icon" title="Download">⬇️</button>
+                                            <button class="btn-icon" title="Delete">🗑️</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="document-category">
+                                <h4>📝 Reference Letters</h4>
+                                <div class="document-upload-area">
+                                    <div class="upload-zone" onclick="triggerFileUpload('reference')">
+                                        <span class="upload-icon">📝</span>
+                                        <p>Upload reference and recommendation letters</p>
+                                        <small>PDF up to 5MB</small>
+                                    </div>
+                                    <input type="file" id="reference-upload" accept=".pdf" style="display: none;">
+                                </div>
+                                
+                                <div class="uploaded-documents">
+                                    <div class="document-item">
+                                        <span class="doc-icon">📝</span>
+                                        <div class="doc-info">
+                                            <span class="doc-name">Reference_TechCorp_CEO.pdf</span>
+                                            <span class="doc-meta">Uploaded Dec 5, 2024 • 890 KB</span>
+                                        </div>
+                                        <div class="doc-actions">
+                                            <button class="btn-icon" title="Download">⬇️</button>
+                                            <button class="btn-icon" title="Delete">🗑️</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Media & Links -->
+                    <div class="card profile-settings-card">
+                        <div class="section-header">
+                            <h3 class="section-title">🔗 Social Media & Professional Links</h3>
+                            <span class="text-muted">Add links to your professional profiles and portfolios</span>
+                        </div>
+                        
+                        <form id="social-links-form" class="profile-form">
+                            <div class="social-link-group">
+                                <div class="social-icon">💼</div>
+                                <div class="social-input">
+                                    <label>LinkedIn Profile</label>
+                                    <input type="url" placeholder="https://linkedin.com/in/jane-doe" class="form-input">
+                                </div>
+                            </div>
+                            
+                            <div class="social-link-group">
+                                <div class="social-icon">🐙</div>
+                                <div class="social-input">
+                                    <label>GitHub Profile</label>
+                                    <input type="url" placeholder="https://github.com/janedoe" class="form-input">
+                                </div>
+                            </div>
+                            
+                            <div class="social-link-group">
+                                <div class="social-icon">🌐</div>
+                                <div class="social-input">
+                                    <label>Portfolio Website</label>
+                                    <input type="url" placeholder="https://janedoe.com" class="form-input">
+                                </div>
+                            </div>
+                            
+                            <div class="social-link-group">
+                                <div class="social-icon">📧</div>
+                                <div class="social-input">
+                                    <label>Personal Email</label>
+                                    <input type="email" placeholder="jane.doe@gmail.com" class="form-input">
+                                </div>
+                            </div>
+                            
+                            <div class="social-link-group">
+                                <div class="social-icon">🐦</div>
+                                <div class="social-input">
+                                    <label>Twitter/X</label>
+                                    <input type="url" placeholder="https://twitter.com/janedoe" class="form-input">
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Links</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="profile-sidebar">
+                    <!-- Profile Preview -->
+                    <div class="card profile-preview-card">
+                        <h3 class="section-title">👁️ Profile Preview</h3>
+                        <div class="profile-preview">
+                            <div class="preview-avatar">JD</div>
+                            <h4>Jane Doe</h4>
+                            <p class="preview-school">Lincoln High School • Class of 2025</p>
+                            <div class="preview-bio">
+                                High school student passionate about technology and sustainability. Currently exploring AI applications in environmental solutions.
+                            </div>
+                            <div class="preview-interests">
+                                <span class="interest-tag">Machine Learning</span>
+                                <span class="interest-tag">Sustainability</span>
+                                <span class="interest-tag">Data Science</span>
+                            </div>
+                            <div class="preview-links">
+                                <a href="#" class="social-link">💼</a>
+                                <a href="#" class="social-link">🐙</a>
+                                <a href="#" class="social-link">🌐</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Privacy Settings -->
+                    <div class="card privacy-settings-card">
+                        <h3 class="section-title">🔒 Privacy Settings</h3>
+                        <div class="privacy-options">
+                            <div class="privacy-option">
+                                <div class="privacy-info">
+                                    <h4>Profile Visibility</h4>
+                                    <p>Who can see your full profile</p>
+                                </div>
+                                <select class="form-select">
+                                    <option>IMI Students & Mentors</option>
+                                    <option>IMI Students Only</option>
+                                    <option>Private</option>
+                                </select>
+                            </div>
+                            
+                            <div class="privacy-option">
+                                <div class="privacy-info">
+                                    <h4>Contact Information</h4>
+                                    <p>Who can see your email and phone</p>
+                                </div>
+                                <select class="form-select">
+                                    <option>Mentors & Partners Only</option>
+                                    <option>All IMI Users</option>
+                                    <option>Hidden</option>
+                                </select>
+                            </div>
+                            
+                            <div class="privacy-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" checked>
+                                    <span>Allow peer connection requests</span>
+                                </label>
+                            </div>
+                            
+                            <div class="privacy-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" checked>
+                                    <span>Show in peer suggestions</span>
+                                </label>
+                            </div>
+                            
+                            <div class="privacy-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox">
+                                    <span>Allow direct messages from companies</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Actions -->
+                    <div class="card account-actions-card">
+                        <h3 class="section-title">⚙️ Account Actions</h3>
+                        <div class="account-actions">
+                            <button class="btn btn-primary" onclick="exportProfile()">📦 Export Profile Data</button>
+                            <button class="btn btn-secondary" onclick="changePassword()">🔑 Change Password</button>
+                            <button class="btn btn-danger" onclick="confirmDeleteAccount()">🗑️ Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <!-- Modal Container -->
@@ -1035,6 +1422,7 @@
     <script src="js/modal.js"></script>
     <script src="js/companies.js"></script>
     <script src="js/tracking.js"></script>
+    <script src="js/profile.js"></script>
     <script src="js/utils.js"></script>
 </body>
 </html>

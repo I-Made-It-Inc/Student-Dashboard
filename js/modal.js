@@ -235,6 +235,69 @@ function setupModalHandlers(type) {
     }
 }
 
+// Core modal functions
+function openModal(type, title, content) {
+    const modal = document.getElementById('modal');
+    if (!modal) return;
+    
+    let modalContent = '';
+    
+    // Get content based on type
+    switch (type) {
+        case 'profile':
+            modalContent = getProfileModalContent();
+            break;
+        case 'add-connection':
+            modalContent = getAddConnectionModalContent();
+            break;
+        case 'connection-detail':
+            modalContent = getConnectionDetailModalContent();
+            break;
+        case 'perplexity-training':
+            modalContent = getPerplexityTrainingModalContent();
+            break;
+        case 'gemini-training':
+            modalContent = getGeminiTrainingModalContent();
+            break;
+        case 'notebook-training':
+            modalContent = getNotebookTrainingModalContent();
+            break;
+        default:
+            modalContent = content || '<h2>Modal Content</h2>';
+    }
+    
+    const modalBody = modal.querySelector('#modal-body');
+    if (modalBody) {
+        modalBody.innerHTML = modalContent;
+    }
+    
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open');
+    
+    // Setup handlers for this modal type
+    setupModalHandlers(type);
+}
+
+function closeModal() {
+    const modal = document.getElementById('modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+    }
+}
+
+function initializeModal() {
+    // Initialize modal functionality
+    console.log('Modal system initialized');
+    
+    // Add ESC key listener
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+}
+
 // Close modal when clicking outside
 window.addEventListener('click', function(event) {
     const modal = document.getElementById('modal');

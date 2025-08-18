@@ -27,6 +27,213 @@
     box-shadow: var(--shadow-sm);
 }
 
+/* Proof of Work Notice */
+.proof-requirement-notice {
+    background: rgba(255, 213, 2, 0.1);
+    border: 1px solid var(--imi-yellow);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+}
+
+.proof-requirement-notice .notice-icon {
+    font-size: 1.25rem;
+    margin-top: 2px;
+}
+
+.proof-requirement-notice strong {
+    color: var(--imi-blue);
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.proof-requirement-notice p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--imi-dark-gray);
+}
+
+/* Proof of Work Section */
+.proof-of-work-section {
+    background: var(--light-gray);
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-lg);
+    margin: var(--spacing-md) 0;
+}
+
+.section-label {
+    font-weight: 600;
+    color: var(--imi-dark-gray);
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.required-star {
+    color: var(--error-red);
+    font-weight: bold;
+}
+
+.proof-options {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    align-items: start;
+}
+
+.proof-option {
+    background: var(--white);
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md);
+}
+
+.proof-option h4 {
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--imi-blue);
+    font-size: var(--font-size-base);
+}
+
+.proof-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--text-gray);
+    padding: var(--spacing-sm);
+}
+
+/* File Upload Area */
+.file-upload-area {
+    width: 100%;
+}
+
+.upload-zone {
+    border: 2px dashed var(--medium-gray);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-lg);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    background-color: var(--light-gray);
+    margin-bottom: var(--spacing-md);
+}
+
+.upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--imi-blue);
+    background-color: rgba(255, 213, 2, 0.1);
+}
+
+.upload-zone .upload-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: var(--spacing-sm);
+}
+
+.upload-zone p {
+    margin: 0 0 var(--spacing-xs) 0;
+    color: var(--imi-dark-gray);
+    font-weight: 500;
+}
+
+.upload-zone small {
+    color: var(--text-gray);
+}
+
+/* Uploaded Files List */
+.uploaded-files-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.uploaded-file-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    background-color: var(--white);
+}
+
+.file-icon {
+    font-size: 1.25rem;
+    min-width: 25px;
+}
+
+.file-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.file-name {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--imi-dark-gray);
+}
+
+.file-meta {
+    font-size: var(--font-size-xs);
+    color: var(--text-gray);
+}
+
+.btn-remove-file {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-sm);
+    color: var(--error-red);
+    transition: background-color var(--transition-fast);
+}
+
+.btn-remove-file:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Links Input Area */
+.links-input-area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+/* Proof Examples */
+.proof-examples {
+    margin-top: var(--spacing-md);
+    border-top: 1px solid var(--medium-gray);
+    padding-top: var(--spacing-md);
+}
+
+.proof-examples details {
+    cursor: pointer;
+}
+
+.proof-examples summary {
+    font-weight: 500;
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-sm);
+}
+
+.proof-examples ul {
+    margin: var(--spacing-sm) 0 0 var(--spacing-md);
+    color: var(--text-gray);
+}
+
+.proof-examples li {
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
 /* Time Chart */
 .time-chart {
     padding: var(--spacing-lg) 0;
