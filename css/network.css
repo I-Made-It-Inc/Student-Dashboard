@@ -120,8 +120,9 @@
 .connection-actions {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm); /* Increased spacing between buttons */
     align-self: center;
+    min-width: 130px; /* Ensures consistent width for all connections */
 }
 
 .btn-action {
@@ -134,11 +135,25 @@
     cursor: pointer;
     transition: all var(--transition-fast);
     white-space: nowrap;
+    width: 100%; /* Ensures all buttons have the same width */
+    min-width: 120px; /* Fixed minimum width for consistency */
+    text-align: center; /* Center the text */
 }
 
 .btn-action:hover {
     background: var(--imi-blue);
     color: var(--white);
+}
+
+.btn-action.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-action.disabled:hover {
+    background: var(--white);
+    color: var(--imi-blue);
 }
 
 /* Peer Suggestions */

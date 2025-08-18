@@ -77,39 +77,109 @@ function getAddConnectionModalContent() {
     `;
 }
 
-function getConnectionDetailModalContent() {
+// Connection data
+const connectionData = {
+    'michael-smith': {
+        name: 'Michael Smith',
+        title: 'CEO at TechCorp',
+        avatar: 'MS',
+        tags: ['Mentor', 'Reference Available'],
+        notes: `Met at Q3 networking event on September 15, 2024. Had an engaging discussion about AI applications in healthcare. Michael showed interest in my project on predictive analytics for patient care. He offered to mentor me on product strategy and scaling technology solutions.`,
+        followUp: 'Scheduled monthly mentorship calls. Michael provided contacts at two healthcare AI startups.',
+        topics: ['AI in Healthcare', 'Product Strategy', 'Mentorship', 'Scaling Solutions'],
+        photos: 3,
+        eventContext: 'Tech Networking Event • Q3 2024',
+        hasReference: true
+    },
+    'sarah-johnson': {
+        name: 'Sarah Johnson',
+        title: 'Marketing Director at StartupXYZ',
+        avatar: 'SJ',
+        tags: ['Project Supervisor'],
+        notes: `Supervised my social media campaign project during my co-op at StartupXYZ. Provided excellent guidance on creative strategy and campaign optimization. Sarah gave very positive feedback on my creative approach and ability to adapt to target audience preferences.`,
+        followUp: 'Completed successful 3-month project resulting in 40% increase in social media engagement.',
+        topics: ['Social Media Marketing', 'Creative Strategy', 'Campaign Optimization', 'Brand Development'],
+        photos: 2,
+        eventContext: 'StartupXYZ Office • Summer 2024',
+        hasReference: false
+    }
+};
+
+function openConnectionModal(connectionId) {
+    console.log('openConnectionModal called with:', connectionId);
+    const connection = connectionData[connectionId];
+    if (!connection) {
+        console.error('Connection not found:', connectionId);
+        return;
+    }
+    
+    console.log('Connection found:', connection.name);
+    
+    const modalBody = document.getElementById('modal-body');
+    if (!modalBody) {
+        console.error('Modal body element not found');
+        return;
+    }
+    
+    modalBody.innerHTML = getConnectionDetailModalContent(connection);
+    console.log('Modal content set');
+    
+    const modal = document.getElementById('modal');
+    if (!modal) {
+        console.error('Modal element not found');
+        return;
+    }
+    
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+    console.log('Modal should now be visible');
+}
+
+function getConnectionDetailModalContent(connection) {
     return `
-        <h2>Michael Smith</h2>
-        <p style="color: #666; margin-bottom: 20px;">CEO at TechCorp</p>
-        
-        <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <h4 style="margin-bottom: 10px;">Connection Notes</h4>
-            <p style="color: #666; line-height: 1.6;">Met at Q3 networking event on September 15, 2024. Had an engaging discussion about AI applications in healthcare. Michael showed interest in my project on predictive analytics for patient care. He offered to mentor me on product strategy and scaling technology solutions.</p>
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-            <h4 style="margin-bottom: 10px;">Key Topics</h4>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <span class="tag">AI in Healthcare</span>
-                <span class="tag">Product Strategy</span>
-                <span class="tag">Mentorship</span>
-                <span class="tag">Scaling Solutions</span>
+        <div class="connection-detail-modal">
+            <div class="connection-detail-header">
+                <div class="connection-detail-avatar">${connection.avatar}</div>
+                <div class="connection-detail-info">
+                    <h2>${connection.name}</h2>
+                    <p class="title">${connection.title}</p>
+                    <div class="connection-meta">
+                        ${connection.tags.map(tag => `<span class="connection-tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-            <h4 style="margin-bottom: 10px;">Photos from Events</h4>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                <div style="background: #e0e0e0; border-radius: 8px; padding: 30px; text-align: center;">📷</div>
-                <div style="background: #e0e0e0; border-radius: 8px; padding: 30px; text-align: center;">📷</div>
-                <div style="background: #e0e0e0; border-radius: 8px; padding: 30px; text-align: center;">📷</div>
+            
+            <div class="connection-notes-section">
+                <h3>Connection Notes</h3>
+                <p>${connection.notes}</p>
+                ${connection.followUp ? `<p style="margin-top: 15px;"><strong>Follow-up:</strong> ${connection.followUp}</p>` : ''}
             </div>
-        </div>
-        
-        <div class="button-group">
-            <button class="btn btn-primary">Request Reference</button>
-            <button class="btn btn-secondary">Send Message</button>
-            <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: var(--imi-blue); margin-bottom: 10px;">Key Topics & Expertise</h3>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    ${connection.topics.map(topic => 
+                        `<span class="connection-tag" style="background: rgba(255, 213, 2, 0.2); border-color: var(--imi-yellow);">${topic}</span>`
+                    ).join('')}
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: var(--imi-blue); margin-bottom: 15px;">Photos from Events</h3>
+                <div class="connection-photos-grid">
+                    ${Array(connection.photos).fill().map(() => '<div class="connection-photo">📷</div>').join('')}
+                </div>
+                <p style="font-size: 12px; color: var(--text-gray); margin-top: 8px; text-align: center;">${connection.eventContext}</p>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="requestReference('${connection.name}')">Request Reference</button>
+                <button class="btn ${connection.hasReference ? 'btn-secondary' : 'btn-secondary disabled'}" 
+                        ${connection.hasReference ? '' : 'disabled'} 
+                        onclick="viewReference('${connection.name}')">View Reference(s)</button>
+                <button class="btn btn-secondary" onclick="sendMessage('${connection.name}')">Send Message</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
         </div>
     `;
 }
@@ -250,9 +320,6 @@ function openModal(type, title, content) {
         case 'add-connection':
             modalContent = getAddConnectionModalContent();
             break;
-        case 'connection-detail':
-            modalContent = getConnectionDetailModalContent();
-            break;
         case 'perplexity-training':
             modalContent = getPerplexityTrainingModalContent();
             break;
@@ -286,6 +353,32 @@ function closeModal() {
     }
 }
 
+// Connection action functions
+function requestReference(contactName) {
+    console.log(`Requesting reference from ${contactName}`);
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification(`Reference request sent to ${contactName}!`, 'success');
+    }
+    closeModal();
+}
+
+function viewReference(contactName) {
+    console.log(`Viewing reference from ${contactName}`);
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification(`Opening reference letter from ${contactName}...`, 'info');
+    }
+    // Here you could open another modal or navigate to a reference page
+    closeModal();
+}
+
+function sendMessage(contactName) {
+    console.log(`Opening message to ${contactName}`);
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification(`Opening message to ${contactName}...`, 'info');
+    }
+    closeModal();
+}
+
 function initializeModal() {
     // Initialize modal functionality
     console.log('Modal system initialized');
@@ -305,6 +398,12 @@ window.addEventListener('click', function(event) {
         closeModal();
     }
 });
+
+// Export new functions
+window.requestReference = requestReference;
+window.viewReference = viewReference;
+window.sendMessage = sendMessage;
+window.openConnectionModal = openConnectionModal;
 
 // Export functions
 window.openModal = openModal;

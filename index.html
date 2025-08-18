@@ -668,7 +668,7 @@
                         </div>
                         
                         <div class="connections-enhanced">
-                            <div class="connection-card-enhanced" onclick="openModal('connection-detail')">
+                            <div class="connection-card-enhanced" onclick="openConnectionModal('michael-smith')">
                                 <div class="connection-avatar">MS</div>
                                 <div class="connection-info">
                                     <div class="connection-name">Michael Smith</div>
@@ -685,12 +685,13 @@
                                     </div>
                                 </div>
                                 <div class="connection-actions">
-                                    <button class="btn btn-action" onclick="event.stopPropagation(); openModal('connection-detail')">View Details</button>
-                                    <button class="btn btn-action" onclick="event.stopPropagation();">View Reference</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); openConnectionModal('michael-smith')">View Details</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); requestReference('Michael Smith')">Request Reference</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); viewReference('Michael Smith')">View Reference(s)</button>
                                 </div>
                             </div>
                             
-                            <div class="connection-card-enhanced" onclick="openModal('connection-detail')">
+                            <div class="connection-card-enhanced" onclick="openConnectionModal('sarah-johnson')">
                                 <div class="connection-avatar">SJ</div>
                                 <div class="connection-info">
                                     <div class="connection-name">Sarah Johnson</div>
@@ -703,8 +704,9 @@
                                     </div>
                                 </div>
                                 <div class="connection-actions">
-                                    <button class="btn btn-action" onclick="event.stopPropagation(); openModal('connection-detail')">View Details</button>
-                                    <button class="btn btn-action" onclick="event.stopPropagation();">Request Reference</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); openConnectionModal('sarah-johnson')">View Details</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); requestReference('Sarah Johnson')">Request Reference</button>
+                                    <button class="btn btn-action disabled" onclick="event.stopPropagation(); viewReference('Sarah Johnson')" disabled>View Reference(s)</button>
                                 </div>
                             </div>
                         </div>

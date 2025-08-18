@@ -158,6 +158,19 @@ form {
     background-color: var(--medium-gray);
 }
 
+.modal-body .btn.disabled,
+.btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.modal-body .btn.disabled:hover,
+.btn.disabled:hover {
+    background-color: var(--light-gray);
+    color: var(--imi-dark-gray);
+}
+
 /* Specific Modal Styles */
 
 /* Profile Modal */
