@@ -1,0 +1,346 @@
+/* css/components.css - Reusable Components */
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+}
+
+.btn-primary {
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+    border: 2px solid var(--imi-yellow);
+}
+
+.btn-primary:hover {
+    background-color: var(--imi-blue);
+    color: var(--imi-yellow);
+    border-color: var(--imi-blue);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background-color: var(--white);
+    color: var(--imi-blue);
+    border: 2px solid var(--imi-blue);
+}
+
+.btn-secondary:hover {
+    background-color: var(--imi-blue);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary-small {
+    padding: 6px 12px;
+    font-size: var(--font-size-sm);
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+    border: 2px solid var(--imi-yellow);
+}
+
+.btn-primary-small:hover {
+    background-color: var(--imi-blue);
+    color: var(--imi-yellow);
+    border-color: var(--imi-blue);
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--imi-blue);
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0;
+    font-weight: 500;
+}
+
+.btn-link:hover {
+    color: var(--imi-yellow);
+    text-decoration: underline;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-primary {
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+}
+
+.badge-secondary {
+    background-color: var(--imi-blue);
+    color: var(--white);
+}
+
+.badge-success {
+    background-color: var(--success-green);
+    color: var(--white);
+}
+
+.badge-warning {
+    background-color: var(--warning-orange);
+    color: var(--white);
+}
+
+/* Active Indicator */
+.active-indicator {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Match Badge */
+.match-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: rgba(255, 213, 2, 0.2);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-yellow);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: bold;
+    margin-top: var(--spacing-sm);
+}
+
+/* Progress Bars */
+.progress-bar {
+    background-color: var(--medium-gray);
+    height: 8px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin: var(--spacing-sm) 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--imi-yellow);
+    transition: width 0.5s ease;
+}
+
+/* Form Elements */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    transition: border-color var(--transition-fast);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--imi-blue);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: 500;
+    color: var(--imi-blue);
+}
+
+/* Tags */
+.tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: var(--light-gray);
+    color: var(--imi-dark-gray);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    margin-right: var(--spacing-xs);
+}
+
+.tag.referral {
+    background-color: rgba(255, 213, 2, 0.2);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-yellow);
+    font-weight: bold;
+}
+
+/* Notification Badge */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--error-red);
+    color: var(--white);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background-color: rgba(255, 213, 2, 0.2);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-yellow);
+}
+
+.status-progress {
+    background-color: rgba(4, 40, 71, 0.1);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-blue);
+}
+
+.status-complete {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+}
+
+/* Widget Cards */
+.widget {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.widget h3 {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Stat Badges */
+.stat-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--light-gray);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--medium-gray);
+}
+
+.stat-icon {
+    font-size: 24px;
+}
+
+.stat-main {
+    font-weight: bold;
+    color: var(--imi-blue);
+}
+
+.stat-sub {
+    font-size: var(--font-size-xs);
+    color: var(--text-gray);
+}
+
+/* Icons (Company/Profile) */
+.company-icon,
+.profile-avatar {
+    width: 50px;
+    height: 50px;
+    background-color: var(--imi-blue);
+    color: var(--imi-yellow);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: var(--font-size-lg);
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: var(--font-size-xxl);
+}
+
+/* User Avatar (Navigation) */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background-color: var(--imi-blue);
+    color: var(--imi-yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.user-avatar:hover {
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+}
+
+/* Chips (Filter) */
+.chip {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: var(--light-gray);
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-right: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.chip:hover {
+    background-color: rgba(255, 213, 2, 0.1);
+    border-color: var(--imi-yellow);
+}
+
+.chip.active {
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+    border-color: var(--imi-yellow);
+    font-weight: 600;
+}

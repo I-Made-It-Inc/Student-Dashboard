@@ -1,0 +1,452 @@
+/* css/responsive.css - Responsive Design and Media Queries */
+
+/* Tablet View (1024px and below) */
+@media (max-width: 1024px) {
+    /* Container */
+    .container {
+        padding: var(--spacing-md);
+    }
+    
+    /* Navigation */
+    .nav {
+        flex-wrap: wrap;
+        padding: var(--spacing-md);
+    }
+    
+    .nav-links {
+        order: 3;
+        width: 100%;
+        margin-top: var(--spacing-md);
+        padding-top: var(--spacing-md);
+        border-top: 1px solid var(--medium-gray);
+        justify-content: space-around;
+    }
+    
+    .nav-brand {
+        flex: 1;
+    }
+    
+    /* Grid Layouts */
+    .dashboard-grid,
+    .innovation-grid,
+    .network-grid,
+    .tracking-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    /* Cards */
+    .card {
+        padding: var(--spacing-md);
+    }
+    
+    /* Sidebar becomes main content */
+    .sidebar {
+        order: -1;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .widget {
+        padding: var(--spacing-md);
+    }
+    
+    /* Profile Card */
+    .profile-card {
+        flex-direction: column;
+        text-align: center;
+        padding: var(--spacing-lg);
+    }
+    
+    .profile-avatar {
+        margin: 0 auto var(--spacing-md);
+    }
+    
+    .gamification-stats {
+        justify-content: center;
+    }
+    
+    .stats-row {
+        justify-content: space-around;
+        padding-top: var(--spacing-md);
+    }
+    
+    /* Company Recommendations */
+    .company-recommendations {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Innovation Challenge */
+    .challenge-stats-card {
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+    
+    .challenge-stat {
+        flex: 1 1 45%;
+        min-width: 150px;
+    }
+    
+    /* Projects */
+    .other-projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Companies */
+    .recommended-companies {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .companies-grid-view {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Time Tracking */
+    .time-bar-chart {
+        height: 150px;
+    }
+    
+    /* Forms */
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Tables - Make them scrollable */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+        min-width: 600px;
+    }
+}
+
+/* Mobile View (768px and below) */
+@media (max-width: 768px) {
+    /* Typography */
+    h1 { font-size: calc(var(--font-size-xxl) * 0.85); }
+    h2 { font-size: calc(var(--font-size-xl) * 0.85); }
+    h3 { font-size: calc(var(--font-size-lg) * 0.9); }
+    
+    /* Navigation Mobile Menu */
+    .nav {
+        position: relative;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        width: 80%;
+        height: calc(100vh - 60px);
+        background: var(--white);
+        flex-direction: column;
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow-lg);
+        z-index: 999;
+        transition: left var(--transition-normal);
+        overflow-y: auto;
+    }
+    
+    .nav-links.mobile-active {
+        left: 0;
+    }
+    
+    .nav-links a {
+        padding: var(--spacing-md);
+        border-bottom: 1px solid var(--medium-gray);
+        width: 100%;
+    }
+    
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+        display: flex;
+        order: -1;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Company Cards */
+    .recommended-companies {
+        grid-template-columns: 1fr;
+    }
+    
+    .companies-grid-view {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Review Dimensions */
+    .dimension-label {
+        flex: 0 0 100px;
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Projects Grid */
+    .other-projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Progress Sections */
+    .progress-sections {
+        flex-direction: column;
+    }
+    
+    .progress-section {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: var(--spacing-md);
+    }
+    
+    /* Challenge Stats */
+    .challenge-stat {
+        flex: 1 1 100%;
+        padding: var(--spacing-md);
+        border-bottom: 1px solid var(--medium-gray);
+    }
+    
+    .challenge-stat:last-child {
+        border-bottom: none;
+    }
+}
+
+/* Small Mobile View (480px and below) */
+@media (max-width: 480px) {
+    /* Container */
+    .container {
+        padding: var(--spacing-sm);
+    }
+    
+    /* Navigation */
+    .nav {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .nav-brand {
+        font-size: var(--font-size-lg);
+    }
+    
+    .user-menu {
+        gap: var(--spacing-sm);
+    }
+    
+    /* Cards */
+    .card {
+        padding: var(--spacing-md);
+        border-radius: var(--radius-sm);
+    }
+    
+    /* Profile Card */
+    .profile-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: var(--font-size-xl);
+    }
+    
+    .stats-row {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .stat-item {
+        padding: var(--spacing-sm);
+        background: var(--light-gray);
+        border-radius: var(--radius-sm);
+    }
+    
+    /* Buttons */
+    .btn {
+        width: 100%;
+        padding: var(--spacing-md);
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    /* Task Items */
+    .task-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+    
+    .task-item button {
+        width: 100%;
+    }
+    
+    /* Company Header */
+    .company-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .company-logo-large {
+        margin: 0 auto;
+    }
+    
+    /* Company Actions */
+    .company-actions {
+        flex-direction: column;
+    }
+    
+    .company-actions button {
+        width: 100%;
+    }
+    
+    /* Modal */
+    .modal-content {
+        width: 95%;
+        padding: var(--spacing-md);
+        margin: var(--spacing-md);
+    }
+    
+    .modal-close {
+        right: var(--spacing-sm);
+        top: var(--spacing-sm);
+    }
+    
+    /* Forms */
+    .form-group {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    /* Innovation Submission */
+    .submission-section {
+        padding-left: var(--spacing-md);
+        border-left-width: 2px;
+    }
+    
+    .submission-textarea {
+        font-size: var(--font-size-sm);
+    }
+    
+    /* Time Tracking */
+    .time-bar-chart {
+        height: 120px;
+    }
+    
+    .time-bar {
+        margin: 0 2px;
+    }
+    
+    .bar-label {
+        font-size: 10px;
+    }
+    
+    .bar-value {
+        font-size: 9px;
+    }
+    
+    /* Tables */
+    table {
+        font-size: var(--font-size-sm);
+    }
+    
+    th, td {
+        padding: var(--spacing-xs);
+    }
+}
+
+/* Landscape Mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+    .nav {
+        padding: var(--spacing-xs) var(--spacing-md);
+    }
+    
+    .nav-links {
+        top: 50px;
+        height: calc(100vh - 50px);
+    }
+    
+    .modal-content {
+        max-height: 90vh;
+        margin: var(--spacing-sm);
+    }
+}
+
+/* Print Styles */
+@media print {
+    /* Hide navigation and interactive elements */
+    .nav,
+    .sidebar,
+    button,
+    .btn,
+    .modal,
+    .notification-icon,
+    .user-menu,
+    .filter-chips {
+        display: none !important;
+    }
+    
+    /* Adjust layout for print */
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    .dashboard-grid,
+    .innovation-grid,
+    .network-grid,
+    .tracking-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Remove shadows and backgrounds */
+    .card {
+        box-shadow: none;
+        border: 1px solid var(--medium-gray);
+        page-break-inside: avoid;
+    }
+    
+    /* Ensure good contrast */
+    body {
+        background: white;
+        color: black;
+    }
+    
+    a {
+        color: black;
+        text-decoration: underline;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    :root {
+        --imi-blue: #000080;
+        --imi-yellow: #ffff00;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+        --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.6);
+        --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.7);
+    }
+    
+    .card {
+        border: 2px solid var(--imi-blue);
+    }
+    
+    button, .btn {
+        border-width: 2px;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Dark Mode Support (Future Enhancement) */
+@media (prefers-color-scheme: dark) {
+    /* Dark mode styles can be added here */
+    /* Currently keeping light theme as per company branding */
+}

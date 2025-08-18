@@ -1,0 +1,89 @@
+/* Innovation Challenge Page Styles */
+.innovation-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: var(--spacing-lg);
+}
+
+.challenge-stats-card {
+    display: flex;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background: linear-gradient(to right, rgba(255, 213, 2, 0.1), rgba(4, 40, 71, 0.05));
+    border-left: 4px solid var(--imi-yellow);
+}
+
+.challenge-stat {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.challenge-stat-icon {
+    font-size: 32px;
+}
+
+.challenge-stat-value {
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    color: var(--imi-blue);
+}
+
+.challenge-stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-gray);
+}
+
+/* Submission Sections */
+.submission-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.submission-section {
+    border-left: 3px solid var(--medium-gray);
+    padding-left: var(--spacing-lg);
+    transition: all var(--transition-fast);
+}
+
+.submission-section:hover {
+    border-left-color: var(--imi-yellow);
+}
+
+.submission-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: var(--spacing-md);
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    resize: vertical;
+    transition: border-color var(--transition-fast);
+}
+
+.submission-textarea:focus {
+    outline: none;
+    border-color: var(--imi-blue);
+}
+
+.word-count {
+    font-size: var(--font-size-sm);
+    color: var(--text-gray);
+    text-align: right;
+    margin-top: var(--spacing-xs);
+}
+
+.section-status {
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-gray);
+}
+
+.section-status.completed {
+    color: var(--success-green);
+    font-weight: 600;
+}

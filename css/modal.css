@@ -1,0 +1,311 @@
+/* css/modal.css - Modal Styles */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(4, 40, 71, 0.8);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-md);
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease;
+}
+
+.modal-close {
+    position: absolute;
+    right: var(--spacing-lg);
+    top: var(--spacing-lg);
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+    background: none;
+    border: none;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    color: var(--imi-blue);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    margin-top: var(--spacing-md);
+}
+
+.modal-body h2 {
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--medium-gray);
+}
+
+.modal-body form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.modal-body .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.modal-body label {
+    font-weight: 600;
+    color: var(--imi-blue);
+    font-size: var(--font-size-sm);
+}
+
+.modal-body input[type="text"],
+.modal-body input[type="email"],
+.modal-body input[type="url"],
+.modal-body textarea,
+.modal-body select {
+    padding: var(--spacing-sm);
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    transition: border-color var(--transition-fast);
+}
+
+.modal-body input:focus,
+.modal-body textarea:focus,
+.modal-body select:focus {
+    outline: none;
+    border-color: var(--imi-blue);
+}
+
+.modal-body textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.modal-body .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+}
+
+.modal-body .checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.modal-body input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.modal-body .button-group {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--medium-gray);
+}
+
+.modal-body .btn-cancel {
+    background-color: var(--light-gray);
+    color: var(--imi-dark-gray);
+    border: 2px solid var(--medium-gray);
+}
+
+.modal-body .btn-cancel:hover {
+    background-color: var(--medium-gray);
+}
+
+/* Specific Modal Styles */
+
+/* Profile Modal */
+.profile-modal .profile-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background-color: var(--light-gray);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.profile-modal .avatar-upload {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-sm);
+    background-color: var(--imi-blue);
+    color: var(--imi-yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xxl);
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-modal .avatar-upload:hover::after {
+    content: '📷';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(4, 40, 71, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xl);
+}
+
+/* Connection Modal */
+.connection-modal .connection-notes {
+    background-color: var(--light-gray);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.connection-modal .connection-notes h4 {
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-sm);
+}
+
+.connection-modal .connection-notes p {
+    color: var(--text-gray);
+    line-height: 1.6;
+}
+
+.connection-modal .photo-upload {
+    border: 2px dashed var(--medium-gray);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xl);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.connection-modal .photo-upload:hover {
+    border-color: var(--imi-yellow);
+    background-color: rgba(255, 213, 2, 0.05);
+}
+
+.connection-modal .photo-preview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.connection-modal .photo-preview img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+}
+
+/* Training Modal */
+.training-modal .training-section {
+    background-color: var(--light-gray);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.training-modal .training-section h4 {
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-sm);
+}
+
+.training-modal .training-section ul {
+    margin-left: var(--spacing-lg);
+    color: var(--text-gray);
+    line-height: 1.8;
+}
+
+.training-modal .training-section li {
+    margin-bottom: var(--spacing-xs);
+}
+
+.training-modal .training-section strong {
+    color: var(--imi-dark-gray);
+}
+
+.training-modal .training-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Modal */
+@media (max-width: 640px) {
+    .modal-content {
+        width: 95%;
+        padding: var(--spacing-lg);
+        max-height: 90vh;
+    }
+    
+    .modal-close {
+        right: var(--spacing-md);
+        top: var(--spacing-md);
+    }
+    
+    .modal-body .button-group {
+        flex-direction: column;
+    }
+    
+    .modal-body .button-group button {
+        width: 100%;
+    }
+}
