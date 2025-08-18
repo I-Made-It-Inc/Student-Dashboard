@@ -44,13 +44,10 @@ function showPage(pageId, pushState = true) {
         loadPageContent(pageId);
     }
     
-    // Update active nav link
+    // Update active nav link (only for pages that have nav links)
     const selectedNav = document.getElementById(`nav-${pageId}`);
     if (selectedNav) {
         selectedNav.classList.add('active');
-    } else if (pageId === 'profile') {
-        // Profile page doesn't have a nav link - it's accessed via user avatar
-        console.log('Profile page accessed via user avatar');
     }
     
     // Update URL without reload (only if pushState is true)
@@ -139,6 +136,18 @@ function loadProjectsContent() {
     loadAvailableProjects();
 }
 
+// Load active projects
+function loadActiveProjects() {
+    console.log('Loading active projects...');
+    // In production, fetch from API
+}
+
+// Load available projects  
+function loadAvailableProjects() {
+    console.log('Loading available projects...');
+    // In production, fetch from API
+}
+
 // Companies content loader
 function loadCompaniesContent() {
     console.log('Loading companies content...');
@@ -161,6 +170,18 @@ function loadNetworkContent() {
     loadPeerSuggestions();
 }
 
+// Load connections
+function loadConnections() {
+    console.log('Loading connections...');
+    // In production, fetch from API
+}
+
+// Load peer suggestions
+function loadPeerSuggestions() {
+    console.log('Loading peer suggestions...');
+    // In production, fetch from API
+}
+
 // Resources content loader
 function loadResourcesContent() {
     console.log('Loading resources content...');
@@ -170,6 +191,18 @@ function loadResourcesContent() {
     
     // Load AI tools
     loadAITools();
+}
+
+// Load publications
+function loadPublications() {
+    console.log('Loading publications...');
+    // In production, fetch from API
+}
+
+// Load AI tools
+function loadAITools() {
+    console.log('Loading AI tools...');
+    // In production, fetch from API
 }
 
 // Time tracking content loader
@@ -244,7 +277,8 @@ function setupUserMenu() {
     if (userAvatar) {
         userAvatar.addEventListener('click', (e) => {
             e.stopPropagation();
-            toggleUserDropdown();
+            // Navigate directly to profile page instead of showing dropdown
+            showPage('profile');
         });
     }
 }
@@ -274,6 +308,7 @@ function setupHistoryManagement() {
 // Update URL without page reload
 function updateURL(pageId) {
     const newURL = `#${pageId}`;
+    console.log(`Updating URL to: ${newURL}`);
     history.pushState({ page: pageId }, '', newURL);
 }
 
