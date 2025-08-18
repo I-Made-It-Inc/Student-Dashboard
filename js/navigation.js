@@ -184,11 +184,26 @@ function loadAvailableProjects() {
 function loadCompaniesContent() {
     console.log('Loading companies content...');
     
-    // Load company directory
-    loadCompanyDirectory();
+    // Ensure companies filters are properly initialized
+    if (typeof window.activeFilters !== 'undefined' && window.activeFilters.size === 0) {
+        window.activeFilters.add('All');
+    }
     
-    // Load recommendations
-    loadCompanyRecommendations();
+    // Reset filter chips UI to match state
+    const chips = document.querySelectorAll('.chip');
+    chips.forEach(chip => {
+        const filterText = chip.textContent.trim();
+        if (window.activeFilters && window.activeFilters.has(filterText)) {
+            chip.classList.add('active');
+        } else {
+            chip.classList.remove('active');
+        }
+    });
+    
+    // Load company data
+    if (typeof window.loadCompanyDirectory === 'function') {
+        window.loadCompanyDirectory();
+    }
 }
 
 // Network content loader

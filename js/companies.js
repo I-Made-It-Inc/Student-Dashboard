@@ -358,6 +358,48 @@ function showNoResultsMessage() {
     `;
 }
 
+// Clear all filters and show all companies
+function showAllCompanies() {
+    console.log('Showing all companies - clearing filters...');
+    
+    // Clear filters state
+    activeFilters.clear();
+    activeFilters.add('All');
+    searchQuery = '';
+    
+    // Reset search input
+    const searchInput = document.querySelector('.company-search');
+    const clearButton = document.querySelector('.search-clear-btn');
+    
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    
+    if (clearButton) {
+        clearButton.style.display = 'none';
+    }
+    
+    // Reset filter chips UI
+    const chips = document.querySelectorAll('.chip');
+    chips.forEach(chip => {
+        chip.classList.remove('active');
+    });
+    
+    // Activate "All" chip
+    const allChip = document.querySelector('.chip:first-child');
+    if (allChip) {
+        allChip.classList.add('active');
+    }
+    
+    // Display all companies
+    displayCompanies(companiesData);
+    
+    // Navigate to companies page
+    if (typeof showPage === 'function') {
+        showPage('companies');
+    }
+}
+
 // Clear all filters
 function clearAllFilters() {
     activeFilters.clear();
@@ -365,7 +407,17 @@ function clearAllFilters() {
     searchQuery = '';
     
     // Reset UI
-    document.querySelector('.company-search').value = '';
+    const searchInput = document.querySelector('.company-search');
+    const clearButton = document.querySelector('.search-clear-btn');
+    
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    
+    if (clearButton) {
+        clearButton.style.display = 'none';
+    }
+    
     document.querySelectorAll('.chip').forEach(chip => {
         chip.classList.remove('active');
     });
@@ -393,12 +445,33 @@ function setupCompanyCards() {
 function loadCompanyDirectory() {
     console.log('Loading company directory...');
     
+    // Ensure filter state is initialized
+    if (activeFilters.size === 0) {
+        activeFilters.add('All');
+    }
+    
+    // Sync UI with filter state
+    syncFilterChipsWithState();
+    
     // In production, fetch from API
-    // For now, display mock data
-    displayCompanies(companiesData);
+    // For now, display filtered data based on current state
+    filterCompanies();
     
     // Load recommendations
     loadCompanyRecommendations();
+}
+
+// Sync filter chips UI with the current filter state
+function syncFilterChipsWithState() {
+    const chips = document.querySelectorAll('.chip');
+    chips.forEach(chip => {
+        const filterText = chip.textContent.trim();
+        if (activeFilters.has(filterText)) {
+            chip.classList.add('active');
+        } else {
+            chip.classList.remove('active');
+        }
+    });
 }
 
 // Load company recommendations
@@ -574,6 +647,9 @@ window.applyForCoop = applyForCoop;
 window.openReviewModal = openReviewModal;
 window.viewReferralProgram = viewReferralProgram;
 window.clearAllFilters = clearAllFilters;
+window.showAllCompanies = showAllCompanies;
 window.loadCompanyRecommendations = loadCompanyRecommendations;
+window.loadCompanyDirectory = loadCompanyDirectory;
 window.filterCompanies = filterCompanies;
+window.syncFilterChipsWithState = syncFilterChipsWithState;
 window.activeFilters = activeFilters;
