@@ -1,0 +1,362 @@
+/* css/projects.css - Co-op Projects Page Styles */
+
+/* Projects Grid Layout */
+.projects-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* Project Cards */
+.project-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+    border: 2px solid transparent;
+}
+
+.project-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.project-card.active {
+    border-left: 4px solid var(--imi-yellow);
+    background: linear-gradient(to right, rgba(255, 213, 2, 0.05), var(--white));
+}
+
+.project-card.completed {
+    opacity: 0.9;
+    border-left: 4px solid var(--success-green);
+}
+
+/* Project Header */
+.project-header {
+    margin-bottom: var(--spacing-lg);
+}
+
+.project-header h3 {
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-sm);
+}
+
+.project-company {
+    color: var(--text-gray);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+}
+
+/* Badges */
+.active-badge,
+.completed-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-sm);
+}
+
+.active-badge {
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+}
+
+.completed-badge {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+}
+
+/* Project Details */
+.project-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.project-meta {
+    display: flex;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+    color: var(--text-gray);
+    font-size: var(--font-size-sm);
+}
+
+.project-meta span {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.project-description {
+    line-height: 1.6;
+    color: var(--text-gray);
+    padding: var(--spacing-md);
+    background: var(--light-gray);
+    border-radius: var(--radius-sm);
+}
+
+/* Project Progress */
+.project-progress {
+    padding: var(--spacing-md);
+    background: var(--light-gray);
+    border-radius: var(--radius-sm);
+}
+
+.progress-label {
+    font-weight: 600;
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-sm);
+}
+
+.progress-bar {
+    background: var(--medium-gray);
+    height: 10px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--imi-yellow), var(--imi-blue));
+    transition: width 0.5s ease;
+}
+
+/* Project Actions */
+.project-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    margin-top: var(--spacing-md);
+}
+
+/* Other Projects Grid */
+.other-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.project-card-small {
+    padding: var(--spacing-lg);
+    background: var(--light-gray);
+    border-radius: var(--radius-sm);
+    border: 2px solid transparent;
+    transition: all var(--transition-fast);
+}
+
+.project-card-small:hover {
+    transform: translateY(-2px);
+    border-color: var(--imi-yellow);
+    box-shadow: var(--shadow-sm);
+}
+
+.project-card-small h4 {
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-sm);
+}
+
+.project-card-small .project-meta {
+    margin-bottom: var(--spacing-md);
+}
+
+.project-card-small p {
+    font-size: var(--font-size-sm);
+    color: var(--text-gray);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+}
+
+/* Collaborate Button */
+.btn-collaborate {
+    background: var(--white);
+    color: var(--imi-blue);
+    padding: 8px 16px;
+    border: 2px solid var(--imi-blue);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    width: 100%;
+}
+
+.btn-collaborate:hover {
+    background: var(--imi-blue);
+    color: var(--white);
+    transform: translateY(-1px);
+}
+
+/* Company Projects Section */
+.company-projects-section {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+    border-top: 3px solid var(--imi-yellow);
+}
+
+/* Other Companies Section */
+.other-companies-section {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+}
+
+.projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+/* Project Status Indicators */
+.project-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.status-active {
+    background: rgba(255, 213, 2, 0.2);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-yellow);
+}
+
+.status-pending {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-orange);
+    border: 1px solid var(--warning-orange);
+}
+
+.status-completed {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+}
+
+/* Team Members Display */
+.team-members {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+}
+
+.team-member-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--imi-blue);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs);
+    font-weight: bold;
+    border: 2px solid var(--white);
+    margin-left: -8px;
+}
+
+.team-member-avatar:first-child {
+    margin-left: 0;
+}
+
+.team-member-count {
+    margin-left: var(--spacing-sm);
+    padding: 4px 8px;
+    background: var(--light-gray);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    color: var(--text-gray);
+}
+
+/* Project Timeline */
+.project-timeline {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--light-gray);
+    border-radius: var(--radius-sm);
+}
+
+.timeline-item {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-date {
+    flex: 0 0 100px;
+    font-size: var(--font-size-sm);
+    color: var(--text-gray);
+}
+
+.timeline-content {
+    flex: 1;
+}
+
+.timeline-title {
+    font-weight: 600;
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-xs);
+}
+
+.timeline-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-gray);
+}
+
+/* Responsive Projects */
+@media (max-width: 1024px) {
+    .other-projects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .other-projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .project-meta {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .project-actions {
+        flex-direction: column;
+    }
+    
+    .project-actions button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .project-card {
+        padding: var(--spacing-md);
+    }
+    
+    .project-header h3 {
+        font-size: var(--font-size-base);
+    }
+    
+    .team-members {
+        flex-wrap: wrap;
+    }
+}
