@@ -133,33 +133,43 @@ const companiesData = [
 let activeFilters = new Set(['All']);
 let searchQuery = '';
 
+// Clear company search
+function clearCompanySearch() {
+    const searchInput = document.querySelector('.company-search');
+    const clearButton = document.querySelector('.search-clear-btn');
+    
+    if (searchInput) {
+        searchInput.value = '';
+        searchQuery = '';
+        filterCompanies();
+    }
+    
+    if (clearButton) {
+        clearButton.style.display = 'none';
+    }
+}
+
 // Setup company search
 function setupCompanySearch() {
     const searchInput = document.querySelector('.company-search');
-    if (!searchInput) return;
+    const clearButton = document.querySelector('.search-clear-btn');
+    if (!searchInput || !clearButton) return;
+    
+    // Set up clear button click handler
+    clearButton.addEventListener('click', clearCompanySearch);
     
     searchInput.addEventListener('input', window.IMI.utils.debounce((e) => {
         searchQuery = e.target.value.toLowerCase();
+        
+        // Show/hide clear button based on input
+        if (searchQuery.length > 0) {
+            clearButton.style.display = 'flex';
+        } else {
+            clearButton.style.display = 'none';
+        }
+        
         filterCompanies();
     }, 300));
-    
-    // Add clear button
-    const clearButton = document.createElement('button');
-    clearButton.className = 'search-clear';
-    clearButton.innerHTML = '×';
-    clearButton.style.display = 'none';
-    searchInput.parentElement.appendChild(clearButton);
-    
-    clearButton.addEventListener('click', () => {
-        searchInput.value = '';
-        searchQuery = '';
-        clearButton.style.display = 'none';
-        filterCompanies();
-    });
-    
-    searchInput.addEventListener('input', (e) => {
-        clearButton.style.display = e.target.value ? 'block' : 'none';
-    });
 }
 
 // Setup filter chips

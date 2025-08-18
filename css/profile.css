@@ -285,6 +285,12 @@
     border-top: 3px solid var(--imi-blue);
 }
 
+.profile-preview-card .section-title {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--light-gray);
+}
+
 .profile-preview {
     text-align: center;
 }
@@ -370,6 +376,12 @@
     border-top: 3px solid var(--success-green);
 }
 
+.privacy-settings-card .section-title {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--light-gray);
+}
+
 .privacy-options {
     display: flex;
     flex-direction: column;
@@ -403,6 +415,12 @@
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-sm);
     border-top: 3px solid var(--warning-orange);
+}
+
+.account-actions-card .section-title {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--light-gray);
 }
 
 .account-actions {

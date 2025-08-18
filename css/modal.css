@@ -10,12 +10,12 @@
     height: 100%;
     background-color: rgba(4, 40, 71, 0.8);
     animation: fadeIn 0.3s ease;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
 }
 
 .modal-content {
@@ -343,4 +343,103 @@ form {
     .modal-body .button-group button {
         width: 100%;
     }
+    
+    .btn-edit-connection {
+        position: static !important;
+        margin-top: var(--spacing-sm);
+        align-self: flex-start;
+    }
+    
+    .connection-detail-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+/* Connection Details Modal Specific Styles */
+.connection-detail-modal {
+    padding: var(--spacing-lg);
+}
+
+.connection-detail-header {
+    display: flex;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--medium-gray);
+    position: relative;
+}
+
+.connection-detail-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-sm);
+    background: var(--imi-blue);
+    color: var(--imi-yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+}
+
+.connection-detail-info h2 {
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-xs);
+}
+
+.connection-detail-info .title {
+    color: var(--text-gray);
+    margin-bottom: var(--spacing-sm);
+}
+
+.btn-edit-connection {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--light-gray);
+    color: var(--imi-blue);
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.btn-edit-connection:hover {
+    background: var(--imi-yellow);
+    color: var(--imi-blue);
+    border-color: var(--imi-yellow);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-edit-connection span {
+    font-size: 12px;
+}
+
+.centered-buttons {
+    justify-content: center !important;
+}
+
+.connection-notes-section {
+    background: var(--light-gray);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.connection-notes-section h3 {
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-md);
+}
+
+.connection-notes-section p {
+    color: var(--text-gray);
+    line-height: 1.6;
 }

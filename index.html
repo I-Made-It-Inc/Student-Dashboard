@@ -630,7 +630,10 @@
             
             <!-- Search and Filter -->
             <div class="card companies-filter-section">
-                <input type="text" class="company-search" placeholder="Search companies by name, industry, or skills...">
+                <div class="search-container">
+                    <input type="text" class="company-search" placeholder="Search companies by name, industry, or skills...">
+                    <button class="search-clear-btn" onclick="clearCompanySearch()" style="display: none;">&times;</button>
+                </div>
                 <div class="filter-chips">
                     <span class="chip active">All</span>
                     <span class="chip">Technology</span>
@@ -740,6 +743,35 @@
                                     </div>
                                 </div>
                                 <button class="btn btn-connect">Connect</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Existing Peer Connections -->
+                    <div class="card network-card">
+                        <h3 class="section-title">🎓 Fellow Students</h3>
+                        <div class="connections-enhanced">
+                            <div class="connection-card-enhanced" onclick="openConnectionModal('jamie-wright')">
+                                <div class="connection-avatar">JW</div>
+                                <div class="connection-info">
+                                    <div class="connection-name">Jamie Wright</div>
+                                    <div class="connection-title">Computer Science Student</div>
+                                    <div class="connection-meta">
+                                        <span class="connection-tag">Study Partner</span>
+                                        <span class="connection-tag">Fellow Student</span>
+                                    </div>
+                                    <div class="connection-note">
+                                        Met in CS50 study group. Great collaboration on final project. Currently job hunting together.
+                                    </div>
+                                    <div class="connection-photos">
+                                        📷 2 photos
+                                    </div>
+                                </div>
+                                <div class="connection-actions">
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); openConnectionModal('jamie-wright')">View Details</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); viewProfile('Jamie Wright')">View Profile</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); sendMessage('Jamie Wright')">Message</button>
+                                </div>
                             </div>
                         </div>
                     </div>
