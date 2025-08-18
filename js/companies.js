@@ -565,3 +565,5 @@ window.openReviewModal = openReviewModal;
 window.viewReferralProgram = viewReferralProgram;
 window.clearAllFilters = clearAllFilters;
 window.loadCompanyRecommendations = loadCompanyRecommendations;
+window.filterCompanies = filterCompanies;
+window.activeFilters = activeFilters;

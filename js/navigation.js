@@ -125,6 +125,38 @@ function loadInnovationContent() {
     loadInnovationLeaderboard();
 }
 
+// Load current challenge
+function loadCurrentChallenge() {
+    console.log('Loading current challenge...');
+    // In production, fetch from API
+}
+
+// Update progress
+function updateChallengeProgress() {
+    console.log('Updating challenge progress...');
+    // In production, fetch from API
+}
+
+// Load innovation leaderboard
+function loadInnovationLeaderboard() {
+    console.log('Loading innovation leaderboard...');
+    // In production, fetch from API
+}
+
+// Load time data
+function loadTimeData() {
+    console.log('Loading time data...');
+    // In production, fetch from API
+}
+
+// Update time charts
+function updateTimeCharts() {
+    console.log('Updating time charts...');
+    // In production, update charts
+}
+
+// Export functions for global use
+
 // Projects content loader
 function loadProjectsContent() {
     console.log('Loading projects content...');
@@ -389,19 +421,38 @@ function showPageWithFilter(pageId, filter) {
     // Apply the filter after a short delay to ensure page is loaded
     setTimeout(() => {
         if (pageId === 'companies' && filter === 'referral') {
-            // Deselect all chips
-            document.querySelectorAll('.chip').forEach(chip => {
-                chip.classList.remove('active');
-            });
+            console.log('Applying referral filter...');
             
-            // Find and activate the referral program chip
+            // Clear all existing filters first
+            if (typeof window.clearAllFilters === 'function') {
+                window.clearAllFilters();
+            }
+            
+            // Find the referral program chip
             const referralChip = Array.from(document.querySelectorAll('.chip')).find(
-                chip => chip.textContent === 'Has Referral Program'
+                chip => chip.textContent.trim() === 'Has Referral Program'
             );
             
             if (referralChip) {
+                // Activate the referral chip manually
                 referralChip.classList.add('active');
-                referralChip.click(); // Trigger the filter
+                
+                // Update activeFilters set
+                if (window.activeFilters) {
+                    window.activeFilters.delete('All');
+                    window.activeFilters.add('Has Referral Program');
+                }
+                
+                // Deactivate the "All" chip
+                const allChip = document.querySelector('.chip:first-child');
+                if (allChip) {
+                    allChip.classList.remove('active');
+                }
+                
+                // Apply the filter
+                if (typeof window.filterCompanies === 'function') {
+                    window.filterCompanies();
+                }
             }
         }
     }, 100);
