@@ -182,12 +182,14 @@ label {
 /* Tags */
 .tag {
     display: inline-block;
-    padding: 2px 8px;
-    background-color: var(--light-gray);
-    color: var(--imi-dark-gray);
+    padding: 4px 10px;
+    background-color: rgba(255, 213, 2, 0.2);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-yellow);
     border-radius: var(--radius-sm);
     font-size: var(--font-size-xs);
     margin-right: var(--spacing-xs);
+    font-weight: 500;
 }
 
 .tag.referral {

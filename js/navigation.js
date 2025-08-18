@@ -18,7 +18,7 @@ function initializeNavigation() {
 }
 
 // Show specific page
-function showPage(pageId) {
+function showPage(pageId, pushState = true) {
     console.log(`Navigating to: ${pageId}`);
     
     // Hide all pages
@@ -46,8 +46,10 @@ function showPage(pageId) {
         selectedNav.classList.add('active');
     }
     
-    // Update URL without reload
-    updateURL(pageId);
+    // Update URL without reload (only if pushState is true)
+    if (pushState) {
+        updateURL(pageId);
+    }
     
     // Dispatch page change event
     document.dispatchEvent(new CustomEvent('pageChange', { 
@@ -221,11 +223,11 @@ function setupHistoryManagement() {
     // Handle browser back/forward buttons
     window.addEventListener('popstate', (e) => {
         if (e.state && e.state.page) {
-            showPage(e.state.page);
+            showPage(e.state.page, false); // Don't push state when navigating via browser buttons
         }
     });
     
-    // Set initial state
+    // Set initial state but don't show page here (it's handled in initializeNavigation)
     const initialPage = getPageFromURL() || 'dashboard';
     history.replaceState({ page: initialPage }, '', `#${initialPage}`);
 }
@@ -302,6 +304,33 @@ function updateBreadcrumb(path) {
     }
 }
 
+// Show page with pre-selected filter
+function showPageWithFilter(pageId, filter) {
+    // Navigate to the page
+    showPage(pageId);
+    
+    // Apply the filter after a short delay to ensure page is loaded
+    setTimeout(() => {
+        if (pageId === 'companies' && filter === 'referral') {
+            // Deselect all chips
+            document.querySelectorAll('.chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            
+            // Find and activate the referral program chip
+            const referralChip = Array.from(document.querySelectorAll('.chip')).find(
+                chip => chip.textContent === 'Has Referral Program'
+            );
+            
+            if (referralChip) {
+                referralChip.classList.add('active');
+                referralChip.click(); // Trigger the filter
+            }
+        }
+    }, 100);
+}
+
 // Export functions for global use
 window.showPage = showPage;
+window.showPageWithFilter = showPageWithFilter;
 window.initializeNavigation = initializeNavigation;

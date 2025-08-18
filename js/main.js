@@ -32,6 +32,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Start session tracking
     startSessionTracking();
     
+    // Setup user avatar click
+    const userAvatar = document.querySelector('.user-avatar');
+    if (userAvatar) {
+        userAvatar.addEventListener('click', function(e) {
+            e.stopPropagation();
+            openModal('profile');
+        });
+    }
+    
     console.log('IMI Student Dashboard ready');
 });
 

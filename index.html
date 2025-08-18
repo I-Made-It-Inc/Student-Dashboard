@@ -40,7 +40,7 @@
                     <span>🔔</span>
                     <div class="notification-badge">3</div>
                 </div>
-                <div class="user-avatar" onclick="openModal('profile')">JD</div>
+                <div class="user-avatar">JD</div>
             </div>
         </nav>
         
@@ -232,6 +232,7 @@
                     <div class="card widget">
                         <div class="section-header">
                             <h3 class="section-title">💰 Active Referral Programs</h3>
+                            <a class="btn-link" onclick="showPageWithFilter('companies', 'referral')">View All →</a>
                         </div>
                         <div class="referral-list">
                             <div class="referral-item">
@@ -286,7 +287,7 @@
                         <div class="challenge-stat">
                             <div class="challenge-stat-icon">🔥</div>
                             <div>
-                                <div class="challenge-stat-value">12 days</div>
+                                <div class="challenge-stat-value">12 weeks</div>
                                 <div class="challenge-stat-label">Current Streak</div>
                             </div>
                         </div>
@@ -318,6 +319,16 @@
                         <div class="section-header">
                             <h3 class="section-title">This Week's Topic: The Future of Sustainable Cities</h3>
                             <span class="deadline">Due: Sunday 11:59 PM</span>
+                        </div>
+                        
+                        <div class="submission-instructions">
+                            <div class="instruction-banner">
+                                <span class="instruction-icon">📚</span>
+                                <div>
+                                    <strong>Start by reading an article from our premium publications</strong>
+                                    <p>Base your reflection on insights from current industry articles about sustainable cities</p>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="submission-sections">
@@ -370,7 +381,7 @@
                         <div class="submission-actions">
                             <button class="btn btn-secondary btn-save-draft">Save Draft</button>
                             <button class="btn btn-primary btn-submit-challenge">Submit for AI Review</button>
-                            <span class="points-earned">Points Earned: 0/100</span>
+                            <span class="points-earned-right">Points Earned: 0/100</span>
                         </div>
                     </div>
                     
@@ -378,20 +389,38 @@
                     <div class="card past-seasons-card">
                         <h3 class="section-title">Past Season Performance</h3>
                         <div class="seasons-grid">
-                            <div class="season-card">
+                            <div class="season-box">
                                 <h4>Season 2 - Winter 2024</h4>
                                 <div class="season-stats">
-                                    <div>⭐ Total Points: 2,450</div>
-                                    <div>🔥 Longest Streak: 18 days</div>
-                                    <div>🏆 Final Rank: #31</div>
+                                    <div class="season-stat-item">
+                                        <span class="season-stat-icon">⭐</span>
+                                        <span>Total Points: 2,450</span>
+                                    </div>
+                                    <div class="season-stat-item">
+                                        <span class="season-stat-icon">🔥</span>
+                                        <span>Longest Streak: 18 weeks</span>
+                                    </div>
+                                    <div class="season-stat-item">
+                                        <span class="season-stat-icon">🏆</span>
+                                        <span>Final Rank: #31</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="season-card">
+                            <div class="season-box">
                                 <h4>Season 1 - Fall 2024</h4>
                                 <div class="season-stats">
-                                    <div>⭐ Total Points: 1,820</div>
-                                    <div>🔥 Longest Streak: 14 days</div>
-                                    <div>🏆 Final Rank: #45</div>
+                                    <div class="season-stat-item">
+                                        <span class="season-stat-icon">⭐</span>
+                                        <span>Total Points: 1,820</span>
+                                    </div>
+                                    <div class="season-stat-item">
+                                        <span class="season-stat-icon">🔥</span>
+                                        <span>Longest Streak: 14 weeks</span>
+                                    </div>
+                                    <div class="season-stat-item">
+                                        <span class="season-stat-icon">🏆</span>
+                                        <span>Final Rank: #45</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -399,12 +428,46 @@
                 </div>
                 
                 <div class="innovation-sidebar">
+                    <!-- Recommended Publications -->
+                    <div class="card recommended-publications">
+                        <div class="section-header">
+                            <h3 class="section-title">📰 Read First</h3>
+                            <a class="btn-link" onclick="showPage('resources')">View All →</a>
+                        </div>
+                        <div class="publications-list">
+                            <div class="publication-item">
+                                <div class="pub-icon-small">🌍</div>
+                                <div>
+                                    <h4>The Economist</h4>
+                                    <p class="text-muted small">Urban development & policy</p>
+                                </div>
+                                <button class="btn btn-primary-small">Read</button>
+                            </div>
+                            <div class="publication-item">
+                                <div class="pub-icon-small">⚡</div>
+                                <div>
+                                    <h4>Fast Company</h4>
+                                    <p class="text-muted small">Innovation in cities</p>
+                                </div>
+                                <button class="btn btn-primary-small">Read</button>
+                            </div>
+                            <div class="publication-item">
+                                <div class="pub-icon-small">🔬</div>
+                                <div>
+                                    <h4>MIT Tech Review</h4>
+                                    <p class="text-muted small">Smart city technology</p>
+                                </div>
+                                <button class="btn btn-primary-small">Read</button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Global Leaderboard -->
                     <div class="card global-leaderboard">
                         <h3 class="section-title">🌍 Global Leaderboard</h3>
                         <div class="leaderboard-tabs">
-                            <button class="tab-btn active">Points</button>
-                            <button class="tab-btn">Streaks</button>
+                            <button class="leaderboard-tab-btn active">Points</button>
+                            <button class="leaderboard-tab-btn">Streaks</button>
                         </div>
                         <div class="leaderboard-extended">
                             <div class="leaderboard-item gold">
@@ -620,10 +683,13 @@
                                         📷 3 photos
                                     </div>
                                 </div>
-                                <button class="btn btn-action">View Details</button>
+                                <div class="connection-actions">
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); openModal('connection-detail')">View Details</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation();">View Reference</button>
+                                </div>
                             </div>
                             
-                            <div class="connection-card-enhanced">
+                            <div class="connection-card-enhanced" onclick="openModal('connection-detail')">
                                 <div class="connection-avatar">SJ</div>
                                 <div class="connection-info">
                                     <div class="connection-name">Sarah Johnson</div>
@@ -635,7 +701,10 @@
                                         Supervised social media campaign project. Great feedback on creative approach.
                                     </div>
                                 </div>
-                                <button class="btn btn-action">Request Reference</button>
+                                <div class="connection-actions">
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); openModal('connection-detail')">View Details</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation();">Request Reference</button>
+                                </div>
                             </div>
                         </div>
                     </div>

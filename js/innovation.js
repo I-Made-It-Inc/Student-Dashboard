@@ -237,6 +237,9 @@ function loadCurrentChallenge() {
         topic: 'The Future of Sustainable Cities',
         description: 'Explore how technology and innovation can create more sustainable urban environments.',
         deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+        weeklySubmission: true,
+        multipleSubmissionsAllowed: true,
+        pointsDecay: 0.5, // Subsequent submissions get 50% points
         sections: [
             {
                 id: 'innovation-catalyst',
@@ -345,7 +348,7 @@ function setupAutoSaveDrafts() {
 
 // Setup leaderboard tabs
 function setupLeaderboardTabs() {
-    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabButtons = document.querySelectorAll('.leaderboard-tab-btn');
     
     tabButtons.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -375,9 +378,9 @@ function loadLeaderboard(type) {
         ];
     } else if (type === 'streaks') {
         leaderboardData = [
-            { rank: 1, name: 'Sarah Johnson', value: '45 days', medal: 'gold' },
-            { rank: 2, name: 'Mike Davis', value: '38 days', medal: 'silver' },
-            { rank: 3, name: 'Emma Thompson', value: '31 days', medal: 'bronze' }
+            { rank: 1, name: 'Sarah Johnson', value: '45 weeks', medal: 'gold' },
+            { rank: 2, name: 'Mike Davis', value: '38 weeks', medal: 'silver' },
+            { rank: 3, name: 'Emma Thompson', value: '31 weeks', medal: 'bronze' }
         ];
     }
     
@@ -418,7 +421,7 @@ function updateStreak() {
     const streakElement = document.querySelector('.streak-value');
     if (streakElement) {
         const currentStreak = parseInt(streakElement.textContent) || 0;
-        streakElement.textContent = `${currentStreak + 1} day streak`;
+        streakElement.textContent = `${currentStreak + 1} week streak`;
         
         // Animate streak update
         streakElement.classList.add('updated');

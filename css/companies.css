@@ -83,6 +83,11 @@
     color: var(--imi-blue);
 }
 
+.company-recommendation-card .company-rating {
+    margin-bottom: var(--spacing-xs);
+    text-align: center;
+}
+
 .company-recommendation-card p {
     font-size: var(--font-size-sm);
     color: var(--text-gray);

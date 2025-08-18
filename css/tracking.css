@@ -42,7 +42,7 @@
 
 .time-bar {
     flex: 1;
-    background: linear-gradient(180deg, var(--imi-blue), var(--imi-yellow));
+    background: var(--imi-blue);
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
     display: flex;
     flex-direction: column;
@@ -58,7 +58,7 @@
 }
 
 .time-bar.today {
-    background: linear-gradient(180deg, var(--success-green), #81c784);
+    background: var(--imi-yellow);
 }
 
 .bar-label {
@@ -73,6 +73,11 @@
     color: var(--white);
     font-weight: bold;
     margin-bottom: var(--spacing-xs);
+}
+
+.time-bar.today .bar-label,
+.time-bar.today .bar-value {
+    color: var(--imi-blue);
 }
 
 /* Time Breakdown */

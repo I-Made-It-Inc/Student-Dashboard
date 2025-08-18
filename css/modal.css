@@ -66,13 +66,15 @@
     border-bottom: 2px solid var(--medium-gray);
 }
 
-.modal-body form {
+.modal-body form,
+form {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
 }
 
-.modal-body .form-group {
+.modal-body .form-group,
+.form-group {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
@@ -88,17 +90,22 @@
 .modal-body input[type="email"],
 .modal-body input[type="url"],
 .modal-body textarea,
-.modal-body select {
+.modal-body select,
+.form-input,
+.form-textarea {
     padding: var(--spacing-sm);
     border: 2px solid var(--medium-gray);
     border-radius: var(--radius-sm);
     font-size: var(--font-size-base);
     transition: border-color var(--transition-fast);
+    width: 100%;
 }
 
 .modal-body input:focus,
 .modal-body textarea:focus,
-.modal-body select:focus {
+.modal-body select:focus,
+.form-input:focus,
+.form-textarea:focus {
     outline: none;
     border-color: var(--imi-blue);
 }
@@ -108,14 +115,16 @@
     resize: vertical;
 }
 
-.modal-body .checkbox-group {
+.modal-body .checkbox-group,
+.checkbox-group {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-md);
     margin-top: var(--spacing-sm);
 }
 
-.modal-body .checkbox-group label {
+.modal-body .checkbox-group label,
+.checkbox-group label {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
@@ -129,7 +138,8 @@
     cursor: pointer;
 }
 
-.modal-body .button-group {
+.modal-body .button-group,
+.button-group {
     display: flex;
     gap: var(--spacing-md);
     justify-content: flex-end;
@@ -206,7 +216,8 @@
     line-height: 1.6;
 }
 
-.connection-modal .photo-upload {
+.connection-modal .photo-upload,
+.photo-upload-area {
     border: 2px dashed var(--medium-gray);
     border-radius: var(--radius-sm);
     padding: var(--spacing-xl);
@@ -215,9 +226,15 @@
     transition: all var(--transition-fast);
 }
 
-.connection-modal .photo-upload:hover {
+.connection-modal .photo-upload:hover,
+.photo-upload-area:hover {
     border-color: var(--imi-yellow);
     background-color: rgba(255, 213, 2, 0.05);
+}
+
+.photo-upload-area p {
+    margin: 0;
+    color: var(--text-gray);
 }
 
 .connection-modal .photo-preview {
@@ -235,29 +252,34 @@
 }
 
 /* Training Modal */
-.training-modal .training-section {
+.training-modal .training-section,
+.training-section {
     background-color: var(--light-gray);
     padding: var(--spacing-lg);
     border-radius: var(--radius-sm);
     margin-bottom: var(--spacing-md);
 }
 
-.training-modal .training-section h4 {
+.training-modal .training-section h4,
+.training-section h4 {
     color: var(--imi-blue);
     margin-bottom: var(--spacing-sm);
 }
 
-.training-modal .training-section ul {
+.training-modal .training-section ul,
+.training-section ul {
     margin-left: var(--spacing-lg);
     color: var(--text-gray);
     line-height: 1.8;
 }
 
-.training-modal .training-section li {
+.training-modal .training-section li,
+.training-section li {
     margin-bottom: var(--spacing-xs);
 }
 
-.training-modal .training-section strong {
+.training-modal .training-section strong,
+.training-section strong {
     color: var(--imi-dark-gray);
 }
 

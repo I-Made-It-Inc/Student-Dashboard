@@ -117,8 +117,14 @@
     margin-top: var(--spacing-xs);
 }
 
-.btn-action {
+.connection-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
     align-self: center;
+}
+
+.btn-action {
     background: var(--white);
     color: var(--imi-blue);
     padding: 6px 12px;

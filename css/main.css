@@ -100,7 +100,8 @@ a:hover {
     color: var(--text-gray);
 }
 
-.text-small {
+.text-small,
+.small {
     font-size: var(--font-size-sm);
 }
 
