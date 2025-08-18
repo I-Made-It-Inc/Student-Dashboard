@@ -106,33 +106,30 @@ const connectionData = {
 };
 
 function openConnectionModal(connectionId) {
-    console.log('openConnectionModal called with:', connectionId);
+    console.log('Opening connection modal for:', connectionId);
+    
     const connection = connectionData[connectionId];
     if (!connection) {
         console.error('Connection not found:', connectionId);
         return;
     }
     
-    console.log('Connection found:', connection.name);
-    
-    const modalBody = document.getElementById('modal-body');
-    if (!modalBody) {
-        console.error('Modal body element not found');
-        return;
-    }
-    
-    modalBody.innerHTML = getConnectionDetailModalContent(connection);
-    console.log('Modal content set');
-    
     const modal = document.getElementById('modal');
-    if (!modal) {
-        console.error('Modal element not found');
+    const modalBody = document.getElementById('modal-body');
+    
+    if (!modal || !modalBody) {
+        console.error('Modal elements not found');
         return;
     }
     
+    // Set the modal content
+    modalBody.innerHTML = getConnectionDetailModalContent(connection);
+    
+    // Show the modal using CSS classes
     modal.classList.add('active');
     modal.style.display = 'flex';
-    console.log('Modal should now be visible');
+    
+    console.log('Connection modal opened for:', connection.name);
 }
 
 function getConnectionDetailModalContent(connection) {
@@ -349,6 +346,9 @@ function closeModal() {
     const modal = document.getElementById('modal');
     if (modal) {
         modal.style.display = 'none';
+        modal.classList.remove('active');
+        // Clear any inline styles that might have been set
+        modal.removeAttribute('style');
         document.body.classList.remove('modal-open');
     }
 }
