@@ -43,17 +43,38 @@
 }
 
 .btn-primary-small {
+    display: inline-block;
     padding: 6px 12px;
     font-size: var(--font-size-sm);
     background-color: var(--imi-yellow);
     color: var(--imi-blue);
     border: 2px solid var(--imi-yellow);
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+    text-decoration: none;
+    outline: none;
 }
 
 .btn-primary-small:hover {
     background-color: var(--imi-blue);
     color: var(--imi-yellow);
     border-color: var(--imi-blue);
+}
+
+.btn-primary-small.locked-btn {
+    background-color: var(--light-gray);
+    color: var(--text-gray);
+    border-color: var(--medium-gray);
+    cursor: not-allowed;
+}
+
+.btn-primary-small.locked-btn:hover {
+    background-color: var(--light-gray);
+    color: var(--text-gray);
+    border-color: var(--medium-gray);
 }
 
 .btn-link {

@@ -419,25 +419,31 @@
 }
 
 .btn-redeem {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: 6px 12px;
     background: var(--imi-yellow);
     color: var(--imi-blue);
-    border: none;
+    border: 2px solid var(--imi-yellow);
     border-radius: var(--radius-sm);
-    font-size: var(--font-size-xs);
-    font-weight: 600;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
 }
 
 .btn-redeem:hover:not(:disabled) {
     background: var(--imi-blue);
     color: var(--imi-yellow);
+    border-color: var(--imi-blue);
 }
 
 .btn-redeem:disabled {
-    background: var(--medium-gray);
+    background: var(--light-gray);
     color: var(--text-gray);
+    border-color: var(--medium-gray);
     cursor: not-allowed;
 }
 
@@ -551,6 +557,7 @@
 }
 
 .btn-secondary-small {
+    display: inline-block;
     padding: 6px 12px;
     background: var(--white);
     color: var(--imi-blue);
@@ -560,6 +567,9 @@
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
+    text-align: center;
+    text-decoration: none;
+    outline: none;
 }
 
 .btn-secondary-small:hover {

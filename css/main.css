@@ -162,9 +162,9 @@ a:hover {
 .section-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
     margin-bottom: var(--spacing-lg);
-    padding-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-xs);
     border-bottom: 2px solid var(--medium-gray);
 }
 
@@ -173,6 +173,11 @@ a:hover {
     font-size: var(--font-size-lg);
     font-weight: 600;
     margin: 0;
+    line-height: 1.2;
+}
+
+.section-header .text-muted {
+    line-height: 1.2;
 }
 
 /* Widget section headers should have same spacing as regular headers */
