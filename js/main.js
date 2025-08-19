@@ -37,6 +37,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Start session tracking
     startSessionTracking();
     
+    // Set up redemption handlers for dashboard (after a small delay to ensure DOM is ready)
+    setTimeout(() => {
+        setupDashboardRedemptionHandlers();
+    }, 100);
+    
+    // Also set up a global click handler as a fallback
+    document.addEventListener('click', function(e) {
+        // Handle redemption clicks
+        if (e.target && e.target.matches('.redemption-item .btn.btn-primary-small')) {
+            const btn = e.target;
+            if (btn.textContent.trim() === 'Redeem' && !btn.disabled) {
+                handleRedemption(btn);
+            }
+        }
+    });
+    
     console.log('IMI Student Dashboard ready');
 });
 
@@ -280,12 +296,132 @@ function throttle(func, limit) {
     };
 }
 
+// Handle redemption action
+function handleRedemption(btn) {
+    console.log('Handling redemption for button:', btn);
+    
+    const redemptionItem = btn.closest('.redemption-item');
+    if (!redemptionItem) {
+        console.error('Could not find redemption item container');
+        return;
+    }
+    
+    const itemName = redemptionItem.querySelector('.redemption-title').textContent;
+    const costText = redemptionItem.querySelector('.redemption-cost').textContent;
+    
+    console.log(`Redeeming: ${itemName} for ${costText}`);
+    
+    if (confirm(`Redeem ${itemName} for ${costText}?`)) {
+        console.log('User confirmed redemption');
+        
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification(`Successfully redeemed ${itemName}!`, 'success');
+        }
+        
+        // Parse cost properly
+        const costMatch = costText.match(/(\d+)/);
+        if (!costMatch) {
+            console.error('Could not parse cost from:', costText);
+            return;
+        }
+        const costXP = parseInt(costMatch[1]);
+        console.log('Parsed cost:', costXP);
+        
+        // Update available XP in sidebar
+        const xpAvailableElement = document.querySelector('.text-muted.small');
+        if (xpAvailableElement && xpAvailableElement.textContent.includes('XP available')) {
+            const currentXPMatch = xpAvailableElement.textContent.match(/([\d,]+)/);
+            if (currentXPMatch) {
+                const currentXP = parseInt(currentXPMatch[1].replace(/,/g, ''));
+                const newBalance = currentXP - costXP;
+                console.log(`Updating XP: ${currentXP} - ${costXP} = ${newBalance}`);
+                // Format with comma if needed
+                const formattedBalance = newBalance.toLocaleString();
+                xpAvailableElement.textContent = `${formattedBalance} XP available`;
+            }
+        }
+        
+        // Update the gamification stats XP display  
+        const statMainElements = document.querySelectorAll('.stat-main');
+        statMainElements.forEach(el => {
+            if (el.textContent.includes('pts')) {
+                const currentXPMatch = el.textContent.match(/([\d,]+)/);
+                if (currentXPMatch) {
+                    const currentXP = parseInt(currentXPMatch[1].replace(/,/g, ''));
+                    const newBalance = currentXP - costXP;
+                    console.log(`Updating stat display: ${currentXP} - ${costXP} = ${newBalance}`);
+                    // Format with comma if needed
+                    const formattedBalance = newBalance.toLocaleString();
+                    el.textContent = `${formattedBalance} pts`;
+                }
+            }
+        });
+        
+        // Disable the button and change appearance
+        btn.disabled = true;
+        btn.textContent = 'Redeemed';
+        btn.classList.add('redeemed');
+        
+        console.log('Redemption completed');
+    } else {
+        console.log('User cancelled redemption');
+    }
+}
+
+// Set up redemption handlers for dashboard
+function setupDashboardRedemptionHandlers() {
+    console.log('Setting up dashboard redemption handlers...');
+    
+    // Handle redemption buttons on the dashboard sidebar
+    const dashboardRedeemButtons = document.querySelectorAll('.redemption-item .btn.btn-primary-small');
+    
+    console.log('Found redemption buttons:', dashboardRedeemButtons.length);
+    
+    dashboardRedeemButtons.forEach((btn, index) => {
+        // Only add handler if button text is "Redeem"
+        if (btn.textContent.trim() === 'Redeem') {
+            console.log(`Adding handler to button ${index + 1}: ${btn.textContent}`);
+            
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleRedemption(this);
+            });
+        } else {
+            console.log(`Skipping button ${index + 1} with text: "${btn.textContent}"`);
+        }
+    });
+}
+
 // Export for use in other modules
 window.IMI = window.IMI || {};
 window.IMI.config = IMI_CONFIG;
 window.IMI.utils = window.IMI.utils || {
     debounce,
-    throttle
+    throttle,
+    showNotification: function(message, type = 'info') {
+        // Simple notification implementation
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196f3'};
+            color: white;
+            border-radius: 4px;
+            z-index: 10000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
 };
 window.IMI.data = {
     userData: null,

@@ -286,6 +286,8 @@
 
 .xp-chart-card {
     margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 2px solid var(--medium-gray);
 }
 
 .xp-chart-container {

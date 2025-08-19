@@ -384,9 +384,9 @@ function updateXPChart() {
     
     // Tier definitions
     const tiers = [
-        { name: 'Silver', value: 1000, color: '#C0C0C0', emoji: '🥈' },
-        { name: 'Gold', value: 2500, color: '#FFD700', emoji: '🏆' },
-        { name: 'Platinum', value: 5000, color: '#E5E4E2', emoji: '💎' }
+        { name: 'Silver', value: 1000, color: '#6B7280', emoji: '🥈' },
+        { name: 'Gold', value: 2500, color: '#D97706', emoji: '🏆' },
+        { name: 'Platinum', value: 5000, color: '#1F2937', emoji: '💎' }
     ];
     
     let chartHTML = `
@@ -453,18 +453,44 @@ function setupRedemptionHandlers() {
         btn.addEventListener('click', function() {
             if (this.disabled) return;
             
-            const itemName = this.closest('.redemption-item-compact').querySelector('.item-name').textContent;
-            const cost = this.closest('.redemption-item-compact').querySelector('.item-cost').textContent;
+            const itemContainer = this.closest('.redemption-item-compact');
+            if (!itemContainer) return;
             
-            if (confirm(`Redeem ${itemName} for ${cost}?`)) {
-                window.IMI.utils.showNotification(`Successfully redeemed ${itemName}!`, 'success');
+            const itemName = itemContainer.querySelector('.item-name').textContent;
+            const costText = itemContainer.querySelector('.item-cost').textContent;
+            
+            if (confirm(`Redeem ${itemName} for ${costText}?`)) {
+                if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                    window.IMI.utils.showNotification(`Successfully redeemed ${itemName}!`, 'success');
+                }
                 
-                // Update available XP (in production, this would be handled by backend)
-                const balanceElement = document.querySelector('.balance-amount');
-                if (balanceElement) {
-                    const currentXP = parseInt(balanceElement.textContent);
-                    const costXP = parseInt(cost);
-                    balanceElement.textContent = (currentXP - costXP).toString();
+                // Parse cost properly
+                const costMatch = costText.match(/(\d+)/);
+                if (costMatch) {
+                    const costXP = parseInt(costMatch[1]);
+                    
+                    // Update available XP
+                    const balanceElement = document.querySelector('.balance-amount');
+                    if (balanceElement) {
+                        const currentXP = parseInt(balanceElement.textContent.replace(/,/g, ''));
+                        const newBalance = currentXP - costXP;
+                        const formattedBalance = newBalance.toLocaleString();
+                        balanceElement.textContent = formattedBalance;
+                        
+                        // Also update the dashboard XP display
+                        const dashboardXPElements = document.querySelectorAll('.stat-main');
+                        dashboardXPElements.forEach(el => {
+                            if (el.textContent.includes('pts')) {
+                                el.textContent = `${formattedBalance} pts`;
+                            }
+                        });
+                        
+                        // Update the sidebar XP display too
+                        const sidebarXPElement = document.querySelector('.text-muted.small');
+                        if (sidebarXPElement && sidebarXPElement.textContent.includes('XP available')) {
+                            sidebarXPElement.textContent = `${formattedBalance} XP available`;
+                        }
+                    }
                 }
                 
                 // Disable the button

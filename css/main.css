@@ -256,6 +256,7 @@ a:hover {
     background: var(--color-card-bg);
     padding: 2px 6px;
     border-radius: 4px;
+    color: var(--imi-blue);
 }
 
 .data-line-container {

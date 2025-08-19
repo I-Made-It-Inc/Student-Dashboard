@@ -77,6 +77,23 @@
     border-color: var(--medium-gray);
 }
 
+.btn-primary-small.redeemed,
+.btn-primary-small:disabled {
+    background-color: var(--medium-gray);
+    color: var(--text-gray);
+    border-color: var(--medium-gray);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.btn-primary-small.redeemed:hover,
+.btn-primary-small:disabled:hover {
+    background-color: var(--medium-gray);
+    color: var(--text-gray);
+    border-color: var(--medium-gray);
+    transform: none;
+}
+
 .btn-link {
     background: none;
     border: none;

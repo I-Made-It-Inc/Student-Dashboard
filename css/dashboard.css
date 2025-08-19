@@ -6,7 +6,7 @@
     gap: var(--spacing-lg);
     align-items: center;
     padding: var(--spacing-xl);
-    background: linear-gradient(135deg, var(--white) 0%, rgba(255, 213, 2, 0.05) 100%);
+    background: linear-gradient(135deg, var(--white) 0%, rgba(255, 213, 2, 0.02) 100%);
     border-left: 4px solid var(--imi-yellow);
 }
 
