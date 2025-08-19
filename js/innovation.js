@@ -1,8 +1,8 @@
-// js/innovation.js - Innovation Challenge Functionality
+// js/innovation.js - Blueprint for the Future Functionality
 
-// Initialize Innovation Challenge
-function initializeInnovationChallenge() {
-    console.log('Initializing Innovation Challenge...');
+// Initialize Blueprint Challenge
+function initializeBlueprintChallenge() {
+    console.log('Initializing Blueprint Challenge...');
     
     // Set up word counters
     setupWordCounters();
@@ -10,14 +10,17 @@ function initializeInnovationChallenge() {
     // Set up submission handlers
     setupSubmissionHandlers();
     
-    // Set up leaderboard tabs
-    setupLeaderboardTabs();
-    
     // Load current challenge data
     loadCurrentChallenge();
     
     // Set up auto-save for drafts
     setupAutoSaveDrafts();
+    
+    // Set up XP chart
+    setupXPChart();
+    
+    // Set up redemption handlers
+    setupRedemptionHandlers();
 }
 
 // Setup word counters for each section
@@ -65,7 +68,7 @@ function updateSectionStatus(textarea) {
     
     if (statusElement) {
         if (wordCount >= 100) {
-            statusElement.textContent = '✓ Complete';
+            statusElement.textContent = '✓ Complete - 100 XP';
             statusElement.className = 'section-status completed';
         } else if (wordCount > 0) {
             statusElement.textContent = '⏱ In progress';
@@ -84,7 +87,7 @@ function updateSectionStatus(textarea) {
 function updateOverallProgress() {
     const sections = document.querySelectorAll('.submission-section');
     let completedSections = 0;
-    let totalPoints = 0;
+    let totalXP = 0;
     
     sections.forEach(section => {
         const textarea = section.querySelector('.submission-textarea');
@@ -92,11 +95,11 @@ function updateOverallProgress() {
         
         if (wordCount >= 100) {
             completedSections++;
-            totalPoints += 20; // 20 points per section
+            totalXP += 100; // 100 XP per section in blueprint system
         }
     });
     
-    // Update progress display
+    // Update progress display in dashboard
     const progressSections = document.querySelectorAll('.progress-section');
     progressSections.forEach((section, index) => {
         if (index < completedSections) {
@@ -108,20 +111,25 @@ function updateOverallProgress() {
         }
     });
     
-    // Update points display
-    const pointsDisplay = document.querySelector('.points-earned');
-    if (pointsDisplay) {
-        pointsDisplay.textContent = `${totalPoints}/100 points earned`;
+    // Update XP display
+    const xpDisplay = document.querySelector('.points-earned-right');
+    if (xpDisplay) {
+        xpDisplay.textContent = `XP Earned: ${totalXP}/500`;
     }
     
-    return { completedSections, totalPoints };
+    const dashboardXpDisplay = document.querySelector('.points-earned');
+    if (dashboardXpDisplay) {
+        dashboardXpDisplay.textContent = `${totalXP} XP earned`;
+    }
+    
+    return { completedSections, totalXP };
 }
 
 // Setup submission handlers
 function setupSubmissionHandlers() {
     const submitButton = document.querySelector('.btn-submit-challenge');
     if (submitButton) {
-        submitButton.addEventListener('click', submitChallenge);
+        submitButton.addEventListener('click', submitBlueprint);
     }
     
     const saveDraftButton = document.querySelector('.btn-save-draft');
@@ -130,8 +138,8 @@ function setupSubmissionHandlers() {
     }
 }
 
-// Submit challenge for AI review
-async function submitChallenge(e) {
+// Submit blueprint
+async function submitBlueprint(e) {
     e.preventDefault();
     
     const progress = updateOverallProgress();
@@ -150,30 +158,31 @@ async function submitChallenge(e) {
     submitButton.textContent = 'Submitting...';
     
     try {
-        // In production, send to AI grading API
-        console.log('Submitting for AI review:', responses);
+        // In production, submit blueprint
+        console.log('Submitting blueprint:', responses);
         
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // Show success
+        // Show success - students get full XP for passing
         window.IMI.utils.showNotification(
-            `Challenge submitted successfully! You earned ${progress.totalPoints} points.`,
+            `Blueprint submitted successfully! You earned ${progress.totalXP} XP.`,
             'success'
         );
         
-        // Update streak
+        // Update streak and tier
         updateStreak();
+        updateTierProgress(progress.totalXP);
         
         // Clear form
         clearSubmissionForm();
         
     } catch (error) {
         console.error('Submission error:', error);
-        window.IMI.utils.showNotification('Error submitting challenge. Please try again.', 'error');
+        window.IMI.utils.showNotification('Error submitting blueprint. Please try again.', 'error');
     } finally {
         submitButton.disabled = false;
-        submitButton.textContent = 'Submit for AI Review';
+        submitButton.textContent = 'Submit Blueprint';
     }
 }
 
@@ -201,9 +210,9 @@ function saveDraft() {
 function collectResponses() {
     const responses = {};
     const sections = [
+        'trendspotter',
+        'future-visionary',
         'innovation-catalyst',
-        'trend-spotter',
-        'future-visionist',
         'connector',
         'growth-hacker'
     ];
@@ -221,88 +230,164 @@ function collectResponses() {
     return responses;
 }
 
-// Clear submission form
-function clearSubmissionForm() {
-    document.querySelectorAll('.submission-textarea').forEach(textarea => {
-        textarea.value = '';
-        updateWordCount(textarea);
-        updateSectionStatus(textarea);
+// Save draft
+function saveDraft() {
+    const responses = collectResponses();
+    
+    // Save to localStorage (in production, save to backend)
+    localStorage.setItem('blueprint_draft', JSON.stringify({
+        responses,
+        timestamp: Date.now()
+    }));
+    
+    window.IMI.utils.showNotification('Draft saved successfully!', 'success');
+    
+    // Update all section statuses to saved
+    document.querySelectorAll('.section-status').forEach(status => {
+        if (status.textContent !== 'Not started') {
+            status.innerHTML = '✓ Saved';
+        }
     });
 }
 
-// Load current challenge
-function loadCurrentChallenge() {
-    // In production, fetch from API
-    const challengeData = {
-        topic: 'The Future of Sustainable Cities',
-        description: 'Explore how technology and innovation can create more sustainable urban environments.',
-        deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-        weeklySubmission: true,
-        multipleSubmissionsAllowed: true,
-        pointsDecay: 0.5, // Subsequent submissions get 50% points
-        sections: [
-            {
-                id: 'innovation-catalyst',
-                title: '🚀 Innovation Catalyst',
-                prompt: 'What breakthrough innovation could transform sustainable cities?'
-            },
-            {
-                id: 'trend-spotter',
-                title: '🔍 Trend Spotter',
-                prompt: 'What current trends are shaping sustainable urban development?'
-            },
-            {
-                id: 'future-visionist',
-                title: '🔮 Future Visionist',
-                prompt: 'How will sustainable cities look in 2050?'
-            },
-            {
-                id: 'connector',
-                title: '🔗 Connector',
-                prompt: 'How can different stakeholders collaborate for sustainable cities?'
-            },
-            {
-                id: 'growth-hacker',
-                title: '📈 Growth Hacker',
-                prompt: 'How can we scale sustainable city solutions globally?'
-            }
-        ]
+// Update tier progress
+function updateTierProgress(earnedXP) {
+    // Tier thresholds based on Blueprint system
+    const tiers = {
+        bronze: { min: 0, max: 999, name: 'Bronze', icon: '🥉' },
+        silver: { min: 1000, max: 2499, name: 'Silver', icon: '🥈' },
+        gold: { min: 2500, max: 4999, name: 'Gold', icon: '🥇' },
+        platinum: { min: 5000, max: Infinity, name: 'Platinum', icon: '💎' }
     };
     
-    // Update UI with challenge data
-    updateChallengeUI(challengeData);
+    // In a real app, this would be calculated from total lifetime XP
+    const totalXP = 1850 + earnedXP;
     
-    // Load saved draft if exists
-    loadDraft();
+    let currentTier = 'bronze';
+    for (const [tierName, tierData] of Object.entries(tiers)) {
+        if (totalXP >= tierData.min && totalXP < tierData.max) {
+            currentTier = tierName;
+            break;
+        }
+    }
+    
+    // Update tier displays
+    const tierElements = document.querySelectorAll('.challenge-stat-value, .stat-main');
+    tierElements.forEach(el => {
+        if (el.textContent.includes('#') || el.textContent.includes('Gold')) {
+            el.textContent = tiers[currentTier].name;
+        }
+    });
+    
+    console.log(`Updated to ${tiers[currentTier].name} tier with ${totalXP} total XP`);
 }
 
-// Update challenge UI
-function updateChallengeUI(data) {
-    // Update topic
-    const topicElement = document.querySelector('.challenge-topic');
-    if (topicElement) {
-        topicElement.textContent = data.topic;
+// Setup XP Chart
+function setupXPChart() {
+    const toggleButtons = document.querySelectorAll('.toggle-btn');
+    
+    toggleButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Update active tab
+            toggleButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update chart view
+            const view = this.dataset.view;
+            updateXPChart(view);
+        });
+    });
+    
+    // Initialize chart
+    updateXPChart('total');
+}
+
+// Update XP Chart
+function updateXPChart(view) {
+    const chartContainer = document.querySelector('.xp-chart-container');
+    if (!chartContainer) return;
+    
+    // Mock data for XP progress over time
+    const mockData = {
+        total: [100, 300, 500, 750, 1200, 1850],
+        unredeemed: [100, 250, 400, 500, 600, 1850],
+        labels: ['Week 1', 'Week 3', 'Week 5', 'Week 7', 'Week 9', 'Now']
+    };
+    
+    // Simple text-based chart for demo
+    let chartHTML = '<div class="simple-chart">';
+    
+    if (view === 'both') {
+        chartHTML += '<div class="chart-legend">';
+        chartHTML += '<span class="legend-item"><span class="legend-color total"></span>Total XP</span>';
+        chartHTML += '<span class="legend-item"><span class="legend-color unredeemed"></span>Unredeemed XP</span>';
+        chartHTML += '</div>';
     }
     
-    // Update deadline
-    const deadlineElement = document.querySelector('.challenge-deadline');
-    if (deadlineElement) {
-        const daysLeft = Math.ceil((data.deadline - Date.now()) / (24 * 60 * 60 * 1000));
-        deadlineElement.textContent = `Due in ${daysLeft} days`;
-    }
+    chartHTML += '<div class="chart-bars">';
     
-    // Update section prompts
-    data.sections.forEach(section => {
-        const textarea = document.querySelector(`#${section.id}-textarea`);
-        if (textarea) {
-            textarea.placeholder = section.prompt;
+    mockData.labels.forEach((label, index) => {
+        const totalValue = mockData.total[index];
+        const unredeemedValue = mockData.unredeemed[index];
+        const maxValue = Math.max(...mockData.total);
+        
+        let barHTML = '<div class="chart-bar-group">';
+        barHTML += `<div class="chart-label">${label}</div>`;
+        
+        if (view === 'total' || view === 'both') {
+            const height = (totalValue / maxValue) * 100;
+            barHTML += `<div class="chart-bar total" style="height: ${height}%" title="Total: ${totalValue} XP"></div>`;
         }
+        
+        if (view === 'unredeemed' || view === 'both') {
+            const height = (unredeemedValue / maxValue) * 100;
+            barHTML += `<div class="chart-bar unredeemed" style="height: ${height}%" title="Unredeemed: ${unredeemedValue} XP"></div>`;
+        }
+        
+        barHTML += `<div class="chart-value">${view === 'total' ? totalValue : unredeemedValue} XP</div>`;
+        barHTML += '</div>';
+        
+        chartHTML += barHTML;
+    });
+    
+    chartHTML += '</div></div>';
+    
+    chartContainer.innerHTML = chartHTML;
+}
+
+// Setup redemption handlers
+function setupRedemptionHandlers() {
+    const redeemButtons = document.querySelectorAll('.btn-redeem');
+    
+    redeemButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (this.disabled) return;
+            
+            const itemName = this.closest('.redemption-item-compact').querySelector('.item-name').textContent;
+            const cost = this.closest('.redemption-item-compact').querySelector('.item-cost').textContent;
+            
+            if (confirm(`Redeem ${itemName} for ${cost}?`)) {
+                window.IMI.utils.showNotification(`Successfully redeemed ${itemName}!`, 'success');
+                
+                // Update available XP (in production, this would be handled by backend)
+                const balanceElement = document.querySelector('.balance-amount');
+                if (balanceElement) {
+                    const currentXP = parseInt(balanceElement.textContent);
+                    const costXP = parseInt(cost);
+                    balanceElement.textContent = (currentXP - costXP).toString();
+                }
+                
+                // Disable the button
+                this.disabled = true;
+                this.textContent = 'Redeemed';
+            }
+        });
     });
 }
 
 // Load saved draft
 function loadDraft() {
-    const saved = localStorage.getItem('innovation_draft');
+    const saved = localStorage.getItem('blueprint_draft');
     if (saved) {
         const draft = JSON.parse(saved);
         
@@ -324,116 +409,100 @@ function loadDraft() {
     }
 }
 
-// Setup auto-save for drafts
-function setupAutoSaveDrafts() {
-    let autoSaveTimer;
-    
-    document.querySelectorAll('.submission-textarea').forEach(textarea => {
-        textarea.addEventListener('input', () => {
-            clearTimeout(autoSaveTimer);
-            
-            // Show saving indicator
-            const statusElement = textarea.closest('.submission-section')?.querySelector('.section-status');
-            if (statusElement && textarea.value.length > 0) {
-                statusElement.textContent = '⏱ Saving...';
-            }
-            
-            // Auto-save after 2 seconds of inactivity
-            autoSaveTimer = setTimeout(() => {
-                saveDraft();
-            }, 2000);
-        });
-    });
-}
-
-// Setup leaderboard tabs
-function setupLeaderboardTabs() {
-    const tabButtons = document.querySelectorAll('.leaderboard-tab-btn');
-    
-    tabButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Update active tab
-            tabButtons.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Load appropriate leaderboard
-            const tabType = this.textContent.toLowerCase();
-            loadLeaderboard(tabType);
-        });
-    });
-}
-
-// Load leaderboard data
-function loadLeaderboard(type) {
-    console.log(`Loading ${type} leaderboard...`);
-    
+// Load current challenge
+function loadCurrentChallenge() {
     // In production, fetch from API
-    let leaderboardData;
+    const challengeData = {
+        topic: 'The Future of Sustainable Cities',
+        description: 'Explore how technology and innovation can create more sustainable urban environments through the lens of your personal Blueprint for the Future.',
+        deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+        weeklySubmission: true,
+        multipleSubmissionsAllowed: false, // Changed for blueprint system
+        fullXPOnPass: true, // Students get full XP when they pass
+        sections: [
+            {
+                id: 'trendspotter',
+                title: '� The Trendspotter',
+                prompt: 'Identify the core trend or shift revealed in the article you read. What underlying forces are driving this change?'
+            },
+            {
+                id: 'future-visionary',
+                title: '� The Future Visionary',
+                prompt: 'Describe a plausible, exciting vision for the future in 5-10 years based on this trend. Paint a picture of what could be possible.'
+            },
+            {
+                id: 'innovation-catalyst',
+                title: '� The Innovation Catalyst',
+                prompt: 'Propose how this trend could be applied in a completely different field to create something new. Think outside the box!'
+            },
+            {
+                id: 'connector',
+                title: '🔗 The Connector',
+                prompt: 'Identify which industries, skill sets, or communities would need to collaborate to make this vision a reality.'
+            },
+            {
+                id: 'growth-hacker',
+                title: '📈 The Growth Hacker',
+                prompt: 'Reflect on how this new knowledge changes your personal career path and future vision. What one small action can you take now?'
+            }
+        ]
+    };
     
-    if (type === 'points') {
-        leaderboardData = [
-            { rank: 1, name: 'Alex Chen', value: '3,240 pts', medal: 'gold' },
-            { rank: 2, name: 'Maria Garcia', value: '3,180 pts', medal: 'silver' },
-            { rank: 3, name: 'James Wilson', value: '2,950 pts', medal: 'bronze' }
-        ];
-    } else if (type === 'streaks') {
-        leaderboardData = [
-            { rank: 1, name: 'Sarah Johnson', value: '45 weeks', medal: 'gold' },
-            { rank: 2, name: 'Mike Davis', value: '38 weeks', medal: 'silver' },
-            { rank: 3, name: 'Emma Thompson', value: '31 weeks', medal: 'bronze' }
-        ];
-    }
+    // Update UI with challenge data
+    updateChallengeUI(challengeData);
     
-    updateLeaderboardDisplay(leaderboardData);
+    // Load saved draft if exists
+    loadDraft();
 }
 
-// Update leaderboard display
-function updateLeaderboardDisplay(data) {
-    const leaderboardContainer = document.querySelector('.leaderboard-extended');
-    if (!leaderboardContainer) return;
+// Update challenge UI
+function updateChallengeUI(data) {
+    // Update topic elements
+    const topicElements = document.querySelectorAll('.challenge-topic, h4');
+    topicElements.forEach(el => {
+        if (el.textContent && el.textContent.includes('Future of Sustainable Cities')) {
+            el.textContent = data.topic;
+        }
+    });
     
-    // Clear existing entries
-    leaderboardContainer.innerHTML = '';
+    // Update deadline
+    const deadlineElements = document.querySelectorAll('.challenge-deadline, .deadline');
+    deadlineElements.forEach(el => {
+        const daysLeft = Math.ceil((data.deadline - Date.now()) / (24 * 60 * 60 * 1000));
+        el.textContent = `Due: Sunday 11:59 PM (${daysLeft} days)`;
+    });
     
-    // Add new entries
-    data.forEach(entry => {
-        const item = document.createElement('div');
-        item.className = `leaderboard-item ${entry.medal || ''}`;
-        
-        const medalEmoji = {
-            gold: '🥇',
-            silver: '🥈',
-            bronze: '🥉'
-        };
-        
-        item.innerHTML = `
-            <span class="rank">${medalEmoji[entry.medal] || `#${entry.rank}`}</span>
-            <span class="name">${entry.name}</span>
-            <span class="value">${entry.value}</span>
-        `;
-        
-        leaderboardContainer.appendChild(item);
+    // Update section prompts
+    data.sections.forEach(section => {
+        const textarea = document.querySelector(`#${section.id}-textarea`);
+        if (textarea) {
+            textarea.placeholder = section.prompt;
+        }
     });
 }
 
 // Update streak
 function updateStreak() {
-    const streakElement = document.querySelector('.streak-value');
-    if (streakElement) {
-        const currentStreak = parseInt(streakElement.textContent) || 0;
-        streakElement.textContent = `${currentStreak + 1} week streak`;
-        
-        // Animate streak update
-        streakElement.classList.add('updated');
-        setTimeout(() => streakElement.classList.remove('updated'), 1000);
-    }
+    const streakElements = document.querySelectorAll('.challenge-stat-value, .stat-main');
+    streakElements.forEach(el => {
+        if (el.textContent && el.textContent.includes('week')) {
+            const currentStreak = parseInt(el.textContent) || 0;
+            el.textContent = `${currentStreak + 1} weeks`;
+            
+            // Animate streak update
+            el.classList.add('updated');
+            setTimeout(() => el.classList.remove('updated'), 1000);
+        }
+    });
 }
 
-// Load innovation leaderboard
-function loadInnovationLeaderboard() {
-    loadLeaderboard('points');
+// Show points marketplace (placeholder function)
+function showPointsMarketplace() {
+    window.IMI.utils.showNotification('Points Marketplace coming soon!', 'info');
 }
 
 // Export functions
-window.initializeInnovationChallenge = initializeInnovationChallenge;
+window.initializeBlueprintChallenge = initializeBlueprintChallenge;
+window.initializeInnovationChallenge = initializeBlueprintChallenge; // Backward compatibility
 window.loadCurrentChallenge = loadCurrentChallenge;
+window.showPointsMarketplace = showPointsMarketplace;

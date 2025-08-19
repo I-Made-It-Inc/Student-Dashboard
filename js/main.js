@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize all modules
     initializeNavigation();
-    initializeInnovationChallenge();
+    initializeBlueprintChallenge();
     initializeModal();
     initializeCompanies();
     initializeTimeTracking();
@@ -47,8 +47,8 @@ function loadUserData() {
         name: 'Jane Doe',
         initials: 'JD',
         streak: 12,
-        points: 1850,
-        rank: 24,
+        xp: 1850,
+        tier: 'Gold',
         totalHours: 324,
         activeProjects: 5,
         companies: 3
