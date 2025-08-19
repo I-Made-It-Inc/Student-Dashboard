@@ -382,6 +382,12 @@ function updateXPChart() {
     
     const maxValue = 3000; // Set reasonable max for chart display
     
+    // Tier definitions with colors and emojis
+    const tiers = [
+        { name: 'Silver', value: 1000, color: '#C0C0C0', emoji: '🥈' },
+        { name: 'Gold', value: 2500, color: '#FFD700', emoji: '🏆' }
+    ];
+    
     let chartHTML = `
         <div class="line-chart">
             <div class="chart-area">
@@ -396,9 +402,14 @@ function updateXPChart() {
                 </div>
                 <div class="plot-area">
                     <svg class="line-svg" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Tier threshold lines -->
-                        <line x1="0" y1="${200 - (1000/maxValue * 200)}" x2="400" y2="${200 - (1000/maxValue * 200)}" stroke="#C0C0C0" stroke-width="1" stroke-dasharray="5,5" opacity="0.6"/>
-                        <line x1="0" y1="${200 - (2500/maxValue * 200)}" x2="400" y2="${200 - (2500/maxValue * 200)}" stroke="#FFD700" stroke-width="1" stroke-dasharray="5,5" opacity="0.6"/>
+                        <!-- Tier threshold lines with colors -->
+                        ${tiers.map(tier => {
+                            const y = 200 - (tier.value / maxValue * 200);
+                            return `
+                                <line x1="0" y1="${y}" x2="400" y2="${y}" stroke="${tier.color}" stroke-width="2" stroke-dasharray="8,4" opacity="0.8"/>
+                                <text x="390" y="${y - 5}" fill="${tier.color}" font-size="12" font-weight="bold" text-anchor="end">${tier.emoji} ${tier.name}</text>
+                            `;
+                        }).join('')}
                         
                         <!-- Data line -->
                         <polyline fill="none" stroke="var(--imi-blue)" stroke-width="3" points="${chartData.points.map((point, i) => `${(i * 400 / (chartData.points.length - 1))},${200 - (point / maxValue * 200)}`).join(' ')}"/>

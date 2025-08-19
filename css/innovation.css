@@ -308,7 +308,8 @@
     padding: var(--spacing-md);
     background: var(--light-gray);
     border-radius: var(--radius-sm);
-    height: 200px;
+    height: auto;
+    min-height: 320px;
     position: relative;
 }
 
@@ -550,12 +551,12 @@
 }
 
 .btn-secondary-small {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: 6px 12px;
     background: var(--white);
     color: var(--imi-blue);
-    border: 1px solid var(--medium-gray);
+    border: 2px solid var(--medium-gray);
     border-radius: var(--radius-sm);
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);

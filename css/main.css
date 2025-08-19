@@ -175,9 +175,9 @@ a:hover {
     margin: 0;
 }
 
-/* Widget section headers have less spacing */
+/* Widget section headers should have same spacing as regular headers */
 .widget .section-header {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
 }
 
 /* Widget bottom links have more top margin */
