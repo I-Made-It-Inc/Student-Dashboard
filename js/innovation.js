@@ -369,60 +369,75 @@ function setupXPChart() {
     updateXPChart();
 }
 
-// Update XP Chart with proper line chart and axes
+// Update XP Chart with simple HTML/CSS approach
 function updateXPChart() {
     const chartContainer = document.querySelector('.xp-chart-container');
     if (!chartContainer) return;
     
-    // Data with proper month labels and progression
+    // Data with LIFETIME XP progression
     const chartData = {
         months: ['Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025', 'May 2025', 'Jun 2025', 'Jul 2025', 'Aug 2025'],
-        points: [0, 320, 680, 1050, 1420, 1780, 2150, 2520]
+        points: [2650, 2850, 3170, 3530, 3890, 4010, 4090, 4120] // Lifetime XP progression
     };
     
-    const maxValue = 3000; // Set reasonable max for chart display
+    const maxValue = 5500; // Ensure adequate space above platinum tier
     
-    // Tier definitions with colors and emojis
+    // Tier definitions
     const tiers = [
         { name: 'Silver', value: 1000, color: '#C0C0C0', emoji: '🥈' },
-        { name: 'Gold', value: 2500, color: '#FFD700', emoji: '🏆' }
+        { name: 'Gold', value: 2500, color: '#FFD700', emoji: '🏆' },
+        { name: 'Platinum', value: 5000, color: '#E5E4E2', emoji: '💎' }
     ];
     
     let chartHTML = `
-        <div class="line-chart">
-            <div class="chart-area">
-                <div class="y-axis">
-                    <div class="y-label" data-value="3000">3000</div>
-                    <div class="y-label" data-value="2500">2500</div>
-                    <div class="y-label" data-value="2000">2000</div>
-                    <div class="y-label" data-value="1500">1500</div>
-                    <div class="y-label" data-value="1000">1000</div>
-                    <div class="y-label" data-value="500">500</div>
-                    <div class="y-label" data-value="0">0</div>
+        <div class="simple-chart">
+            <div class="chart-grid">
+                <!-- Y-axis labels -->
+                <div class="y-axis-simple">
+                    ${[5000, 4000, 3000, 2500, 2000, 1000, 0].map(val => 
+                        `<div class="y-tick" style="bottom: ${(val / maxValue) * 100}%">${val}</div>`
+                    ).join('')}
                 </div>
-                <div class="plot-area">
-                    <svg class="line-svg" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Tier threshold lines with colors -->
-                        ${tiers.map(tier => {
-                            const y = 200 - (tier.value / maxValue * 200);
-                            return `
-                                <line x1="0" y1="${y}" x2="400" y2="${y}" stroke="${tier.color}" stroke-width="2" stroke-dasharray="8,4" opacity="0.8"/>
-                                <text x="390" y="${y - 5}" fill="${tier.color}" font-size="12" font-weight="bold" text-anchor="end">${tier.emoji} ${tier.name}</text>
-                            `;
+                
+                <!-- Plot area -->
+                <div class="plot-simple">
+                    <!-- Tier threshold lines -->
+                    ${tiers.map(tier => `
+                        <div class="tier-line-simple" style="bottom: ${(tier.value / maxValue) * 100}%; border-color: ${tier.color};">
+                            <span class="tier-label-simple" style="color: ${tier.color};">${tier.emoji} ${tier.name}</span>
+                        </div>
+                    `).join('')}
+                    
+                    <!-- Data points and line -->
+                    <div class="data-line-container">
+                        ${chartData.points.map((point, i) => {
+                            // Adjust x position to account for padding/margins and center on labels
+                            // Labels have flex: 1, so they are centered in equal segments
+                            // First label is centered at 1/(2*n) of the width, last at (2n-1)/(2*n)
+                            const segmentWidth = 100 / chartData.points.length;
+                            const x = segmentWidth * (i + 0.5);
+                            const y = (point / maxValue) * 100;
+                            return `<div class="data-point" style="left: ${x}%; bottom: ${y}%;"></div>`;
                         }).join('')}
                         
-                        <!-- Data line -->
-                        <polyline fill="none" stroke="var(--imi-blue)" stroke-width="3" points="${chartData.points.map((point, i) => `${(i * 400 / (chartData.points.length - 1))},${200 - (point / maxValue * 200)}`).join(' ')}"/>
-                        
-                        <!-- Data points -->
-                        ${chartData.points.map((point, i) => 
-                            `<circle cx="${i * 400 / (chartData.points.length - 1)}" cy="${200 - (point / maxValue * 200)}" r="4" fill="var(--imi-blue)" stroke="white" stroke-width="2"/>`
-                        ).join('')}
-                    </svg>
+                        <!-- Connecting line using CSS -->
+                        <svg class="connecting-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <polyline fill="none" stroke="var(--imi-blue)" stroke-width="1" 
+                                     points="${chartData.points.map((point, i) => {
+                                         // Match the x positioning with data points
+                                         const segmentWidth = 100 / chartData.points.length;
+                                         const x = segmentWidth * (i + 0.5);
+                                         const y = 100 - (point / maxValue) * 100;
+                                         return `${x},${y}`;
+                                     }).join(' ')}"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
-            <div class="x-axis">
-                ${chartData.months.map(month => `<div class="x-label">${month}</div>`).join('')}
+            
+            <!-- X-axis -->
+            <div class="x-axis-simple">
+                ${chartData.months.map(month => `<div class="x-tick">${month}</div>`).join('')}
             </div>
         </div>
     `;

@@ -278,6 +278,22 @@
     border-top: 2px solid var(--medium-gray);
 }
 
+.past-seasons-card {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 2px solid var(--medium-gray);
+}
+
+.xp-chart-card {
+    margin-top: var(--spacing-lg);
+}
+
+.xp-chart-container {
+    padding: var(--spacing-md);
+    background: var(--light-gray);
+    border-radius: var(--radius-sm);
+}
+
 .chart-toggle {
     display: flex;
     gap: var(--spacing-xs);
