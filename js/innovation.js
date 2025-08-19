@@ -369,68 +369,52 @@ function setupXPChart() {
     updateXPChart();
 }
 
-// Update XP Chart
+// Update XP Chart with proper line chart and axes
 function updateXPChart() {
     const chartContainer = document.querySelector('.xp-chart-container');
     if (!chartContainer) return;
     
-    // Extended mock data spanning 2 seasons (8 months)
-    const mockData = {
-        total: [0, 100, 300, 580, 850, 1200, 1450, 1680, 1850, 2100, 2450, 2750, 3020, 3250, 3480, 3680],
-        labels: ['S1W1', 'S1W2', 'S1W4', 'S1W6', 'S1W8', 'S1W10', 'S1W12', 'S1W14', 'S1W16', 'S2W2', 'S2W4', 'S2W6', 'S2W8', 'S2W10', 'S2W12', 'Now']
+    // Data with proper month labels and progression
+    const chartData = {
+        months: ['Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025', 'May 2025', 'Jun 2025', 'Jul 2025', 'Aug 2025'],
+        points: [0, 320, 680, 1050, 1420, 1780, 2150, 2520]
     };
     
-    // Tier thresholds
-    const tierThresholds = {
-        bronze: { min: 0, color: '#CD7F32', name: 'Bronze' },
-        silver: { min: 1000, color: '#C0C0C0', name: 'Silver' },
-        gold: { min: 2500, color: '#FFD700', name: 'Gold' },
-        platinum: { min: 5000, color: '#E5E4E2', name: 'Platinum' }
-    };
+    const maxValue = 3000; // Set reasonable max for chart display
     
-    const maxValue = Math.max(...mockData.total, 5000); // Include platinum threshold
-    
-    let chartHTML = '<div class="extended-chart">';
-    
-    // Add tier threshold lines
-    chartHTML += '<div class="tier-thresholds">';
-    Object.entries(tierThresholds).forEach(([tier, data]) => {
-        if (data.min <= maxValue && data.min > 0) {
-            const position = (data.min / maxValue) * 100;
-            chartHTML += `<div class="tier-line" style="bottom: ${position}%; border-color: ${data.color};" title="${data.name} Tier - ${data.min} XP"></div>`;
-            chartHTML += `<div class="tier-label" style="bottom: ${position}%;" title="${data.name} Tier">${data.name}</div>`;
-        }
-    });
-    chartHTML += '</div>';
-    
-    // Add chart bars
-    chartHTML += '<div class="chart-bars-extended">';
-    
-    mockData.labels.forEach((label, index) => {
-        const value = mockData.total[index];
-        const height = (value / maxValue) * 80; // 80% of container height for bars
-        
-        let barHTML = '<div class="chart-bar-group-extended">';
-        barHTML += `<div class="chart-bar-extended" style="height: ${height}%" title="Total: ${value} XP"></div>`;
-        barHTML += `<div class="chart-label-extended">${label}</div>`;
-        if (index % 3 === 0 || index === mockData.labels.length - 1) {
-            barHTML += `<div class="chart-value-extended">${value}</div>`;
-        }
-        barHTML += '</div>';
-        
-        chartHTML += barHTML;
-    });
-    
-    chartHTML += '</div>';
-    
-    // Add legend
-    chartHTML += '<div class="chart-legend-extended">';
-    chartHTML += '<span class="legend-item"><span class="legend-color-bar"></span>Total XP Progress</span>';
-    chartHTML += '<span class="legend-divider">•</span>';
-    chartHTML += '<span class="legend-item">Colored lines show tier thresholds</span>';
-    chartHTML += '</div>';
-    
-    chartHTML += '</div>';
+    let chartHTML = `
+        <div class="line-chart">
+            <div class="chart-area">
+                <div class="y-axis">
+                    <div class="y-label" data-value="3000">3000</div>
+                    <div class="y-label" data-value="2500">2500</div>
+                    <div class="y-label" data-value="2000">2000</div>
+                    <div class="y-label" data-value="1500">1500</div>
+                    <div class="y-label" data-value="1000">1000</div>
+                    <div class="y-label" data-value="500">500</div>
+                    <div class="y-label" data-value="0">0</div>
+                </div>
+                <div class="plot-area">
+                    <svg class="line-svg" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Tier threshold lines -->
+                        <line x1="0" y1="${200 - (1000/maxValue * 200)}" x2="400" y2="${200 - (1000/maxValue * 200)}" stroke="#C0C0C0" stroke-width="1" stroke-dasharray="5,5" opacity="0.6"/>
+                        <line x1="0" y1="${200 - (2500/maxValue * 200)}" x2="400" y2="${200 - (2500/maxValue * 200)}" stroke="#FFD700" stroke-width="1" stroke-dasharray="5,5" opacity="0.6"/>
+                        
+                        <!-- Data line -->
+                        <polyline fill="none" stroke="var(--imi-blue)" stroke-width="3" points="${chartData.points.map((point, i) => `${(i * 400 / (chartData.points.length - 1))},${200 - (point / maxValue * 200)}`).join(' ')}"/>
+                        
+                        <!-- Data points -->
+                        ${chartData.points.map((point, i) => 
+                            `<circle cx="${i * 400 / (chartData.points.length - 1)}" cy="${200 - (point / maxValue * 200)}" r="4" fill="var(--imi-blue)" stroke="white" stroke-width="2"/>`
+                        ).join('')}
+                    </svg>
+                </div>
+            </div>
+            <div class="x-axis">
+                ${chartData.months.map(month => `<div class="x-label">${month}</div>`).join('')}
+            </div>
+        </div>
+    `;
     
     chartContainer.innerHTML = chartHTML;
 }
@@ -592,7 +576,7 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
         initializeBlueprintPage();
         updateAllSectionStatuses();
-        generateXPChart();
+        setupXPChart();
         setupAutoSaveDrafts();
         
         // Add event listeners for buttons
