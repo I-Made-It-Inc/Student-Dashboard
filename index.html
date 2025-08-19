@@ -129,7 +129,7 @@
                                     </div>
                                 </div>
                                 <div class="points-earned">
-                                    100 XP earned
+                                    20 XP earned
                                 </div>
                             </div>
                         </div>
@@ -150,7 +150,7 @@
                                         <span>🏢 TechCorp</span>
                                         <span>📅 Due in 3 days</span>
                                         <span>⏱️ 12 hours logged</span>
-                                        <span class="xp-range">🏆 150-300 XP</span>
+                                        <span class="xp-range">🏆 1,500-3,000 XP</span>
                                     </div>
                                 </div>
                                 <button class="btn btn-secondary">View Details</button>
@@ -162,7 +162,7 @@
                                         <span>🏢 StartupXYZ</span>
                                         <span>📅 Due Next Week</span>
                                         <span>⏱️ 5 hours logged</span>
-                                        <span class="xp-range">🏆 100-200 XP</span>
+                                        <span class="xp-range">🏆 1,000-2,000 XP</span>
                                     </div>
                                 </div>
                                 <button class="btn btn-secondary">Request to Join</button>
@@ -210,14 +210,14 @@
                         <div class="redemption-list">
                             <div class="redemption-item">
                                 <div class="redemption-info">
-                                    <span class="redemption-title">Workshop Access</span>
+                                    <span class="redemption-title">Workshop Early Access</span>
                                     <span class="redemption-cost">500 XP</span>
                                 </div>
                                 <button class="btn btn-primary-small">Redeem</button>
                             </div>
                             <div class="redemption-item">
                                 <div class="redemption-info">
-                                    <span class="redemption-title">Mentor Coffee Chat</span>
+                                    <span class="redemption-title">Mentor Chat Lottery</span>
                                     <span class="redemption-cost">800 XP</span>
                                 </div>
                                 <button class="btn btn-primary-small">Redeem</button>
@@ -230,7 +230,7 @@
                                 <button class="btn btn-secondary-small" disabled>Locked</button>
                             </div>
                         </div>
-                        <a class="btn-link" onclick="showPointsMarketplace()">View All Opportunities →</a>
+                        <a class="btn-link widget-bottom-link" onclick="showPointsMarketplace()">View All Opportunities →</a>
                     </div>
                     
                     <!-- Referral Opportunities -->
@@ -366,7 +366,7 @@
                             
                             <div class="submission-section">
                                 <div class="section-header-small">
-                                    <h4>🔗 The Connector (100 XP)</h4>
+                                    <h4>🔗 The Connector (20 XP)</h4>
                                     <span class="word-count">0/100 words</span>
                                 </div>
                                 <textarea id="connector-textarea" class="submission-textarea" placeholder="Identify which industries, skill sets, or communities would need to collaborate to make this vision a reality."></textarea>
@@ -375,7 +375,7 @@
                             
                             <div class="submission-section">
                                 <div class="section-header-small">
-                                    <h4>📈 The Growth Hacker (100 XP)</h4>
+                                    <h4>📈 The Growth Hacker (20 XP)</h4>
                                     <span class="word-count">0/100 words</span>
                                 </div>
                                 <textarea id="growth-hacker-textarea" class="submission-textarea" placeholder="Reflect on how this new knowledge changes your personal career path and future vision. What one small action can you take now?"></textarea>
@@ -386,7 +386,7 @@
                         <div class="submission-actions">
                             <button class="btn btn-secondary btn-save-draft">Save Draft</button>
                             <button class="btn btn-primary btn-submit-challenge">Submit Blueprint</button>
-                            <span class="points-earned-right">XP Earned: 500/500</span>
+                            <span class="points-earned-right">XP Earned: 20/100</span>
                         </div>
                     </div>
                     
@@ -433,12 +433,7 @@
                         <!-- XP Progress Chart -->
                         <div class="xp-progress-section">
                             <div class="section-header">
-                                <h4 class="section-title">XP Progress Over Time</h4>
-                                <div class="chart-toggle">
-                                    <button class="toggle-btn active" data-view="total">Total XP</button>
-                                    <button class="toggle-btn" data-view="unredeemed">Unredeemed XP</button>
-                                    <button class="toggle-btn" data-view="both">Both</button>
-                                </div>
+                                <h4 class="section-title">Total XP Progress Over Time</h4>
                             </div>
                             <div class="xp-chart-container">
                                 <canvas id="xp-progress-chart" width="100%" height="200"></canvas>
@@ -529,9 +524,9 @@
                         <a class="btn-link" onclick="showPointsMarketplace()">View All Opportunities →</a>
                     </div>
                     
-                    <!-- Recent Feedback -->
+                    <!-- Recent Feedback & Support -->
                     <div class="card feedback-card">
-                        <h3 class="section-title">📝 Recent Feedback</h3>
+                        <h3 class="section-title">📝 Recent Feedback & Support</h3>
                         <div class="feedback-list">
                             <div class="feedback-item">
                                 <h4>AI in Healthcare Blueprint</h4>
@@ -542,6 +537,14 @@
                                 <h4>Climate Tech Trends Blueprint</h4>
                                 <div class="feedback-status">✅ Approved - Full XP Earned</div>
                                 <p class="feedback-comment">"Strong trend analysis and future vision. Consider expanding on specific implementation strategies in future blueprints."</p>
+                            </div>
+                            <div class="support-item">
+                                <h4>💡 Writing Support Available</h4>
+                                <p class="support-description">Need help writing better reflections? Access our AI writing mentor or schedule a session with an IMI coach.</p>
+                                <div class="support-actions">
+                                    <button class="btn btn-primary-small">AI Writing Help</button>
+                                    <button class="btn btn-secondary-small">Schedule Coaching</button>
+                                </div>
                             </div>
                         </div>
                     </div>

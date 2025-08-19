@@ -175,6 +175,17 @@ a:hover {
     margin: 0;
 }
 
+/* Widget section headers have less spacing */
+.widget .section-header {
+    margin-bottom: var(--spacing-md);
+}
+
+/* Widget bottom links have more top margin */
+.widget-bottom-link {
+    display: block;
+    margin-top: var(--spacing-lg) !important;
+}
+
 /* Grids */
 .dashboard-grid {
     display: grid;

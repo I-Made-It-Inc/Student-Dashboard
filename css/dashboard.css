@@ -91,11 +91,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: var(--spacing-xs);
     font-size: var(--font-size-sm);
     color: var(--text-gray);
     cursor: pointer;
     transition: all var(--transition-fast);
+    text-align: center;
 }
 
 .progress-section:hover {
@@ -294,7 +296,7 @@
 }
 
 .xp-range {
-    color: var(--imi-yellow);
+    color: var(--imi-blue);
     font-weight: 600;
 }
 .referral-list {

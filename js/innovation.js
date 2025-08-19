@@ -68,7 +68,7 @@ function updateSectionStatus(textarea) {
     
     if (statusElement) {
         if (wordCount >= 100) {
-            statusElement.textContent = '✓ Complete - 100 XP';
+            statusElement.textContent = '✓ Complete - 20 XP';
             statusElement.className = 'section-status completed';
         } else if (wordCount > 0) {
             statusElement.textContent = '⏱ In progress';
@@ -95,7 +95,7 @@ function updateOverallProgress() {
         
         if (wordCount >= 100) {
             completedSections++;
-            totalXP += 100; // 100 XP per section in blueprint system
+            totalXP += 20; // 20 XP per section in blueprint system
         }
     });
     
@@ -114,7 +114,7 @@ function updateOverallProgress() {
     // Update XP display
     const xpDisplay = document.querySelector('.points-earned-right');
     if (xpDisplay) {
-        xpDisplay.textContent = `XP Earned: ${totalXP}/500`;
+        xpDisplay.textContent = `XP Earned: ${totalXP}/100`;
     }
     
     const dashboardXpDisplay = document.querySelector('.points-earned');
@@ -250,6 +250,87 @@ function saveDraft() {
     });
 }
 
+// Submit blueprint for review
+async function submitBlueprint(e) {
+    e.preventDefault();
+    
+    const progress = updateOverallProgress();
+    
+    if (progress.completedSections === 0) {
+        window.IMI.utils.showNotification('Please complete at least one section before submitting.', 'warning');
+        return;
+    }
+    
+    // Collect all responses
+    const responses = collectResponses();
+    
+    // Show loading state
+    const submitButton = e.target;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Submitting...';
+    
+    try {
+        // In production, send to AI grading API
+        console.log('Submitting blueprint for review:', responses);
+        
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Show success - students get full XP when they pass
+        window.IMI.utils.showNotification(
+            `Blueprint submitted successfully! You earned ${progress.totalXP} XP.`,
+            'success'
+        );
+        
+        // Update streak
+        updateStreak();
+        
+        // Update tier progress
+        updateTierProgress(progress.totalXP);
+        
+        // Clear form
+        clearSubmissionForm();
+        
+    } catch (error) {
+        console.error('Submission error:', error);
+        window.IMI.utils.showNotification('Error submitting blueprint. Please try again.', 'error');
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit Blueprint';
+    }
+}
+
+// Clear submission form
+function clearSubmissionForm() {
+    document.querySelectorAll('.submission-textarea').forEach(textarea => {
+        textarea.value = '';
+        updateWordCount(textarea);
+        updateSectionStatus(textarea);
+    });
+}
+
+// Setup auto-save for drafts
+function setupAutoSaveDrafts() {
+    let autoSaveTimer;
+    
+    document.querySelectorAll('.submission-textarea').forEach(textarea => {
+        textarea.addEventListener('input', () => {
+            clearTimeout(autoSaveTimer);
+            
+            // Show saving indicator
+            const statusElement = textarea.closest('.submission-section')?.querySelector('.section-status');
+            if (statusElement && textarea.value.length > 0) {
+                statusElement.textContent = '⏱ Saving...';
+            }
+            
+            // Auto-save after 2 seconds of inactivity
+            autoSaveTimer = setTimeout(() => {
+                saveDraft();
+            }, 2000);
+        });
+    });
+}
+
 // Update tier progress
 function updateTierProgress(earnedXP) {
     // Tier thresholds based on Blueprint system
@@ -284,73 +365,72 @@ function updateTierProgress(earnedXP) {
 
 // Setup XP Chart
 function setupXPChart() {
-    const toggleButtons = document.querySelectorAll('.toggle-btn');
-    
-    toggleButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Update active tab
-            toggleButtons.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Update chart view
-            const view = this.dataset.view;
-            updateXPChart(view);
-        });
-    });
-    
-    // Initialize chart
-    updateXPChart('total');
+    // Initialize chart without toggle buttons
+    updateXPChart();
 }
 
 // Update XP Chart
-function updateXPChart(view) {
+function updateXPChart() {
     const chartContainer = document.querySelector('.xp-chart-container');
     if (!chartContainer) return;
     
-    // Mock data for XP progress over time
+    // Extended mock data spanning 2 seasons (8 months)
     const mockData = {
-        total: [100, 300, 500, 750, 1200, 1850],
-        unredeemed: [100, 250, 400, 500, 600, 1850],
-        labels: ['Week 1', 'Week 3', 'Week 5', 'Week 7', 'Week 9', 'Now']
+        total: [0, 100, 300, 580, 850, 1200, 1450, 1680, 1850, 2100, 2450, 2750, 3020, 3250, 3480, 3680],
+        labels: ['S1W1', 'S1W2', 'S1W4', 'S1W6', 'S1W8', 'S1W10', 'S1W12', 'S1W14', 'S1W16', 'S2W2', 'S2W4', 'S2W6', 'S2W8', 'S2W10', 'S2W12', 'Now']
     };
     
-    // Simple text-based chart for demo
-    let chartHTML = '<div class="simple-chart">';
+    // Tier thresholds
+    const tierThresholds = {
+        bronze: { min: 0, color: '#CD7F32', name: 'Bronze' },
+        silver: { min: 1000, color: '#C0C0C0', name: 'Silver' },
+        gold: { min: 2500, color: '#FFD700', name: 'Gold' },
+        platinum: { min: 5000, color: '#E5E4E2', name: 'Platinum' }
+    };
     
-    if (view === 'both') {
-        chartHTML += '<div class="chart-legend">';
-        chartHTML += '<span class="legend-item"><span class="legend-color total"></span>Total XP</span>';
-        chartHTML += '<span class="legend-item"><span class="legend-color unredeemed"></span>Unredeemed XP</span>';
-        chartHTML += '</div>';
-    }
+    const maxValue = Math.max(...mockData.total, 5000); // Include platinum threshold
     
-    chartHTML += '<div class="chart-bars">';
+    let chartHTML = '<div class="extended-chart">';
+    
+    // Add tier threshold lines
+    chartHTML += '<div class="tier-thresholds">';
+    Object.entries(tierThresholds).forEach(([tier, data]) => {
+        if (data.min <= maxValue && data.min > 0) {
+            const position = (data.min / maxValue) * 100;
+            chartHTML += `<div class="tier-line" style="bottom: ${position}%; border-color: ${data.color};" title="${data.name} Tier - ${data.min} XP"></div>`;
+            chartHTML += `<div class="tier-label" style="bottom: ${position}%;" title="${data.name} Tier">${data.name}</div>`;
+        }
+    });
+    chartHTML += '</div>';
+    
+    // Add chart bars
+    chartHTML += '<div class="chart-bars-extended">';
     
     mockData.labels.forEach((label, index) => {
-        const totalValue = mockData.total[index];
-        const unredeemedValue = mockData.unredeemed[index];
-        const maxValue = Math.max(...mockData.total);
+        const value = mockData.total[index];
+        const height = (value / maxValue) * 80; // 80% of container height for bars
         
-        let barHTML = '<div class="chart-bar-group">';
-        barHTML += `<div class="chart-label">${label}</div>`;
-        
-        if (view === 'total' || view === 'both') {
-            const height = (totalValue / maxValue) * 100;
-            barHTML += `<div class="chart-bar total" style="height: ${height}%" title="Total: ${totalValue} XP"></div>`;
+        let barHTML = '<div class="chart-bar-group-extended">';
+        barHTML += `<div class="chart-bar-extended" style="height: ${height}%" title="Total: ${value} XP"></div>`;
+        barHTML += `<div class="chart-label-extended">${label}</div>`;
+        if (index % 3 === 0 || index === mockData.labels.length - 1) {
+            barHTML += `<div class="chart-value-extended">${value}</div>`;
         }
-        
-        if (view === 'unredeemed' || view === 'both') {
-            const height = (unredeemedValue / maxValue) * 100;
-            barHTML += `<div class="chart-bar unredeemed" style="height: ${height}%" title="Unredeemed: ${unredeemedValue} XP"></div>`;
-        }
-        
-        barHTML += `<div class="chart-value">${view === 'total' ? totalValue : unredeemedValue} XP</div>`;
         barHTML += '</div>';
         
         chartHTML += barHTML;
     });
     
-    chartHTML += '</div></div>';
+    chartHTML += '</div>';
+    
+    // Add legend
+    chartHTML += '<div class="chart-legend-extended">';
+    chartHTML += '<span class="legend-item"><span class="legend-color-bar"></span>Total XP Progress</span>';
+    chartHTML += '<span class="legend-divider">•</span>';
+    chartHTML += '<span class="legend-item">Colored lines show tier thresholds</span>';
+    chartHTML += '</div>';
+    
+    chartHTML += '</div>';
     
     chartContainer.innerHTML = chartHTML;
 }
@@ -506,3 +586,26 @@ window.initializeBlueprintChallenge = initializeBlueprintChallenge;
 window.initializeInnovationChallenge = initializeBlueprintChallenge; // Backward compatibility
 window.loadCurrentChallenge = loadCurrentChallenge;
 window.showPointsMarketplace = showPointsMarketplace;
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        initializeBlueprintPage();
+        updateAllSectionStatuses();
+        generateXPChart();
+        setupAutoSaveDrafts();
+        
+        // Add event listeners for buttons
+        const saveDraftBtn = document.getElementById('save-draft-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        
+        if (saveDraftBtn) saveDraftBtn.addEventListener('click', saveDraft);
+        if (submitBtn) submitBtn.addEventListener('click', submitBlueprint);
+        if (resetBtn) resetBtn.addEventListener('click', resetAllSections);
+        
+        console.log('Blueprint page initialized successfully');
+    } catch (error) {
+        console.error('Error initializing blueprint page:', error);
+    }
+});
