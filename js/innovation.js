@@ -174,6 +174,19 @@ async function submitBlueprint(e) {
         updateStreak();
         updateTierProgress(progress.totalXP);
         
+        // Trigger Blue Spark for Blueprint submission
+        if (window.BlueSpark) {
+            const event = new CustomEvent('blueprintSubmitted', {
+                detail: {
+                    topic: 'The Future of Sustainable Cities',
+                    sections: Object.keys(responses),
+                    xpEarned: progress.totalXP,
+                    completedSections: progress.completedSections
+                }
+            });
+            document.dispatchEvent(event);
+        }
+        
         // Clear form
         clearSubmissionForm();
         
