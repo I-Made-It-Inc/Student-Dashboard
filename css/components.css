@@ -65,16 +65,18 @@
 }
 
 .btn-primary-small.locked-btn {
-    background-color: var(--light-gray);
+    background-color: var(--white);
     color: var(--text-gray);
-    border-color: var(--medium-gray);
+    border: 2px solid var(--imi-blue);
+    border-style: dashed;
     cursor: not-allowed;
 }
 
 .btn-primary-small.locked-btn:hover {
-    background-color: var(--light-gray);
+    background-color: var(--white);
     color: var(--text-gray);
-    border-color: var(--medium-gray);
+    border: 2px solid var(--imi-blue);
+    border-style: dashed;
 }
 
 .btn-primary-small.redeemed,
