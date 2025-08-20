@@ -102,7 +102,9 @@ function markAllAsRead() {
         if (markAsReadBtn) {
             markAsReadBtn.textContent = 'Read';
             markAsReadBtn.disabled = true;
-            markAsReadBtn.classList.add('disabled');
+            // Remove old button classes and add disabled class
+            markAsReadBtn.classList.remove('btn-notification-secondary');
+            markAsReadBtn.classList.add('btn-notification-disabled');
         }
     });
     
@@ -156,7 +158,9 @@ function markAsRead(button) {
         // Update button
         button.textContent = 'Read';
         button.disabled = true;
-        button.classList.add('disabled');
+        // Remove old button classes and add disabled class
+        button.classList.remove('btn-notification-secondary');
+        button.classList.add('btn-notification-disabled');
         
         // Update notification count
         const currentUnread = document.querySelectorAll('.notification-item.unread').length;
@@ -166,6 +170,41 @@ function markAsRead(button) {
         updateFilterChips();
         
         console.log('Notification marked as read');
+    }
+}
+
+// Clear individual notification
+function clearNotification(button) {
+    const notificationItem = button.closest('.notification-item');
+    if (notificationItem) {
+        const notificationTitle = notificationItem.querySelector('.notification-title').textContent;
+        const confirmClear = confirm(`Are you sure you want to clear this notification: "${notificationTitle}"? This action cannot be undone.`);
+        
+        if (confirmClear) {
+            // Add fade out animation
+            notificationItem.style.transition = 'opacity 0.3s ease';
+            notificationItem.style.opacity = '0';
+            
+            setTimeout(() => {
+                notificationItem.remove();
+                
+                // Update notification count if it was unread
+                if (notificationItem.classList.contains('unread')) {
+                    const currentUnread = document.querySelectorAll('.notification-item.unread').length;
+                    updateNotificationBadge(currentUnread);
+                }
+                
+                // Update filter chips
+                updateFilterChips();
+                updateNotificationCount();
+                
+                if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                    window.IMI.utils.showNotification('Notification cleared!', 'success');
+                }
+                
+                console.log('Notification cleared');
+            }, 300);
+        }
     }
 }
 
@@ -381,6 +420,7 @@ function loadNotificationsContent() {
 
 // Export functions for global use
 window.markAsRead = markAsRead;
+window.clearNotification = clearNotification;
 window.markAllAsRead = markAllAsRead;
 window.clearReadNotifications = clearReadNotifications;
 window.rsvpToEvent = rsvpToEvent;

@@ -1954,8 +1954,10 @@
                     <!-- Notification Actions -->
                     <div class="card notification-actions-card">
                         <div class="notification-actions">
-                            <button class="btn btn-primary-small" onclick="markAllAsRead()">Mark All as Read</button>
-                            <button class="btn btn-secondary-small" onclick="clearReadNotifications()">Clear Read</button>
+                            <div class="action-buttons">
+                                <button class="btn btn-notification-primary" onclick="markAllAsRead()">Mark All as Read</button>
+                                <button class="btn btn-notification-secondary" onclick="clearReadNotifications()">Clear Read</button>
+                            </div>
                             <div class="notification-filters">
                                 <span class="filter-chip active" data-filter="all">All (8)</span>
                                 <span class="filter-chip" data-filter="blueprint">Blueprint (2)</span>
@@ -1993,8 +1995,13 @@
                                         </div>
                                     </div>
                                     <div class="notification-actions">
-                                        <button class="btn btn-primary-small" onclick="showPage('innovation')">View Full Feedback</button>
-                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-notification-primary" onclick="showPage('innovation')">View Full Feedback</button>
+                                        </div>
+                                        <div class="read-clear-buttons">
+                                            <button class="btn btn-notification-secondary mark-read-button" onclick="markAsRead(this)">Mark as Read</button>
+                                            <button class="btn btn-notification-secondary" onclick="clearNotification(this)">Clear</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2020,8 +2027,13 @@
                                         </div>
                                     </div>
                                     <div class="notification-actions">
-                                        <button class="btn btn-primary-small" onclick="showPage('network')">Connect with Peers</button>
-                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-notification-primary" onclick="showPage('network')">Connect with Peers</button>
+                                        </div>
+                                        <div class="read-clear-buttons">
+                                            <button class="btn btn-notification-secondary mark-read-button" onclick="markAsRead(this)">Mark as Read</button>
+                                            <button class="btn btn-notification-secondary" onclick="clearNotification(this)">Clear</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2050,9 +2062,14 @@
                                         </div>
                                     </div>
                                     <div class="notification-actions">
-                                        <button class="btn btn-primary-small" onclick="rsvpToEvent('tech-networking-night')">RSVP Now</button>
-                                        <button class="btn btn-secondary-small" onclick="showPage('network')">View All Events</button>
-                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-notification-primary" onclick="rsvpToEvent('tech-networking-night')">RSVP Now</button>
+                                            <button class="btn btn-notification-secondary" onclick="showPage('network')">View All Events</button>
+                                        </div>
+                                        <div class="read-clear-buttons">
+                                            <button class="btn btn-notification-secondary mark-read-button" onclick="markAsRead(this)">Mark as Read</button>
+                                            <button class="btn btn-notification-secondary" onclick="clearNotification(this)">Clear</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2085,8 +2102,14 @@
                                         </div>
                                     </div>
                                     <div class="notification-actions">
-                                        <button class="btn btn-primary-small" onclick="downloadCertificate('market-research-xyz')">Get Certificate</button>
-                                        <button class="btn btn-secondary-small" onclick="requestReference('StartupXYZ')">Request Reference</button>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-notification-primary" onclick="downloadCertificate('market-research-xyz')">Get Certificate</button>
+                                            <button class="btn btn-notification-secondary" onclick="requestReference('StartupXYZ')">Request Reference</button>
+                                        </div>
+                                        <div class="read-clear-buttons">
+                                            <button class="btn btn-notification-disabled mark-read-button" disabled>Read</button>
+                                            <button class="btn btn-notification-secondary" onclick="clearNotification(this)">Clear</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2115,8 +2138,13 @@
                                         </div>
                                     </div>
                                     <div class="notification-actions">
-                                        <button class="btn btn-primary-small" onclick="rsvpToEvent('healthcare-innovation-summit')">Register</button>
-                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-notification-primary" onclick="rsvpToEvent('healthcare-innovation-summit')">Register</button>
+                                        </div>
+                                        <div class="read-clear-buttons">
+                                            <button class="btn btn-notification-secondary mark-read-button" onclick="markAsRead(this)">Mark as Read</button>
+                                            <button class="btn btn-notification-secondary" onclick="clearNotification(this)">Clear</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2145,9 +2173,14 @@
                                         </div>
                                     </div>
                                     <div class="notification-actions">
-                                        <button class="btn btn-primary-small" onclick="showPage('projects')">View Task Details</button>
-                                        <button class="btn btn-secondary-small" onclick="joinTeamsChannel('techcorp-marketing')">Join Teams Chat</button>
-                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-notification-primary" onclick="showPage('projects')">View Task Details</button>
+                                            <button class="btn btn-notification-secondary" onclick="joinTeamsChannel('techcorp-marketing')">Join Teams Chat</button>
+                                        </div>
+                                        <div class="read-clear-buttons">
+                                            <button class="btn btn-notification-secondary mark-read-button" onclick="markAsRead(this)">Mark as Read</button>
+                                            <button class="btn btn-notification-secondary" onclick="clearNotification(this)">Clear</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2179,9 +2212,14 @@
                                         </div>
                                     </div>
                                     <div class="notification-actions">
-                                        <button class="btn btn-primary-small" onclick="claimReward('innovation-streak-bonus')">Claim Reward</button>
-                                        <button class="btn btn-secondary-small" onclick="registerForWorkshop('advanced-ai')">Register for Workshop</button>
-                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-notification-primary" onclick="claimReward('innovation-streak-bonus')">Claim Reward</button>
+                                            <button class="btn btn-notification-secondary" onclick="registerForWorkshop('advanced-ai')">Register for Workshop</button>
+                                        </div>
+                                        <div class="read-clear-buttons">
+                                            <button class="btn btn-notification-secondary mark-read-button" onclick="markAsRead(this)">Mark as Read</button>
+                                            <button class="btn btn-notification-secondary" onclick="clearNotification(this)">Clear</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2210,8 +2248,14 @@
                                         </div>
                                     </div>
                                     <div class="notification-actions">
-                                        <button class="btn btn-primary-small" onclick="showPage('network')">View Connections</button>
-                                        <button class="btn btn-secondary-small" onclick="scheduleMentorMeeting()">Schedule Mentoring</button>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-notification-primary" onclick="showPage('network')">View Connections</button>
+                                            <button class="btn btn-notification-secondary" onclick="scheduleMentorMeeting()">Schedule Mentoring</button>
+                                        </div>
+                                        <div class="read-clear-buttons">
+                                            <button class="btn btn-notification-disabled mark-read-button" disabled>Read</button>
+                                            <button class="btn btn-notification-secondary" onclick="clearNotification(this)">Clear</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

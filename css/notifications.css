@@ -16,8 +16,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 1rem;
+    gap: 1rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
     flex-wrap: wrap;
-    gap: var(--spacing-md);
+}
+
+.read-clear-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 .notification-filters {
@@ -183,6 +195,7 @@
     display: flex;
     gap: var(--spacing-xs);
     align-items: center;
+    margin-top: 2px;
 }
 
 .points-badge, .bonus-badge, .surprise-badge, .hours-badge {
@@ -336,9 +349,74 @@
 /* Notification Actions */
 .notification-actions {
     display: flex;
-    gap: var(--spacing-xs);
+    justify-content: space-between;
+    align-items: center;
     margin-top: var(--spacing-sm);
     flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.notification-actions .action-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.notification-actions .mark-read-button {
+    margin-left: auto;
+}
+
+.notification-actions .mark-read-button.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Notification Button Styles - matching innovation hub */
+.notification-actions .btn.btn-notification-primary {
+    background-color: var(--imi-yellow) !important;
+    color: var(--imi-blue) !important;
+    border: 2px solid var(--imi-yellow) !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.notification-actions .btn.btn-notification-primary:hover {
+    background-color: #e6c002 !important;
+    border-color: #e6c002 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 213, 2, 0.3);
+}
+
+.notification-actions .btn.btn-notification-secondary {
+    background-color: var(--white) !important;
+    color: var(--imi-blue) !important;
+    border: 2px solid var(--imi-blue) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.notification-actions .btn.btn-notification-secondary:hover {
+    background-color: var(--imi-blue) !important;
+    color: var(--white) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.notification-actions .btn.btn-notification-disabled {
+    background-color: var(--medium-gray) !important;
+    color: var(--text-gray) !important;
+    border: 2px solid var(--medium-gray) !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.notification-actions .btn.btn-notification-disabled:hover {
+    background-color: var(--medium-gray) !important;
+    color: var(--text-gray) !important;
+    border: 2px solid var(--medium-gray) !important;
+    transform: none;
+    box-shadow: none;
 }
 
 .notification-actions .btn {
@@ -574,12 +652,24 @@ input:checked + .toggle-slider:before {
     }
     
     .notification-actions {
-        flex-wrap: wrap;
-        gap: var(--spacing-xs);
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-sm);
     }
     
-    .notification-actions .btn {
+    .notification-actions .action-buttons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .notification-actions .action-buttons .btn {
         flex: 1;
+        min-width: 120px;
+    }
+    
+    .notification-actions .mark-read-button {
+        margin-left: 0;
+        align-self: flex-end;
         min-width: 120px;
     }
     
@@ -620,5 +710,18 @@ input:checked + .toggle-slider:before {
     .task-info {
         flex-direction: column;
         gap: var(--spacing-xs);
+    }
+    
+    .notification-actions .action-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .notification-actions .action-buttons .btn {
+        width: 100%;
+    }
+    
+    .notification-actions .mark-read-button {
+        width: 100%;
     }
 }
