@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/navigation.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/innovation.css">
+    <link rel="stylesheet" href="css/ideas.css">
     <link rel="stylesheet" href="css/projects.css">
     <link rel="stylesheet" href="css/companies.css">
     <link rel="stylesheet" href="css/network.css">
@@ -31,6 +32,7 @@
             <ul class="nav-links">
                 <li><a href="#dashboard" class="active" id="nav-dashboard">Dashboard</a></li>
                 <li><a href="#innovation" id="nav-innovation">Blueprint for the Future</a></li>
+                <li><a href="#ideas" id="nav-ideas">Ideas & Innovation</a></li>
                 <li><a href="#projects" id="nav-projects">Co-op Projects</a></li>
                 <li><a href="#companies" id="nav-companies">Companies</a></li>
                 <li><a href="#network" id="nav-network">Network</a></li>
@@ -582,6 +584,391 @@
                                     <button class="btn btn-primary-small">Read Blueprint</button>
                                     <button class="btn btn-secondary-small">Connect with Maria</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ideas & Innovation Page -->
+        <div id="ideas-page" class="page-section">
+            <h2>Ideas & Innovation Hub</h2>
+            
+            <div class="ideas-grid">
+                <div class="ideas-main">
+                    <!-- Submit New Idea Card -->
+                    <div class="card idea-submission-card">
+                        <div class="section-header">
+                            <h3 class="section-title">💡 Submit Your Innovation Idea</h3>
+                            <span class="text-muted">Share your entrepreneurial vision with the community</span>
+                        </div>
+                        
+                        <form id="idea-submission-form" class="idea-form">
+                            <div class="form-group">
+                                <label>Idea Title</label>
+                                <input type="text" name="ideaTitle" class="form-input" placeholder="e.g., AI-Powered Sustainable Fashion Platform" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Industry Focus</label>
+                                    <select name="industry" class="form-select" required>
+                                        <option value="">Select an industry</option>
+                                        <option>Technology</option>
+                                        <option>Healthcare</option>
+                                        <option>Environmental/Sustainability</option>
+                                        <option>Education</option>
+                                        <option>Finance</option>
+                                        <option>Manufacturing</option>
+                                        <option>Entertainment</option>
+                                        <option>Food & Agriculture</option>
+                                        <option>Transportation</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Development Stage</label>
+                                    <select name="stage" class="form-select" required>
+                                        <option value="">Current stage</option>
+                                        <option>Just an Idea</option>
+                                        <option>Research Phase</option>
+                                        <option>Planning & Design</option>
+                                        <option>Prototype Development</option>
+                                        <option>Testing Phase</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Idea Description</label>
+                                <textarea name="description" class="form-textarea" rows="4" placeholder="Describe your idea, the problem it solves, and your vision for implementation..." required></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Inspiration Source</label>
+                                <textarea name="inspiration" class="form-textarea" rows="2" placeholder="What article, experience, or insight inspired this idea? Include links if applicable..."></textarea>
+                            </div>
+                            
+                            <div class="collaboration-section">
+                                <h4>🤝 Collaboration Preferences</h4>
+                                <div class="collaboration-options">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="openToCollaboration" checked>
+                                        <span>Open to peer collaboration</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="seekingFunding">
+                                        <span>Seeking XP crowdfunding from peers</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="lookingForTeam">
+                                        <span>Looking for team members with specific skills</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="skills-needed" style="display: none;">
+                                    <label>Skills/Expertise Needed</label>
+                                    <div class="skills-tags">
+                                        <label class="checkbox-label"><input type="checkbox" name="skills" value="coding"> Programming/Development</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="skills" value="design"> UI/UX Design</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="skills" value="marketing"> Marketing/Business</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="skills" value="research"> Research/Analysis</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="skills" value="writing"> Content/Writing</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="skills" value="finance"> Finance/Economics</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">🚀 Submit Idea</button>
+                                <button type="button" class="btn btn-secondary" onclick="saveDraft()">💾 Save Draft</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Community Ideas Feed -->
+                    <div class="card community-ideas-card">
+                        <div class="section-header">
+                            <h3 class="section-title">🌟 Community Innovation Ideas</h3>
+                            <div class="filter-buttons">
+                                <button class="btn btn-primary-small filter-active" data-filter="all">All Ideas</button>
+                                <button class="btn btn-primary-small" data-filter="seeking-funding">Seeking Funding</button>
+                                <button class="btn btn-primary-small" data-filter="recruiting">Recruiting Team</button>
+                                <button class="btn btn-primary-small" data-filter="my-industry">My Interests</button>
+                            </div>
+                        </div>
+                        
+                        <div class="ideas-feed">
+                            <!-- Example Idea 1 -->
+                            <div class="idea-card" data-industry="technology" data-seeking-funding="true">
+                                <div class="idea-header">
+                                    <div class="idea-author-info">
+                                        <div class="author-avatar">AC</div>
+                                        <div>
+                                            <h4>Smart Waste Management System</h4>
+                                            <div class="idea-meta">
+                                                <span class="author">by Alex Chen</span>
+                                                <span class="industry-tag">Technology</span>
+                                                <span class="stage-badge">Research Phase</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="idea-stats">
+                                        <span class="crowdfunding-amount">🏆 Seeking 2,500 XP</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="idea-content">
+                                    <p>IoT-enabled smart bins that optimize waste collection routes and reduce environmental impact. Inspired by Singapore's smart city initiatives, this system could revolutionize urban waste management.</p>
+                                    <div class="idea-tags">
+                                        <span class="skill-tag">IoT Development</span>
+                                        <span class="skill-tag">Data Analytics</span>
+                                        <span class="skill-tag">Environmental Research</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="idea-actions">
+                                    <button class="btn btn-primary-small">💰 Invest XP</button>
+                                    <button class="btn btn-secondary-small">🤝 Join Team</button>
+                                    <button class="btn btn-secondary-small">💬 Open in Teams</button>
+                                    <button class="btn btn-secondary-small">📋 View Details</button>
+                                </div>
+                                
+                                <div class="crowdfunding-progress">
+                                    <div class="progress-info">
+                                        <span>Crowdfunding Progress: 1,200 / 2,500 XP (48%)</span>
+                                        <span class="investors-count">8 investors</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 48%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Example Idea 2 -->
+                            <div class="idea-card" data-industry="healthcare" data-recruiting="true">
+                                <div class="idea-header">
+                                    <div class="idea-author-info">
+                                        <div class="author-avatar">MG</div>
+                                        <div>
+                                            <h4>Mental Health Support Platform</h4>
+                                            <div class="idea-meta">
+                                                <span class="author">by Maria Garcia</span>
+                                                <span class="industry-tag">Healthcare</span>
+                                                <span class="stage-badge">Planning & Design</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="team-status">
+                                        <span class="recruiting-badge">🔍 Recruiting</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="idea-content">
+                                    <p>Peer-to-peer mental health platform connecting students with trained peer counselors. Addresses the mental health crisis in schools through accessible, stigma-free support.</p>
+                                    <div class="idea-tags">
+                                        <span class="skill-tag">Psychology/Counseling</span>
+                                        <span class="skill-tag">App Development</span>
+                                        <span class="skill-tag">Community Building</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="idea-actions">
+                                    <button class="btn btn-primary-small">🤝 Join Team</button>
+                                    <button class="btn btn-secondary-small">💬 Open in Teams</button>
+                                    <button class="btn btn-secondary-small">📋 View Details</button>
+                                    <button class="btn btn-secondary-small">❤️ Like</button>
+                                </div>
+                                
+                                <div class="team-progress">
+                                    <div class="team-info">
+                                        <span>Team: 3/6 members</span>
+                                        <span class="needed-skills">Still need: Psychology, Mobile Dev</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Example Idea 3 -->
+                            <div class="idea-card" data-industry="environmental">
+                                <div class="idea-header">
+                                    <div class="idea-author-info">
+                                        <div class="author-avatar">RJ</div>
+                                        <div>
+                                            <h4>Carbon Credit Marketplace for Students</h4>
+                                            <div class="idea-meta">
+                                                <span class="author">by Ryan Johnson</span>
+                                                <span class="industry-tag">Environmental</span>
+                                                <span class="stage-badge">Just an Idea</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="idea-content">
+                                    <p>Platform allowing students to earn and trade carbon credits for eco-friendly actions. Gamifies sustainability while creating real environmental impact through verified carbon offset projects.</p>
+                                    <div class="idea-tags">
+                                        <span class="skill-tag">Blockchain</span>
+                                        <span class="skill-tag">Environmental Science</span>
+                                        <span class="skill-tag">Gamification</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="idea-actions">
+                                    <button class="btn btn-primary-small">🤝 Collaborate</button>
+                                    <button class="btn btn-secondary-small">💬 Open in Teams</button>
+                                    <button class="btn btn-secondary-small">📋 View Details</button>
+                                    <button class="btn btn-secondary-small">❤️ Like</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="load-more-ideas">
+                            <button class="btn btn-secondary">Load More Ideas</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ideas-sidebar">
+                    <!-- Your Active Ideas -->
+                    <div class="card your-ideas-widget">
+                        <div class="section-header">
+                            <h3 class="section-title">🚀 Your Ideas</h3>
+                            <span class="ideas-count">2 active</span>
+                        </div>
+                        
+                        <div class="your-ideas-list">
+                            <div class="your-idea-item">
+                                <h4>AI Study Buddy App</h4>
+                                <div class="idea-status">
+                                    <span class="status-badge status-progress">In Development</span>
+                                    <span class="team-size">4 team members</span>
+                                </div>
+                                <div class="funding-status">
+                                    <span>Funded: 3,200/3,000 XP ✅</span>
+                                </div>
+                                <div class="quick-actions">
+                                    <button class="btn btn-primary-small">💬 Team Chat</button>
+                                    <button class="btn btn-secondary-small">📋 Manage</button>
+                                </div>
+                            </div>
+                            
+                            <div class="your-idea-item">
+                                <h4>Sustainable Fashion Tracker</h4>
+                                <div class="idea-status">
+                                    <span class="status-badge status-pending">Seeking Funding</span>
+                                </div>
+                                <div class="funding-status">
+                                    <span>Raised: 800/2,000 XP (40%)</span>
+                                </div>
+                                <div class="quick-actions">
+                                    <button class="btn btn-primary-small">📈 Promote</button>
+                                    <button class="btn btn-secondary-small">📋 Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- XP Investment Portfolio -->
+                    <div class="card investment-portfolio-widget">
+                        <div class="section-header">
+                            <h3 class="section-title">💼 Your XP Investments</h3>
+                            <span class="investment-total">1,500 XP invested</span>
+                        </div>
+                        
+                        <div class="investment-list">
+                            <div class="investment-item">
+                                <div class="investment-idea">
+                                    <h4>Smart Waste Management</h4>
+                                    <span class="investment-amount">500 XP invested</span>
+                                </div>
+                                <div class="investment-return">
+                                    <span class="return-status positive">+12% ROI potential</span>
+                                </div>
+                            </div>
+                            
+                            <div class="investment-item">
+                                <div class="investment-idea">
+                                    <h4>EdTech Learning Platform</h4>
+                                    <span class="investment-amount">800 XP invested</span>
+                                </div>
+                                <div class="investment-return">
+                                    <span class="return-status positive">+8% ROI potential</span>
+                                </div>
+                            </div>
+                            
+                            <div class="investment-item">
+                                <div class="investment-idea">
+                                    <h4>Local Food Network</h4>
+                                    <span class="investment-amount">200 XP invested</span>
+                                </div>
+                                <div class="investment-return">
+                                    <span class="return-status neutral">Project completed ✅</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 15px;">View Full Portfolio</button>
+                    </div>
+                    
+                    <!-- Collaboration Tools -->
+                    <div class="card collaboration-tools-widget">
+                        <div class="section-header">
+                            <h3 class="section-title">🛠️ Collaboration Tools</h3>
+                        </div>
+                        
+                        <div class="tools-grid">
+                            <div class="tool-item">
+                                <div class="tool-icon">📋</div>
+                                <div class="tool-info">
+                                    <h4>MS Teams</h4>
+                                    <p>Project chat & meetings</p>
+                                </div>
+                                <button class="btn btn-primary-small">Open</button>
+                            </div>
+                            
+                            <div class="tool-item">
+                                <div class="tool-icon">📝</div>
+                                <div class="tool-info">
+                                    <h4>Notion</h4>
+                                    <p>Collaborative documentation</p>
+                                </div>
+                                <button class="btn btn-primary-small">Open</button>
+                            </div>
+                            
+                            <div class="tool-item">
+                                <div class="tool-icon">🐙</div>
+                                <div class="tool-info">
+                                    <h4>GitHub</h4>
+                                    <p>Code collaboration</p>
+                                </div>
+                                <button class="btn btn-primary-small">Open</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Trending Topics -->
+                    <div class="card trending-topics-widget">
+                        <div class="section-header">
+                            <h3 class="section-title">📈 Trending Innovation Areas</h3>
+                        </div>
+                        
+                        <div class="trending-topics">
+                            <div class="topic-item">
+                                <span class="topic-name">AI in Education</span>
+                                <span class="topic-count">12 ideas</span>
+                            </div>
+                            <div class="topic-item">
+                                <span class="topic-name">Sustainable Tech</span>
+                                <span class="topic-count">8 ideas</span>
+                            </div>
+                            <div class="topic-item">
+                                <span class="topic-name">Mental Health</span>
+                                <span class="topic-count">6 ideas</span>
+                            </div>
+                            <div class="topic-item">
+                                <span class="topic-name">Blockchain Apps</span>
+                                <span class="topic-count">5 ideas</span>
                             </div>
                         </div>
                     </div>
@@ -1533,6 +1920,7 @@
     <script src="js/blue-spark-simple.js"></script>
     <script src="js/navigation.js"></script>
     <script src="js/innovation.js"></script>
+    <script src="js/ideas.js"></script>
     <script src="js/modal.js"></script>
     <script src="js/companies.js"></script>
     <script src="js/tracking.js"></script>

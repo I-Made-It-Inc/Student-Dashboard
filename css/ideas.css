@@ -1,0 +1,504 @@
+/* css/ideas.css - Ideas & Innovation Hub Styles */
+
+/* Main Ideas Grid */
+.ideas-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.ideas-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.ideas-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* Idea Submission Form */
+.idea-submission-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.idea-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    padding: 12px;
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    transition: border-color var(--transition-fast);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--imi-blue);
+}
+
+.form-textarea {
+    resize: vertical;
+    font-family: var(--font-primary);
+}
+
+.collaboration-section {
+    background: var(--light-gray);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--imi-yellow);
+}
+
+.collaboration-section h4 {
+    margin-bottom: var(--spacing-md);
+    color: var(--imi-blue);
+}
+
+.collaboration-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    width: auto;
+}
+
+.skills-tags {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-start;
+    margin-top: var(--spacing-lg);
+}
+
+/* Community Ideas Feed */
+.community-ideas-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.filter-active {
+    background-color: var(--imi-blue) !important;
+    color: var(--white) !important;
+    border-color: var(--imi-blue) !important;
+}
+
+.ideas-feed {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.idea-card {
+    background: var(--white);
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-fast);
+}
+
+.idea-card:hover {
+    border-color: var(--imi-yellow);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.idea-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+}
+
+.idea-author-info {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+}
+
+.author-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--imi-blue);
+    color: var(--imi-yellow);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.idea-header h4 {
+    margin: 0 0 var(--spacing-xs) 0;
+    color: var(--imi-blue);
+    font-size: var(--font-size-lg);
+}
+
+.idea-meta {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.author {
+    color: var(--text-gray);
+    font-size: var(--font-size-sm);
+}
+
+.industry-tag {
+    background-color: rgba(255, 213, 2, 0.2);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-yellow);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.stage-badge {
+    background-color: rgba(4, 40, 71, 0.1);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-blue);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.crowdfunding-amount {
+    background-color: rgba(255, 213, 2, 0.2);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-yellow);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+}
+
+.recruiting-badge {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+}
+
+.idea-content {
+    margin-bottom: var(--spacing-lg);
+}
+
+.idea-content p {
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+    color: var(--imi-dark-gray);
+}
+
+.idea-tags {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.skill-tag {
+    background-color: var(--light-gray);
+    color: var(--imi-blue);
+    border: 1px solid var(--medium-gray);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+}
+
+.idea-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing-md);
+}
+
+.crowdfunding-progress,
+.team-progress {
+    background: var(--light-gray);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--imi-yellow);
+}
+
+.progress-info,
+.team-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.investors-count,
+.needed-skills {
+    color: var(--text-gray);
+    font-size: var(--font-size-xs);
+}
+
+.load-more-ideas {
+    text-align: center;
+    margin-top: var(--spacing-xl);
+}
+
+/* Sidebar Widgets */
+.your-ideas-widget,
+.investment-portfolio-widget,
+.collaboration-tools-widget,
+.trending-topics-widget {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.ideas-count,
+.investment-total {
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: bold;
+}
+
+.your-ideas-list,
+.investment-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.your-idea-item,
+.investment-item {
+    background: var(--light-gray);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--imi-blue);
+}
+
+.your-idea-item h4,
+.investment-idea h4 {
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: var(--font-size-base);
+    color: var(--imi-blue);
+}
+
+.idea-status,
+.funding-status,
+.investment-return {
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-progress {
+    background-color: rgba(4, 40, 71, 0.1);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-blue);
+}
+
+.status-pending {
+    background-color: rgba(255, 213, 2, 0.2);
+    color: var(--imi-blue);
+    border: 1px solid var(--imi-yellow);
+}
+
+.team-size,
+.investment-amount {
+    color: var(--text-gray);
+    font-size: var(--font-size-xs);
+}
+
+.quick-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+}
+
+.return-status.positive {
+    color: var(--success-green);
+    font-weight: 600;
+}
+
+.return-status.neutral {
+    color: var(--text-gray);
+}
+
+/* Collaboration Tools */
+.tools-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.tool-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background: var(--light-gray);
+    border-radius: var(--radius-sm);
+}
+
+.tool-icon {
+    font-size: 24px;
+    width: 40px;
+    text-align: center;
+}
+
+.tool-info {
+    flex: 1;
+}
+
+.tool-info h4 {
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: var(--font-size-sm);
+    color: var(--imi-blue);
+}
+
+.tool-info p {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    color: var(--text-gray);
+}
+
+/* Trending Topics */
+.trending-topics {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.topic-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+.topic-item:last-child {
+    border-bottom: none;
+}
+
+.topic-name {
+    font-weight: 500;
+    color: var(--imi-blue);
+}
+
+.topic-count {
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .ideas-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-buttons {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .idea-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: flex-start;
+    }
+    
+    .idea-meta {
+        gap: var(--spacing-sm);
+    }
+    
+    .idea-actions {
+        justify-content: center;
+    }
+    
+    .quick-actions {
+        justify-content: center;
+    }
+    
+    .skills-tags {
+        grid-template-columns: 1fr;
+    }
+}

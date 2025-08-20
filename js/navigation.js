@@ -76,6 +76,9 @@ function loadPageContent(pageId) {
         case 'innovation':
             loadInnovationContent();
             break;
+        case 'ideas':
+            loadIdeasContent();
+            break;
         case 'projects':
             loadProjectsContent();
             break;
@@ -125,6 +128,22 @@ function loadInnovationContent() {
     loadInnovationLeaderboard();
 }
 
+// Ideas content loader
+function loadIdeasContent() {
+    console.log('Loading ideas & innovation content...');
+    
+    // Initialize ideas page functionality
+    if (typeof initializeIdeasPage === 'function') {
+        initializeIdeasPage();
+    }
+    
+    // Load community ideas feed
+    loadCommunityIdeas();
+    
+    // Load user's ideas
+    loadUserIdeas();
+}
+
 // Load current challenge
 function loadCurrentChallenge() {
     console.log('Loading current challenge...');
@@ -140,6 +159,18 @@ function updateChallengeProgress() {
 // Load innovation leaderboard
 function loadInnovationLeaderboard() {
     console.log('Loading innovation leaderboard...');
+    // In production, fetch from API
+}
+
+// Load community ideas
+function loadCommunityIdeas() {
+    console.log('Loading community ideas...');
+    // In production, fetch from API
+}
+
+// Load user's ideas
+function loadUserIdeas() {
+    console.log('Loading user ideas...');
     // In production, fetch from API
 }
 
@@ -363,7 +394,7 @@ function updateURL(pageId) {
 function getPageFromURL() {
     const hash = window.location.hash.slice(1);
     // Validate that the page exists
-    const validPages = ['dashboard', 'innovation', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile'];
+    const validPages = ['dashboard', 'innovation', 'ideas', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile'];
     return validPages.includes(hash) ? hash : 'dashboard';
 }
 
@@ -372,6 +403,7 @@ function updatePageTitle(pageId) {
     const titles = {
         dashboard: 'Dashboard',
         innovation: 'Innovation Challenge',
+        ideas: 'Ideas & Innovation Hub',
         projects: 'Co-op Projects',
         companies: 'Companies Directory',
         network: 'Professional Network',
