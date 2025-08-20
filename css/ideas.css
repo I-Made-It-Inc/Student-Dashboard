@@ -395,7 +395,14 @@
 }
 
 /* Idea stats styling */
-.idea-stats {
+.idea-header .idea-stats {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    /* No border for header stats */
+}
+
+.idea-card > .idea-stats {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -466,6 +473,13 @@
     border-radius: var(--radius-sm);
     font-size: var(--font-size-xs);
     font-weight: bold;
+}
+
+.investment-total {
+    text-align: right;
+    flex-shrink: 0;
+    width: auto;
+    min-width: fit-content;
 }
 
 .your-ideas-list,
