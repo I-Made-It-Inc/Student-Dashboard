@@ -175,7 +175,7 @@
 }
 
 .notification-message p {
-    margin: 0 0 var(--spacing-sm) 0;
+    margin: 0 0 var(--spacing-xs) 0;
     color: var(--imi-dark-gray);
     line-height: 1.5;
 }
@@ -184,8 +184,8 @@
 .notification-details {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
     background-color: var(--bg-light);
     border-radius: var(--radius-sm);
     border-left: 3px solid var(--imi-blue);
@@ -235,21 +235,40 @@
 .event-details {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xs);
+    gap: 4px;
 }
 
 .event-info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 0;
     font-size: var(--font-size-sm);
     color: var(--imi-dark-gray);
+    line-height: 1;
+}
+
+.event-info-compact {
+    font-size: var(--font-size-sm);
+    color: var(--imi-dark-gray);
+    line-height: 1.3;
+    margin-bottom: 2px;
+}
+
+.event-date, .event-location {
+    display: block;
+    line-height: 1.1;
+    margin: 0;
+    padding: 0;
+}
+
+.event-location {
+    margin-top: -2px;
 }
 
 .event-highlights {
     font-size: var(--font-size-sm);
     color: var(--text-muted);
-    margin-top: var(--spacing-xs);
+    margin-top: 4px;
 }
 
 /* Project Feedback */

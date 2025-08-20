@@ -70,17 +70,8 @@ function filterNotifications(category) {
 
 // Set up notification actions
 function setupNotificationActions() {
-    // Mark all as read
-    const markAllBtn = document.querySelector('[onclick="markAllAsRead()"]');
-    if (markAllBtn) {
-        markAllBtn.addEventListener('click', markAllAsRead);
-    }
-    
-    // Clear read notifications
-    const clearReadBtn = document.querySelector('[onclick="clearReadNotifications()"]');
-    if (clearReadBtn) {
-        clearReadBtn.addEventListener('click', clearReadNotifications);
-    }
+    // Note: Buttons use onclick attributes in HTML, so no event listeners needed here
+    console.log('Notification actions setup complete');
 }
 
 // Mark all notifications as read
