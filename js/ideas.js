@@ -5,7 +5,22 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeIdeasPage();
 });
 
+// Store like states in localStorage for persistence
+const LIKES_STORAGE_KEY = 'studentDashboardLikes';
+
+function getLikeData() {
+    const stored = localStorage.getItem(LIKES_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : {};
+}
+
+function saveLikeData(data) {
+    localStorage.setItem(LIKES_STORAGE_KEY, JSON.stringify(data));
+}
+
 function initializeIdeasPage() {
+    // Initialize like states from localStorage
+    initializeLikeStates();
+    
     // Handle idea submission form
     const ideaForm = document.getElementById('idea-submission-form');
     if (ideaForm) {
@@ -26,6 +41,59 @@ function initializeIdeasPage() {
 
     // Handle idea action buttons
     initializeIdeaActions();
+}
+
+function initializeLikeStates() {
+    const likeData = getLikeData();
+    const likeButtons = document.querySelectorAll('.btn-like');
+    
+    likeButtons.forEach(button => {
+        const ideaId = button.getAttribute('data-idea-id');
+        if (likeData[ideaId] && likeData[ideaId].liked) {
+            // Set liked state
+            const likeIcon = button.querySelector('.like-icon');
+            likeIcon.textContent = '❤️';
+            button.classList.add('liked');
+        }
+    });
+}
+
+function toggleLike(button) {
+    const ideaId = button.getAttribute('data-idea-id');
+    const likeIcon = button.querySelector('.like-icon');
+    const likeCountElement = document.getElementById(`like-count-${ideaId}`);
+    const likeData = getLikeData();
+    
+    // Get current like count
+    const currentText = likeCountElement.textContent;
+    const currentCount = parseInt(currentText.match(/\d+/)[0]);
+    
+    if (button.classList.contains('liked')) {
+        // Unlike
+        likeIcon.textContent = '🤍';
+        button.classList.remove('liked');
+        likeCountElement.textContent = `${currentCount - 1} likes`;
+        
+        // Update stored data
+        delete likeData[ideaId];
+        
+        // Show notification
+        showNotification('💔 Removed like', 'info');
+    } else {
+        // Like
+        likeIcon.textContent = '❤️';
+        button.classList.add('liked');
+        likeCountElement.textContent = `${currentCount + 1} likes`;
+        
+        // Update stored data
+        likeData[ideaId] = { liked: true, timestamp: Date.now() };
+        
+        // Show notification
+        showNotification('❤️ Liked!', 'success');
+    }
+    
+    // Save to localStorage
+    saveLikeData(likeData);
 }
 
 function handleIdeaSubmission(event) {
@@ -156,6 +224,12 @@ function initializeIdeaActions() {
 }
 
 function handleXPInvestment(event) {
+    // Check if button is disabled
+    if (event.target.disabled || event.target.classList.contains('disabled')) {
+        showNotification('❌ This idea is not currently seeking XP investment.', 'error');
+        return;
+    }
+    
     const ideaCard = event.target.closest('.idea-card');
     const ideaTitle = ideaCard.querySelector('h4').textContent;
     
@@ -194,11 +268,12 @@ function handleJoinTeam(event) {
     
     showNotification(`🤝 Join request sent for "${ideaTitle}"! The team lead will review your application.`, 'success');
     
-    // Change button text to indicate request sent
+    // Change button text and style to indicate request sent
     event.target.textContent = '⏳ Request Sent';
     event.target.disabled = true;
-    event.target.classList.add('btn-secondary-small');
-    event.target.classList.remove('btn-primary-small');
+    event.target.classList.remove('btn-idea-primary');
+    event.target.classList.remove('btn-idea-secondary');
+    event.target.classList.add('btn-idea-disabled');
 }
 
 function handleOpenTeams(event) {

@@ -698,8 +698,8 @@
                             </div>
                             
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">🚀 Submit Idea</button>
                                 <button type="button" class="btn btn-secondary" onclick="saveDraft()">💾 Save Draft</button>
+                                <button type="submit" class="btn btn-primary">🚀 Submit Idea</button>
                             </div>
                         </form>
                     </div>
@@ -746,10 +746,17 @@
                                 </div>
                                 
                                 <div class="idea-actions">
-                                    <button class="btn btn-primary-small">💰 Invest XP</button>
-                                    <button class="btn btn-secondary-small">🤝 Join Team</button>
-                                    <button class="btn btn-secondary-small">💬 Open in Teams</button>
-                                    <button class="btn btn-secondary-small">📋 View Details</button>
+                                    <button class="btn btn-idea-secondary btn-like" data-idea-id="1" onclick="toggleLike(this)">
+                                        <span class="like-icon">🤍</span> Like
+                                    </button>
+                                    <button class="btn btn-idea-primary btn-invest" data-idea-id="1" onclick="handleXPInvestment(event)">💰 Invest XP</button>
+                                    <button class="btn btn-idea-secondary" onclick="handleJoinTeam(event)">🤝 Join Team</button>
+                                    <button class="btn btn-idea-secondary" onclick="handleOpenTeams(event)">💬 Open in Teams</button>
+                                    <button class="btn btn-idea-secondary">📋 View Details</button>
+                                </div>
+                                
+                                <div class="idea-stats">
+                                    <span class="like-count" id="like-count-1">24 likes</span>
                                 </div>
                                 
                                 <div class="crowdfunding-progress">
@@ -792,10 +799,17 @@
                                 </div>
                                 
                                 <div class="idea-actions">
-                                    <button class="btn btn-primary-small">🤝 Join Team</button>
-                                    <button class="btn btn-secondary-small">💬 Open in Teams</button>
-                                    <button class="btn btn-secondary-small">📋 View Details</button>
-                                    <button class="btn btn-secondary-small">❤️ Like</button>
+                                    <button class="btn btn-idea-secondary btn-like" data-idea-id="2" onclick="toggleLike(this)">
+                                        <span class="like-icon">🤍</span> Like
+                                    </button>
+                                    <button class="btn btn-idea-disabled btn-invest disabled" data-idea-id="2" onclick="handleXPInvestment(event)" disabled title="Not seeking XP investment">💰 Invest XP</button>
+                                    <button class="btn btn-idea-primary" onclick="handleJoinTeam(event)">🤝 Join Team</button>
+                                    <button class="btn btn-idea-secondary" onclick="handleOpenTeams(event)">💬 Open in Teams</button>
+                                    <button class="btn btn-idea-secondary">📋 View Details</button>
+                                </div>
+                                
+                                <div class="idea-stats">
+                                    <span class="like-count" id="like-count-2">18 likes</span>
                                 </div>
                                 
                                 <div class="team-progress">
@@ -832,10 +846,17 @@
                                 </div>
                                 
                                 <div class="idea-actions">
-                                    <button class="btn btn-primary-small">🤝 Collaborate</button>
-                                    <button class="btn btn-secondary-small">💬 Open in Teams</button>
-                                    <button class="btn btn-secondary-small">📋 View Details</button>
-                                    <button class="btn btn-secondary-small">❤️ Like</button>
+                                    <button class="btn btn-idea-secondary btn-like" data-idea-id="3" onclick="toggleLike(this)">
+                                        <span class="like-icon">🤍</span> Like
+                                    </button>
+                                    <button class="btn btn-idea-disabled btn-invest disabled" data-idea-id="3" onclick="handleXPInvestment(event)" disabled title="Not seeking XP investment">💰 Invest XP</button>
+                                    <button class="btn btn-idea-primary" onclick="handleJoinTeam(event)">🤝 Collaborate</button>
+                                    <button class="btn btn-idea-secondary" onclick="handleOpenTeams(event)">💬 Open in Teams</button>
+                                    <button class="btn btn-idea-secondary">📋 View Details</button>
+                                </div>
+                                
+                                <div class="idea-stats">
+                                    <span class="like-count" id="like-count-3">12 likes</span>
                                 </div>
                             </div>
                         </div>

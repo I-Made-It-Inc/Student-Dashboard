@@ -266,11 +266,157 @@
     font-weight: 500;
 }
 
+/* Standardized Idea Button Styles */
+.btn.btn-idea-primary {
+    background-color: var(--imi-yellow) !important;
+    color: var(--imi-blue) !important;
+    border: 2px solid var(--imi-yellow) !important;
+    padding: 8px 16px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+}
+
+.btn.btn-idea-primary:hover {
+    background-color: #e6c002 !important;
+    border-color: #e6c002 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 213, 2, 0.3);
+}
+
+.btn.btn-idea-secondary {
+    background-color: var(--white) !important;
+    color: var(--imi-blue) !important;
+    border: 2px solid var(--imi-blue) !important;
+    padding: 8px 16px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+}
+
+.btn.btn-idea-secondary:hover {
+    background-color: var(--imi-blue) !important;
+    color: var(--white) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn.btn-idea-disabled {
+    background-color: var(--medium-gray) !important;
+    color: var(--text-gray) !important;
+    border: 2px solid var(--medium-gray) !important;
+    padding: 8px 16px;
+    font-size: var(--font-size-sm);
+    border-radius: var(--radius-sm);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn.btn-idea-disabled:hover {
+    background-color: var(--medium-gray) !important;
+    color: var(--text-gray) !important;
+    border-color: var(--medium-gray) !important;
+    transform: none;
+    box-shadow: none;
+}
+
 .idea-actions {
     display: flex;
     gap: var(--spacing-sm);
     flex-wrap: wrap;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+.idea-actions .btn {
+    padding: 6px 12px;
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+}
+
+/* Like button styling */
+.btn-like {
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-like:hover {
+    background-color: rgba(255, 192, 203, 0.1);
+    border-color: #ff69b4;
+    transform: scale(1.05);
+}
+
+.btn-like.liked {
+    background-color: rgba(255, 69, 180, 0.1);
+    border-color: #ff69b4;
+    color: #d63384;
+    font-weight: 600;
+}
+
+.btn-like.liked:hover {
+    background-color: rgba(255, 69, 180, 0.2);
+}
+
+.like-icon {
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.btn-like:hover .like-icon {
+    animation: heartBeat 0.6s ease;
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    20% { transform: scale(1.2); }
+    40% { transform: scale(1); }
+    60% { transform: scale(1.1); }
+    80% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+/* Disabled investment button */
+.btn-invest.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--medium-gray);
+    color: var(--text-gray);
+    border-color: var(--medium-gray);
+}
+
+.btn-invest.disabled:hover {
+    background-color: var(--medium-gray);
+    color: var(--text-gray);
+    border-color: var(--medium-gray);
+    transform: none;
+}
+
+/* Idea stats styling */
+.idea-stats {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: var(--spacing-xs);
+    border-top: 1px solid var(--medium-gray);
+    margin-top: var(--spacing-sm);
+}
+
+.like-count {
+    font-size: var(--font-size-sm);
+    color: var(--text-gray);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.like-count::before {
+    content: '❤️';
+    font-size: 14px;
+    opacity: 0.7;
 }
 
 .crowdfunding-progress,
