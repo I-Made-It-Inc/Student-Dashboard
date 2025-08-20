@@ -390,9 +390,41 @@ label {
 }
 
 /* Blue Spark Visual Reward System */
+/* Blue Spark container matching the exact screenshot style */
+.blue-spark-activity {
+    background: #e0f2fe;
+    border-left: 4px solid #0ea5e9;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin: var(--spacing-md) 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 14px;
+}
+
+.blue-spark-activity-text {
+    color: #0ea5e9;
+    font-weight: 500;
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+/* Blue sparkle emoji filter */
+.blue-sparkle {
+    filter: hue-rotate(200deg) brightness(1.2) saturate(1.5);
+}
+
+/* Grey supporting text for "Excellent work on your Blueprint submission!" */
+.blue-spark-activity .support-text {
+    color: #6b7280;
+    font-weight: 400;
+    font-size: 14px;
+}
+
 /* Blue Spark overlay using pseudo-element for navigation avatar */
 .user-avatar.blue-spark-active::after {
-    content: "🔷"; /* Blue diamond that displays properly */
+    content: "💎"; /* Using blue diamond emoji which displays as blue by default */
     position: absolute;
     top: -8px;
     right: -8px;
@@ -404,7 +436,7 @@ label {
 
 /* Blue Spark overlay using pseudo-element for profile avatar */
 .profile-avatar.blue-spark-active::after {
-    content: "🔷"; /* Blue diamond that displays properly */
+    content: "💎"; /* Using blue diamond emoji which displays as blue by default */
     position: absolute;
     top: -12px; /* Adjust position for larger size */
     right: -12px; /* Adjust position for larger size */  

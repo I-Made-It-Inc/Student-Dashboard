@@ -88,9 +88,14 @@ class SimpleBlueSparkManager {
             
             if (timeRemaining) {
                 activityIndicator.style.display = 'flex';
-                const indicator = activityIndicator.querySelector('.blue-spark-activity-text');
-                if (indicator) {
-                    indicator.textContent = `✨ Blue Spark Active Great job on your recent submission! (${timeRemaining})`;
+                const blueText = activityIndicator.querySelector('.blue-spark-activity-text');
+                const greyText = activityIndicator.querySelector('.support-text');
+                
+                if (blueText) {
+                    blueText.innerHTML = `<span class="blue-sparkle">✨</span> Blue Spark Active (${timeRemaining})`;
+                }
+                if (greyText) {
+                    greyText.textContent = `Excellent work on your Blueprint submission!`;
                 }
             } else {
                 // Time expired, deactivate Blue Spark

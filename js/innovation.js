@@ -351,7 +351,7 @@ function updateTierProgress(earnedXP) {
         bronze: { min: 0, max: 999, name: 'Bronze', icon: '🥉' },
         silver: { min: 1000, max: 2499, name: 'Silver', icon: '🥈' },
         gold: { min: 2500, max: 4999, name: 'Gold', icon: '🥇' },
-        platinum: { min: 5000, max: Infinity, name: 'Platinum', icon: '💎' }
+        platinum: { min: 5000, max: Infinity, name: 'Platinum', icon: '🏆' }
     };
     
     // In a real app, this would be calculated from total lifetime XP
@@ -399,7 +399,7 @@ function updateXPChart() {
     const tiers = [
         { name: 'Silver', value: 1000, color: '#6B7280', emoji: '🥈' },
         { name: 'Gold', value: 2500, color: '#D97706', emoji: '🏆' },
-        { name: 'Platinum', value: 5000, color: '#1F2937', emoji: '💎' }
+        { name: 'Platinum', value: 5000, color: '#1F2937', emoji: '🏆' }
     ];
     
     let chartHTML = `
