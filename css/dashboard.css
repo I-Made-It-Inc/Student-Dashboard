@@ -2,47 +2,68 @@
 
 /* Profile Card */
 .profile-card {
-    display: flex;
-    gap: var(--spacing-lg);
-    align-items: center;
-    padding: var(--spacing-xl);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) var(--spacing-xl);
     background: linear-gradient(135deg, var(--white) 0%, rgba(255, 213, 2, 0.02) 100%);
     border-left: 4px solid var(--imi-yellow);
+    align-items: start;
+}
+
+.profile-avatar {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    align-self: start;
+    margin-top: var(--spacing-xs);
 }
 
 .profile-info {
-    flex: 1;
+    grid-column: 2;
+    grid-row: 1;
 }
 
 .profile-info h2 {
     color: var(--imi-blue);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    line-height: 1.2;
 }
 
 .profile-details {
     color: var(--text-gray);
     margin-bottom: var(--spacing-md);
     font-size: var(--font-size-sm);
+    font-weight: 500;
+    line-height: 1.4;
 }
 
 .gamification-stats {
-    display: flex;
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-md);
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-xs);
+    margin-top: 2px;
 }
 
 .stats-row {
-    display: flex;
-    gap: var(--spacing-xl);
-    margin-top: var(--spacing-lg);
-    padding-top: var(--spacing-lg);
-    border-top: 2px solid var(--medium-gray);
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--medium-gray);
 }
 
 .stat-item {
     text-align: center;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .stat-value {
@@ -50,6 +71,7 @@
     font-weight: bold;
     color: var(--imi-yellow);
     text-shadow: 1px 1px 2px rgba(4, 40, 71, 0.1);
+    text-align: center;
 }
 
 .stat-label {
@@ -58,6 +80,7 @@
     margin-top: var(--spacing-xs);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    text-align: center;
 }
 
 /* Challenge Preview */
@@ -363,17 +386,20 @@
     }
     
     .profile-card {
-        flex-direction: column;
-        text-align: center;
+        grid-template-columns: auto 1fr;
+        gap: var(--spacing-md);
     }
     
     .gamification-stats {
-        justify-content: center;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-xs);
     }
     
     .stats-row {
-        flex-wrap: wrap;
-        gap: var(--spacing-lg);
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-xs);
+        padding-top: var(--spacing-xs);
     }
     
     .company-recommendations {
@@ -382,6 +408,42 @@
 }
 
 @media (max-width: 640px) {
+    .profile-card {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        text-align: center;
+        padding: var(--spacing-lg);
+    }
+    
+    .profile-avatar {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: center;
+        margin: 0 0 var(--spacing-md) 0;
+    }
+    
+    .profile-info {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    
+    .gamification-stats {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+        max-width: 300px;
+        justify-self: center;
+    }
+    
+    .stats-row {
+        grid-column: 1;
+        grid-row: 3;
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-xs);
+        padding-top: var(--spacing-xs);
+        text-align: center;
+    }
+    
     .progress-sections {
         flex-direction: column;
     }
