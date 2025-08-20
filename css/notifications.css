@@ -42,23 +42,24 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     background-color: var(--light-gray);
     color: var(--imi-dark-gray);
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-sm);
     font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
-    border: 2px solid transparent;
+    border: 2px solid var(--medium-gray);
 }
 
 .filter-chip:hover {
     background-color: var(--imi-blue-light);
+    border-color: var(--imi-blue);
     color: var(--imi-blue);
 }
 
 .filter-chip.active {
     background-color: var(--imi-blue);
     color: var(--white);
-    border-color: var(--imi-yellow);
+    border-color: var(--imi-blue);
 }
 
 /* Notifications Feed */
@@ -217,8 +218,8 @@
 }
 
 .bonus-badge {
-    background-color: var(--imi-yellow);
-    color: var(--imi-dark-gray);
+    background-color: var(--imi-blue);
+    color: var(--white);
 }
 
 .surprise-badge {

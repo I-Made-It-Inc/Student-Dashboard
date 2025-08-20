@@ -129,10 +129,31 @@
     flex-wrap: wrap;
 }
 
-.filter-active {
-    background-color: var(--imi-blue) !important;
-    color: var(--white) !important;
-    border-color: var(--imi-blue) !important;
+/* Filter button styling to match chips */
+.filter-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: var(--light-gray);
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--imi-dark-gray);
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+}
+
+.filter-btn:hover {
+    background-color: var(--imi-blue-light);
+    border-color: var(--imi-blue);
+    color: var(--imi-blue);
+}
+
+.filter-btn.active {
+    background-color: var(--imi-blue);
+    color: var(--white);
+    border-color: var(--imi-blue);
+    font-weight: 600;
 }
 
 .ideas-feed {

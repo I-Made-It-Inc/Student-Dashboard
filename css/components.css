@@ -390,17 +390,20 @@ label {
     transition: all var(--transition-fast);
     margin-right: var(--spacing-sm);
     margin-bottom: var(--spacing-sm);
+    color: var(--imi-dark-gray);
+    font-weight: 500;
 }
 
 .chip:hover {
-    background-color: rgba(255, 213, 2, 0.1);
-    border-color: var(--imi-yellow);
+    background-color: var(--imi-blue-light);
+    border-color: var(--imi-blue);
+    color: var(--imi-blue);
 }
 
 .chip.active {
-    background-color: var(--imi-yellow);
-    color: var(--imi-blue);
-    border-color: var(--imi-yellow);
+    background-color: var(--imi-blue);
+    color: var(--white);
+    border-color: var(--imi-blue);
     font-weight: 600;
 }
 

@@ -164,38 +164,70 @@ function toggleSkillsSection() {
 function handleFilterChange(event) {
     const clickedButton = event.target;
     const filter = clickedButton.getAttribute('data-filter');
+    const isAllIdeas = filter === 'all';
     
-    // Update active filter button
-    document.querySelectorAll('.filter-buttons button').forEach(btn => {
-        btn.classList.remove('filter-active');
-    });
-    clickedButton.classList.add('filter-active');
+    if (isAllIdeas) {
+        // If "All Ideas" is clicked, clear all other filters
+        document.querySelectorAll('.filter-buttons button').forEach(btn => {
+            if (btn !== clickedButton) {
+                btn.classList.remove('active');
+            }
+        });
+        
+        // Toggle All Ideas
+        clickedButton.classList.toggle('active');
+    } else {
+        // If a fine-grained filter is clicked, remove "All Ideas" active state
+        document.querySelectorAll('.filter-buttons button').forEach(btn => {
+            if (btn.getAttribute('data-filter') === 'all') {
+                btn.classList.remove('active');
+            }
+        });
+        
+        // Toggle this filter
+        clickedButton.classList.toggle('active');
+    }
     
     // Filter idea cards
-    filterIdeas(filter);
+    filterIdeas();
 }
 
-function filterIdeas(filter) {
+function filterIdeas() {
+    const activeButtons = document.querySelectorAll('.filter-buttons button.active');
+    const activeFilters = Array.from(activeButtons).map(btn => btn.getAttribute('data-filter'));
     const ideaCards = document.querySelectorAll('.idea-card');
     
     ideaCards.forEach(card => {
-        let shouldShow = true;
+        let shouldShow = false;
         
-        switch(filter) {
-            case 'all':
-                shouldShow = true;
-                break;
-            case 'seeking-funding':
-                shouldShow = card.getAttribute('data-seeking-funding') === 'true';
-                break;
-            case 'recruiting':
-                shouldShow = card.getAttribute('data-recruiting') === 'true';
-                break;
-            case 'my-industry':
-                // For demo, show technology and healthcare (student's interests)
-                const industry = card.getAttribute('data-industry');
-                shouldShow = industry === 'technology' || industry === 'healthcare';
-                break;
+        // If no filters are active or "all" is active, show all cards
+        if (activeFilters.length === 0 || activeFilters.includes('all')) {
+            shouldShow = true;
+        } else {
+            // OR logic: show if card matches ANY of the active filters
+            for (const filter of activeFilters) {
+                switch(filter) {
+                    case 'seeking-funding':
+                        if (card.getAttribute('data-seeking-funding') === 'true') {
+                            shouldShow = true;
+                        }
+                        break;
+                    case 'recruiting':
+                        if (card.getAttribute('data-recruiting') === 'true') {
+                            shouldShow = true;
+                        }
+                        break;
+                    case 'my-industry':
+                        // For demo, show technology and healthcare (student's interests)
+                        const industry = card.getAttribute('data-industry');
+                        if (industry === 'technology' || industry === 'healthcare') {
+                            shouldShow = true;
+                        }
+                        break;
+                }
+                // If we found a match, no need to check other filters
+                if (shouldShow) break;
+            }
         }
         
         if (shouldShow) {
