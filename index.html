@@ -29,12 +29,29 @@
                 <img src="logo.png" alt="IMI" class="logo">
                 <span>Student Portal</span>
             </div>
+            
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            
             <ul class="nav-links">
                 <li><a href="#dashboard" class="active" id="nav-dashboard">Dashboard</a></li>
-                <li><a href="#innovation" id="nav-innovation">Blueprint for the Future</a></li>
-                <li><a href="#ideas" id="nav-ideas">Ideas & Innovation</a></li>
-                <li><a href="#projects" id="nav-projects">Co-op Projects</a></li>
-                <li><a href="#companies" id="nav-companies">Companies</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-toggle" id="nav-innovation-dropdown">Innovation <span class="dropdown-arrow">▾</span></a>
+                    <ul class="nav-dropdown-menu">
+                        <li><a href="#innovation" id="nav-innovation">Blueprint for the Future</a></li>
+                        <li><a href="#ideas" id="nav-ideas">Ideas & Innovation Hub</a></li>
+                    </ul>
+                </li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-toggle" id="nav-work-dropdown">Work <span class="dropdown-arrow">▾</span></a>
+                    <ul class="nav-dropdown-menu">
+                        <li><a href="#projects" id="nav-projects">Co-op Projects</a></li>
+                        <li><a href="#companies" id="nav-companies">Companies</a></li>
+                    </ul>
+                </li>
                 <li><a href="#network" id="nav-network">Network</a></li>
                 <li><a href="#resources" id="nav-resources">Resources</a></li>
                 <li><a href="#tracking" id="nav-tracking">Time Tracking</a></li>

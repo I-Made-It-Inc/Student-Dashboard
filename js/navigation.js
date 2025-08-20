@@ -35,6 +35,11 @@ function showPage(pageId, pushState = true) {
         link.classList.remove('active');
     });
     
+    // Remove active dropdown parent class
+    document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+        dropdown.classList.remove('has-active-child');
+    });
+    
     // Show selected page
     const selectedPage = document.getElementById(`${pageId}-page`);
     if (selectedPage) {
@@ -48,6 +53,12 @@ function showPage(pageId, pushState = true) {
     const selectedNav = document.getElementById(`nav-${pageId}`);
     if (selectedNav) {
         selectedNav.classList.add('active');
+        
+        // If this nav item is inside a dropdown, mark the dropdown as having active child
+        const parentDropdown = selectedNav.closest('.nav-dropdown');
+        if (parentDropdown) {
+            parentDropdown.classList.add('has-active-child');
+        }
     }
     
     // Update URL without reload (only if pushState is true)
@@ -322,7 +333,7 @@ function setupProfileForms() {
 
 // Setup navigation links
 function setupNavLinks() {
-    const navLinks = document.querySelectorAll('.nav-links a');
+    const navLinks = document.querySelectorAll('.nav-links a:not(.nav-dropdown-toggle)');
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -331,6 +342,21 @@ function setupNavLinks() {
                 const pageId = href.substring(1);
                 showPage(pageId);
             }
+        });
+    });
+    
+    // Setup dropdown toggles for mobile
+    const dropdownToggles = document.querySelectorAll('.nav-dropdown-toggle');
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            const dropdown = toggle.closest('.nav-dropdown');
+            
+            // On mobile, toggle the dropdown menu
+            if (window.innerWidth <= 768) {
+                dropdown.classList.toggle('mobile-active');
+            }
+            // On desktop, dropdowns work on hover, so this click does nothing
         });
     });
 }
@@ -344,8 +370,43 @@ function setupMobileMenu() {
         mobileToggle.addEventListener('click', () => {
             navLinks.classList.toggle('mobile-active');
             mobileToggle.classList.toggle('active');
+            
+            // Close all dropdown menus when mobile menu closes
+            if (!navLinks.classList.contains('mobile-active')) {
+                document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('mobile-active');
+                });
+            }
         });
     }
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.nav') && navLinks.classList.contains('mobile-active')) {
+            navLinks.classList.remove('mobile-active');
+            mobileToggle.classList.remove('active');
+            
+            // Close all dropdown menus
+            document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('mobile-active');
+            });
+        }
+    });
+    
+    // Close mobile menu when a nav link is clicked (but not dropdown toggles)
+    document.querySelectorAll('.nav-links a:not(.nav-dropdown-toggle)').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                navLinks.classList.remove('mobile-active');
+                mobileToggle.classList.remove('active');
+                
+                // Close all dropdown menus
+                document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('mobile-active');
+                });
+            }
+        });
+    });
 }
 
 // Setup user menu dropdown
