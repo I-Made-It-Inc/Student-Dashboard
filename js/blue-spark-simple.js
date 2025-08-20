@@ -5,6 +5,11 @@
 
 class SimpleBlueSparkManager {
     constructor() {
+        // Set Blue Spark end time (6 days from now for demo)
+        this.endTime = new Date();
+        this.endTime.setDate(this.endTime.getDate() + 6);
+        this.endTime.setHours(this.endTime.getHours() - 1); // 5d 23h remaining
+        
         this.init();
     }
 
@@ -14,10 +19,32 @@ class SimpleBlueSparkManager {
         // For demo purposes, activate Blue Spark on both avatars
         this.activateBlueSpark();
         
-        // Update activity indicator
+        // Update activity indicator with countdown
         this.updateActivityIndicator();
         
+        // Update countdown every minute
+        setInterval(() => this.updateActivityIndicator(), 60000);
+        
         console.log('Simple Blue Spark system initialized');
+    }
+
+    getTimeRemaining() {
+        const now = new Date();
+        const diff = this.endTime - now;
+        
+        if (diff <= 0) return null;
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        
+        if (days > 0) {
+            return `${days}d ${hours}h remaining`;
+        } else if (hours > 0) {
+            return `${hours}h ${minutes}m remaining`;
+        } else {
+            return `${minutes}m remaining`;
+        }
     }
 
     activateBlueSpark() {
@@ -26,12 +53,12 @@ class SimpleBlueSparkManager {
         
         if (profileAvatar) {
             profileAvatar.classList.add('blue-spark-active');
-            profileAvatar.title = 'Blue Spark Active - Recent activity detected!';
+            profileAvatar.title = 'Blue Spark Active - Great job on your recent submission!';
         }
         
         if (navAvatar) {
             navAvatar.classList.add('blue-spark-active');
-            navAvatar.title = 'Blue Spark Active - Recent activity detected!';
+            navAvatar.title = 'Blue Spark Active - Great job on your recent submission!';
         }
         
         console.log('Blue Spark activated on avatars');
@@ -57,10 +84,18 @@ class SimpleBlueSparkManager {
     updateActivityIndicator() {
         const activityIndicator = document.getElementById('blueprint-activity-indicator');
         if (activityIndicator) {
-            activityIndicator.style.display = 'flex';
-            const indicator = activityIndicator.querySelector('.activity-indicator-text');
-            if (indicator) {
-                indicator.textContent = '✨ Blue Spark Active (5d 23h remaining)';
+            const timeRemaining = this.getTimeRemaining();
+            
+            if (timeRemaining) {
+                activityIndicator.style.display = 'flex';
+                const indicator = activityIndicator.querySelector('.blue-spark-activity-text');
+                if (indicator) {
+                    indicator.textContent = `✨ Blue Spark Active Great job on your recent submission! (${timeRemaining})`;
+                }
+            } else {
+                // Time expired, deactivate Blue Spark
+                this.deactivateBlueSpark();
+                activityIndicator.style.display = 'none';
             }
         }
     }

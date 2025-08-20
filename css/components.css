@@ -333,20 +333,7 @@ label {
     font-weight: bold;
     font-size: var(--font-size-lg);
     position: relative;
-    /* FIX: Allow child elements to overflow the border-radius */
-    overflow: visible !important;
-}
-
-/* Blue Spark overlay using pseudo-element */
-.profile-avatar.blue-spark-active::after {
-    content: "✨";
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    font-size: 18px;
-    line-height: 1;
-    z-index: 1000;
-    pointer-events: none;
+    overflow: visible;
 }
 
 .profile-avatar {
@@ -369,226 +356,12 @@ label {
     cursor: pointer;
     transition: all var(--transition-fast);
     position: relative;
-    /* FIX: Allow child elements to overflow the border-radius */
-    overflow: visible !important;
-}
-
-/* Blue Spark overlay using pseudo-element */
-.user-avatar.blue-spark-active::after {
-    content: "✨";
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    font-size: 16px;
-    line-height: 1;
-    z-index: 1000;
-    pointer-events: none;
+    overflow: visible;
 }
 
 .user-avatar:hover {
     background-color: var(--imi-yellow);
     color: var(--imi-blue);
-}
-
-/* Blue Spark Visual Reward System */
-.blue-spark {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-}
-
-/* Blue Spark starts visible by default */
-#profile-blue-spark,
-#nav-blue-spark {
-    display: inline-flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.blue-spark-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, #4fc3f7 0%, #1976d2 100%);
-    border-radius: 50%;
-    font-size: 12px;
-    animation: sparkGlow 2s ease-in-out infinite;
-    box-shadow: 0 0 8px rgba(79, 195, 247, 0.6);
-    position: relative;
-}
-
-.blue-spark-icon:before {
-    content: '✨';
-    color: white;
-    font-weight: bold;
-    animation: sparkPulse 1.5s ease-in-out infinite alternate;
-}
-
-.blue-spark-icon:after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(135deg, #4fc3f7 0%, #1976d2 100%);
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0.3;
-    animation: sparkRipple 3s ease-out infinite;
-}
-
-@keyframes sparkGlow {
-    0%, 100% {
-        box-shadow: 0 0 8px rgba(79, 195, 247, 0.6);
-        transform: scale(1);
-    }
-    50% {
-        box-shadow: 0 0 16px rgba(79, 195, 247, 0.8), 0 0 24px rgba(79, 195, 247, 0.4);
-        transform: scale(1.05);
-    }
-}
-
-@keyframes sparkPulse {
-    0% {
-        opacity: 0.8;
-        transform: scale(0.9);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1.1);
-    }
-}
-
-@keyframes sparkRipple {
-    0% {
-        transform: scale(1);
-        opacity: 0.3;
-    }
-    70% {
-        transform: scale(1.8);
-        opacity: 0.1;
-    }
-    100% {
-        transform: scale(2.2);
-        opacity: 0;
-    }
-}
-
-.blue-spark-tooltip {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--imi-blue);
-    color: var(--imi-yellow);
-    padding: 6px 10px;
-    border-radius: var(--radius-sm);
-    font-size: var(--font-size-xs);
-    font-weight: 500;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: all var(--transition-fast);
-    pointer-events: none;
-    z-index: 1000;
-    margin-bottom: 5px;
-    box-shadow: var(--shadow-md);
-}
-
-.blue-spark-tooltip:after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: var(--imi-blue);
-}
-
-.blue-spark-icon:hover + .blue-spark-tooltip,
-.blue-spark:hover .blue-spark-tooltip {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Blue Spark for different contexts */
-.blue-spark.profile-context {
-    margin-left: var(--spacing-sm);
-}
-
-.blue-spark.nav-context {
-    margin-left: var(--spacing-xs);
-}
-
-.blue-spark.card-context {
-    position: absolute;
-    top: var(--spacing-sm);
-    right: var(--spacing-sm);
-}
-
-/* Blue Spark positioning on avatars */
-.blue-spark.avatar-context {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    margin: 0;
-    z-index: 999 !important;
-}
-
-.blue-spark.avatar-context .blue-spark-icon {
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
-    z-index: 1000 !important;
-    border: 2px solid red !important; /* Debug border */
-}
-
-.blue-spark.avatar-context .blue-spark-tooltip {
-    font-size: 11px;
-    padding: 4px 8px;
-    right: 0;
-    left: auto;
-    transform: none;
-    bottom: 120%;
-}
-
-.blue-spark.avatar-context .blue-spark-tooltip:after {
-    left: auto;
-    right: 10px;
-    transform: none;
-}
-
-/* Blue Spark activity indicators */
-.blue-spark-activity {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    font-size: var(--font-size-sm);
-    color: var(--imi-blue);
-    font-weight: 500;
-    margin-bottom: var(--spacing-md);
-    padding: var(--spacing-sm) var(--spacing-md);
-    background: linear-gradient(135deg, rgba(79, 195, 247, 0.1) 0%, rgba(25, 118, 210, 0.1) 100%);
-    border-left: 4px solid #4fc3f7;
-    border-radius: var(--radius-sm);
-}
-
-.blue-spark-activity-text {
-    background: linear-gradient(135deg, #4fc3f7 0%, #1976d2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 600;
-    font-size: var(--font-size-sm);
-}
-
-.blue-spark-activity span {
-    color: var(--text-gray);
-    font-weight: 400;
 }
 
 /* Chips (Filter) */
@@ -614,4 +387,29 @@ label {
     color: var(--imi-blue);
     border-color: var(--imi-yellow);
     font-weight: 600;
+}
+
+/* Blue Spark Visual Reward System */
+/* Blue Spark overlay using pseudo-element for navigation avatar */
+.user-avatar.blue-spark-active::after {
+    content: "🔷"; /* Blue diamond that displays properly */
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 24px; /* Base size for nav avatar (40px) */
+    line-height: 1;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+/* Blue Spark overlay using pseudo-element for profile avatar */
+.profile-avatar.blue-spark-active::after {
+    content: "🔷"; /* Blue diamond that displays properly */
+    position: absolute;
+    top: -12px; /* Adjust position for larger size */
+    right: -12px; /* Adjust position for larger size */  
+    font-size: 48px; /* 2x the nav avatar sparkle (profile is 80px vs nav 40px = 2x ratio) */
+    line-height: 1;
+    z-index: 1000;
+    pointer-events: none;
 }
