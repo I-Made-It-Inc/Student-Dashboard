@@ -23,9 +23,20 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeCompanies();
     initializeTimeTracking();
     
-    // Initialize profile if on profile page
-    if (window.location.hash === '#profile') {
-        initializeProfile();
+    // Initialize page-specific modules based on current page
+    const currentPage = window.location.hash.slice(1) || 'dashboard';
+    if (currentPage === 'profile') {
+        setTimeout(() => {
+            if (typeof initializeProfile === 'function') {
+                initializeProfile();
+            }
+        }, 100);
+    } else if (currentPage === 'notifications') {
+        setTimeout(() => {
+            if (typeof initializeNotifications === 'function') {
+                initializeNotifications();
+            }
+        }, 100);
     }
     
     // Set up global event listeners

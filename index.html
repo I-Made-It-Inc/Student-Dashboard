@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/resources.css">
     <link rel="stylesheet" href="css/tracking.css">
     <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="css/notifications.css">
     <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
@@ -57,7 +58,7 @@
                 <li><a href="#tracking" id="nav-tracking">Time Tracking</a></li>
             </ul>
             <div class="user-menu">
-                <div class="notification-icon">
+                <div class="notification-icon" onclick="showPage('notifications')" title="Notifications">
                     <span>🔔</span>
                     <div class="notification-badge">3</div>
                 </div>
@@ -1943,6 +1944,432 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Notifications Page -->
+        <div id="notifications-page" class="page-section">
+            <h2>Notifications</h2>
+            
+            <div class="notifications-grid">
+                <div class="notifications-main">
+                    <!-- Notification Actions -->
+                    <div class="card notification-actions-card">
+                        <div class="notification-actions">
+                            <button class="btn btn-primary-small" onclick="markAllAsRead()">Mark All as Read</button>
+                            <button class="btn btn-secondary-small" onclick="clearReadNotifications()">Clear Read</button>
+                            <div class="notification-filters">
+                                <span class="filter-chip active" data-filter="all">All (8)</span>
+                                <span class="filter-chip" data-filter="blueprint">Blueprint (2)</span>
+                                <span class="filter-chip" data-filter="events">Events (3)</span>
+                                <span class="filter-chip" data-filter="projects">Projects (2)</span>
+                                <span class="filter-chip" data-filter="rewards">Rewards (1)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications Feed -->
+                    <div class="card notifications-feed-card">
+                        <div class="notifications-feed">
+                            
+                            <!-- Blueprint Feedback Notification -->
+                            <div class="notification-item unread" data-category="blueprint" data-timestamp="2024-12-10T14:30:00Z">
+                                <div class="notification-icon blueprint-icon">📝</div>
+                                <div class="notification-content">
+                                    <div class="notification-header">
+                                        <h4 class="notification-title">Blueprint Feedback & Points Earned!</h4>
+                                        <span class="notification-time">2 hours ago</span>
+                                        <div class="unread-indicator"></div>
+                                    </div>
+                                    <div class="notification-message">
+                                        <p><strong>Excellent work on your "AI in Healthcare" Blueprint!</strong></p>
+                                        <div class="notification-details">
+                                            <div class="points-earned">
+                                                <span class="points-badge">+120 XP</span>
+                                                <span class="bonus-badge">+25 XP Bonus</span>
+                                            </div>
+                                            <div class="feedback-summary">
+                                                Your innovation insights and growth strategies showed deep understanding. 
+                                                <strong>Bonus awarded</strong> for connecting peer insights from Alex Chen's sustainability blueprint!
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="btn btn-primary-small" onclick="showPage('innovation')">View Full Feedback</button>
+                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Collaboration Recommendation -->
+                            <div class="notification-item unread" data-category="blueprint" data-timestamp="2024-12-10T11:15:00Z">
+                                <div class="notification-icon collaboration-icon">🤝</div>
+                                <div class="notification-content">
+                                    <div class="notification-header">
+                                        <h4 class="notification-title">Your Blueprint Recommended to Other Students!</h4>
+                                        <span class="notification-time">5 hours ago</span>
+                                        <div class="unread-indicator"></div>
+                                    </div>
+                                    <div class="notification-message">
+                                        <p>Your "Sustainable Cities" Blueprint has been recommended to <strong>3 students</strong> with similar interests.</p>
+                                        <div class="notification-details">
+                                            <div class="collaboration-reward">
+                                                <span class="points-badge">+50 XP Collaboration Bonus</span>
+                                            </div>
+                                            <div class="recommended-to">
+                                                <strong>Recommended to:</strong> Maria Garcia, Ryan Johnson, and Sam Wilson
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="btn btn-primary-small" onclick="showPage('network')">Connect with Peers</button>
+                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Upcoming Event Notification -->
+                            <div class="notification-item unread" data-category="events" data-timestamp="2024-12-10T09:00:00Z">
+                                <div class="notification-icon event-icon">📅</div>
+                                <div class="notification-content">
+                                    <div class="notification-header">
+                                        <h4 class="notification-title">Upcoming Event: Tech Networking Night</h4>
+                                        <span class="notification-time">7 hours ago</span>
+                                        <div class="unread-indicator"></div>
+                                    </div>
+                                    <div class="notification-message">
+                                        <p>Perfect match for your <strong>AI and Technology</strong> interests!</p>
+                                        <div class="notification-details">
+                                            <div class="event-details">
+                                                <div class="event-info">
+                                                    <span class="event-date">📅 December 15, 2024 • 6:00 PM</span>
+                                                    <span class="event-location">📍 TechHub Downtown</span>
+                                                </div>
+                                                <div class="event-highlights">
+                                                    <strong>Meet executives from:</strong> TechCorp, DataCo Analytics, AI Innovations, and 7 more companies
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="btn btn-primary-small" onclick="rsvpToEvent('tech-networking-night')">RSVP Now</button>
+                                        <button class="btn btn-secondary-small" onclick="showPage('network')">View All Events</button>
+                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Co-op Project Completion -->
+                            <div class="notification-item read" data-category="projects" data-timestamp="2024-12-09T16:45:00Z">
+                                <div class="notification-icon project-icon">💼</div>
+                                <div class="notification-content">
+                                    <div class="notification-header">
+                                        <h4 class="notification-title">Project Completed: Market Research Analysis</h4>
+                                        <span class="notification-time">Yesterday</span>
+                                    </div>
+                                    <div class="notification-message">
+                                        <p><strong>Congratulations!</strong> Your market research project at StartupXYZ has been completed and approved.</p>
+                                        <div class="notification-details">
+                                            <div class="project-feedback">
+                                                <div class="rating">
+                                                    <span class="rating-label">Project Rating:</span>
+                                                    <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+                                                    <span class="rating-score">4.9/5.0</span>
+                                                </div>
+                                                <div class="feedback-text">
+                                                    "Exceptional research methodology and insights. Jane demonstrated excellent analytical skills and provided actionable recommendations." - Sarah Johnson, Project Manager
+                                                </div>
+                                            </div>
+                                            <div class="project-rewards">
+                                                <span class="points-badge">+1,500 XP</span>
+                                                <span class="hours-badge">35 hours logged</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="btn btn-primary-small" onclick="downloadCertificate('market-research-xyz')">Get Certificate</button>
+                                        <button class="btn btn-secondary-small" onclick="requestReference('StartupXYZ')">Request Reference</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Healthcare Event -->
+                            <div class="notification-item unread" data-category="events" data-timestamp="2024-12-09T14:20:00Z">
+                                <div class="notification-icon event-icon">🏥</div>
+                                <div class="notification-content">
+                                    <div class="notification-header">
+                                        <h4 class="notification-title">New Event: Healthcare Innovation Summit</h4>
+                                        <span class="notification-time">Yesterday</span>
+                                        <div class="unread-indicator"></div>
+                                    </div>
+                                    <div class="notification-message">
+                                        <p>Based on your recent Blueprint about AI in Healthcare, this event is perfect for you!</p>
+                                        <div class="notification-details">
+                                            <div class="event-details">
+                                                <div class="event-info">
+                                                    <span class="event-date">📅 January 20, 2025 • 9:00 AM - 5:00 PM</span>
+                                                    <span class="event-location">📍 Medical Center Conference Hall</span>
+                                                </div>
+                                                <div class="event-highlights">
+                                                    <strong>Featured speakers:</strong> Dr. Maria Rodriguez (AI Ethics), Dr. James Chen (Medical AI), and 8 industry leaders
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="btn btn-primary-small" onclick="rsvpToEvent('healthcare-innovation-summit')">Register</button>
+                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Task Assignment -->
+                            <div class="notification-item unread" data-category="projects" data-timestamp="2024-12-09T10:30:00Z">
+                                <div class="notification-icon task-icon">📋</div>
+                                <div class="notification-content">
+                                    <div class="notification-header">
+                                        <h4 class="notification-title">New Task: Social Media Campaign Design</h4>
+                                        <span class="notification-time">Yesterday</span>
+                                        <div class="unread-indicator"></div>
+                                    </div>
+                                    <div class="notification-message">
+                                        <p>You've been assigned a new task at <strong>TechCorp</strong> - your creativity is needed!</p>
+                                        <div class="notification-details">
+                                            <div class="task-details">
+                                                <div class="task-info">
+                                                    <span class="task-deadline">📅 Due: December 20, 2024</span>
+                                                    <span class="task-reward">🏆 1,500-3,000 XP</span>
+                                                </div>
+                                                <div class="task-description">
+                                                    Design marketing campaign for TechCorp's new AI product launch. Collaborate with design team and marketing department.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="btn btn-primary-small" onclick="showPage('projects')">View Task Details</button>
+                                        <button class="btn btn-secondary-small" onclick="joinTeamsChannel('techcorp-marketing')">Join Teams Chat</button>
+                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Surprise & Delight Reward -->
+                            <div class="notification-item unread" data-category="rewards" data-timestamp="2024-12-08T15:45:00Z">
+                                <div class="notification-icon reward-icon">🎁</div>
+                                <div class="notification-content">
+                                    <div class="notification-header">
+                                        <h4 class="notification-title">Surprise Reward: Innovation Streak Bonus!</h4>
+                                        <span class="notification-time">2 days ago</span>
+                                        <div class="unread-indicator"></div>
+                                    </div>
+                                    <div class="notification-message">
+                                        <p><strong>Amazing dedication!</strong> The AI detected your consistent innovation pattern and awarded you a special bonus!</p>
+                                        <div class="notification-details">
+                                            <div class="reward-details">
+                                                <div class="reward-earned">
+                                                    <span class="surprise-badge">🎊 Surprise Bonus</span>
+                                                    <span class="points-badge">+500 XP</span>
+                                                </div>
+                                                <div class="reward-reason">
+                                                    <strong>Reason:</strong> 12-week Blueprint submission streak + outstanding peer collaboration + innovative thinking across multiple industries
+                                                </div>
+                                                <div class="unlock-message">
+                                                    <strong>Special Unlock:</strong> Early access to "Advanced AI Workshop" (normally requires 2,500 XP)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="btn btn-primary-small" onclick="claimReward('innovation-streak-bonus')">Claim Reward</button>
+                                        <button class="btn btn-secondary-small" onclick="registerForWorkshop('advanced-ai')">Register for Workshop</button>
+                                        <button class="btn btn-secondary-small" onclick="markAsRead(this)">Mark as Read</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Networking Event Follow-up -->
+                            <div class="notification-item read" data-category="events" data-timestamp="2024-12-08T09:15:00Z">
+                                <div class="notification-icon networking-icon">🤝</div>
+                                <div class="notification-content">
+                                    <div class="notification-header">
+                                        <h4 class="notification-title">Follow-up: Fall Networking Event</h4>
+                                        <span class="notification-time">2 days ago</span>
+                                    </div>
+                                    <div class="notification-message">
+                                        <p>Great networking at the Fall Industry Event! We've identified some follow-up opportunities for you.</p>
+                                        <div class="notification-details">
+                                            <div class="networking-results">
+                                                <div class="connections-made">
+                                                    <strong>New connections:</strong> 4 professionals added to your network
+                                                </div>
+                                                <div class="follow-up-suggestions">
+                                                    • Michael Smith (TechCorp CEO) expressed interest in mentoring you
+                                                    <br>• Dr. Sarah Chen wants to discuss healthcare AI opportunities
+                                                    <br>• 2 new co-op opportunities available based on conversations
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="btn btn-primary-small" onclick="showPage('network')">View Connections</button>
+                                        <button class="btn btn-secondary-small" onclick="scheduleMentorMeeting()">Schedule Mentoring</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <!-- Load More -->
+                        <div class="load-more-notifications">
+                            <button class="btn btn-secondary" onclick="loadMoreNotifications()">Load More Notifications</button>
+                            <span class="notifications-count">Showing 8 of 23 notifications</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notifications Sidebar -->
+                <div class="notifications-sidebar">
+                    <!-- Notification Settings -->
+                    <div class="card notification-settings-card">
+                        <div class="section-header">
+                            <h3 class="section-title">🔔 Notification Settings</h3>
+                        </div>
+                        
+                        <div class="settings-options">
+                            <div class="setting-option">
+                                <div class="setting-info">
+                                    <h4>Blueprint Feedback</h4>
+                                    <p>Get notified when your blueprints are reviewed</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-option">
+                                <div class="setting-info">
+                                    <h4>Event Recommendations</h4>
+                                    <p>Receive suggestions for relevant events</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-option">
+                                <div class="setting-info">
+                                    <h4>Project Updates</h4>
+                                    <p>Updates on co-op projects and tasks</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-option">
+                                <div class="setting-info">
+                                    <h4>Collaboration Requests</h4>
+                                    <p>When peers want to work with you</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-option">
+                                <div class="setting-info">
+                                    <h4>Rewards & Achievements</h4>
+                                    <p>Special bonuses and milestones</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-option">
+                                <div class="setting-info">
+                                    <h4>Email Digest</h4>
+                                    <p>Daily summary of important notifications</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="card notification-stats-card">
+                        <div class="section-header">
+                            <h3 class="section-title">📊 This Week's Activity</h3>
+                        </div>
+                        
+                        <div class="notification-stats">
+                            <div class="stat-item">
+                                <div class="stat-icon">📝</div>
+                                <div class="stat-info">
+                                    <span class="stat-number">2</span>
+                                    <span class="stat-label">Blueprint Reviews</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item">
+                                <div class="stat-icon">📅</div>
+                                <div class="stat-info">
+                                    <span class="stat-number">4</span>
+                                    <span class="stat-label">Event Invitations</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item">
+                                <div class="stat-icon">💼</div>
+                                <div class="stat-info">
+                                    <span class="stat-number">1</span>
+                                    <span class="stat-label">New Projects</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item">
+                                <div class="stat-icon">🎁</div>
+                                <div class="stat-info">
+                                    <span class="stat-number">1</span>
+                                    <span class="stat-label">Special Rewards</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notification History -->
+                    <div class="card notification-history-card">
+                        <div class="section-header">
+                            <h3 class="section-title">📈 Notification History</h3>
+                        </div>
+                        
+                        <div class="history-chart">
+                            <p class="text-muted">Most active on <strong>Mondays</strong> and <strong>Wednesdays</strong></p>
+                            <div class="history-stats">
+                                <div class="history-stat">
+                                    <span>This week: <strong>8 notifications</strong></span>
+                                </div>
+                                <div class="history-stat">
+                                    <span>Last week: <strong>12 notifications</strong></span>
+                                </div>
+                                <div class="history-stat">
+                                    <span>Average: <strong>10/week</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-secondary" onclick="exportNotificationHistory()" style="width: 100%; margin-top: 10px;">Export History</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <!-- Modal Container -->
@@ -1963,6 +2390,7 @@
     <script src="js/companies.js"></script>
     <script src="js/tracking.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/notifications.js"></script>
     <script src="js/utils.js"></script>
 </body>
 </html>

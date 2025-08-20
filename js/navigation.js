@@ -108,6 +108,9 @@ function loadPageContent(pageId) {
         case 'profile':
             loadProfileContent();
             break;
+        case 'notifications':
+            loadNotificationsContent();
+            break;
     }
 }
 
@@ -183,6 +186,27 @@ function loadCommunityIdeas() {
 function loadUserIdeas() {
     console.log('Loading user ideas...');
     // In production, fetch from API
+}
+
+// Notifications content loader
+function loadNotificationsContent() {
+    console.log('Loading notifications content...');
+    
+    // Initialize if the function exists from notifications.js
+    if (typeof window.initializeNotifications === 'function') {
+        window.initializeNotifications();
+    } else if (typeof initializeNotifications === 'function') {
+        initializeNotifications();
+    } else {
+        // Fallback - try again after a small delay
+        setTimeout(() => {
+            if (typeof window.initializeNotifications === 'function') {
+                window.initializeNotifications();
+            } else if (typeof initializeNotifications === 'function') {
+                initializeNotifications();
+            }
+        }, 100);
+    }
 }
 
 // Load time data
@@ -455,7 +479,7 @@ function updateURL(pageId) {
 function getPageFromURL() {
     const hash = window.location.hash.slice(1);
     // Validate that the page exists
-    const validPages = ['dashboard', 'innovation', 'ideas', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile'];
+    const validPages = ['dashboard', 'innovation', 'ideas', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile', 'notifications'];
     return validPages.includes(hash) ? hash : 'dashboard';
 }
 
@@ -470,7 +494,8 @@ function updatePageTitle(pageId) {
         network: 'Professional Network',
         resources: 'Resources & Tools',
         tracking: 'Time Tracking',
-        profile: 'Profile Settings'
+        profile: 'Profile Settings',
+        notifications: 'Notifications'
     };
     
     document.title = `${titles[pageId] || 'Dashboard'} - IMI Student Portal`;
