@@ -410,9 +410,10 @@ label {
     margin-right: 8px;
 }
 
-/* Blue sparkle emoji filter */
+/* Blue sparkle emoji filter - more aggressive transformation */
 .blue-sparkle {
-    filter: hue-rotate(200deg) brightness(1.2) saturate(1.5);
+    filter: hue-rotate(200deg) brightness(1.3) saturate(2) contrast(1.2);
+    display: inline-block;
 }
 
 /* Grey supporting text for "Excellent work on your Blueprint submission!" */

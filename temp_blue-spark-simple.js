@@ -92,7 +92,7 @@ class SimpleBlueSparkManager {
                 const greyText = activityIndicator.querySelector('.support-text');
                 
                 if (blueText) {
-                    blueText.textContent = `💎 Blue Spark Active (${timeRemaining})`;
+                    blueText.innerHTML = `<span class="blue-sparkle">✨</span> Blue Spark Active (${timeRemaining})`;
                 }
                 if (greyText) {
                     greyText.textContent = `Excellent work on your Blueprint submission!`;
