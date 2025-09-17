@@ -78,7 +78,9 @@ function toggleLike(button) {
         delete likeData[ideaId];
         
         // Show notification
-        showNotification('💔 Removed like', 'info');
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification('💔 Removed like', 'info');
+        }
     } else {
         // Like
         likeIcon.textContent = '❤️';
@@ -89,7 +91,9 @@ function toggleLike(button) {
         likeData[ideaId] = { liked: true, timestamp: Date.now() };
         
         // Show notification
-        showNotification('❤️ Liked!', 'success');
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification('❤️ Liked!', 'success');
+        }
     }
     
     // Save to localStorage
@@ -115,7 +119,9 @@ function handleIdeaSubmission(event) {
     console.log('Idea submitted:', ideaData);
     
     // Show success message
-    showNotification('🎉 Your idea has been submitted successfully!', 'success');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('🎉 Your idea has been submitted successfully!', 'success');
+    }
     
     // Reset form
     event.target.reset();
@@ -124,7 +130,9 @@ function handleIdeaSubmission(event) {
     // In a real app, this would send data to the server
     // For demo purposes, we'll just simulate success
     setTimeout(() => {
-        showNotification('💡 Your idea is now live in the community feed!', 'info');
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification('💡 Your idea is now live in the community feed!', 'info');
+        }
     }, 2000);
 }
 
@@ -142,7 +150,9 @@ function saveDraft() {
         timestamp: Date.now()
     }));
     
-    showNotification('💾 Draft saved successfully!', 'success');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('💾 Draft saved successfully!', 'success');
+    }
 }
 
 function toggleSkillsSection() {
@@ -258,7 +268,9 @@ function initializeIdeaActions() {
 function handleXPInvestment(event) {
     // Check if button is disabled
     if (event.target.disabled || event.target.classList.contains('disabled')) {
-        showNotification('❌ This idea is not currently seeking XP investment.', 'error');
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification('❌ This idea is not currently seeking XP investment.', 'error');
+        }
         return;
     }
     
@@ -271,7 +283,9 @@ function handleXPInvestment(event) {
     if (investmentAmount && !isNaN(investmentAmount) && parseInt(investmentAmount) > 0) {
         const amount = parseInt(investmentAmount);
         if (amount <= 1850) { // Check available XP
-            showNotification(`🎉 Successfully invested ${amount} XP in "${ideaTitle}"!`, 'success');
+            if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                window.IMI.utils.showNotification(`🎉 Successfully invested ${amount} XP in "${ideaTitle}"!`, 'success');
+            }
             
             // Update progress bar if it exists
             const progressBar = ideaCard.querySelector('.progress-fill');
@@ -289,7 +303,9 @@ function handleXPInvestment(event) {
                 }
             }
         } else {
-            showNotification('❌ Insufficient XP for this investment amount.', 'error');
+            if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                window.IMI.utils.showNotification('❌ Insufficient XP for this investment amount.', 'error');
+            }
         }
     }
 }
@@ -298,7 +314,9 @@ function handleJoinTeam(event) {
     const ideaCard = event.target.closest('.idea-card');
     const ideaTitle = ideaCard.querySelector('h4').textContent;
     
-    showNotification(`🤝 Join request sent for "${ideaTitle}"! The team lead will review your application.`, 'success');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification(`🤝 Join request sent for "${ideaTitle}"! The team lead will review your application.`, 'success');
+    }
     
     // Change button text and style to indicate request sent
     event.target.textContent = '⏳ Request Sent';
@@ -313,7 +331,9 @@ function handleOpenTeams(event) {
     const ideaTitle = ideaCard.querySelector('h4').textContent;
     
     // Simulate opening MS Teams
-    showNotification(`💬 Opening MS Teams collaboration space for "${ideaTitle}"...`, 'info');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification(`💬 Opening MS Teams collaboration space for "${ideaTitle}"...`, 'info');
+    }
     
     // In a real app, this would open MS Teams or redirect to the collaboration space
     setTimeout(() => {
@@ -336,7 +356,9 @@ function loadDraft() {
             form.description.value = draftData.description || '';
             form.inspiration.value = draftData.inspiration || '';
             
-            showNotification('📝 Draft loaded from previous session.', 'info');
+            if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                window.IMI.utils.showNotification('📝 Draft loaded from previous session.', 'info');
+            }
         }
     }
 }

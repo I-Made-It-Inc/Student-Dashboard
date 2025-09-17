@@ -33,9 +33,10 @@
 .toast {
     pointer-events: auto;
     margin-bottom: 12px;
-    border-radius: var(--radius-lg);
+    border-radius: 8px;
     box-shadow: var(--shadow-lg);
-    border: 2px solid transparent;
+    border: none;
+    border-left: 4px solid;
     overflow: hidden;
     cursor: pointer;
     transition: all var(--transition-normal);
@@ -67,9 +68,9 @@
 /* Toast Content */
 .toast-content {
     display: flex;
-    align-items: flex-start;
-    padding: 16px;
-    min-height: 60px;
+    align-items: center;
+    padding: 12px 20px;
+    min-height: auto;
     position: relative;
 }
 
@@ -124,102 +125,102 @@
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Toast Type Styles - IMI Brand Colors */
+/* Toast Type Styles - Matching Working Examples */
 
-/* Success Toast - Light green with darker green accent */
+/* Success Toast - Light green background with green left border */
 .toast-success {
-    background: linear-gradient(135deg, #e8f5e8 0%, #f0fdf0 100%);
-    border-color: #22c55e;
-    color: #166534;
+    background-color: #f1f8f4;
+    color: #231f20;
+    border-left-color: #4caf50;
 }
 
 .toast-success .toast-title {
-    color: #15803d;
+    color: #231f20;
 }
 
 .toast-success .toast-icon {
-    color: #22c55e;
+    color: #4caf50;
 }
 
 .toast-success .toast-close {
-    color: #166534;
+    color: #4caf50;
 }
 
-/* Error Toast - Light red with darker red accent */
+/* Error Toast - Light red background with red left border */
 .toast-error {
-    background: linear-gradient(135deg, #fef2f2 0%, #fef7f7 100%);
-    border-color: #ef4444;
-    color: #991b1b;
+    background-color: #fef1f0;
+    color: #231f20;
+    border-left-color: #f44336;
 }
 
 .toast-error .toast-title {
-    color: #dc2626;
+    color: #231f20;
 }
 
 .toast-error .toast-icon {
-    color: #ef4444;
+    color: #f44336;
 }
 
 .toast-error .toast-close {
-    color: #991b1b;
+    color: #f44336;
 }
 
-/* Warning Toast - Light yellow with IMI yellow accent */
+/* Warning Toast - Light orange background with orange left border */
 .toast-warning {
-    background: linear-gradient(135deg, #fffbeb 0%, #fefce8 100%);
-    border-color: var(--imi-yellow);
-    color: var(--imi-dark-gray);
+    background-color: #fff8e1;
+    color: #231f20;
+    border-left-color: #ff9800;
 }
 
 .toast-warning .toast-title {
-    color: var(--imi-blue);
+    color: #231f20;
 }
 
 .toast-warning .toast-icon {
-    color: #f59e0b;
+    color: #ff9800;
 }
 
 .toast-warning .toast-close {
-    color: var(--imi-dark-gray);
+    color: #ff9800;
 }
 
-/* Info Toast - Light blue with IMI blue accent */
+/* Info Toast - Light blue background with blue left border */
 .toast-info {
-    background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
-    border-color: var(--imi-blue);
-    color: var(--imi-blue);
+    background-color: #f0f4ff;
+    color: #231f20;
+    border-left-color: #2196f3;
 }
 
 .toast-info .toast-title {
-    color: var(--imi-blue);
+    color: #231f20;
 }
 
 .toast-info .toast-icon {
-    color: #3b82f6;
+    color: #2196f3;
 }
 
 .toast-info .toast-close {
-    color: var(--imi-blue);
+    color: #2196f3;
 }
 
-/* Loading Toast - IMI brand colors */
+/* Loading Toast - Light blue background with blue left border */
 .toast-loading {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border-color: var(--imi-blue);
-    color: var(--imi-dark-gray);
+    background-color: #f0f4ff;
+    color: #231f20;
+    border-left-color: #2196f3;
 }
 
 .toast-loading .toast-title {
-    color: var(--imi-blue);
+    color: #231f20;
 }
 
 .toast-loading .toast-icon {
-    color: var(--imi-blue);
+    color: #2196f3;
     animation: spin 1s linear infinite;
 }
 
 .toast-loading .toast-close {
-    color: var(--imi-dark-gray);
+    color: #2196f3;
 }
 
 @keyframes spin {
