@@ -433,30 +433,8 @@ window.IMI = window.IMI || {};
 window.IMI.config = IMI_CONFIG;
 window.IMI.utils = window.IMI.utils || {
     debounce,
-    throttle,
-    showNotification: function(message, type = 'info') {
-        // Simple notification implementation
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.textContent = message;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196f3'};
-            color: white;
-            border-radius: 4px;
-            z-index: 10000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        `;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
+    throttle
+    // showNotification is now provided by the universal toast system in toast.js
 };
 window.IMI.data = {
     userData: null,
