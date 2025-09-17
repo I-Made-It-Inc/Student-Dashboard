@@ -329,6 +329,135 @@ function getNotebookTrainingModalContent() {
     `;
 }
 
+function getYoungEntrepreneursModalContent() {
+    return `
+        <div class="course-modal">
+            <div class="course-header">
+                <div class="course-icon-large">
+                    <img src="images/courses_Young_Entrepreneurs.png" alt="Young Entrepreneurs Course" class="course-modal-image">
+                </div>
+                <div class="course-info">
+                    <h2>Young Entrepreneurs</h2>
+                    <p class="course-subtitle">Turn curiosity into real-world literacy</p>
+                    <div class="course-details">
+                        <span class="course-detail-item">📅 3 months</span>
+                        <span class="course-detail-item">👨‍🏫 Instructor-led</span>
+                        <span class="course-detail-item">📱 Weekly meetings</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="course-description">
+                <h3>Course Overview</h3>
+                <p>Students learn how companies work, practice basic finance with a mock portfolio, and use pro-grade AI tools to research and create. This comprehensive program transforms curiosity into practical business literacy through hands-on experience and real-world applications.</p>
+            </div>
+            
+            <div class="course-highlights">
+                <h3>What You'll Learn</h3>
+                <ul>
+                    <li>How companies operate and generate revenue</li>
+                    <li>Basic finance principles and portfolio management</li>
+                    <li>Professional-grade AI tools for research and content creation</li>
+                    <li>Business communication and presentation skills</li>
+                    <li>Market analysis and competitive research</li>
+                    <li>Entrepreneurial mindset and opportunity identification</li>
+                </ul>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="registerForCourse('young-entrepreneurs')">Register for Course</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    `;
+}
+
+function getBlueOceanModalContent() {
+    return `
+        <div class="course-modal">
+            <div class="course-header">
+                <div class="course-icon-large">
+                    <img src="images/courses_Blue_Ocean.png" alt="Blue Ocean Innovation Course" class="course-modal-image">
+                </div>
+                <div class="course-info">
+                    <h2>Blue Ocean Innovation & AI Applications</h2>
+                    <p class="course-subtitle">Apply Blue Ocean strategy to design ideas that create new value</p>
+                    <div class="course-details">
+                        <span class="course-detail-item">📅 3 months</span>
+                        <span class="course-detail-item">👨‍🏫 Instructor-led</span>
+                        <span class="course-detail-item">🏆 Global challenge</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="course-description">
+                <h3>Course Overview</h3>
+                <p>With access to advanced AI tools, students analyze trends, prototype quickly, and team up to submit to a global innovation challenge. This program combines strategic thinking with cutting-edge technology to develop breakthrough solutions that create uncontested market spaces.</p>
+            </div>
+            
+            <div class="course-highlights">
+                <h3>What You'll Learn</h3>
+                <ul>
+                    <li>Blue Ocean Strategy principles and framework</li>
+                    <li>Advanced AI tools for trend analysis and market research</li>
+                    <li>Rapid prototyping techniques and methodologies</li>
+                    <li>Team collaboration and project management</li>
+                    <li>Innovation challenge preparation and submission</li>
+                    <li>Value innovation and competitive differentiation</li>
+                </ul>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="registerForCourse('blue-ocean')">Register for Course</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    `;
+}
+
+function getAIHighSchoolModalContent() {
+    return `
+        <div class="course-modal">
+            <div class="course-header">
+                <div class="course-icon-large">
+                    <img src="images/courses_AI.jpg" alt="AI Application Course" class="course-modal-image">
+                </div>
+                <div class="course-info">
+                    <h2>AI Application for High School Students</h2>
+                    <p class="course-subtitle">A Practical Guide</p>
+                    <div class="course-details">
+                        <span class="course-detail-item">⏱️ 4 hours</span>
+                        <span class="course-detail-item">🎯 Self-paced</span>
+                        <span class="course-detail-item">💻 Online course</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="course-description">
+                <h3>Course Overview</h3>
+                <p>This fast-paced, 4-hour online course will equip you with the essential skills to leverage the power of Artificial Intelligence for academic excellence and real-world success. No prior experience with AI is needed—just a curiosity to learn and a readiness to create.</p>
+            </div>
+            
+            <div class="course-highlights">
+                <h3>What You'll Learn</h3>
+                <ul>
+                    <li>Essential AI tools for academic research and writing</li>
+                    <li>Prompt engineering for better AI outputs</li>
+                    <li>AI-assisted study techniques and note-taking</li>
+                    <li>Creative applications of AI in school projects</li>
+                    <li>Ethical considerations and responsible AI use</li>
+                    <li>Future career opportunities in AI and technology</li>
+                </ul>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="registerForCourse('ai-high-school')">Register for Course</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    `;
+}
+
 // Setup modal-specific handlers
 function setupModalHandlers(type) {
     const form = document.querySelector('#modal-body form');
@@ -379,6 +508,15 @@ function openModal(type, title, content) {
                 break;
             case 'notebook-training':
                 modalContent = getNotebookTrainingModalContent();
+                break;
+            case 'young-entrepreneurs-course':
+                modalContent = getYoungEntrepreneursModalContent();
+                break;
+            case 'blue-ocean-course':
+                modalContent = getBlueOceanModalContent();
+                break;
+            case 'ai-high-school-course':
+                modalContent = getAIHighSchoolModalContent();
                 break;
             default:
                 modalContent = content || '<h2>Modal Content</h2>';
@@ -589,6 +727,31 @@ function deleteConnection(connectionId) {
     }
 }
 
+function registerForCourse(courseId) {
+    console.log(`Registering for course: ${courseId}`);
+    
+    // Course registration logic
+    const courseNames = {
+        'young-entrepreneurs': 'Young Entrepreneurs',
+        'blue-ocean': 'Blue Ocean Innovation & AI Applications',
+        'ai-high-school': 'AI Application for High School Students'
+    };
+    
+    const courseName = courseNames[courseId] || 'Selected Course';
+    
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification(`Registration request submitted for ${courseName}! You will receive enrollment details via email.`, 'success');
+    }
+    
+    // Here you would typically:
+    // 1. Send registration data to server
+    // 2. Create invoice for course
+    // 3. Send confirmation email
+    // 4. Update user's course enrollment status
+    
+    closeModal();
+}
+
 function initializeModal() {
     // Initialize modal functionality
     console.log('Modal system initialized');
@@ -617,6 +780,7 @@ window.openConnectionModal = openConnectionModal;
 window.viewProfile = viewProfile;
 window.deleteConnection = deleteConnection;
 window.getConnectionIdFromName = getConnectionIdFromName;
+window.registerForCourse = registerForCourse;
 
 // Export functions
 window.openModal = openModal;
