@@ -1,0 +1,26 @@
+{
+  "name": "imi-student-dashboard",
+  "version": "1.0.0",
+  "description": "IMI Student Dashboard - A comprehensive portal for student co-op management and career development",
+  "main": "index.html",
+  "scripts": {
+    "build": "node build.js",
+    "build:watch": "node build.js && echo 'Watching for changes...' && fswatch -o pages/*.html | xargs -n1 -I{} node build.js",
+    "serve": "python3 -m http.server 8080",
+    "dev": "npm run build && npm run serve"
+  },
+  "keywords": [
+    "student",
+    "dashboard",
+    "portal",
+    "education",
+    "co-op"
+  ],
+  "author": "IMI",
+  "license": "Private",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-repo/Student-Dashboard.git"
+  }
+}

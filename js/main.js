@@ -17,9 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('IMI Student Dashboard v0.2 initializing...');
     
     // Initialize all modules
-    if (typeof window.pageLoader !== 'undefined' && window.pageLoader.initializePageLoader) {
-        window.pageLoader.initializePageLoader();
-    }
     initializeNavigation();
     initializeBlueprintChallenge();
     initializeModal();

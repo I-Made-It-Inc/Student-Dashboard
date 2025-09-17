@@ -18,16 +18,17 @@ function initializeNavigation() {
     
     // Show initial page from URL or default to dashboard
     const initialPage = getPageFromURL();
-
-    // Small delay to ensure page loader is ready
-    setTimeout(() => {
-        showPage(initialPage, false); // Don't push state on initial load
-    }, 100);
+    showPage(initialPage, false); // Don't push state on initial load
 }
 
 // Show specific page
-async function showPage(pageId, pushState = true) {
+function showPage(pageId, pushState = true) {
     console.log(`Navigating to: ${pageId}`);
+
+    // Hide all pages
+    document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.remove('active');
+    });
 
     // Remove active class from all nav links
     document.querySelectorAll('.nav-links a').forEach(link => {
@@ -39,36 +40,15 @@ async function showPage(pageId, pushState = true) {
         dropdown.classList.remove('has-active-child');
     });
 
-    // Load and inject page content dynamically
-    if (window.pageLoader && typeof window.pageLoader.loadPage === 'function') {
-        try {
-            const content = await window.pageLoader.loadPage(pageId);
-            window.pageLoader.injectPageContent(pageId, content);
-        } catch (error) {
-            console.error(`Failed to load page ${pageId}:`, error);
+    // Show selected page
+    const selectedPage = document.getElementById(`${pageId}-page`);
+    if (selectedPage) {
+        selectedPage.classList.add('active');
 
-            // Fallback to checking for existing page in DOM
-            const selectedPage = document.getElementById(`${pageId}-page`);
-            if (selectedPage) {
-                // Hide all pages first
-                document.querySelectorAll('.page-section').forEach(section => {
-                    section.classList.remove('active');
-                });
-                selectedPage.classList.add('active');
-                loadPageContent(pageId);
-            }
-        }
+        // Load page-specific content
+        loadPageContent(pageId);
     } else {
-        // Fallback to original behavior if page loader is not available
-        document.querySelectorAll('.page-section').forEach(section => {
-            section.classList.remove('active');
-        });
-
-        const selectedPage = document.getElementById(`${pageId}-page`);
-        if (selectedPage) {
-            selectedPage.classList.add('active');
-            loadPageContent(pageId);
-        }
+        console.error(`Page not found: ${pageId}`);
     }
     
     // Update active nav link (only for pages that have nav links)
