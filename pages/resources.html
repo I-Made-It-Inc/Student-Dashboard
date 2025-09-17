@@ -1,0 +1,192 @@
+        <!-- Resources Page -->
+        <div id="resources-page" class="page-section">
+            <h2>Resources & Tools</h2>
+
+            <div class="resources-grid">
+                <!-- Publications Section -->
+                <div class="card resource-card">
+                    <h3 class="section-title">📚 Publication Access</h3>
+
+                    <div class="bitwarden-setup">
+                        <div class="setup-card">
+                            <h4>🔐 Password Manager Setup</h4>
+                            <p>Access premium publications through our Bitwarden vault</p>
+                            <ol class="setup-steps">
+                                <li>Install Bitwarden browser extension</li>
+                                <li>Create account with your IMI email</li>
+                                <li>Join IMI organization vault (check email for invite)</li>
+                                <li>Access shared credentials for publications</li>
+                            </ol>
+                            <div class="setup-actions">
+                                <button class="btn btn-primary">Download Bitwarden</button>
+                                <button class="btn btn-secondary">Request Access</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="publications-grid">
+                        <div class="publication-card">
+                            <div class="pub-icon">📰</div>
+                            <h4>Wall Street Journal</h4>
+                            <p>Business & Finance News</p>
+                            <button class="btn-link">Access →</button>
+                        </div>
+                        <div class="publication-card">
+                            <div class="pub-icon">💼</div>
+                            <h4>Harvard Business Review</h4>
+                            <p>Management & Strategy</p>
+                            <button class="btn-link">Access →</button>
+                        </div>
+                        <div class="publication-card">
+                            <div class="pub-icon">🔬</div>
+                            <h4>MIT Technology Review</h4>
+                            <p>Emerging Technology</p>
+                            <button class="btn-link">Access →</button>
+                        </div>
+                        <div class="publication-card">
+                            <div class="pub-icon">⚡</div>
+                            <h4>Fast Company</h4>
+                            <p>Innovation & Design</p>
+                            <button class="btn-link">Access →</button>
+                        </div>
+                        <div class="publication-card">
+                            <div class="pub-icon">🌍</div>
+                            <h4>The Economist</h4>
+                            <p>Global Affairs & Economics</p>
+                            <button class="btn-link">Access →</button>
+                        </div>
+                        <div class="publication-card">
+                            <div class="pub-icon">🚀</div>
+                            <h4>TechCrunch</h4>
+                            <p>Startup & Tech News</p>
+                            <button class="btn-link">Access →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IMI Training Courses Section -->
+                <div class="card resource-card">
+                    <h3 class="section-title">🎓 IMI Training Courses</h3>
+                    <p class="section-subtitle">Enhance your skills with our comprehensive course offerings</p>
+
+                    <div class="training-courses-grid">
+                        <div class="training-course-card" onclick="openModal('young-entrepreneurs-course')">
+                            <div class="course-image">
+                                <img src="images/courses_Young_Entrepreneurs.png" alt="Young Entrepreneurs Course" class="course-stock-image">
+                            </div>
+                            <div class="course-content">
+                                <h4>Young Entrepreneurs</h4>
+                                <p class="course-brief">Turn curiosity into real-world literacy</p>
+                                <div class="course-meta">
+                                    <span class="course-duration">3-month program</span>
+                                    <span class="course-type">Instructor-led</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="training-course-card" onclick="openModal('blue-ocean-course')">
+                            <div class="course-image">
+                                <img src="images/courses_Blue_Ocean.png" alt="Blue Ocean Innovation Course" class="course-stock-image">
+                            </div>
+                            <div class="course-content">
+                                <h4>Blue Ocean Innovation & AI Applications</h4>
+                                <p class="course-brief">Apply Blue Ocean strategy with AI tools</p>
+                                <div class="course-meta">
+                                    <span class="course-duration">3-month program</span>
+                                    <span class="course-type">Instructor-led</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="training-course-card" onclick="openModal('ai-high-school-course')">
+                            <div class="course-image">
+                                <img src="images/courses_AI.jpg" alt="AI Application Course" class="course-stock-image">
+                            </div>
+                            <div class="course-content">
+                                <h4>AI Application for High School Students</h4>
+                                <p class="course-brief">Essential AI skills for academic excellence</p>
+                                <div class="course-meta">
+                                    <span class="course-duration">4 hours</span>
+                                    <span class="course-type">Self-paced</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Tools Section -->
+                <div class="card resource-card">
+                    <h3 class="section-title">🤖 AI Tools & Training</h3>
+
+                    <div class="ai-tools-grid">
+                        <div class="ai-tool-card">
+                            <div class="tool-header">
+                                <div class="tool-logo">🔍</div>
+                                <h4>Perplexity AI</h4>
+                            </div>
+                            <p>AI-powered research assistant for deep insights</p>
+                            <div class="tool-actions">
+                                <button class="btn btn-primary">Open Tool</button>
+                                <button class="btn btn-secondary" onclick="openModal('perplexity-training')">Training</button>
+                            </div>
+                        </div>
+
+                        <div class="ai-tool-card">
+                            <div class="tool-header">
+                                <div class="tool-logo">✨</div>
+                                <h4>Google Gemini</h4>
+                            </div>
+                            <p>Advanced AI for creative and analytical tasks</p>
+                            <div class="tool-actions">
+                                <button class="btn btn-primary">Open Tool</button>
+                                <button class="btn btn-secondary" onclick="openModal('gemini-training')">Training</button>
+                            </div>
+                        </div>
+
+                        <div class="ai-tool-card">
+                            <div class="tool-header">
+                                <div class="tool-logo">📓</div>
+                                <h4>NotebookLM</h4>
+                            </div>
+                            <p>AI note-taking and knowledge synthesis</p>
+                            <div class="tool-actions">
+                                <button class="btn btn-primary">Open Tool</button>
+                                <button class="btn btn-secondary" onclick="openModal('notebook-training')">Training</button>
+                            </div>
+                        </div>
+
+                        <div class="ai-tool-card">
+                            <div class="tool-header">
+                                <div class="tool-logo">🎨</div>
+                                <h4>DALL-E 3</h4>
+                            </div>
+                            <p>AI image generation for creative projects</p>
+                            <div class="tool-actions">
+                                <button class="btn btn-primary">Open Tool</button>
+                                <button class="btn btn-secondary">Training</button>
+                            </div>
+                        </div>
+
+                        <div class="ai-tool-card">
+                            <div class="tool-header">
+                                <div class="tool-logo">💬</div>
+                                <h4>Claude</h4>
+                            </div>
+                            <p>Advanced conversational AI assistant</p>
+                            <div class="tool-actions">
+                                <button class="btn btn-primary">Open Tool</button>
+                                <button class="btn btn-secondary">Training</button>
+                            </div>
+                        </div>
+
+                        <div class="ai-tool-card add-more">
+                            <div class="tool-header">
+                                <div class="tool-logo">➕</div>
+                                <h4>More Coming Soon</h4>
+                            </div>
+                            <p>New AI tools added regularly</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

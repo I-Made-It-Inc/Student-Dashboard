@@ -1,0 +1,238 @@
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="page-section active">
+            <div class="dashboard-grid">
+                <div class="main-content">
+                    <!-- Enhanced Profile Card -->
+                    <div class="card profile-card">
+                        <div class="profile-avatar blue-spark-active">JD</div>
+                        <div class="profile-info">
+                            <h2>Welcome back, Jane!</h2>
+                            <div class="profile-details">Summer 2025 Co-op Stream • TechCorp Partnership</div>
+                            <div class="gamification-stats">
+                                <div class="stat-badge">
+                                    <span class="stat-icon">🔥</span>
+                                    <div>
+                                        <div class="stat-main">12 day streak</div>
+                                        <div class="stat-sub">Blueprint Challenge</div>
+                                    </div>
+                                </div>
+                                <div class="stat-badge">
+                                    <span class="stat-icon">⭐</span>
+                                    <div>
+                                        <div class="stat-main">1,850 pts</div>
+                                        <div class="stat-sub">This Season</div>
+                                    </div>
+                                </div>
+                                <div class="stat-badge">
+                                    <span class="stat-icon">🏆</span>
+                                    <div>
+                                        <div class="stat-main">Gold</div>
+                                        <div class="stat-sub">Tier Status</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <div class="stat-value">324</div>
+                                <div class="stat-label">Total Hours</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">5</div>
+                                <div class="stat-label">Active Projects</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">Companies</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Blueprint Challenge Preview -->
+                    <div class="card">
+                        <div class="section-header">
+                            <h3 class="section-title">🚀 This Week's Blueprint Challenge</h3>
+                            <a class="btn-link" onclick="showPage('innovation')">Start Writing →</a>
+                        </div>
+                        <div class="blue-spark-activity" id="blueprint-activity-indicator">
+                            <span class="blue-spark-activity-text">💎 Blue Spark Active (5d 23h remaining)</span>
+                            <span class="support-text">Excellent work on your Blueprint submission!</span>
+                        </div>
+                        <div class="challenge-preview-card">
+                            <h4>Topic: The Future of Sustainable Cities</h4>
+                            <p class="text-muted">Explore how technology and innovation can create more sustainable urban environments through the lens of your personal Blueprint for the Future.</p>
+                            <div class="challenge-progress">
+                                <div class="progress-sections">
+                                    <div class="progress-section completed">
+                                        <span>✓</span>
+                                        <span>The Trendspotter</span>
+                                    </div>
+                                    <div class="progress-section">
+                                        <span>○</span>
+                                        <span>The Future Visionary</span>
+                                    </div>
+                                    <div class="progress-section">
+                                        <span>○</span>
+                                        <span>The Innovation Catalyst</span>
+                                    </div>
+                                    <div class="progress-section">
+                                        <span>○</span>
+                                        <span>The Connector</span>
+                                    </div>
+                                    <div class="progress-section">
+                                        <span>○</span>
+                                        <span>The Growth Hacker</span>
+                                    </div>
+                                </div>
+                                <div class="points-earned">
+                                    20 XP earned
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Co-op Projects -->
+                    <div class="card">
+                        <div class="section-header">
+                            <h3 class="section-title">💼 Active Co-op Projects</h3>
+                            <a class="btn-link" onclick="showPage('projects')">View All Projects →</a>
+                        </div>
+                        <div class="task-list">
+                            <div class="task-item active-project">
+                                <div class="task-content">
+                                    <div class="active-indicator">ACTIVE</div>
+                                    <div class="task-title">Design Marketing Campaign for Product Launch</div>
+                                    <div class="task-meta">
+                                        <span>🏢 TechCorp</span>
+                                        <span>📅 Due in 3 days</span>
+                                        <span>⏱️ 12 hours logged</span>
+                                        <span class="xp-range">🏆 1,500-3,000 XP</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary">View Details</button>
+                            </div>
+                            <div class="task-item">
+                                <div class="task-content">
+                                    <div class="task-title">Market Research: Competitor Analysis</div>
+                                    <div class="task-meta">
+                                        <span>🏢 StartupXYZ</span>
+                                        <span>📅 Due Next Week</span>
+                                        <span>⏱️ 5 hours logged</span>
+                                        <span class="xp-range">🏆 1,000-2,000 XP</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary">Request to Join</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Company Recommendations -->
+                    <div class="card">
+                        <div class="section-header">
+                            <h3 class="section-title">🎯 Recommended Companies for You</h3>
+                            <a class="btn-link" onclick="showAllCompanies()">Browse All →</a>
+                        </div>
+                        <div class="company-recommendations">
+                            <div class="mini-company-card">
+                                <div class="company-icon">DC</div>
+                                <div class="company-details">
+                                    <h4>DataCo Analytics</h4>
+                                    <div class="company-rating">⭐ 4.8 (15 reviews)</div>
+                                    <p class="text-muted">Matches your interest in data science</p>
+                                    <span class="match-badge">95% Match</span>
+                                </div>
+                            </div>
+                            <div class="mini-company-card">
+                                <div class="company-icon">GH</div>
+                                <div class="company-details">
+                                    <h4>GreenTech Hub</h4>
+                                    <div class="company-rating">⭐ 4.6 (8 reviews)</div>
+                                    <p class="text-muted">Aligns with sustainability interests</p>
+                                    <span class="match-badge">88% Match</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Points Redemption Widget -->
+                    <div class="card widget">
+                        <div class="section-header">
+                            <h3 class="section-title">🎁 Redeem Points</h3>
+                            <span class="text-muted small">1,850 XP available</span>
+                        </div>
+                        <div class="redemption-list">
+                            <div class="redemption-item">
+                                <div class="redemption-info">
+                                    <span class="redemption-title">Workshop Early Access</span>
+                                    <span class="redemption-cost">500 XP</span>
+                                </div>
+                                <button class="btn btn-primary-small">Redeem</button>
+                            </div>
+                            <div class="redemption-item">
+                                <div class="redemption-info">
+                                    <span class="redemption-title">Mentor Chat Lottery</span>
+                                    <span class="redemption-cost">800 XP</span>
+                                </div>
+                                <button class="btn btn-primary-small">Redeem</button>
+                            </div>
+                            <div class="redemption-item locked">
+                                <div class="redemption-info">
+                                    <span class="redemption-title">Portfolio Review</span>
+                                    <span class="redemption-cost">2,500 XP</span>
+                                </div>
+                                <button class="btn-primary-small locked-btn" disabled>Locked</button>
+                            </div>
+                        </div>
+                        <a class="btn-link widget-bottom-link" onclick="showPointsMarketplace()">View All Opportunities →</a>
+                    </div>
+
+                    <!-- Referral Opportunities -->
+                    <div class="card widget">
+                        <div class="section-header">
+                            <h3 class="section-title">💰 Active Referral Programs</h3>
+                            <a class="btn-link" onclick="showPageWithFilter('companies', 'referral')">View All →</a>
+                        </div>
+                        <div class="referral-list">
+                            <div class="referral-item">
+                                <h4>TechCorp - B2B Software</h4>
+                                <p class="text-muted small">$500 per qualified lead</p>
+                                <button class="btn btn-primary-small">Learn More</button>
+                            </div>
+                            <div class="referral-item">
+                                <h4>HealthTech - Clinical Trial</h4>
+                                <p class="text-muted small">$200 per participant</p>
+                                <button class="btn btn-primary-small">Learn More</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Time Tracking Summary -->
+                    <div class="card widget">
+                        <div class="section-header">
+                            <h3 class="section-title">⏱️ This Week's Hours</h3>
+                            <a class="btn-link" onclick="showPage('tracking')">Details →</a>
+                        </div>
+                        <div class="time-breakdown">
+                            <div class="time-item">
+                                <span class="time-category">Blueprint Challenge</span>
+                                <span class="time-hours">8.5 hrs</span>
+                            </div>
+                            <div class="time-item">
+                                <span class="time-category">Co-op Projects</span>
+                                <span class="time-hours">22 hrs</span>
+                            </div>
+                            <div class="time-item">
+                                <span class="time-category">Personal Reading</span>
+                                <span class="time-hours">5 hrs</span>
+                            </div>
+                            <div class="time-total">
+                                <strong>Total: 35.5 hrs</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

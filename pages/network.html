@@ -1,0 +1,165 @@
+        <!-- Network Page -->
+        <div id="network-page" class="page-section">
+            <h2>Professional Network</h2>
+
+            <div class="network-grid">
+                <div class="network-main">
+                    <!-- Connections with Notes -->
+                    <div class="card network-card">
+                        <div class="section-header">
+                            <h3 class="section-title">🤝 Your Connections</h3>
+                            <button class="btn btn-primary-small" onclick="openModal('add-connection')">+ Add Connection</button>
+                        </div>
+
+                        <div class="connections-enhanced">
+                            <div class="connection-card-enhanced" onclick="openConnectionModal('michael-smith')">
+                                <div class="connection-avatar">MS</div>
+                                <div class="connection-info">
+                                    <div class="connection-name">Michael Smith</div>
+                                    <div class="connection-title">CEO at TechCorp</div>
+                                    <div class="connection-meta">
+                                        <span class="connection-tag">Mentor</span>
+                                        <span class="connection-tag">Reference Available</span>
+                                    </div>
+                                    <div class="connection-note">
+                                        Met at Q3 networking event. Discussed AI in healthcare. Offered mentorship on product strategy.
+                                    </div>
+                                    <div class="connection-photos">
+                                        📷 3 photos
+                                    </div>
+                                </div>
+                                <div class="connection-actions">
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); openConnectionModal('michael-smith')">View Details</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); requestReference('Michael Smith')">Request Reference</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); viewReference('Michael Smith')">View Reference(s)</button>
+                                </div>
+                            </div>
+
+                            <div class="connection-card-enhanced" onclick="openConnectionModal('sarah-johnson')">
+                                <div class="connection-avatar">SJ</div>
+                                <div class="connection-info">
+                                    <div class="connection-name">Sarah Johnson</div>
+                                    <div class="connection-title">Marketing Director at StartupXYZ</div>
+                                    <div class="connection-meta">
+                                        <span class="connection-tag">Project Supervisor</span>
+                                    </div>
+                                    <div class="connection-note">
+                                        Supervised social media campaign project. Great feedback on creative approach.
+                                    </div>
+                                </div>
+                                <div class="connection-actions">
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); openConnectionModal('sarah-johnson')">View Details</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); requestReference('Sarah Johnson')">Request Reference</button>
+                                    <button class="btn btn-action disabled" onclick="event.stopPropagation(); viewReference('Sarah Johnson')" disabled>View Reference(s)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Peer Suggestions -->
+                    <div class="card network-card">
+                        <h3 class="section-title">👥 Suggested Peers to Connect</h3>
+                        <div class="peer-suggestions">
+                            <div class="peer-card">
+                                <div class="peer-avatar">AC</div>
+                                <div class="peer-info">
+                                    <h4>Alex Chen</h4>
+                                    <p>Shares interest in AI & sustainability</p>
+                                    <div class="common-interests">
+                                        <span class="interest-tag">Machine Learning</span>
+                                        <span class="interest-tag">Green Tech</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-connect">Connect</button>
+                            </div>
+                            <div class="peer-card">
+                                <div class="peer-avatar">MG</div>
+                                <div class="peer-info">
+                                    <h4>Maria Garcia</h4>
+                                    <p>Working at DataCo - your next co-op</p>
+                                    <div class="common-interests">
+                                        <span class="interest-tag">Data Science</span>
+                                        <span class="interest-tag">Python</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-connect">Connect</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Existing Peer Connections -->
+                    <div class="card network-card">
+                        <h3 class="section-title">🎓 Fellow Students</h3>
+                        <div class="connections-enhanced">
+                            <div class="connection-card-enhanced" onclick="openConnectionModal('jamie-wright')">
+                                <div class="connection-avatar">JW</div>
+                                <div class="connection-info">
+                                    <div class="connection-name">Jamie Wright</div>
+                                    <div class="connection-title">Computer Science Student</div>
+                                    <div class="connection-meta">
+                                        <span class="connection-tag">Study Partner</span>
+                                        <span class="connection-tag">Fellow Student</span>
+                                    </div>
+                                    <div class="connection-note">
+                                        Met in CS50 study group. Great collaboration on final project. Currently job hunting together.
+                                    </div>
+                                    <div class="connection-photos">
+                                        📷 2 photos
+                                    </div>
+                                </div>
+                                <div class="connection-actions">
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); openConnectionModal('jamie-wright')">View Details</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); viewProfile('Jamie Wright')">View Profile</button>
+                                    <button class="btn btn-action" onclick="event.stopPropagation(); sendMessage('Jamie Wright')">Message</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="network-sidebar">
+                    <!-- Referral Programs Summary -->
+                    <div class="card network-card">
+                        <h3 class="section-title">💰 Your Referral Dashboard</h3>
+                        <div class="referral-summary">
+                            <div class="referral-stat">
+                                <span class="referral-number">$1,200</span>
+                                <span class="referral-label">Total Earned (in Trust)</span>
+                            </div>
+                            <div class="referral-stat">
+                                <span class="referral-number">3</span>
+                                <span class="referral-label">Active Referrals</span>
+                            </div>
+                            <div class="referral-stat">
+                                <span class="referral-number">5</span>
+                                <span class="referral-label">Programs Available</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 15px;">View All Programs</button>
+                    </div>
+
+                    <!-- Upcoming Events -->
+                    <div class="card network-card">
+                        <h3 class="section-title">📅 Upcoming Events</h3>
+                        <div class="events-list">
+                            <div class="event-item">
+                                <div class="event-date">Dec 15</div>
+                                <div class="event-details">
+                                    <h4>Tech Networking Night</h4>
+                                    <p>Meet executives from 10+ companies</p>
+                                    <button class="btn btn-primary-small">RSVP</button>
+                                </div>
+                            </div>
+                            <div class="event-item">
+                                <div class="event-date">Dec 18</div>
+                                <div class="event-details">
+                                    <h4>CEO Fireside Chat</h4>
+                                    <p>Q&A with DataCo founder</p>
+                                    <button class="btn btn-primary-small">RSVP</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

@@ -22,31 +22,49 @@ function initializeNavigation() {
 }
 
 // Show specific page
-function showPage(pageId, pushState = true) {
+async function showPage(pageId, pushState = true) {
     console.log(`Navigating to: ${pageId}`);
-    
-    // Hide all pages
-    document.querySelectorAll('.page-section').forEach(section => {
-        section.classList.remove('active');
-    });
-    
+
     // Remove active class from all nav links
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.classList.remove('active');
     });
-    
+
     // Remove active dropdown parent class
     document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
         dropdown.classList.remove('has-active-child');
     });
-    
-    // Show selected page
-    const selectedPage = document.getElementById(`${pageId}-page`);
-    if (selectedPage) {
-        selectedPage.classList.add('active');
-        
-        // Load page-specific content
-        loadPageContent(pageId);
+
+    // Load and inject page content dynamically
+    if (window.pageLoader && typeof window.pageLoader.loadPage === 'function') {
+        try {
+            const content = await window.pageLoader.loadPage(pageId);
+            window.pageLoader.injectPageContent(pageId, content);
+        } catch (error) {
+            console.error(`Failed to load page ${pageId}:`, error);
+
+            // Fallback to checking for existing page in DOM
+            const selectedPage = document.getElementById(`${pageId}-page`);
+            if (selectedPage) {
+                // Hide all pages first
+                document.querySelectorAll('.page-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                selectedPage.classList.add('active');
+                loadPageContent(pageId);
+            }
+        }
+    } else {
+        // Fallback to original behavior if page loader is not available
+        document.querySelectorAll('.page-section').forEach(section => {
+            section.classList.remove('active');
+        });
+
+        const selectedPage = document.getElementById(`${pageId}-page`);
+        if (selectedPage) {
+            selectedPage.classList.add('active');
+            loadPageContent(pageId);
+        }
     }
     
     // Update active nav link (only for pages that have nav links)
