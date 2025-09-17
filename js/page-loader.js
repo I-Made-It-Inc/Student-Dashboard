@@ -53,11 +53,23 @@ function injectPageContent(pageId, content) {
         return false;
     }
 
-    // Clear existing content
+    // Clear existing content (including loading state)
     container.innerHTML = '';
 
     // Inject new content
     container.innerHTML = content;
+
+    // Ensure the injected page section has the active class
+    const pageSection = container.querySelector(`#${pageId}-page`);
+    if (pageSection) {
+        console.log(`Found page section for ${pageId}, adding active class`);
+        pageSection.classList.add('active');
+        // Hide loading state and show content
+        pageSection.style.display = 'block';
+    } else {
+        console.error(`Could not find page section with id: ${pageId}-page`);
+        console.log('Available elements in container:', container.innerHTML.substring(0, 200));
+    }
 
     // Initialize page-specific functionality
     initializePageSpecificFeatures(pageId);

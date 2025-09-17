@@ -18,7 +18,11 @@ function initializeNavigation() {
     
     // Show initial page from URL or default to dashboard
     const initialPage = getPageFromURL();
-    showPage(initialPage, false); // Don't push state on initial load
+
+    // Small delay to ensure page loader is ready
+    setTimeout(() => {
+        showPage(initialPage, false); // Don't push state on initial load
+    }, 100);
 }
 
 // Show specific page
