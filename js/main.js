@@ -41,12 +41,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set up global event listeners
     setupGlobalEventListeners();
-    
+
     // Load user data
     loadUserData();
-    
+
     // Start session tracking
     startSessionTracking();
+
+    // Update notification badge count
+    updateNotificationBadgeCount();
     
     // Set up redemption handlers for dashboard (after a small delay to ensure DOM is ready)
     setTimeout(() => {
@@ -402,6 +405,27 @@ function setupDashboardRedemptionHandlers() {
             console.log(`Skipping button ${index + 1} with text: "${btn.textContent}"`);
         }
     });
+}
+
+// Update notification badge count on initial load
+function updateNotificationBadgeCount() {
+    // Count unread notifications if they exist in DOM
+    const unreadNotifications = document.querySelectorAll('.notification-item.unread');
+    const badge = document.querySelector('.notification-badge');
+
+    if (badge) {
+        // If we can count actual unread notifications, use that count
+        if (unreadNotifications.length > 0) {
+            badge.textContent = unreadNotifications.length;
+            badge.style.display = 'flex';
+        } else {
+            // Otherwise use the default (6 unread messages as per actual content)
+            // This ensures consistency even before navigating to notifications page
+            const currentCount = parseInt(badge.textContent) || 6;
+            badge.textContent = currentCount;
+            badge.style.display = currentCount > 0 ? 'flex' : 'none';
+        }
+    }
 }
 
 // Export for use in other modules
