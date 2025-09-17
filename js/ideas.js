@@ -1,6 +1,24 @@
 // js/ideas.js - Ideas & Innovation Hub JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Detect hard refresh (Ctrl+Shift+R) vs soft refresh (F5)
+    // Use sessionStorage flag method - sessionStorage persists through soft refresh but not hard refresh
+    const isHardRefresh = !sessionStorage.getItem('pageLoadFlag');
+    sessionStorage.setItem('pageLoadFlag', 'loaded');
+
+    // Clear draft only on hard refresh
+    if (isHardRefresh) {
+        localStorage.removeItem('ideaDraft');
+        console.log('Hard refresh detected - cleared idea draft');
+    } else {
+        // On soft refresh, try to load draft regardless of current hash
+        // because the hash might not be set yet when DOMContentLoaded fires
+        console.log('Soft refresh detected - attempting to load draft');
+        setTimeout(() => {
+            loadDraft();
+        }, 100);
+    }
+
     // Initialize Ideas functionality
     initializeIdeasPage();
 });
@@ -18,9 +36,13 @@ function saveLikeData(data) {
 }
 
 function initializeIdeasPage() {
+    console.log('initializeIdeasPage called');
+    // Reset draft loading flag for this initialization
+    draftLoadedThisInitialization = false;
+
     // Initialize like states from localStorage
     initializeLikeStates();
-    
+
     // Handle idea submission form
     const ideaForm = document.getElementById('idea-submission-form');
     if (ideaForm) {
@@ -343,8 +365,26 @@ function handleOpenTeams(event) {
 }
 
 
-// Load draft on page load
+// Track if draft has been loaded to prevent multiple notifications during same initialization
+let draftLoadedThisInitialization = false;
+
+// Load draft on page load - only when ideas page is active
 function loadDraft() {
+    console.log('Ideas loadDraft called');
+    // Check if we're on the ideas page
+    const currentPage = window.location.hash.slice(1) || 'dashboard';
+    console.log('Current page:', currentPage);
+    if (currentPage !== 'ideas') {
+        console.log('Not on ideas page, skipping draft load');
+        return; // Don't load draft if not on ideas page
+    }
+
+    // Prevent multiple draft loads during the same initialization cycle
+    if (draftLoadedThisInitialization) {
+        console.log('Draft already loaded this initialization, skipping');
+        return;
+    }
+
     const draft = localStorage.getItem('ideaDraft');
     if (draft) {
         const draftData = JSON.parse(draft);
@@ -355,13 +395,20 @@ function loadDraft() {
             form.stage.value = draftData.stage || '';
             form.description.value = draftData.description || '';
             form.inspiration.value = draftData.inspiration || '';
-            
+
             if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
                 window.IMI.utils.showNotification('📝 Draft loaded from previous session.', 'info');
             }
+
+            // Mark as loaded to prevent duplicate notifications
+            draftLoadedThisInitialization = true;
         }
     }
 }
 
-// Load draft when page loads
-document.addEventListener('DOMContentLoaded', loadDraft);
+// Load draft when navigating to ideas page
+document.addEventListener('pageChange', function(event) {
+    if (event.detail && event.detail.page === 'ideas') {
+        setTimeout(loadDraft, 100); // Small delay to ensure DOM is ready
+    }
+});

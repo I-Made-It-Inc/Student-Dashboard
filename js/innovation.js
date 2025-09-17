@@ -3,7 +3,10 @@
 // Initialize Blueprint Challenge
 function initializeBlueprintChallenge() {
     console.log('Initializing Blueprint Challenge...');
-    
+
+    // Reset draft loading flag for this initialization
+    blueprintDraftLoadedThisInitialization = false;
+
     // Set up word counters
     setupWordCounters();
     
@@ -200,24 +203,7 @@ async function submitBlueprint(e) {
 }
 
 // Save draft
-function saveDraft() {
-    const responses = collectResponses();
-    
-    // Save to localStorage (in production, save to backend)
-    localStorage.setItem('innovation_draft', JSON.stringify({
-        responses,
-        timestamp: Date.now()
-    }));
-    
-    window.IMI.utils.showNotification('Draft saved successfully!', 'success');
-    
-    // Update all section statuses to saved
-    document.querySelectorAll('.section-status').forEach(status => {
-        if (status.textContent !== 'Not started') {
-            status.innerHTML = '✓ Saved';
-        }
-    });
-}
+// saveDraft function is defined later in the file
 
 // Collect all responses
 function collectResponses() {
@@ -245,14 +231,18 @@ function collectResponses() {
 
 // Save draft
 function saveDraft() {
+    console.log('saveDraft() called');
     const responses = collectResponses();
-    
+    console.log('Collected responses:', responses);
+
     // Save to localStorage (in production, save to backend)
-    localStorage.setItem('blueprint_draft', JSON.stringify({
+    const draftData = {
         responses,
         timestamp: Date.now()
-    }));
-    
+    };
+    localStorage.setItem('blueprint_draft', JSON.stringify(draftData));
+    console.log('Saved to localStorage:', draftData);
+
     window.IMI.utils.showNotification('Draft saved successfully!', 'success');
     
     // Update all section statuses to saved
@@ -323,11 +313,35 @@ function clearSubmissionForm() {
 }
 
 // Setup auto-save for drafts
+let autoSaveSetupComplete = false;
 function setupAutoSaveDrafts() {
+    if (autoSaveSetupComplete) {
+        console.log('setupAutoSaveDrafts already setup, skipping');
+        return;
+    }
+
+    console.log('setupAutoSaveDrafts called');
     let autoSaveTimer;
-    
-    document.querySelectorAll('.submission-textarea').forEach(textarea => {
-        textarea.addEventListener('input', () => {
+
+    const textareas = document.querySelectorAll('.submission-textarea');
+    console.log('Found textareas for auto-save:', textareas.length);
+
+    textareas.forEach((textarea, index) => {
+        console.log(`Setting up auto-save for textarea ${index + 1}:`, textarea.id, textarea);
+        console.log('Textarea exists in DOM:', document.contains(textarea));
+        console.log('Textarea is connected:', textarea.isConnected);
+
+        // Test if we can interact with the textarea
+        textarea.addEventListener('click', () => {
+            console.log('👆 Click detected on textarea:', textarea.id);
+        });
+
+        textarea.addEventListener('focus', () => {
+            console.log('🎯 Focus detected on textarea:', textarea.id);
+        });
+
+        textarea.addEventListener('input', (event) => {
+            console.log('⌨️ Input detected in textarea:', textarea.id, 'Value length:', textarea.value.length);
             clearTimeout(autoSaveTimer);
             
             // Show saving indicator
@@ -338,10 +352,14 @@ function setupAutoSaveDrafts() {
             
             // Auto-save after 2 seconds of inactivity
             autoSaveTimer = setTimeout(() => {
+                console.log('Auto-saving triggered for:', textarea.id);
                 saveDraft();
             }, 2000);
         });
     });
+
+    autoSaveSetupComplete = true;
+    console.log('Auto-save setup completed');
 }
 
 // Update tier progress
@@ -514,14 +532,43 @@ function setupRedemptionHandlers() {
     });
 }
 
-// Load saved draft
+// Track if draft has been loaded to prevent multiple notifications during same initialization
+let blueprintDraftLoadedThisInitialization = false;
+
+// Load saved draft - only when on innovation page
 function loadDraft() {
-    const saved = localStorage.getItem('blueprint_draft');
+    // Check if we're on the innovation page
+    const currentPage = window.location.hash.slice(1) || 'dashboard';
+    console.log('Innovation loadDraft called, current page:', currentPage);
+    if (currentPage !== 'innovation') {
+        console.log('Not on innovation page, skipping draft load');
+        return; // Don't load draft if not on innovation page
+    }
+
+    // Prevent multiple draft loads during the same initialization cycle
+    if (blueprintDraftLoadedThisInitialization) {
+        console.log('Draft already loaded this initialization, skipping');
+        return;
+    }
+
+    let saved = localStorage.getItem('blueprint_draft');
+    if (!saved) {
+        // Check for old key for backward compatibility
+        saved = localStorage.getItem('innovation_draft');
+        if (saved) {
+            // Migrate to new key
+            localStorage.setItem('blueprint_draft', saved);
+            localStorage.removeItem('innovation_draft');
+        }
+    }
+    console.log('Blueprint draft found:', !!saved);
     if (saved) {
         const draft = JSON.parse(saved);
-        
+        console.log('Draft data:', draft);
+
         // Check if draft is not too old (7 days)
         const age = Date.now() - draft.timestamp;
+        console.log('Draft age (days):', age / (24 * 60 * 60 * 1000));
         if (age < 7 * 24 * 60 * 60 * 1000) {
             // Restore responses
             Object.entries(draft.responses).forEach(([section, data]) => {
@@ -532,8 +579,11 @@ function loadDraft() {
                     updateSectionStatus(textarea);
                 }
             });
-            
+
             window.IMI.utils.showNotification('Draft restored from previous session', 'info');
+
+            // Mark as loaded to prevent duplicate notifications
+            blueprintDraftLoadedThisInitialization = true;
         }
     }
 }
@@ -580,8 +630,7 @@ function loadCurrentChallenge() {
     // Update UI with challenge data
     updateChallengeUI(challengeData);
     
-    // Load saved draft if exists
-    loadDraft();
+    // Draft loading is now handled by soft refresh detection and page navigation events
 }
 
 // Update challenge UI
@@ -639,22 +688,53 @@ window.showPointsMarketplace = showPointsMarketplace;
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
     try {
-        initializeBlueprintPage();
-        updateAllSectionStatuses();
+        // Detect hard refresh (Ctrl+Shift+R) vs soft refresh (F5)
+        // Use sessionStorage flag method - sessionStorage persists through soft refresh but not hard refresh
+        const isHardRefresh = !sessionStorage.getItem('pageLoadFlag');
+        sessionStorage.setItem('pageLoadFlag', 'loaded');
+
+        // Clear draft only on hard refresh
+        if (isHardRefresh) {
+            localStorage.removeItem('blueprint_draft');
+            localStorage.removeItem('innovation_draft'); // Also clear old key if it exists
+            console.log('Hard refresh detected - cleared blueprint draft');
+        } else {
+            // On soft refresh, try to load draft regardless of current hash
+            // because the hash might not be set yet when DOMContentLoaded fires
+            console.log('Soft refresh detected - attempting to load draft');
+            console.log('localStorage blueprint_draft:', localStorage.getItem('blueprint_draft'));
+            console.log('localStorage innovation_draft:', localStorage.getItem('innovation_draft'));
+            setTimeout(() => {
+                loadDraft();
+            }, 100);
+        }
+
+        initializeBlueprintChallenge();
+        // Update all section statuses
+        document.querySelectorAll('.submission-textarea').forEach(textarea => {
+            updateSectionStatus(textarea);
+        });
         setupXPChart();
         setupAutoSaveDrafts();
-        
+
         // Add event listeners for buttons
         const saveDraftBtn = document.getElementById('save-draft-btn');
         const submitBtn = document.getElementById('submit-btn');
         const resetBtn = document.getElementById('reset-btn');
-        
+
         if (saveDraftBtn) saveDraftBtn.addEventListener('click', saveDraft);
         if (submitBtn) submitBtn.addEventListener('click', submitBlueprint);
         if (resetBtn) resetBtn.addEventListener('click', resetAllSections);
-        
+
         console.log('Blueprint page initialized successfully');
     } catch (error) {
         console.error('Error initializing blueprint page:', error);
+    }
+});
+
+// Load draft when navigating to innovation page
+document.addEventListener('pageChange', function(event) {
+    if (event.detail && event.detail.page === 'innovation') {
+        setTimeout(loadDraft, 100); // Small delay to ensure DOM is ready
     }
 });
