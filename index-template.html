@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMI Student Dashboard</title>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/innovation.css">
+    <link rel="stylesheet" href="css/ideas.css">
+    <link rel="stylesheet" href="css/projects.css">
+    <link rel="stylesheet" href="css/companies.css">
+    <link rel="stylesheet" href="css/network.css">
+    <link rel="stylesheet" href="css/resources.css">
+    <link rel="stylesheet" href="css/tracking.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/toast.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-brand">
+                <img src="logo.png" alt="IMI" class="logo">
+                <span>Student Portal</span>
+            </div>
+
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="#dashboard" class="active" id="nav-dashboard">Dashboard</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-toggle" id="nav-innovation-dropdown">Innovation <span class="dropdown-arrow">▾</span></a>
+                    <ul class="nav-dropdown-menu">
+                        <li><a href="#innovation" id="nav-innovation">Blueprint for the Future</a></li>
+                        <li><a href="#ideas" id="nav-ideas">Ideas & Innovation Hub</a></li>
+                    </ul>
+                </li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-toggle" id="nav-work-dropdown">Work <span class="dropdown-arrow">▾</span></a>
+                    <ul class="nav-dropdown-menu">
+                        <li><a href="#projects" id="nav-projects">Co-op Projects</a></li>
+                        <li><a href="#companies" id="nav-companies">Companies</a></li>
+                    </ul>
+                </li>
+                <li><a href="#network" id="nav-network">Network</a></li>
+                <li><a href="#resources" id="nav-resources">Resources</a></li>
+                <li><a href="#tracking" id="nav-tracking">Time Tracking</a></li>
+            </ul>
+            <div class="user-menu">
+                <div class="notification-icon" onclick="showPage('notifications')" title="Notifications">
+                    <span>🔔</span>
+                    <div class="notification-badge">6</div>
+                </div>
+                <div class="user-avatar blue-spark-active" title="Profile Settings">JD</div>
+            </div>
+        </nav>
+
+        <!-- Page Content - This will be replaced by the build script -->
+        <!-- BUILD:PAGES:START -->
+        <!-- Page sections will be inserted here by build script -->
+        <!-- BUILD:PAGES:END -->
+
+        <!-- Modal Container -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modal-body">
+                    <!-- Modal content will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/utils.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/blue-spark-simple.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/innovation.js"></script>
+    <script src="js/ideas.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/companies.js"></script>
+    <script src="js/tracking.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/notifications.js"></script>
+</body>
+</html>

@@ -24,29 +24,31 @@ function initializeNavigation() {
 // Show specific page
 function showPage(pageId, pushState = true) {
     console.log(`Navigating to: ${pageId}`);
-    
+
     // Hide all pages
     document.querySelectorAll('.page-section').forEach(section => {
         section.classList.remove('active');
     });
-    
+
     // Remove active class from all nav links
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.classList.remove('active');
     });
-    
+
     // Remove active dropdown parent class
     document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
         dropdown.classList.remove('has-active-child');
     });
-    
+
     // Show selected page
     const selectedPage = document.getElementById(`${pageId}-page`);
     if (selectedPage) {
         selectedPage.classList.add('active');
-        
+
         // Load page-specific content
         loadPageContent(pageId);
+    } else {
+        console.error(`Page not found: ${pageId}`);
     }
     
     // Update active nav link (only for pages that have nav links)

@@ -272,14 +272,32 @@ function setupNotificationSettings() {
 // RSVP to event
 function rsvpToEvent(eventId) {
     console.log(`RSVPing to event: ${eventId}`);
-    
+
+    // Disable the button
+    const button = event.target;
+    if (button) {
+        // Check the original button text to determine the appropriate past tense
+        const originalText = button.textContent.trim().toLowerCase();
+        let newText = 'RSVP\'d'; // Default
+
+        if (originalText === 'register') {
+            newText = 'Registered';
+        } else if (originalText === 'rsvp' || originalText === 'rsvp now') {
+            newText = 'RSVP\'d';
+        }
+
+        button.disabled = true;
+        button.textContent = newText;
+        button.classList.remove('btn-notification-primary');
+        button.classList.add('btn-notification-disabled');
+    }
+
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('RSVP confirmed! Event added to your calendar.', 'success');
     }
-    
+
     // Mark notification as read
-    const button = event.target;
-    const notificationItem = button.closest('.notification-item');
+    const notificationItem = button ? button.closest('.notification-item') : null;
     if (notificationItem) {
         markAsRead(notificationItem.querySelector('[onclick*="markAsRead"]'));
     }
@@ -288,7 +306,16 @@ function rsvpToEvent(eventId) {
 // Request reference letter
 function requestReference(company) {
     console.log(`Requesting reference from: ${company}`);
-    
+
+    // Disable the button
+    const button = event.target;
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Requested';
+        button.classList.remove('btn-notification-primary');
+        button.classList.add('btn-notification-disabled');
+    }
+
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification(`Reference request sent to ${company}!`, 'success');
     }
@@ -297,7 +324,7 @@ function requestReference(company) {
 // Download certificate
 function downloadCertificate(projectId) {
     console.log(`Downloading certificate for: ${projectId}`);
-    
+
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('Certificate downloaded successfully!', 'success');
     }
@@ -318,14 +345,22 @@ function joinTeamsChannel(channelId) {
 // Claim reward
 function claimReward(rewardId) {
     console.log(`Claiming reward: ${rewardId}`);
-    
+
+    // Disable the button
+    const button = event.target;
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Claimed';
+        button.classList.remove('btn-notification-primary');
+        button.classList.add('btn-notification-disabled');
+    }
+
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('Reward claimed successfully! +500 XP added.', 'success');
     }
-    
+
     // Mark notification as read
-    const button = event.target;
-    const notificationItem = button.closest('.notification-item');
+    const notificationItem = button ? button.closest('.notification-item') : null;
     if (notificationItem) {
         markAsRead(notificationItem.querySelector('[onclick*="markAsRead"]'));
     }
@@ -334,7 +369,16 @@ function claimReward(rewardId) {
 // Register for workshop
 function registerForWorkshop(workshopId) {
     console.log(`Registering for workshop: ${workshopId}`);
-    
+
+    // Disable the button
+    const button = event.target;
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Registered';
+        button.classList.remove('btn-notification-primary');
+        button.classList.add('btn-notification-disabled');
+    }
+
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('Workshop registration successful!', 'success');
     }
@@ -343,7 +387,7 @@ function registerForWorkshop(workshopId) {
 // Schedule mentor meeting
 function scheduleMentorMeeting() {
     console.log('Scheduling mentor meeting...');
-    
+
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('Redirecting to calendar to schedule mentor meeting...', 'info');
     }

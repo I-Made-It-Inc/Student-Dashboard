@@ -1,0 +1,149 @@
+        <!-- Time Tracking Page -->
+        <div id="tracking-page" class="page-section">
+            <h2>Time Tracking & Volunteer Hours</h2>
+
+            <div class="tracking-grid">
+                <div class="tracking-main">
+                    <!-- Current Week Overview -->
+                    <div class="card tracking-card">
+                        <h3 class="section-title">📊 This Week's Activity</h3>
+                        <div class="time-chart">
+                            <div class="time-bar-chart">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="time-breakdown">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Manual Time Entry -->
+                    <div class="card tracking-card">
+                        <h3 class="section-title">➕ Log Additional Hours</h3>
+                        <div class="proof-requirement-notice">
+                            <span class="notice-icon">⚠️</span>
+                            <div>
+                                <strong>Proof of Work Required</strong>
+                                <p>To receive volunteer hours credit, you must provide proof of work completed (documents, links, screenshots, etc.)</p>
+                            </div>
+                        </div>
+                        <form class="time-entry-form">
+                            <div class="form-group">
+                                <label>Activity Type</label>
+                                <select name="activity" class="form-select" required>
+                                    <option value="">Select activity type</option>
+                                    <option>Blueprint Challenge Writing</option>
+                                    <option>Co-op Project Work</option>
+                                    <option>Personal Reading/Research</option>
+                                    <option>Networking Event</option>
+                                    <option>Training/Learning</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <input type="date" name="date" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Hours</label>
+                                    <input type="number" name="hours" step="0.5" min="0.5" max="24" class="form-input" placeholder="0.0" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea name="description" class="form-textarea" placeholder="Brief description of activity..." required></textarea>
+                            </div>
+
+                            <!-- Proof of Work Section -->
+                            <div class="proof-of-work-section">
+                                <label class="section-label">
+                                    <span class="required-star">*</span>
+                                    Proof of Work (Required)
+                                </label>
+                                <p class="help-text">Upload documents, provide links to your work, or attach screenshots as evidence of completed work.</p>
+
+                                <div class="proof-options">
+                                    <div class="proof-option">
+                                        <h4>📁 Upload Files</h4>
+                                        <div class="file-upload-area">
+                                            <input type="file" id="proof-files" name="proofFiles" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" style="display: none;">
+                                            <div class="upload-zone" onclick="document.getElementById('proof-files').click()">
+                                                <span class="upload-icon">📁</span>
+                                                <p>Drop files here or click to browse</p>
+                                                <small>PDF, DOC, images up to 10MB each</small>
+                                            </div>
+                                            <div class="uploaded-files-list">
+                                                <!-- Uploaded files will appear here -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="proof-divider">OR</div>
+
+                                    <div class="proof-option">
+                                        <h4>🔗 Provide Links</h4>
+                                        <div class="links-input-area">
+                                            <input type="url" name="workLink1" class="form-input" placeholder="https://github.com/your-project">
+                                            <input type="url" name="workLink2" class="form-input" placeholder="https://docs.google.com/your-document">
+                                            <input type="url" name="workLink3" class="form-input" placeholder="Additional link (optional)">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="proof-examples">
+                                    <details>
+                                        <summary>Examples of acceptable proof</summary>
+                                        <ul>
+                                            <li>📄 Project documents, reports, or presentations</li>
+                                            <li>💻 Code repositories or commits (GitHub, GitLab)</li>
+                                            <li>🎨 Design files or creative work</li>
+                                            <li>📝 Research notes or written analysis</li>
+                                            <li>📊 Data analysis or spreadsheets</li>
+                                            <li>🖼️ Screenshots of completed work</li>
+                                            <li>📱 Social media posts or articles you created</li>
+                                            <li>🎯 Meeting notes or collaboration evidence</li>
+                                        </ul>
+                                    </details>
+                                </div>
+                            </div>
+
+                            <div class="quick-time-buttons">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="submit-time-entry">Log Hours with Proof</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="tracking-sidebar">
+                    <!-- Volunteer Hours Certificate -->
+                    <div class="card tracking-card">
+                        <h3 class="section-title">🏆 Volunteer Hours</h3>
+                        <div class="volunteer-stats">
+                            <div class="big-stat">
+                                <span class="big-number">324</span>
+                                <span class="big-label">Total Hours</span>
+                            </div>
+                            <div class="stat-breakdown">
+                                <div>Blueprint: 85 hrs</div>
+                                <div>Co-op: 198 hrs</div>
+                                <div>Reading: 41 hrs</div>
+                            </div>
+                            <button class="btn btn-primary btn-generate-certificate" onclick="generateVolunteerCertificate()">Generate Certificate</button>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Report -->
+                    <div class="card tracking-card">
+                        <h3 class="section-title">📈 Monthly Trends</h3>
+                        <div class="trend-info">
+                            <p>You're on track to complete <strong>160 hours</strong> this month!</p>
+                            <div class="trend-comparison">
+                                <span>↑ 15% from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

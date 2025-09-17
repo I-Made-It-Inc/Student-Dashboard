@@ -1,6 +1,24 @@
 // js/ideas.js - Ideas & Innovation Hub JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Detect hard refresh (Ctrl+Shift+R) vs soft refresh (F5)
+    // Use sessionStorage flag method - sessionStorage persists through soft refresh but not hard refresh
+    const isHardRefresh = !sessionStorage.getItem('pageLoadFlag');
+    sessionStorage.setItem('pageLoadFlag', 'loaded');
+
+    // Clear draft only on hard refresh
+    if (isHardRefresh) {
+        localStorage.removeItem('ideaDraft');
+        console.log('Hard refresh detected - cleared idea draft');
+    } else {
+        // On soft refresh, try to load draft regardless of current hash
+        // because the hash might not be set yet when DOMContentLoaded fires
+        console.log('Soft refresh detected - attempting to load draft');
+        setTimeout(() => {
+            loadDraft();
+        }, 100);
+    }
+
     // Initialize Ideas functionality
     initializeIdeasPage();
 });
@@ -18,9 +36,13 @@ function saveLikeData(data) {
 }
 
 function initializeIdeasPage() {
+    console.log('initializeIdeasPage called');
+    // Reset draft loading flag for this initialization
+    draftLoadedThisInitialization = false;
+
     // Initialize like states from localStorage
     initializeLikeStates();
-    
+
     // Handle idea submission form
     const ideaForm = document.getElementById('idea-submission-form');
     if (ideaForm) {
@@ -78,7 +100,9 @@ function toggleLike(button) {
         delete likeData[ideaId];
         
         // Show notification
-        showNotification('💔 Removed like', 'info');
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification('💔 Removed like', 'info');
+        }
     } else {
         // Like
         likeIcon.textContent = '❤️';
@@ -89,7 +113,9 @@ function toggleLike(button) {
         likeData[ideaId] = { liked: true, timestamp: Date.now() };
         
         // Show notification
-        showNotification('❤️ Liked!', 'success');
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification('❤️ Liked!', 'success');
+        }
     }
     
     // Save to localStorage
@@ -115,7 +141,9 @@ function handleIdeaSubmission(event) {
     console.log('Idea submitted:', ideaData);
     
     // Show success message
-    showNotification('🎉 Your idea has been submitted successfully!', 'success');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('🎉 Your idea has been submitted successfully!', 'success');
+    }
     
     // Reset form
     event.target.reset();
@@ -124,7 +152,9 @@ function handleIdeaSubmission(event) {
     // In a real app, this would send data to the server
     // For demo purposes, we'll just simulate success
     setTimeout(() => {
-        showNotification('💡 Your idea is now live in the community feed!', 'info');
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification('💡 Your idea is now live in the community feed!', 'info');
+        }
     }, 2000);
 }
 
@@ -142,7 +172,9 @@ function saveDraft() {
         timestamp: Date.now()
     }));
     
-    showNotification('💾 Draft saved successfully!', 'success');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('💾 Draft saved successfully!', 'success');
+    }
 }
 
 function toggleSkillsSection() {
@@ -258,7 +290,9 @@ function initializeIdeaActions() {
 function handleXPInvestment(event) {
     // Check if button is disabled
     if (event.target.disabled || event.target.classList.contains('disabled')) {
-        showNotification('❌ This idea is not currently seeking XP investment.', 'error');
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification('❌ This idea is not currently seeking XP investment.', 'error');
+        }
         return;
     }
     
@@ -271,7 +305,9 @@ function handleXPInvestment(event) {
     if (investmentAmount && !isNaN(investmentAmount) && parseInt(investmentAmount) > 0) {
         const amount = parseInt(investmentAmount);
         if (amount <= 1850) { // Check available XP
-            showNotification(`🎉 Successfully invested ${amount} XP in "${ideaTitle}"!`, 'success');
+            if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                window.IMI.utils.showNotification(`🎉 Successfully invested ${amount} XP in "${ideaTitle}"!`, 'success');
+            }
             
             // Update progress bar if it exists
             const progressBar = ideaCard.querySelector('.progress-fill');
@@ -289,7 +325,9 @@ function handleXPInvestment(event) {
                 }
             }
         } else {
-            showNotification('❌ Insufficient XP for this investment amount.', 'error');
+            if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                window.IMI.utils.showNotification('❌ Insufficient XP for this investment amount.', 'error');
+            }
         }
     }
 }
@@ -298,7 +336,9 @@ function handleJoinTeam(event) {
     const ideaCard = event.target.closest('.idea-card');
     const ideaTitle = ideaCard.querySelector('h4').textContent;
     
-    showNotification(`🤝 Join request sent for "${ideaTitle}"! The team lead will review your application.`, 'success');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification(`🤝 Join request sent for "${ideaTitle}"! The team lead will review your application.`, 'success');
+    }
     
     // Change button text and style to indicate request sent
     event.target.textContent = '⏳ Request Sent';
@@ -313,7 +353,9 @@ function handleOpenTeams(event) {
     const ideaTitle = ideaCard.querySelector('h4').textContent;
     
     // Simulate opening MS Teams
-    showNotification(`💬 Opening MS Teams collaboration space for "${ideaTitle}"...`, 'info');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification(`💬 Opening MS Teams collaboration space for "${ideaTitle}"...`, 'info');
+    }
     
     // In a real app, this would open MS Teams or redirect to the collaboration space
     setTimeout(() => {
@@ -322,95 +364,27 @@ function handleOpenTeams(event) {
     }, 1000);
 }
 
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <span>${message}</span>
-        <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
-    `;
-    
-    // Add to page
-    document.body.appendChild(notification);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
-    }, 5000);
-}
 
-// Add notification styles
-const notificationStyles = `
-<style>
-.notification {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    z-index: 10000;
-    max-width: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    animation: slideIn 0.3s ease;
-}
+// Track if draft has been loaded to prevent multiple notifications during same initialization
+let draftLoadedThisInitialization = false;
 
-.notification-success {
-    background-color: #4caf50;
-    color: white;
-    border-left: 4px solid #2e7d32;
-}
-
-.notification-error {
-    background-color: #f44336;
-    color: white;
-    border-left: 4px solid #c62828;
-}
-
-.notification-info {
-    background-color: #2196f3;
-    color: white;
-    border-left: 4px solid #1565c0;
-}
-
-.notification-close {
-    background: none;
-    border: none;
-    color: inherit;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-</style>
-`;
-
-// Add styles to head
-document.head.insertAdjacentHTML('beforeend', notificationStyles);
-
-// Load draft on page load
+// Load draft on page load - only when ideas page is active
 function loadDraft() {
+    console.log('Ideas loadDraft called');
+    // Check if we're on the ideas page
+    const currentPage = window.location.hash.slice(1) || 'dashboard';
+    console.log('Current page:', currentPage);
+    if (currentPage !== 'ideas') {
+        console.log('Not on ideas page, skipping draft load');
+        return; // Don't load draft if not on ideas page
+    }
+
+    // Prevent multiple draft loads during the same initialization cycle
+    if (draftLoadedThisInitialization) {
+        console.log('Draft already loaded this initialization, skipping');
+        return;
+    }
+
     const draft = localStorage.getItem('ideaDraft');
     if (draft) {
         const draftData = JSON.parse(draft);
@@ -421,11 +395,20 @@ function loadDraft() {
             form.stage.value = draftData.stage || '';
             form.description.value = draftData.description || '';
             form.inspiration.value = draftData.inspiration || '';
-            
-            showNotification('📝 Draft loaded from previous session.', 'info');
+
+            if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                window.IMI.utils.showNotification('📝 Draft loaded from previous session.', 'info');
+            }
+
+            // Mark as loaded to prevent duplicate notifications
+            draftLoadedThisInitialization = true;
         }
     }
 }
 
-// Load draft when page loads
-document.addEventListener('DOMContentLoaded', loadDraft);
+// Load draft when navigating to ideas page
+document.addEventListener('pageChange', function(event) {
+    if (event.detail && event.detail.page === 'ideas') {
+        setTimeout(loadDraft, 100); // Small delay to ensure DOM is ready
+    }
+});

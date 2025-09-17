@@ -537,9 +537,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--light-gray);
+    background-color: #c0c0c0;  /* More visible grey instead of light-gray */
     transition: var(--transition-fast);
     border-radius: 12px;
+    border: 1px solid #a0a0a0;  /* Add border for better definition */
 }
 
 .toggle-slider:before {
@@ -547,19 +548,22 @@
     content: "";
     height: 18px;
     width: 18px;
-    left: 3px;
-    bottom: 3px;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
     background-color: white;
     transition: var(--transition-fast);
     border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 input:checked + .toggle-slider {
     background-color: var(--imi-blue);
+    border-color: var(--imi-blue);  /* Update border when checked */
 }
 
 input:checked + .toggle-slider:before {
-    transform: translateX(20px);
+    transform: translateX(20px) translateY(-50%);
 }
 
 /* Notification Stats */
