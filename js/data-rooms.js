@@ -283,63 +283,302 @@ function editDataRoom(roomId) {
     const modalContent = `
         <h2>Edit: ${room.name}</h2>
         <div style="margin: 20px 0;">
-            <form id="edit-data-room-form">
-                <div class="form-group">
-                    <label>Room Name</label>
-                    <input type="text" class="form-input" value="${room.name}" required>
+            <div class="edit-room-layout">
+                <!-- Room Settings -->
+                <div class="edit-room-settings">
+                    <h4>Room Settings</h4>
+                    <form id="edit-data-room-form">
+                        <div class="form-group">
+                            <label>Room Name</label>
+                            <input type="text" class="form-input" id="edit-room-name" value="${room.name}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-textarea" rows="3" id="edit-room-description">${room.description}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Privacy Setting</label>
+                            <select class="form-select" id="edit-room-privacy" required>
+                                <option value="public" ${room.privacy === 'public' ? 'selected' : ''}>🌐 Public</option>
+                                <option value="request" ${room.privacy === 'request' ? 'selected' : ''}>🔑 Request Access</option>
+                                <option value="private" ${room.privacy === 'private' ? 'selected' : ''}>🔒 Private</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Custom Message for Viewers</label>
+                            <textarea class="form-textarea" rows="2" id="edit-room-message" placeholder="Optional welcome message for people viewing this room..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Section Order</label>
+                            <div class="section-order-container" id="section-order-list">
+                                <div class="draggable-section" draggable="true" data-section="resumes">
+                                    <span class="drag-handle">⋮⋮</span>
+                                    <span class="section-name">📋 Resumes</span>
+                                </div>
+                                <div class="draggable-section" draggable="true" data-section="certificates">
+                                    <span class="drag-handle">⋮⋮</span>
+                                    <span class="section-name">🏆 Certificates</span>
+                                </div>
+                                <div class="draggable-section" draggable="true" data-section="references">
+                                    <span class="drag-handle">⋮⋮</span>
+                                    <span class="section-name">📝 References</span>
+                                </div>
+                                <div class="draggable-section" draggable="true" data-section="projects">
+                                    <span class="drag-handle">⋮⋮</span>
+                                    <span class="section-name">💼 Projects</span>
+                                </div>
+                            </div>
+                            <small class="help-text">Drag to reorder how sections appear in your data room</small>
+                        </div>
+                    </form>
                 </div>
 
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea class="form-textarea" rows="3">${room.description}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Privacy Setting</label>
-                    <select class="form-select" required>
-                        <option value="public" ${room.privacy === 'public' ? 'selected' : ''}>🌐 Public</option>
-                        <option value="request" ${room.privacy === 'request' ? 'selected' : ''}>🔑 Request Access</option>
-                        <option value="private" ${room.privacy === 'private' ? 'selected' : ''}>🔒 Private</option>
-                    </select>
-                </div>
-
-                <div class="button-group">
-                    <button type="button" class="btn btn-danger" onclick="deleteDataRoom()">Delete Room</button>
-                    <div style="margin-left: auto; display: flex; gap: 12px;">
-                        <button type="button" class="btn btn-secondary" onclick="previewDataRoom('${roomId}')">Preview</button>
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                <!-- Document Selection -->
+                <div class="edit-room-documents">
+                    <h4>Select Documents</h4>
+                    <div class="document-categories" id="document-categories">
+                        ${generateDocumentSelection(room)}
                     </div>
                 </div>
-            </form>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-danger-small" onclick="deleteDataRoom()">Delete Room</button>
+                <div class="action-group">
+                    <button type="button" class="btn-secondary-small" onclick="previewDataRoom('${roomId}')">Preview</button>
+                    <button type="button" class="btn-secondary-small" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="btn-primary-small" onclick="handleSaveDataRoom()">Save Changes</button>
+                </div>
+            </div>
         </div>
     `;
 
     // Use the existing modal system
     openModal('custom', 'Edit Data Room', modalContent);
 
-    // Setup form handler
-    const form = document.getElementById('edit-data-room-form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            handleSaveDataRoom(this);
+    // Initialize drag and drop functionality
+    setTimeout(initializeSectionDragDrop, 100);
+}
+
+// Generate document selection HTML
+function generateDocumentSelection(room) {
+    return Object.entries(documentLibrary).map(([category, documents]) => {
+        const categoryIcon = getCategoryIcon(category);
+        const categoryTitle = getCategoryTitle(category);
+
+        return `
+            <div class="document-category">
+                <h5>${categoryIcon} ${categoryTitle}</h5>
+                <div class="document-list">
+                    ${documents.map(doc => {
+                        const roomDoc = room.documents.find(d => d.id === doc.id);
+                        const isSelected = roomDoc?.selected || false;
+                        const permission = roomDoc?.permission || 'view';
+
+                        return `
+                            <label class="document-item">
+                                <input type="checkbox" ${isSelected ? 'checked' : ''} data-doc-id="${doc.id}">
+                                <span class="doc-icon">${getDocumentIcon(doc.name)}</span>
+                                <div class="doc-info">
+                                    <span class="doc-name">${doc.name}</span>
+                                    <div class="doc-permissions">
+                                        <select class="permission-select" data-doc-id="${doc.id}">
+                                            <option value="view" ${permission === 'view' ? 'selected' : ''}>View Only</option>
+                                            <option value="download" ${permission === 'download' ? 'selected' : ''}>Download</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </label>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Get category icon
+function getCategoryIcon(category) {
+    const icons = {
+        resumes: '📋',
+        certificates: '🏆',
+        references: '📝',
+        projects: '💼'
+    };
+    return icons[category] || '📄';
+}
+
+// Get category title
+function getCategoryTitle(category) {
+    const titles = {
+        resumes: 'Resumes',
+        certificates: 'Certificates',
+        references: 'References',
+        projects: 'Projects'
+    };
+    return titles[category] || category;
+}
+
+// Get document icon based on file extension
+function getDocumentIcon(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    if (ext === 'pdf') return '📄';
+    if (['jpg', 'jpeg', 'png'].includes(ext)) return '🖼️';
+    if (['doc', 'docx'].includes(ext)) return '📝';
+    return '📄';
+}
+
+// Initialize section drag and drop
+function initializeSectionDragDrop() {
+    const container = document.getElementById('section-order-list');
+    if (!container) return;
+
+    let draggedElement = null;
+
+    // Add event listeners to all draggable sections
+    const draggables = container.querySelectorAll('.draggable-section');
+
+    draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', handleDragStart);
+        draggable.addEventListener('dragend', handleDragEnd);
+        draggable.addEventListener('dragover', handleDragOver);
+        draggable.addEventListener('drop', handleDrop);
+        draggable.addEventListener('dragenter', handleDragEnter);
+        draggable.addEventListener('dragleave', handleDragLeave);
+    });
+
+    function handleDragStart(e) {
+        draggedElement = this;
+        this.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+    }
+
+    function handleDragEnd(e) {
+        this.classList.remove('dragging');
+        draggables.forEach(draggable => {
+            draggable.classList.remove('drag-over');
         });
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        e.dataTransfer.dropEffect = 'move';
+
+        draggables.forEach(draggable => {
+            if (draggable !== draggedElement) {
+                draggable.classList.remove('drag-over');
+            }
+        });
+
+        if (this !== draggedElement) {
+            this.classList.add('drag-over');
+        }
+
+        return false;
+    }
+
+    function handleDragEnter(e) {
+        // Handled in dragOver
+    }
+
+    function handleDragLeave(e) {
+        // Handled in dragOver
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+
+        if (draggedElement !== this) {
+            const rect = this.getBoundingClientRect();
+            const midpoint = rect.top + (rect.height / 2);
+            const insertBefore = e.clientY < midpoint;
+
+            if (insertBefore) {
+                this.parentNode.insertBefore(draggedElement, this);
+            } else {
+                this.parentNode.insertBefore(draggedElement, this.nextSibling);
+            }
+
+            saveSectionOrder();
+        }
+
+        return false;
     }
 }
 
+// Save the current section order
+function saveSectionOrder() {
+    const container = document.getElementById('section-order-list');
+    if (!container) return;
+
+    const sections = container.querySelectorAll('.draggable-section');
+    const order = Array.from(sections).map(section => section.dataset.section);
+
+    console.log('New section order:', order);
+    // In production, this would save to the backend
+}
+
 // Handle save room changes
-function handleSaveDataRoom(form) {
+function handleSaveDataRoom() {
     if (!currentEditingRoom) return;
 
     const room = dataRooms.find(r => r.id === currentEditingRoom);
     if (!room) return;
 
     // Update basic info
-    room.name = form.querySelector('input[type="text"]').value;
-    room.description = form.querySelector('textarea').value;
-    room.privacy = form.querySelector('select').value;
+    room.name = document.getElementById('edit-room-name').value;
+    room.description = document.getElementById('edit-room-description').value;
+    room.privacy = document.getElementById('edit-room-privacy').value;
+    room.customMessage = document.getElementById('edit-room-message').value;
     room.updatedAt = new Date().toISOString().split('T')[0];
+
+    // Update document selection
+    const checkboxes = document.querySelectorAll('.document-item input[type="checkbox"]');
+    const permissionSelects = document.querySelectorAll('.permission-select');
+
+    // Clear current documents
+    room.documents = [];
+
+    checkboxes.forEach(checkbox => {
+        const docId = checkbox.getAttribute('data-doc-id');
+        const isSelected = checkbox.checked;
+
+        if (isSelected) {
+            const permissionSelect = document.querySelector(`.permission-select[data-doc-id="${docId}"]`);
+            const permission = permissionSelect ? permissionSelect.value : 'view';
+
+            // Find the document in the library
+            let docData = null;
+            let category = null;
+
+            Object.entries(documentLibrary).forEach(([cat, docs]) => {
+                const doc = docs.find(d => d.id === docId);
+                if (doc) {
+                    docData = doc;
+                    category = cat;
+                }
+            });
+
+            if (docData) {
+                room.documents.push({
+                    id: docId,
+                    category: category,
+                    name: docData.name,
+                    permission: permission,
+                    selected: true
+                });
+            }
+        }
+    });
 
     // Refresh the display
     loadDataRooms();
@@ -412,6 +651,15 @@ function shareDataRoom(roomId) {
                 </div>
             </div>
 
+            <div style="margin-bottom: 24px;">
+                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">📱 QR Code</h4>
+                <div class="qr-code-container">
+                    <div class="qr-placeholder">QR Code would be generated here</div>
+                    <button class="btn btn-outline">⬇️ Download QR</button>
+                </div>
+                <small style="color: #6b7280;">Perfect for business cards and networking events</small>
+            </div>
+
             <div style="text-align: center;">
                 <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
             </div>
@@ -442,26 +690,101 @@ function viewDataRoomAnalytics(roomId) {
     const modalContent = `
         <h2>${room.name} - Analytics</h2>
         <div style="margin: 20px 0;">
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
-                <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e5e7eb;">
-                    <div style="font-size: 28px; font-weight: 700; color: #042847; margin-bottom: 8px;">${room.stats.views}</div>
-                    <div style="font-size: 13px; color: #6b7280;">Total Views</div>
+            <div class="analytics-grid">
+                <div class="analytics-section">
+                    <h4>📊 View Statistics</h4>
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="stat-number">${room.stats.views}</div>
+                            <div class="stat-label">Total Views</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">${room.stats.uniqueVisitors}</div>
+                            <div class="stat-label">Unique Visitors</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">${room.stats.downloads}</div>
+                            <div class="stat-label">Downloads</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">${room.stats.printAttempts}</div>
+                            <div class="stat-label">Print Attempts</div>
+                        </div>
+                    </div>
                 </div>
-                <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e5e7eb;">
-                    <div style="font-size: 28px; font-weight: 700; color: #042847; margin-bottom: 8px;">${room.stats.uniqueVisitors}</div>
-                    <div style="font-size: 13px; color: #6b7280;">Unique Visitors</div>
+
+                <div class="analytics-section">
+                    <h4>👥 Recent Visitors</h4>
+                    <div class="visitor-list">
+                        <div class="visitor-item">
+                            <div class="visitor-info">
+                                <strong>Microsoft Recruiter</strong>
+                                <span class="visitor-email">recruiter@microsoft.com</span>
+                            </div>
+                            <div class="visitor-activity">
+                                <span class="activity-type">Viewed • Downloaded Resume</span>
+                                <span class="activity-time">2 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="visitor-item">
+                            <div class="visitor-info">
+                                <strong>Google Talent Team</strong>
+                                <span class="visitor-email">talent@google.com</span>
+                            </div>
+                            <div class="visitor-activity">
+                                <span class="activity-type">Viewed • Left Comment</span>
+                                <span class="activity-time">1 day ago</span>
+                            </div>
+                        </div>
+                        <div class="visitor-item">
+                            <div class="visitor-info">
+                                <strong>Tesla HR</strong>
+                                <span class="visitor-email">hr@tesla.com</span>
+                            </div>
+                            <div class="visitor-activity">
+                                <span class="activity-type">Attempted Print</span>
+                                <span class="activity-time">3 days ago</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e5e7eb;">
-                    <div style="font-size: 28px; font-weight: 700; color: #042847; margin-bottom: 8px;">${room.stats.downloads}</div>
-                    <div style="font-size: 13px; color: #6b7280;">Downloads</div>
-                </div>
-                <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e5e7eb;">
-                    <div style="font-size: 28px; font-weight: 700; color: #042847; margin-bottom: 8px;">${room.stats.printAttempts}</div>
-                    <div style="font-size: 13px; color: #6b7280;">Print Attempts</div>
+
+                <div class="analytics-section">
+                    <h4>📄 Document Performance</h4>
+                    <div class="document-performance">
+                        <div class="performance-item">
+                            <span class="doc-name">Resume</span>
+                            <div class="performance-bar">
+                                <div class="performance-fill" style="width: 95%"></div>
+                            </div>
+                            <span class="performance-number">23 views</span>
+                        </div>
+                        <div class="performance-item">
+                            <span class="doc-name">AI Certificate</span>
+                            <div class="performance-bar">
+                                <div class="performance-fill" style="width: 78%"></div>
+                            </div>
+                            <span class="performance-number">18 views</span>
+                        </div>
+                        <div class="performance-item">
+                            <span class="doc-name">Reference Letter</span>
+                            <div class="performance-bar">
+                                <div class="performance-fill" style="width: 65%"></div>
+                            </div>
+                            <span class="performance-number">15 views</span>
+                        </div>
+                        <div class="performance-item">
+                            <span class="doc-name">Project Portfolio</span>
+                            <div class="performance-bar">
+                                <div class="performance-fill" style="width: 52%"></div>
+                            </div>
+                            <span class="performance-number">12 views</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div style="text-align: center;">
+            <div style="text-align: center; margin-top: 24px;">
                 <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
             </div>
         </div>
@@ -552,14 +875,407 @@ function shareMultipleDataRooms() {
 
 // Access request functions
 function viewAccessRequests() {
-    if (window.showToast) {
-        window.showToast('Access requests management coming soon!', 'info');
-    }
+    const modalContent = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h2>Access Requests</h2>
+            <span style="background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500;">5 pending</span>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <!-- Tabs for filtering -->
+            <div class="request-tabs">
+                <button class="tab-button active" onclick="filterAccessRequests('all')">All (5)</button>
+                <button class="tab-button" onclick="filterAccessRequests('tech-roles')">Tech Roles (2)</button>
+                <button class="tab-button" onclick="filterAccessRequests('finance-roles')">Finance & Consulting (3)</button>
+            </div>
+
+            <!-- Request Cards -->
+            <div class="requests-container" id="access-requests-container">
+                <!-- Tech Roles Requests -->
+                <div class="request-card" data-room="tech-roles" data-request-id="req-1">
+                    <div class="request-header">
+                        <div class="requester-info">
+                            <h4>Sarah Johnson</h4>
+                            <p class="requester-title">Senior Recruiter at Microsoft</p>
+                            <p class="requester-email">s.johnson@microsoft.com</p>
+                        </div>
+                        <div class="request-time">
+                            <span class="time-badge">2 hours ago</span>
+                        </div>
+                    </div>
+
+                    <div class="request-details">
+                        <div class="requested-room">
+                            <span class="detail-label">Requested Room:</span>
+                            <span class="room-name-tag">Tech Roles Portfolio</span>
+                        </div>
+                        <div class="request-message">
+                            <p class="detail-label">Message:</p>
+                            <p class="message-text">Hi! I'm interested in reviewing your portfolio for our Software Engineering internship program. We have several openings that align with your background.</p>
+                        </div>
+                    </div>
+
+                    <div class="request-actions">
+                        <div class="time-limit-group">
+                            <label>Access Duration:</label>
+                            <select class="time-limit-select">
+                                <option value="24h">24 hours</option>
+                                <option value="3d">3 days</option>
+                                <option value="7d" selected>7 days</option>
+                                <option value="14d">14 days</option>
+                                <option value="30d">30 days</option>
+                                <option value="unlimited">Unlimited</option>
+                            </select>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn-approve" onclick="approveAccessRequest('req-1')">✓ Approve</button>
+                            <button class="btn-deny" onclick="denyAccessRequest('req-1')">✗ Deny</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="request-card" data-room="tech-roles" data-request-id="req-2">
+                    <div class="request-header">
+                        <div class="requester-info">
+                            <h4>David Chen</h4>
+                            <p class="requester-title">Engineering Manager at Google</p>
+                            <p class="requester-email">dchen@google.com</p>
+                        </div>
+                        <div class="request-time">
+                            <span class="time-badge">5 hours ago</span>
+                        </div>
+                    </div>
+
+                    <div class="request-details">
+                        <div class="requested-room">
+                            <span class="detail-label">Requested Room:</span>
+                            <span class="room-name-tag">Tech Roles Portfolio</span>
+                        </div>
+                        <div class="request-message">
+                            <p class="detail-label">Message:</p>
+                            <p class="message-text">Your background looks interesting for our team. Would love to review your projects and experience.</p>
+                        </div>
+                    </div>
+
+                    <div class="request-actions">
+                        <div class="time-limit-group">
+                            <label>Access Duration:</label>
+                            <select class="time-limit-select">
+                                <option value="24h">24 hours</option>
+                                <option value="3d">3 days</option>
+                                <option value="7d" selected>7 days</option>
+                                <option value="14d">14 days</option>
+                                <option value="30d">30 days</option>
+                                <option value="unlimited">Unlimited</option>
+                            </select>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn-approve" onclick="approveAccessRequest('req-2')">✓ Approve</button>
+                            <button class="btn-deny" onclick="denyAccessRequest('req-2')">✗ Deny</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finance Roles Requests -->
+                <div class="request-card" data-room="finance-roles" data-request-id="req-3">
+                    <div class="request-header">
+                        <div class="requester-info">
+                            <h4>Emily Thompson</h4>
+                            <p class="requester-title">VP Talent Acquisition at Goldman Sachs</p>
+                            <p class="requester-email">emily.thompson@gs.com</p>
+                        </div>
+                        <div class="request-time">
+                            <span class="time-badge">1 day ago</span>
+                        </div>
+                    </div>
+
+                    <div class="request-details">
+                        <div class="requested-room">
+                            <span class="detail-label">Requested Room:</span>
+                            <span class="room-name-tag">Finance & Consulting</span>
+                        </div>
+                        <div class="request-message">
+                            <p class="detail-label">Message:</p>
+                            <p class="message-text">We're recruiting for our summer analyst program. Your profile matches what we're looking for in quantitative finance roles.</p>
+                        </div>
+                    </div>
+
+                    <div class="request-actions">
+                        <div class="time-limit-group">
+                            <label>Access Duration:</label>
+                            <select class="time-limit-select">
+                                <option value="24h">24 hours</option>
+                                <option value="3d">3 days</option>
+                                <option value="7d" selected>7 days</option>
+                                <option value="14d">14 days</option>
+                                <option value="30d">30 days</option>
+                                <option value="unlimited">Unlimited</option>
+                            </select>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn-approve" onclick="approveAccessRequest('req-3')">✓ Approve</button>
+                            <button class="btn-deny" onclick="denyAccessRequest('req-3')">✗ Deny</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 24px;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    `;
+
+    // Use the existing modal system
+    openModal('custom', 'Access Requests', modalContent);
 }
 
 function viewDataRoomComments() {
+    const modalContent = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h2>Comments</h2>
+            <span style="background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500;">12 total</span>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <!-- Tabs for filtering -->
+            <div class="request-tabs">
+                <button class="tab-button active" onclick="filterDataRoomComments('all')">All (12)</button>
+                <button class="tab-button" onclick="filterDataRoomComments('tech-roles')">Tech Roles (7)</button>
+                <button class="tab-button" onclick="filterDataRoomComments('finance-roles')">Finance & Consulting (4)</button>
+                <button class="tab-button" onclick="filterDataRoomComments('research-roles')">Research & Academia (1)</button>
+            </div>
+
+            <!-- Comment Cards -->
+            <div class="requests-container" id="comments-container">
+                <!-- Tech Roles Comments -->
+                <div class="comment-card" data-room="tech-roles" data-comment-id="comment-1">
+                    <div class="comment-header">
+                        <div class="commenter-info">
+                            <h4>Sarah Johnson</h4>
+                            <p class="commenter-title">Senior Recruiter at Microsoft</p>
+                            <p class="commenter-email">s.johnson@microsoft.com</p>
+                        </div>
+                        <div class="comment-time">
+                            <span class="time-badge unread-indicator">New</span>
+                            <span class="time-badge">3 hours ago</span>
+                        </div>
+                    </div>
+
+                    <div class="comment-details">
+                        <div class="commented-room">
+                            <span class="detail-label">Room:</span>
+                            <span class="room-name-tag">Tech Roles Portfolio</span>
+                            <span class="detail-label">Document:</span>
+                            <span class="document-tag">Resume</span>
+                        </div>
+                        <div class="comment-message">
+                            <p class="message-text">Impressive background in machine learning! Your experience with neural networks aligns perfectly with our team's current projects. Would love to discuss this further.</p>
+                        </div>
+                    </div>
+
+                    <div class="comment-actions">
+                        <div class="reply-section">
+                            <textarea class="reply-input" placeholder="Type your reply..." rows="2"></textarea>
+                            <button class="btn-reply" onclick="replyToDataRoomComment('comment-1')">Send Reply</button>
+                        </div>
+                        <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-1')">Mark as Read</button>
+                    </div>
+                </div>
+
+                <div class="comment-card read" data-room="tech-roles" data-comment-id="comment-2">
+                    <div class="comment-header">
+                        <div class="commenter-info">
+                            <h4>David Chen</h4>
+                            <p class="commenter-title">Engineering Manager at Google</p>
+                            <p class="commenter-email">dchen@google.com</p>
+                        </div>
+                        <div class="comment-time">
+                            <span class="time-badge">1 day ago</span>
+                        </div>
+                    </div>
+
+                    <div class="comment-details">
+                        <div class="commented-room">
+                            <span class="detail-label">Room:</span>
+                            <span class="room-name-tag">Tech Roles Portfolio</span>
+                            <span class="detail-label">Document:</span>
+                            <span class="document-tag">Project Portfolio</span>
+                        </div>
+                        <div class="comment-message">
+                            <p class="message-text">The data analysis work is well-structured. Good use of visualization techniques.</p>
+                        </div>
+                        <div class="reply-thread">
+                            <p class="reply-message"><strong>You:</strong> Thank you! I'm particularly proud of the predictive modeling section.</p>
+                        </div>
+                    </div>
+
+                    <div class="comment-actions">
+                        <button class="btn-follow-up" onclick="followUpDataRoomComment('comment-2')">Follow Up</button>
+                    </div>
+                </div>
+
+                <!-- Finance Comments -->
+                <div class="comment-card" data-room="finance-roles" data-comment-id="comment-3">
+                    <div class="comment-header">
+                        <div class="commenter-info">
+                            <h4>Emily Thompson</h4>
+                            <p class="commenter-title">VP Talent Acquisition at Goldman Sachs</p>
+                            <p class="commenter-email">emily.thompson@gs.com</p>
+                        </div>
+                        <div class="comment-time">
+                            <span class="time-badge unread-indicator">New</span>
+                            <span class="time-badge">2 days ago</span>
+                        </div>
+                    </div>
+
+                    <div class="comment-details">
+                        <div class="commented-room">
+                            <span class="detail-label">Room:</span>
+                            <span class="room-name-tag">Finance & Consulting</span>
+                            <span class="detail-label">Document:</span>
+                            <span class="document-tag">Resume</span>
+                        </div>
+                        <div class="comment-message">
+                            <p class="message-text">Strong quantitative background. Your coursework in financial modeling stands out. We'd like to move forward with an interview.</p>
+                        </div>
+                    </div>
+
+                    <div class="comment-actions">
+                        <div class="reply-section">
+                            <textarea class="reply-input" placeholder="Type your reply..." rows="2"></textarea>
+                            <button class="btn-reply" onclick="replyToDataRoomComment('comment-3')">Send Reply</button>
+                        </div>
+                        <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-3')">Mark as Read</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 24px;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    `;
+
+    // Use the existing modal system
+    openModal('custom', 'Comments', modalContent);
+}
+
+// Supporting functions for access requests and comments modals
+function filterAccessRequests(roomFilter) {
+    const container = document.getElementById('access-requests-container');
+    if (!container) return;
+
+    const cards = container.querySelectorAll('.request-card');
+    cards.forEach(card => {
+        const cardRoom = card.getAttribute('data-room');
+        if (roomFilter === 'all' || cardRoom === roomFilter) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    // Update active tab
+    document.querySelectorAll('.tab-button').forEach(tab => tab.classList.remove('active'));
+    const activeTab = roomFilter === 'all' ?
+        document.querySelector('.tab-button[onclick="filterAccessRequests(\'all\')"]') :
+        document.querySelector(`.tab-button[onclick="filterAccessRequests('${roomFilter}')"]`);
+    if (activeTab) activeTab.classList.add('active');
+}
+
+function filterDataRoomComments(roomFilter) {
+    const container = document.getElementById('comments-container');
+    if (!container) return;
+
+    const cards = container.querySelectorAll('.comment-card');
+    cards.forEach(card => {
+        const cardRoom = card.getAttribute('data-room');
+        if (roomFilter === 'all' || cardRoom === roomFilter) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    // Update active tab
+    document.querySelectorAll('.tab-button').forEach(tab => tab.classList.remove('active'));
+    const activeTab = roomFilter === 'all' ?
+        document.querySelector('.tab-button[onclick="filterDataRoomComments(\'all\')"]') :
+        document.querySelector(`.tab-button[onclick="filterDataRoomComments('${roomFilter}')"]`);
+    if (activeTab) activeTab.classList.add('active');
+}
+
+function approveAccessRequest(requestId) {
+    const card = document.querySelector(`[data-request-id="${requestId}"]`);
+    if (card) {
+        card.style.opacity = '0.5';
+        card.style.transform = 'translateX(20px)';
+        setTimeout(() => card.remove(), 300);
+    }
+
     if (window.showToast) {
-        window.showToast('Comments management coming soon!', 'info');
+        window.showToast('Access request approved!', 'success');
+    }
+}
+
+function denyAccessRequest(requestId) {
+    const card = document.querySelector(`[data-request-id="${requestId}"]`);
+    if (card) {
+        card.style.opacity = '0.5';
+        card.style.transform = 'translateX(-20px)';
+        setTimeout(() => card.remove(), 300);
+    }
+
+    if (window.showToast) {
+        window.showToast('Access request denied', 'info');
+    }
+}
+
+function replyToDataRoomComment(commentId) {
+    const card = document.querySelector(`[data-comment-id="${commentId}"]`);
+    const replyInput = card.querySelector('.reply-input');
+    const replyText = replyInput.value.trim();
+
+    if (!replyText) {
+        if (window.showToast) {
+            window.showToast('Please enter a reply message', 'error');
+        }
+        return;
+    }
+
+    replyInput.value = '';
+    if (window.showToast) {
+        window.showToast('Reply sent successfully!', 'success');
+    }
+
+    markDataRoomCommentRead(commentId);
+}
+
+function markDataRoomCommentRead(commentId) {
+    const card = document.querySelector(`[data-comment-id="${commentId}"]`);
+    if (card) {
+        card.classList.add('read');
+
+        // Remove unread indicator
+        const unreadBadge = card.querySelector('.unread-indicator');
+        if (unreadBadge) {
+            unreadBadge.remove();
+        }
+
+        // Replace actions with follow-up button
+        const actionsDiv = card.querySelector('.comment-actions');
+        actionsDiv.innerHTML = '<button class="btn-follow-up" onclick="followUpDataRoomComment(\'' + commentId + '\')">Follow Up</button>';
+    }
+
+    if (window.showToast) {
+        window.showToast('Comment marked as read', 'success');
+    }
+}
+
+function followUpDataRoomComment(commentId) {
+    if (window.showToast) {
+        window.showToast('Follow-up feature coming soon!', 'info');
     }
 }
 
