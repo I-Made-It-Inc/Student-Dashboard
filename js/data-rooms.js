@@ -1579,3 +1579,6 @@ function refreshDocumentSelector() {
 // Export functions to window for profile.js to use
 window.addDocumentToLibrary = addDocumentToLibrary;
 window.removeDocumentFromLibrary = removeDocumentFromLibrary;
+
+// Export documentLibrary for global access
+window.documentLibrary = documentLibrary;

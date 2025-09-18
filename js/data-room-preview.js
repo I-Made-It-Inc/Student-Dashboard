@@ -1,5 +1,42 @@
 // js/data-room-preview.js - Data Room Preview/External View Functionality
 
+// Helper function to count selected documents using documentLibrary as source
+function getSelectedDocumentCount(room) {
+    if (window.documentLibrary) {
+        let count = 0;
+        Object.values(window.documentLibrary).forEach(docs => {
+            docs.forEach(doc => {
+                if (room.documents.find(d => d.id === doc.id && (d.selected !== false))) {
+                    count++;
+                }
+            });
+        });
+        return count;
+    }
+    // Fallback to room documents
+    return room.documents.filter(d => d.selected).length;
+}
+
+// Helper function to get selected documents for dropdown
+function getSelectedDocumentsForDropdown(room) {
+    let options = [];
+    if (window.documentLibrary) {
+        Object.values(window.documentLibrary).forEach(docs => {
+            docs.forEach(doc => {
+                if (room.documents.find(d => d.id === doc.id && (d.selected !== false))) {
+                    options.push(`<option value="${doc.id}">${doc.name}</option>`);
+                }
+            });
+        });
+    } else {
+        // Fallback to room documents
+        options = room.documents.filter(d => d.selected).map(doc =>
+            `<option value="${doc.id}">${doc.name}</option>`
+        );
+    }
+    return options.join('');
+}
+
 // Show data room preview (both preview mode and external view)
 function showDataRoomPreview(roomId, isPreviewMode = false) {
     console.log('🎬 === SHOW DATA ROOM PREVIEW STARTED ===');
@@ -165,7 +202,7 @@ function generatePreviewModeHTML(room) {
                                 <span class="stat-label">Views</span>
                             </div>
                             <div class="stat">
-                                <span class="stat-number">${room.documents.filter(d => d.selected).length}</span>
+                                <span class="stat-number">${getSelectedDocumentCount(room)}</span>
                                 <span class="stat-label">Documents</span>
                             </div>
                             <div class="stat">
@@ -317,9 +354,7 @@ function generateExternalViewHTML(room) {
                                     <label>Document (Optional)</label>
                                     <select class="form-select">
                                         <option value="">General Comment</option>
-                                        ${room.documents.filter(d => d.selected).map(doc =>
-                                            `<option value="${doc.id}">${doc.name}</option>`
-                                        ).join('')}
+                                        ${getSelectedDocumentsForDropdown(room)}
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -378,7 +413,7 @@ function generateRequestAccessHTML(room) {
                             </div>
 
                             <div class="room-preview-stats">
-                                <span class="preview-stat">📄 ${room.documents.filter(d => d.selected).length} Documents</span>
+                                <span class="preview-stat">📄 ${getSelectedDocumentCount(room)} Documents</span>
                                 <span class="preview-stat">🏢 ${room.industry.join(', ')}</span>
                             </div>
                         </div>
@@ -454,14 +489,39 @@ function generateDocumentsHTML(room, isPreviewMode) {
         projects: { title: 'Projects', icon: '💼' }
     };
 
-    // Get selected documents grouped by category
+    // Get selected documents grouped by category using documentLibrary as source of truth
     const documentsByCategory = {};
-    room.documents.filter(d => d.selected).forEach(doc => {
-        if (!documentsByCategory[doc.category]) {
-            documentsByCategory[doc.category] = [];
-        }
-        documentsByCategory[doc.category].push(doc);
-    });
+
+    // Check if documentLibrary exists, if not use room.documents as fallback
+    if (window.documentLibrary) {
+        // Use documentLibrary as source of truth
+        Object.entries(window.documentLibrary).forEach(([category, docs]) => {
+            docs.forEach(doc => {
+                // Check if this document is selected in the room
+                const roomDoc = room.documents.find(d => d.id === doc.id && (d.selected !== false));
+                if (roomDoc) {
+                    if (!documentsByCategory[category]) {
+                        documentsByCategory[category] = [];
+                    }
+                    // Merge library doc with room settings (permissions)
+                    documentsByCategory[category].push({
+                        ...doc,
+                        category: category.slice(0, -1), // Convert plural to singular (resumes -> resume)
+                        permission: roomDoc.permission || 'view',
+                        selected: true
+                    });
+                }
+            });
+        });
+    } else {
+        // Fallback to room.documents if library not available
+        room.documents.filter(d => d.selected).forEach(doc => {
+            if (!documentsByCategory[doc.category]) {
+                documentsByCategory[doc.category] = [];
+            }
+            documentsByCategory[doc.category].push(doc);
+        });
+    }
 
     // Use room's section order or default order
     const sectionOrder = room.sectionOrder || ['resumes', 'certificates', 'references', 'projects'];

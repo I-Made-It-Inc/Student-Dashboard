@@ -352,7 +352,19 @@ function loadProfileData() {
     console.log('Loading profile data...');
     // Initialize profile functionality when page loads
     if (typeof initializeProfile === 'function') {
+        console.log('initializeProfile is available, calling it');
         initializeProfile();
+    } else {
+        console.log('initializeProfile not available yet, waiting...');
+        // Wait for profile.js to load
+        setTimeout(() => {
+            if (typeof initializeProfile === 'function') {
+                console.log('initializeProfile now available, calling it');
+                initializeProfile();
+            } else {
+                console.error('initializeProfile still not available after waiting');
+            }
+        }, 100);
     }
 }
 

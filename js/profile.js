@@ -3,21 +3,85 @@
 // Initialize profile page
 function initializeProfile() {
     console.log('Initializing profile page...');
-    
+
     // Setup form handlers
     setupProfileForms();
-    
+
     // Setup file upload handlers
     setupDocumentUploads();
-    
+
     // Setup privacy settings
     setupPrivacySettings();
-    
+
     // Load profile data
     loadProfileData();
-    
+
+    // Load documents from shared library
+    loadDocumentsFromLibrary();
+
     // Setup real-time preview updates
     setupProfilePreviewUpdates();
+}
+
+// Load documents from shared document library
+function loadDocumentsFromLibrary() {
+    console.log('Loading documents from library...');
+
+    // Check if documentLibrary exists (from data-rooms.js)
+    if (!window.documentLibrary) {
+        console.log('Document library not available yet');
+        return;
+    }
+
+    // Categories to load
+    const categoryMapping = [
+        { type: 'resume', plural: 'resumes', icon: '📄' },
+        { type: 'project', plural: 'projects', icon: '📄' },
+        { type: 'certificate', plural: 'certificates', icon: '🏆' },
+        { type: 'reference', plural: 'references', icon: '📝' }
+    ];
+
+    categoryMapping.forEach(({ type, plural, icon }) => {
+        const docs = window.documentLibrary[plural] || [];
+        const category = document.querySelector(`#${type}-upload`)?.closest('.document-category');
+        if (!category) return;
+
+        const documentsList = category.querySelector('.uploaded-documents');
+        if (!documentsList) return;
+
+        // Clear existing static documents
+        documentsList.innerHTML = '';
+
+        // Add documents from library
+        docs.forEach(doc => {
+            const documentItem = document.createElement('div');
+            documentItem.className = 'document-item';
+            documentItem.dataset.documentId = doc.id;
+
+            // Determine icon based on file type
+            let docIcon = icon;
+            if (doc.name.includes('.jpg') || doc.name.includes('.png')) {
+                docIcon = type === 'certificate' ? '🥇' : '🖼️';
+            }
+
+            // Format date consistently
+            const uploadDate = doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString() : 'Recently';
+
+            documentItem.innerHTML = `
+                <span class="doc-icon">${docIcon}</span>
+                <div class="doc-info">
+                    <span class="doc-name">${doc.name}</span>
+                    <span class="doc-meta">Uploaded ${uploadDate} • ${doc.size}</span>
+                </div>
+                <div class="doc-actions">
+                    <button class="btn-icon" title="Download" onclick="downloadDocument('${doc.id}')">⬇️</button>
+                    <button class="btn-icon" title="Delete" onclick="deleteDocument('${doc.id}', '${type}')">🗑️</button>
+                </div>
+            `;
+
+            documentsList.appendChild(documentItem);
+        });
+    });
 }
 
 // Setup profile forms
@@ -268,6 +332,12 @@ function addDocumentToList(file, type) {
     if (!documentsList) return;
 
     const documentId = type.slice(0, 4) + '-' + Date.now();
+
+    // Check if document already exists in DOM
+    if (document.querySelector(`[data-document-id="${documentId}"]`)) {
+        console.log('Document already exists in DOM');
+        return;
+    }
     const fileSize = (file.size / 1024 / 1024).toFixed(1);
     const fileIcon = getDocumentIcon(file.type);
 
