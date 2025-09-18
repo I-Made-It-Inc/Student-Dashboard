@@ -875,9 +875,9 @@ function viewAccessRequests() {
         <div style="margin: 20px 0;">
             <!-- Tabs for filtering -->
             <div class="request-tabs">
-                <button class="tab-button active" onclick="filterAccessRequests('all')">All (5)</button>
+                <button class="tab-button active" onclick="filterAccessRequests('all')">All (3)</button>
                 <button class="tab-button" onclick="filterAccessRequests('tech-roles')">Tech Roles (2)</button>
-                <button class="tab-button" onclick="filterAccessRequests('finance-roles')">Finance & Consulting (3)</button>
+                <button class="tab-button" onclick="filterAccessRequests('finance-roles')">Finance & Consulting (1)</button>
             </div>
 
             <!-- Request Cards -->
@@ -1015,6 +1015,11 @@ function viewAccessRequests() {
 
     // Use the existing modal system
     openModal('custom', 'Access Requests', modalContent);
+
+    // Initialize proper counts after modal is rendered
+    setTimeout(() => {
+        updateAccessRequestCounts();
+    }, 100);
 }
 
 function viewDataRoomComments() {
@@ -1026,10 +1031,10 @@ function viewDataRoomComments() {
         <div style="margin: 20px 0;">
             <!-- Tabs for filtering -->
             <div class="request-tabs">
-                <button class="tab-button active" onclick="filterDataRoomComments('all')">All (12)</button>
-                <button class="tab-button" onclick="filterDataRoomComments('tech-roles')">Tech Roles (7)</button>
-                <button class="tab-button" onclick="filterDataRoomComments('finance-roles')">Finance & Consulting (4)</button>
-                <button class="tab-button" onclick="filterDataRoomComments('research-roles')">Research & Academia (1)</button>
+                <button class="tab-button active" onclick="filterDataRoomComments('all')">All (3)</button>
+                <button class="tab-button" onclick="filterDataRoomComments('tech-roles')">Tech Roles (2)</button>
+                <button class="tab-button" onclick="filterDataRoomComments('finance-roles')">Finance & Consulting (1)</button>
+                <button class="tab-button" onclick="filterDataRoomComments('research-roles')">Research & Academia (0)</button>
             </div>
 
             <!-- Comment Cards -->
@@ -1141,6 +1146,11 @@ function viewDataRoomComments() {
 
     // Use the existing modal system
     openModal('custom', 'Comments', modalContent);
+
+    // Initialize proper counts after modal is rendered
+    setTimeout(() => {
+        updateCommentCounts();
+    }, 100);
 }
 
 // Supporting functions for access requests and comments modals
@@ -1158,12 +1168,15 @@ function filterAccessRequests(roomFilter) {
         }
     });
 
-    // Update active tab
-    document.querySelectorAll('.tab-button').forEach(tab => tab.classList.remove('active'));
-    const activeTab = roomFilter === 'all' ?
-        document.querySelector('.tab-button[onclick="filterAccessRequests(\'all\')"]') :
-        document.querySelector(`.tab-button[onclick="filterAccessRequests('${roomFilter}')"]`);
-    if (activeTab) activeTab.classList.add('active');
+    // Update active tab (only within access requests modal)
+    const modal = document.getElementById('modal');
+    if (modal && modal.querySelector('.tab-button[onclick*="filterAccessRequests"]')) {
+        modal.querySelectorAll('.tab-button[onclick*="filterAccessRequests"]').forEach(tab => tab.classList.remove('active'));
+        const activeTab = roomFilter === 'all' ?
+            modal.querySelector('.tab-button[onclick="filterAccessRequests(\'all\')"]') :
+            modal.querySelector(`.tab-button[onclick="filterAccessRequests('${roomFilter}')"]`);
+        if (activeTab) activeTab.classList.add('active');
+    }
 }
 
 function filterDataRoomComments(roomFilter) {
@@ -1180,12 +1193,15 @@ function filterDataRoomComments(roomFilter) {
         }
     });
 
-    // Update active tab
-    document.querySelectorAll('.tab-button').forEach(tab => tab.classList.remove('active'));
-    const activeTab = roomFilter === 'all' ?
-        document.querySelector('.tab-button[onclick="filterDataRoomComments(\'all\')"]') :
-        document.querySelector(`.tab-button[onclick="filterDataRoomComments('${roomFilter}')"]`);
-    if (activeTab) activeTab.classList.add('active');
+    // Update active tab (only within comments modal)
+    const modal = document.getElementById('modal');
+    if (modal && modal.querySelector('.tab-button[onclick*="filterDataRoomComments"]')) {
+        modal.querySelectorAll('.tab-button[onclick*="filterDataRoomComments"]').forEach(tab => tab.classList.remove('active'));
+        const activeTab = roomFilter === 'all' ?
+            modal.querySelector('.tab-button[onclick="filterDataRoomComments(\'all\')"]') :
+            modal.querySelector(`.tab-button[onclick="filterDataRoomComments('${roomFilter}')"]`);
+        if (activeTab) activeTab.classList.add('active');
+    }
 }
 
 function approveAccessRequest(requestId) {
@@ -1193,7 +1209,10 @@ function approveAccessRequest(requestId) {
     if (card) {
         card.style.opacity = '0.5';
         card.style.transform = 'translateX(20px)';
-        setTimeout(() => card.remove(), 300);
+        setTimeout(() => {
+            card.remove();
+            updateAccessRequestCounts();
+        }, 300);
     }
 
     if (window.showToast) {
@@ -1206,7 +1225,10 @@ function denyAccessRequest(requestId) {
     if (card) {
         card.style.opacity = '0.5';
         card.style.transform = 'translateX(-20px)';
-        setTimeout(() => card.remove(), 300);
+        setTimeout(() => {
+            card.remove();
+            updateAccessRequestCounts();
+        }, 300);
     }
 
     if (window.showToast) {
@@ -1258,6 +1280,51 @@ function markDataRoomCommentRead(commentId) {
 function followUpDataRoomComment(commentId) {
     if (window.showToast) {
         window.showToast('Follow-up feature coming soon!', 'info');
+    }
+}
+
+// Update access request counts dynamically
+function updateAccessRequestCounts() {
+    const container = document.getElementById('access-requests-container');
+    if (!container) return;
+
+    const allCards = container.querySelectorAll('.request-card');
+    const techCards = container.querySelectorAll('.request-card[data-room="tech-roles"]');
+    const financeCards = container.querySelectorAll('.request-card[data-room="finance-roles"]');
+
+    const modal = document.getElementById('modal');
+    if (modal && modal.querySelector('.tab-button[onclick*="filterAccessRequests"]')) {
+        const allBtn = modal.querySelector('.tab-button[onclick="filterAccessRequests(\'all\')"]');
+        const techBtn = modal.querySelector('.tab-button[onclick="filterAccessRequests(\'tech-roles\')"]');
+        const financeBtn = modal.querySelector('.tab-button[onclick="filterAccessRequests(\'finance-roles\')"]');
+
+        if (allBtn) allBtn.textContent = `All (${allCards.length})`;
+        if (techBtn) techBtn.textContent = `Tech Roles (${techCards.length})`;
+        if (financeBtn) financeBtn.textContent = `Finance & Consulting (${financeCards.length})`;
+    }
+}
+
+// Update comment counts dynamically
+function updateCommentCounts() {
+    const container = document.getElementById('comments-container');
+    if (!container) return;
+
+    const allCards = container.querySelectorAll('.comment-card');
+    const techCards = container.querySelectorAll('.comment-card[data-room="tech-roles"]');
+    const financeCards = container.querySelectorAll('.comment-card[data-room="finance-roles"]');
+    const researchCards = container.querySelectorAll('.comment-card[data-room="research-roles"]');
+
+    const modal = document.getElementById('modal');
+    if (modal && modal.querySelector('.tab-button[onclick*="filterDataRoomComments"]')) {
+        const allBtn = modal.querySelector('.tab-button[onclick="filterDataRoomComments(\'all\')"]');
+        const techBtn = modal.querySelector('.tab-button[onclick="filterDataRoomComments(\'tech-roles\')"]');
+        const financeBtn = modal.querySelector('.tab-button[onclick="filterDataRoomComments(\'finance-roles\')"]');
+        const researchBtn = modal.querySelector('.tab-button[onclick="filterDataRoomComments(\'research-roles\')"]');
+
+        if (allBtn) allBtn.textContent = `All (${allCards.length})`;
+        if (techBtn) techBtn.textContent = `Tech Roles (${techCards.length})`;
+        if (financeBtn) financeBtn.textContent = `Finance & Consulting (${financeCards.length})`;
+        if (researchBtn) researchBtn.textContent = `Research & Academia (${researchCards.length})`;
     }
 }
 
