@@ -3,22 +3,30 @@
 // Initialize navigation
 function initializeNavigation() {
     console.log('Initializing navigation...');
-    
+
     // Set up nav link click handlers
     setupNavLinks();
-    
+
     // Set up mobile menu
     setupMobileMenu();
-    
+
     // Set up user menu dropdown
     setupUserMenu();
-    
+
     // Handle browser back/forward
     setupHistoryManagement();
-    
+
     // Show initial page from URL or default to dashboard
     const initialPage = getPageFromURL();
-    showPage(initialPage, false); // Don't push state on initial load
+
+    // Check if this is a data room preview/external view
+    if (initialPage.startsWith('data-room-preview/') || initialPage.startsWith('data-room/')) {
+        console.log('Initial page is data room route:', initialPage);
+        handleDataRoomRoute(initialPage);
+    } else {
+        console.log('Initial page is regular page:', initialPage);
+        showPage(initialPage, false); // Don't push state on initial load
+    }
 }
 
 // Show specific page
@@ -461,13 +469,71 @@ function setupHistoryManagement() {
     // Handle browser back/forward buttons
     window.addEventListener('popstate', (e) => {
         if (e.state && e.state.page) {
-            showPage(e.state.page, false); // Don't push state when navigating via browser buttons
+            // Check if this is a data room preview/external view
+            if (e.state.page.startsWith('data-room-preview/') || e.state.page.startsWith('data-room/')) {
+                handleDataRoomRoute(e.state.page);
+            } else {
+                showPage(e.state.page, false); // Don't push state when navigating via browser buttons
+            }
         }
     });
-    
+
+    // Handle hash changes (for direct navigation)
+    window.addEventListener('hashchange', () => {
+        console.log('🔄 === HASHCHANGE EVENT FIRED ===');
+        console.log('📍 New hash:', window.location.hash);
+
+        const currentPage = getPageFromURL();
+        console.log('📄 Parsed page:', currentPage);
+
+        if (currentPage.startsWith('data-room-preview/') || currentPage.startsWith('data-room/')) {
+            console.log('🎯 Detected data room route, calling handleDataRoomRoute...');
+            handleDataRoomRoute(currentPage);
+        } else {
+            console.log('📄 Regular page route, calling showPage...');
+            showPage(currentPage, false);
+        }
+        console.log('🔄 === HASHCHANGE HANDLING COMPLETE ===');
+    });
+
     // Set initial state but don't show page here (it's handled in initializeNavigation)
     const initialPage = getPageFromURL() || 'dashboard';
     history.replaceState({ page: initialPage }, '', `#${initialPage}`);
+}
+
+// Handle data room preview and external routes
+function handleDataRoomRoute(route) {
+    const parts = route.split('/');
+    const mode = parts[0]; // 'data-room-preview' or 'data-room'
+    const roomId = parts[1];
+
+    console.log('Handling data room route:', route, 'Mode:', mode, 'Room ID:', roomId);
+
+    // Check if the preview function is available
+    if (typeof window.showDataRoomPreview === 'function') {
+        if (mode === 'data-room-preview') {
+            // Student preview mode
+            window.showDataRoomPreview(roomId, true);
+        } else if (mode === 'data-room') {
+            // External/recruiter view
+            window.showDataRoomPreview(roomId, false);
+        }
+    } else {
+        console.error('showDataRoomPreview function not available. Data room preview functionality may not be loaded.');
+
+        // Fallback: try again after a short delay to allow JS files to load
+        setTimeout(() => {
+            if (typeof window.showDataRoomPreview === 'function') {
+                if (mode === 'data-room-preview') {
+                    window.showDataRoomPreview(roomId, true);
+                } else if (mode === 'data-room') {
+                    window.showDataRoomPreview(roomId, false);
+                }
+            } else {
+                console.error('showDataRoomPreview still not available after delay');
+            }
+        }, 500);
+    }
 }
 
 // Update URL without page reload
@@ -480,6 +546,12 @@ function updateURL(pageId) {
 // Get page from URL hash
 function getPageFromURL() {
     const hash = window.location.hash.slice(1);
+
+    // Check for data room preview/external view first
+    if (hash.startsWith('data-room-preview/') || hash.startsWith('data-room/')) {
+        return hash; // Return the full hash for special handling
+    }
+
     // Validate that the page exists
     const validPages = ['dashboard', 'innovation', 'ideas', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile', 'notifications', 'data-rooms'];
     return validPages.includes(hash) ? hash : 'dashboard';

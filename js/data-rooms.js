@@ -9,11 +9,19 @@ let dataRooms = [
         description: 'Portfolio tailored for software engineering and data science roles',
         privacy: 'public',
         industry: ['Technology'],
+        customMessage: 'Welcome to my tech portfolio! I\'m passionate about AI/ML and full-stack development. Feel free to explore my projects and achievements below.',
+        sectionOrder: ['resumes', 'projects', 'certificates', 'references'], // Custom section order
         documents: [
             { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'AI_Course_Certificate.pdf', permission: 'view', selected: true },
+            { id: 'resume-2', category: 'resumes', name: 'Jane_Doe_Tech_Resume.pdf', permission: 'download', selected: true },
+            { id: 'cert-1', category: 'certificates', name: 'AWS_Cloud_Practitioner.pdf', permission: 'view', selected: true },
+            { id: 'cert-2', category: 'certificates', name: 'Google_Data_Analytics.pdf', permission: 'view', selected: true },
+            { id: 'cert-3', category: 'certificates', name: 'Microsoft_AI_Fundamentals.pdf', permission: 'view', selected: true },
             { id: 'ref-1', category: 'references', name: 'Reference_TechCorp_CEO.pdf', permission: 'view', selected: true },
-            { id: 'proj-1', category: 'projects', name: 'Data_Analysis_Portfolio.pdf', permission: 'download', selected: true }
+            { id: 'ref-2', category: 'references', name: 'Reference_Professor_Smith.pdf', permission: 'view', selected: true },
+            { id: 'proj-1', category: 'projects', name: 'ML_Sentiment_Analysis_Project.pdf', permission: 'download', selected: true },
+            { id: 'proj-2', category: 'projects', name: 'React_Dashboard_Portfolio.pdf', permission: 'download', selected: true },
+            { id: 'proj-3', category: 'projects', name: 'Data_Pipeline_Architecture.pdf', permission: 'download', selected: true }
         ],
         stats: {
             views: 47,
@@ -30,10 +38,14 @@ let dataRooms = [
         description: 'Focused on finance, consulting, and business strategy positions',
         privacy: 'request',
         industry: ['Finance', 'Consulting'],
+        customMessage: '',
+        sectionOrder: ['resumes', 'certificates', 'references', 'projects'],
         documents: [
-            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'AI_Course_Certificate.pdf', permission: 'view', selected: false },
-            { id: 'ref-1', category: 'references', name: 'Reference_TechCorp_CEO.pdf', permission: 'view', selected: true }
+            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Finance_Resume.pdf', permission: 'download', selected: true },
+            { id: 'cert-1', category: 'certificates', name: 'CFA_Level_I.pdf', permission: 'view', selected: true },
+            { id: 'cert-2', category: 'certificates', name: 'Financial_Modeling_Certificate.pdf', permission: 'view', selected: true },
+            { id: 'ref-1', category: 'references', name: 'Reference_Goldman_Sachs_VP.pdf', permission: 'view', selected: true },
+            { id: 'proj-1', category: 'projects', name: 'Investment_Portfolio_Analysis.pdf', permission: 'view', selected: true }
         ],
         stats: {
             views: 23,
@@ -50,12 +62,16 @@ let dataRooms = [
         description: 'Materials for research internships and academic programs',
         privacy: 'private',
         industry: ['Research', 'Education'],
+        customMessage: 'Focused on advancing AI research and academic excellence.',
+        sectionOrder: ['projects', 'certificates', 'resumes', 'references'],
         documents: [
-            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'AI_Course_Certificate.pdf', permission: 'view', selected: true },
-            { id: 'cert-2', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true },
-            { id: 'ref-1', category: 'references', name: 'Reference_TechCorp_CEO.pdf', permission: 'view', selected: true },
-            { id: 'proj-2', category: 'projects', name: 'TechCorp_Marketing_Project.pdf', permission: 'view', selected: false }
+            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Academic_Resume.pdf', permission: 'download', selected: true },
+            { id: 'cert-1', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true },
+            { id: 'cert-2', category: 'certificates', name: 'Research_Excellence_Award.pdf', permission: 'view', selected: true },
+            { id: 'ref-1', category: 'references', name: 'Reference_Professor_Johnson.pdf', permission: 'view', selected: true },
+            { id: 'ref-2', category: 'references', name: 'Reference_Research_Supervisor.pdf', permission: 'view', selected: true },
+            { id: 'proj-1', category: 'projects', name: 'Neural_Network_Research_Paper.pdf', permission: 'download', selected: true },
+            { id: 'proj-2', category: 'projects', name: 'Lab_Research_Portfolio.pdf', permission: 'view', selected: true }
         ],
         stats: {
             views: 12,
@@ -299,15 +315,35 @@ function generateRoomId() {
 
 // Preview room
 function previewDataRoom(roomId) {
-    const room = dataRooms.find(r => r.id === roomId);
-    if (!room) return;
+    console.log('🔍 PREVIEW FUNCTION CALLED with roomId:', roomId);
 
-    // In a real implementation, this would open a new window/tab
-    // showing the room as a recruiter would see it
-    if (window.showToast) {
-        window.showToast(`Opening preview for "${room.name}"`, 'info');
+    const room = dataRooms.find(r => r.id === roomId);
+    if (!room) {
+        console.error('❌ Room not found:', roomId);
+        return;
     }
-    console.log('Preview room:', room);
+
+    console.log('✅ Room found:', room.name);
+    console.log('📍 Current location hash:', window.location.hash);
+
+    // Navigate to preview mode
+    const newHash = `#data-room-preview/${roomId}`;
+    console.log('🔄 Setting hash to:', newHash);
+    window.location.hash = newHash;
+
+    console.log('📍 Hash after setting:', window.location.hash);
+
+    // Also call the preview function directly as fallback
+    console.log('⏳ Setting up direct call fallback...');
+    setTimeout(() => {
+        console.log('🚀 Executing direct call fallback');
+        if (typeof window.showDataRoomPreview === 'function') {
+            console.log('✅ showDataRoomPreview function exists, calling it...');
+            window.showDataRoomPreview(roomId, true);
+        } else {
+            console.error('❌ showDataRoomPreview function not found on window object');
+        }
+    }, 100);
 }
 
 // Edit room
@@ -346,28 +382,13 @@ function editDataRoom(roomId) {
 
                         <div class="form-group">
                             <label>Custom Message for Viewers</label>
-                            <textarea class="form-textarea" rows="2" id="edit-room-message" placeholder="Optional welcome message for people viewing this room..."></textarea>
+                            <textarea class="form-textarea" rows="2" id="edit-room-message" placeholder="Optional welcome message for people viewing this room...">${room.customMessage || ''}</textarea>
                         </div>
 
                         <div class="form-group">
                             <label>Section Order</label>
                             <div class="section-order-container" id="section-order-list">
-                                <div class="draggable-section" draggable="true" data-section="resumes">
-                                    <span class="drag-handle">⋮⋮</span>
-                                    <span class="section-name">📋 Resumes</span>
-                                </div>
-                                <div class="draggable-section" draggable="true" data-section="certificates">
-                                    <span class="drag-handle">⋮⋮</span>
-                                    <span class="section-name">🏆 Certificates</span>
-                                </div>
-                                <div class="draggable-section" draggable="true" data-section="references">
-                                    <span class="drag-handle">⋮⋮</span>
-                                    <span class="section-name">📝 References</span>
-                                </div>
-                                <div class="draggable-section" draggable="true" data-section="projects">
-                                    <span class="drag-handle">⋮⋮</span>
-                                    <span class="section-name">💼 Projects</span>
-                                </div>
+                                ${generateSectionOrderHTML(room)}
                             </div>
                             <small class="help-text">Drag to reorder how sections appear in your data room</small>
                         </div>
@@ -399,6 +420,30 @@ function editDataRoom(roomId) {
 
     // Initialize drag and drop functionality
     setTimeout(initializeSectionDragDrop, 100);
+}
+
+// Generate section order HTML based on room configuration
+function generateSectionOrderHTML(room) {
+    const sectionMeta = {
+        resumes: { name: '📋 Resumes' },
+        certificates: { name: '🏆 Certificates' },
+        references: { name: '📝 References' },
+        projects: { name: '💼 Projects' }
+    };
+
+    const sectionOrder = room.sectionOrder || ['resumes', 'certificates', 'references', 'projects'];
+
+    return sectionOrder.map(sectionKey => {
+        const meta = sectionMeta[sectionKey];
+        if (!meta) return '';
+
+        return `
+            <div class="draggable-section" draggable="true" data-section="${sectionKey}">
+                <span class="drag-handle">⋮⋮</span>
+                <span class="section-name">${meta.name}</span>
+            </div>
+        `;
+    }).join('');
 }
 
 // Generate document selection HTML
@@ -629,6 +674,13 @@ function handleSaveDataRoom() {
     room.customMessage = document.getElementById('edit-room-message').value;
     room.updatedAt = new Date().toISOString().split('T')[0];
 
+    // Update section order from drag-and-drop
+    const sectionOrderContainer = document.getElementById('section-order-list');
+    if (sectionOrderContainer) {
+        const sections = sectionOrderContainer.querySelectorAll('.draggable-section');
+        room.sectionOrder = Array.from(sections).map(section => section.dataset.section);
+    }
+
     // Update document selection
     const checkboxes = document.querySelectorAll('.document-item input[type="checkbox"]');
     const permissionSelects = document.querySelectorAll('.permission-select');
@@ -717,7 +769,7 @@ function shareDataRoom(roomId) {
             <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
                 <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">🔗 Room Link</h4>
                 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                    <input type="text" class="form-input" value="https://imi.com/dataroom/jane-doe/${roomId}" readonly style="flex: 1; font-family: monospace; font-size: 12px; background: #f8fafc;">
+                    <input type="text" class="form-input" id="room-link-input" value="${window.location.origin}${window.location.pathname}#data-room/${roomId}" readonly style="flex: 1; font-family: monospace; font-size: 12px; background: #f8fafc;">
                     <button class="btn btn-outline" onclick="copyDataRoomLink()">📋 Copy</button>
                 </div>
                 <small style="color: #6b7280;">Anyone with this link can access your room based on your privacy settings</small>
@@ -756,7 +808,7 @@ function shareDataRoom(roomId) {
 
 // Copy room link to clipboard
 function copyDataRoomLink() {
-    const linkInput = document.querySelector('input[readonly]');
+    const linkInput = document.getElementById('room-link-input');
     if (linkInput) {
         linkInput.select();
         document.execCommand('copy');
@@ -1388,7 +1440,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Export functions for global use
+// Export data and functions for global use
+window.dataRooms = dataRooms;
 window.initializeDataRooms = initializeDataRooms;
 window.createNewDataRoom = createNewDataRoom;
 window.editDataRoom = editDataRoom;
