@@ -659,10 +659,6 @@ function shareDataRoom(roomId) {
                 </div>
                 <small style="color: #6b7280;">Perfect for business cards and networking events</small>
             </div>
-
-            <div style="text-align: center;">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
-            </div>
         </div>
     `;
 
@@ -782,10 +778,6 @@ function viewDataRoomAnalytics(roomId) {
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 24px;">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
             </div>
         </div>
     `;
@@ -1019,10 +1011,6 @@ function viewAccessRequests() {
                     </div>
                 </div>
             </div>
-
-            <div style="text-align: center; margin-top: 24px;">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
-            </div>
         </div>
     `;
 
@@ -1149,10 +1137,6 @@ function viewDataRoomComments() {
                         <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-3')">Mark as Read</button>
                     </div>
                 </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 24px;">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
             </div>
         </div>
     `;
