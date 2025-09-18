@@ -868,9 +868,8 @@ function shareMultipleDataRooms() {
 // Access request functions
 function viewAccessRequests() {
     const modalContent = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div style="margin-bottom: 24px;">
             <h2>Access Requests</h2>
-            <span style="background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500;">5 pending</span>
         </div>
 
         <div style="margin: 20px 0;">
@@ -1020,9 +1019,8 @@ function viewAccessRequests() {
 
 function viewDataRoomComments() {
     const modalContent = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div style="margin-bottom: 24px;">
             <h2>Comments</h2>
-            <span style="background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500;">12 total</span>
         </div>
 
         <div style="margin: 20px 0;">

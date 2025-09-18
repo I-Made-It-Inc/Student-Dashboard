@@ -23,12 +23,14 @@
     padding: var(--spacing-xl);
     border-radius: var(--radius-md);
     width: 90%;
-    max-width: 600px;
+    max-width: 800px;
     max-height: 80vh;
     overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
     box-shadow: var(--shadow-lg);
     animation: slideUp 0.3s ease;
+    box-sizing: border-box;
 }
 
 .modal-close {
