@@ -120,7 +120,7 @@ const connectionData = {
 
 function openConnectionModal(connectionId) {
     console.log('Opening connection modal for:', connectionId);
-    
+
     try {
         const connection = connectionData[connectionId];
         if (!connection) {
@@ -130,15 +130,15 @@ function openConnectionModal(connectionId) {
             }
             return;
         }
-        
+
         const modal = document.getElementById('modal');
         const modalBody = document.getElementById('modal-body');
-        
+
         if (!modal || !modalBody) {
             console.error('Modal elements not found');
             return;
         }
-        
+
         // Set the modal content
         modalBody.innerHTML = getConnectionDetailModalContent(connection);
         
@@ -198,18 +198,34 @@ function getConnectionDetailModalContent(connection) {
             </div>
             
             <div class="button-group centered-buttons">
-                ${isPeerConnection ? 
+                ${isPeerConnection ?
                     `<button class="btn btn-primary" onclick="viewProfile('${connection.name}')">View Profile</button>
                      <button class="btn btn-secondary" onclick="sendMessage('${connection.name}')">Send Message</button>` :
-                    `<button class="btn btn-primary" onclick="requestReference('${connection.name}')">Request Reference</button>
-                     <button class="btn ${connection.hasReference ? 'btn-secondary' : 'btn-secondary disabled'}" 
-                            ${connection.hasReference ? '' : 'disabled'} 
+                    `${getRequestReferenceButton(connection.name)}
+                     <button class="btn ${connection.hasReference ? 'btn-secondary' : 'btn-secondary disabled'}"
+                            ${connection.hasReference ? '' : 'disabled'}
                             onclick="viewReference('${connection.name}')">View Reference(s)</button>
                      <button class="btn btn-secondary" onclick="sendMessage('${connection.name}')">Send Message</button>`
                 }
             </div>
         </div>
     `;
+}
+
+function getRequestReferenceButton(contactName) {
+    // Ensure the state object exists
+    if (!window.requestedReferences) {
+        window.requestedReferences = new Set();
+    }
+
+    // Check if reference has already been requested
+    const isRequested = window.requestedReferences.has(contactName);
+
+    if (isRequested) {
+        return `<button class="btn btn-primary requested" data-contact="${contactName}" disabled>Requested</button>`;
+    } else {
+        return `<button class="btn btn-primary" data-contact="${contactName}" onclick="requestReference('${contactName}')">Request Reference</button>`;
+    }
 }
 
 function getConnectionIdFromName(name) {
@@ -554,13 +570,50 @@ function closeModal() {
     }
 }
 
+// Global state to track requested references
+window.requestedReferences = window.requestedReferences || new Set();
+
 // Connection action functions
 function requestReference(contactName) {
-    console.log(`Requesting reference from ${contactName}`);
-    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+    console.log(`Requesting reference from "${contactName}"`);
+
+    // Ensure the state object exists
+    if (!window.requestedReferences) {
+        window.requestedReferences = new Set();
+    }
+
+    // Mark this contact as having a requested reference
+    window.requestedReferences.add(contactName);
+
+    // Update the clicked button
+    const button = event.target;
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Requested';
+        button.classList.add('requested');
+    }
+
+    // Find and disable ALL corresponding buttons with the same contact name
+    const allReferenceButtons = document.querySelectorAll(`button[data-contact="${contactName}"]`);
+    allReferenceButtons.forEach(btn => {
+        if (btn.textContent.includes('Request Reference')) {
+            btn.disabled = true;
+            btn.textContent = 'Requested';
+            btn.classList.add('requested');
+        }
+    });
+
+    // Show notification
+    if (window.showToast) {
+        window.showToast(`Reference request sent to ${contactName}!`, 'success');
+    } else if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification(`Reference request sent to ${contactName}!`, 'success');
     }
-    closeModal();
+
+    // Close modal if this was called from a modal
+    if (document.querySelector('#modal.active')) {
+        closeModal();
+    }
 }
 
 function viewReference(contactName) {
@@ -641,17 +694,12 @@ function editConnection(connectionId) {
                 </div>
             </div>
             
-            <div class="form-group">
-                <label style="color: #e74c3c;">
-                    <input type="checkbox" id="delete-connection" style="margin-right: 8px;">
-                    Delete this connection permanently
-                </label>
-            </div>
-            
-            <div class="button-group">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <button type="button" class="btn btn-secondary" onclick="openConnectionModal('${connectionId}')">Cancel</button>
-                <button type="button" class="btn btn-danger" onclick="deleteConnection('${connectionId}')" style="display: none;" id="delete-btn">Delete Connection</button>
+            <div class="edit-modal-actions">
+                <button type="button" class="btn btn-danger" onclick="deleteConnection('${connectionId}')" id="delete-btn">Delete Connection</button>
+                <div class="action-group">
+                    <button type="button" class="btn btn-secondary" onclick="openConnectionModal('${connectionId}')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
             </div>
         </form>
     `;
@@ -674,18 +722,6 @@ function editConnection(connectionId) {
         });
     }
     
-    // Setup delete checkbox functionality
-    const deleteCheckbox = document.getElementById('delete-connection');
-    const deleteBtn = document.getElementById('delete-btn');
-    if (deleteCheckbox && deleteBtn) {
-        deleteCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                deleteBtn.style.display = 'inline-block';
-            } else {
-                deleteBtn.style.display = 'none';
-            }
-        });
-    }
 }
 
 function saveConnectionChanges(connectionId) {

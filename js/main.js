@@ -178,9 +178,18 @@ function setupGlobalEventListeners() {
     // Click outside handlers
     document.addEventListener('click', handleOutsideClicks);
     
-    // Form submissions
+    // Form submissions (exclude profile forms which have their own handlers)
     document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', handleFormSubmit);
+        // Skip profile forms, data room forms, and other forms with specific handlers
+        if (!form.id.includes('personal-info-form') &&
+            !form.id.includes('social-links-form') &&
+            !form.id.includes('edit-data-room-form') &&
+            !form.id.includes('create-data-room-form') &&
+            !form.id.includes('idea-form') &&
+            !form.id.includes('review-form') &&
+            !form.id.includes('time-entry-form')) {
+            form.addEventListener('submit', handleFormSubmit);
+        }
     });
     
     // Auto-save for textareas

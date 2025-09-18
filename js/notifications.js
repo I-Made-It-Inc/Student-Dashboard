@@ -250,16 +250,25 @@ function updateNotificationCount() {
 // Set up notification settings toggles
 function setupNotificationSettings() {
     const toggles = document.querySelectorAll('.toggle-switch input');
-    
+
     toggles.forEach(toggle => {
-        toggle.addEventListener('change', function() {
+        // Remove any existing event listeners to prevent duplicates
+        const newToggle = toggle.cloneNode(true);
+        toggle.parentNode.replaceChild(newToggle, toggle);
+
+        newToggle.addEventListener('change', function() {
             const settingOption = this.closest('.setting-option');
             const settingName = settingOption.querySelector('h4').textContent;
-            
+
             console.log(`${settingName} setting ${this.checked ? 'enabled' : 'disabled'}`);
-            
-            // Here you would typically save the setting to the backend
-            if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+
+            // Show toast notification
+            if (window.showToast) {
+                window.showToast(
+                    `${settingName} ${this.checked ? 'enabled' : 'disabled'}`,
+                    'success'
+                );
+            } else if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
                 window.IMI.utils.showNotification(
                     `${settingName} ${this.checked ? 'enabled' : 'disabled'}`,
                     'success'
@@ -303,23 +312,8 @@ function rsvpToEvent(eventId) {
     }
 }
 
-// Request reference letter
-function requestReference(company) {
-    console.log(`Requesting reference from: ${company}`);
-
-    // Disable the button
-    const button = event.target;
-    if (button) {
-        button.disabled = true;
-        button.textContent = 'Requested';
-        button.classList.remove('btn-notification-primary');
-        button.classList.add('btn-notification-disabled');
-    }
-
-    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-        window.IMI.utils.showNotification(`Reference request sent to ${company}!`, 'success');
-    }
-}
+// Request reference letter - using the enhanced version from modal.js
+// function requestReference is now handled by modal.js for consistent state tracking
 
 // Download certificate
 function downloadCertificate(projectId) {
@@ -381,6 +375,12 @@ function registerForWorkshop(workshopId) {
 
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('Workshop registration successful!', 'success');
+    }
+
+    // Mark notification as read
+    const notificationItem = button ? button.closest('.notification-item') : null;
+    if (notificationItem) {
+        markAsRead(notificationItem.querySelector('[onclick*="markAsRead"]'));
     }
 }
 
