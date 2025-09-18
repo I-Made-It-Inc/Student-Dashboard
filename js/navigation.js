@@ -481,7 +481,7 @@ function updateURL(pageId) {
 function getPageFromURL() {
     const hash = window.location.hash.slice(1);
     // Validate that the page exists
-    const validPages = ['dashboard', 'innovation', 'ideas', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile', 'notifications'];
+    const validPages = ['dashboard', 'innovation', 'ideas', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile', 'notifications', 'data-rooms'];
     return validPages.includes(hash) ? hash : 'dashboard';
 }
 
@@ -497,7 +497,8 @@ function updatePageTitle(pageId) {
         resources: 'Resources & Tools',
         tracking: 'Time Tracking',
         profile: 'Profile Settings',
-        notifications: 'Notifications'
+        notifications: 'Notifications',
+        'data-rooms': 'Virtual Data Rooms'
     };
     
     document.title = `${titles[pageId] || 'Dashboard'} - IMI Student Portal`;
