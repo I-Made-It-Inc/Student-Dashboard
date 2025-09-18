@@ -557,10 +557,32 @@ function closeModal() {
 // Connection action functions
 function requestReference(contactName) {
     console.log(`Requesting reference from ${contactName}`);
-    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+
+    // Update button state if called from network page
+    const button = event.target;
+    if (button && button.classList.contains('btn-action')) {
+        button.disabled = true;
+        button.textContent = 'Requested';
+        button.classList.remove('btn-action');
+        button.classList.add('btn-action', 'disabled');
+        button.style.backgroundColor = '#6b7280';
+        button.style.color = '#9ca3af';
+        button.style.cursor = 'not-allowed';
+        button.style.opacity = '0.6';
+        button.style.borderColor = '#6b7280';
+    }
+
+    // Show notification
+    if (window.showToast) {
+        window.showToast(`Reference request sent to ${contactName}!`, 'success');
+    } else if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification(`Reference request sent to ${contactName}!`, 'success');
     }
-    closeModal();
+
+    // Close modal if this was called from a modal
+    if (document.querySelector('#modal.active')) {
+        closeModal();
+    }
 }
 
 function viewReference(contactName) {
