@@ -756,19 +756,21 @@
 
 /* Small Button Variants */
 .btn-danger-small {
-    background: #ef4444;
-    color: white;
-    border: none;
+    background: transparent;
+    color: #ef4444;
+    border: 2px solid #ef4444;
     padding: 8px 16px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .btn-danger-small:hover {
-    background: #dc2626;
+    background: #ef4444;
+    color: white;
+    border: 2px solid #ef4444;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
 }
@@ -790,13 +792,32 @@
     border-color: #9ca3af;
 }
 
+.btn-secondary-blue-small {
+    background-color: var(--white);
+    color: var(--imi-blue);
+    border: 2px solid var(--imi-blue);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary-blue-small:hover {
+    background-color: var(--imi-blue);
+    color: var(--white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(4, 40, 71, 0.3);
+}
+
 .btn-primary-small {
     background: #042847;
     color: white;
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;

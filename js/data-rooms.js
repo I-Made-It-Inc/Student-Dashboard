@@ -349,8 +349,8 @@ function editDataRoom(roomId) {
             <div class="modal-actions">
                 <button type="button" class="btn-danger-small" onclick="deleteDataRoom()">Delete Room</button>
                 <div class="action-group">
-                    <button type="button" class="btn-secondary-small" onclick="previewDataRoom('${roomId}')">Preview</button>
-                    <button type="button" class="btn-secondary-small" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="btn-secondary-blue-small" onclick="previewDataRoom('${roomId}')">Preview</button>
+                    <button type="button" class="btn-secondary-blue-small" onclick="closeModal()">Cancel</button>
                     <button type="button" class="btn-primary-small" onclick="handleSaveDataRoom()">Save Changes</button>
                 </div>
             </div>
