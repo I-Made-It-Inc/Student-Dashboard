@@ -39,7 +39,7 @@ let dataRooms = [
         privacy: 'request',
         industry: ['Finance', 'Consulting'],
         customMessage: '',
-        sectionOrder: ['resumes', 'certificates', 'references', 'projects'],
+        sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
         documents: [
             { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Finance_Resume.pdf', permission: 'download', selected: true },
             { id: 'cert-1', category: 'certificates', name: 'CFA_Level_I.pdf', permission: 'view', selected: true },
@@ -63,7 +63,7 @@ let dataRooms = [
         privacy: 'private',
         industry: ['Research', 'Education'],
         customMessage: 'Focused on advancing AI research and academic excellence.',
-        sectionOrder: ['projects', 'certificates', 'resumes', 'references'],
+        sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
         documents: [
             { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Academic_Resume.pdf', permission: 'download', selected: true },
             { id: 'cert-1', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true },
@@ -87,18 +87,34 @@ let dataRooms = [
 // Sample document library - represents documents uploaded to profile
 const documentLibrary = {
     resumes: [
-        { id: 'resume-1', name: 'Jane_Doe_Resume_2024.pdf', uploadDate: '2024-12-01', size: '2.3 MB' }
-    ],
-    certificates: [
-        { id: 'cert-1', name: 'AI_Course_Certificate.pdf', uploadDate: '2024-11-15', size: '1.1 MB' },
-        { id: 'cert-2', name: 'Science_Fair_First_Place.jpg', uploadDate: '2024-10-20', size: '3.2 MB' }
-    ],
-    references: [
-        { id: 'ref-1', name: 'Reference_TechCorp_CEO.pdf', uploadDate: '2024-12-05', size: '890 KB' }
+        { id: 'resume-1', name: 'Jane_Doe_Resume_2024.pdf', uploadDate: '2024-12-01', size: '1.2 MB' },
+        { id: 'resume-2', name: 'Jane_Doe_Tech_Resume.pdf', uploadDate: '2024-12-01', size: '1.1 MB' },
+        { id: 'resume-3', name: 'Jane_Doe_Finance_Resume.pdf', uploadDate: '2024-11-28', size: '1.3 MB' },
+        { id: 'resume-4', name: 'Jane_Doe_Academic_Resume.pdf', uploadDate: '2024-11-25', size: '1.4 MB' }
     ],
     projects: [
-        { id: 'proj-1', name: 'Data_Analysis_Portfolio.pdf', uploadDate: '2024-11-25', size: '4.1 MB' },
-        { id: 'proj-2', name: 'TechCorp_Marketing_Project.pdf', uploadDate: '2024-11-20', size: '2.8 MB' }
+        { id: 'proj-1', name: 'ML_Sentiment_Analysis_Project.pdf', uploadDate: '2024-11-25', size: '4.2 MB' },
+        { id: 'proj-2', name: 'React_Dashboard_Portfolio.pdf', uploadDate: '2024-11-20', size: '3.1 MB' },
+        { id: 'proj-3', name: 'Data_Pipeline_Architecture.pdf', uploadDate: '2024-11-15', size: '2.8 MB' },
+        { id: 'proj-4', name: 'Investment_Portfolio_Analysis.pdf', uploadDate: '2024-11-10', size: '3.5 MB' },
+        { id: 'proj-5', name: 'Neural_Network_Research_Paper.pdf', uploadDate: '2024-10-28', size: '5.1 MB' },
+        { id: 'proj-6', name: 'Lab_Research_Portfolio.pdf', uploadDate: '2024-10-15', size: '6.3 MB' }
+    ],
+    certificates: [
+        { id: 'cert-1', name: 'AWS_Cloud_Practitioner.pdf', uploadDate: '2024-11-15', size: '856 KB' },
+        { id: 'cert-2', name: 'Google_Data_Analytics.pdf', uploadDate: '2024-11-10', size: '934 KB' },
+        { id: 'cert-3', name: 'Microsoft_AI_Fundamentals.pdf', uploadDate: '2024-10-28', size: '1.1 MB' },
+        { id: 'cert-4', name: 'CFA_Level_I.pdf', uploadDate: '2024-10-15', size: '2.3 MB' },
+        { id: 'cert-5', name: 'Financial_Modeling_Certificate.pdf', uploadDate: '2024-09-20', size: '1.8 MB' },
+        { id: 'cert-6', name: 'Science_Fair_First_Place.jpg', uploadDate: '2024-06-10', size: '2.1 MB' },
+        { id: 'cert-7', name: 'Research_Excellence_Award.pdf', uploadDate: '2024-05-15', size: '743 KB' }
+    ],
+    references: [
+        { id: 'ref-1', name: 'Reference_TechCorp_CEO.pdf', uploadDate: '2024-12-05', size: '623 KB' },
+        { id: 'ref-2', name: 'Reference_Professor_Smith.pdf', uploadDate: '2024-12-01', size: '534 KB' },
+        { id: 'ref-3', name: 'Reference_Goldman_Sachs_VP.pdf', uploadDate: '2024-11-28', size: '687 KB' },
+        { id: 'ref-4', name: 'Reference_Professor_Johnson.pdf', uploadDate: '2024-11-25', size: '598 KB' },
+        { id: 'ref-5', name: 'Reference_Research_Supervisor.pdf', uploadDate: '2024-11-20', size: '612 KB' }
     ]
 };
 
@@ -431,7 +447,7 @@ function generateSectionOrderHTML(room) {
         projects: { name: '💼 Projects' }
     };
 
-    const sectionOrder = room.sectionOrder || ['resumes', 'certificates', 'references', 'projects'];
+    const sectionOrder = room.sectionOrder || ['resumes', 'projects', 'certificates', 'references'];
 
     return sectionOrder.map(sectionKey => {
         const meta = sectionMeta[sectionKey];
