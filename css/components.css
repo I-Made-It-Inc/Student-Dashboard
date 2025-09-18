@@ -42,6 +42,19 @@
     box-shadow: var(--shadow-md);
 }
 
+.btn-danger {
+    background-color: var(--white);
+    color: #ef4444;
+    border: 2px solid #ef4444;
+}
+
+.btn-danger:hover {
+    background-color: #ef4444;
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
 .btn-primary-small {
     display: inline-block;
     padding: 6px 12px;

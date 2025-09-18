@@ -89,6 +89,43 @@ const documentLibrary = {
 // Current room being edited
 let currentEditingRoom = null;
 
+// Access requests data - persistent state
+let accessRequests = [
+    {
+        id: 'req-1',
+        name: 'Sarah Johnson',
+        title: 'Senior Recruiter at Microsoft',
+        email: 's.johnson@microsoft.com',
+        room: 'tech-roles',
+        roomName: 'Tech Roles Portfolio',
+        message: 'Hi! I\'m interested in reviewing your portfolio for our Software Engineering internship program. We have several openings that align with your background.',
+        timestamp: '2 hours ago',
+        status: 'pending' // 'pending', 'approved', 'denied'
+    },
+    {
+        id: 'req-2',
+        name: 'David Chen',
+        title: 'Engineering Manager at Google',
+        email: 'dchen@google.com',
+        room: 'tech-roles',
+        roomName: 'Tech Roles Portfolio',
+        message: 'Your background looks interesting for our team. Would love to review your projects and experience.',
+        timestamp: '5 hours ago',
+        status: 'pending'
+    },
+    {
+        id: 'req-3',
+        name: 'Emily Thompson',
+        title: 'VP Talent Acquisition at Goldman Sachs',
+        email: 'emily.thompson@gs.com',
+        room: 'finance-roles',
+        roomName: 'Finance & Consulting',
+        message: 'We\'re recruiting for our summer analyst program. Your profile matches what we\'re looking for in quantitative finance roles.',
+        timestamp: '1 day ago',
+        status: 'pending'
+    }
+];
+
 // Initialize data rooms page
 function initializeDataRooms() {
     console.log('Initializing data rooms...');
@@ -918,6 +955,54 @@ function shareMultipleDataRooms() {
 
 // Access request functions
 function viewAccessRequests() {
+    // Filter only pending requests
+    const pendingRequests = accessRequests.filter(req => req.status === 'pending');
+
+    // Generate request cards from data
+    const requestCardsHTML = pendingRequests.map(request => `
+        <div class="request-card" data-room="${request.room}" data-request-id="${request.id}">
+            <div class="request-header">
+                <div class="requester-info">
+                    <h4>${request.name}</h4>
+                    <p class="requester-title">${request.title}</p>
+                    <p class="requester-email">${request.email}</p>
+                </div>
+                <div class="request-time">
+                    <span class="time-badge">${request.timestamp}</span>
+                </div>
+            </div>
+
+            <div class="request-details">
+                <div class="requested-room">
+                    <span class="detail-label">Requested Room:</span>
+                    <span class="room-name-tag">${request.roomName}</span>
+                </div>
+                <div class="request-message">
+                    <p class="detail-label">Message:</p>
+                    <p class="message-text">${request.message}</p>
+                </div>
+            </div>
+
+            <div class="request-actions">
+                <div class="time-limit-group">
+                    <label>Access Duration:</label>
+                    <select class="time-limit-select">
+                        <option value="24h">24 hours</option>
+                        <option value="3d">3 days</option>
+                        <option value="7d" selected>7 days</option>
+                        <option value="14d">14 days</option>
+                        <option value="30d">30 days</option>
+                        <option value="unlimited">Unlimited</option>
+                    </select>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-approve" onclick="approveAccessRequest('${request.id}')">✓ Approve</button>
+                    <button class="btn-deny" onclick="denyAccessRequest('${request.id}')">✗ Deny</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
     const modalContent = `
         <div style="margin-bottom: 24px;">
             <h2>Access Requests</h2>
@@ -926,140 +1011,14 @@ function viewAccessRequests() {
         <div style="margin: 20px 0;">
             <!-- Tabs for filtering -->
             <div class="request-tabs">
-                <button class="tab-button active" onclick="filterAccessRequests('all')">All (3)</button>
-                <button class="tab-button" onclick="filterAccessRequests('tech-roles')">Tech Roles (2)</button>
-                <button class="tab-button" onclick="filterAccessRequests('finance-roles')">Finance & Consulting (1)</button>
+                <button class="tab-button active" onclick="filterAccessRequests('all')">All (${pendingRequests.length})</button>
+                <button class="tab-button" onclick="filterAccessRequests('tech-roles')">Tech Roles (${pendingRequests.filter(r => r.room === 'tech-roles').length})</button>
+                <button class="tab-button" onclick="filterAccessRequests('finance-roles')">Finance & Consulting (${pendingRequests.filter(r => r.room === 'finance-roles').length})</button>
             </div>
 
             <!-- Request Cards -->
             <div class="requests-container" id="access-requests-container">
-                <!-- Tech Roles Requests -->
-                <div class="request-card" data-room="tech-roles" data-request-id="req-1">
-                    <div class="request-header">
-                        <div class="requester-info">
-                            <h4>Sarah Johnson</h4>
-                            <p class="requester-title">Senior Recruiter at Microsoft</p>
-                            <p class="requester-email">s.johnson@microsoft.com</p>
-                        </div>
-                        <div class="request-time">
-                            <span class="time-badge">2 hours ago</span>
-                        </div>
-                    </div>
-
-                    <div class="request-details">
-                        <div class="requested-room">
-                            <span class="detail-label">Requested Room:</span>
-                            <span class="room-name-tag">Tech Roles Portfolio</span>
-                        </div>
-                        <div class="request-message">
-                            <p class="detail-label">Message:</p>
-                            <p class="message-text">Hi! I'm interested in reviewing your portfolio for our Software Engineering internship program. We have several openings that align with your background.</p>
-                        </div>
-                    </div>
-
-                    <div class="request-actions">
-                        <div class="time-limit-group">
-                            <label>Access Duration:</label>
-                            <select class="time-limit-select">
-                                <option value="24h">24 hours</option>
-                                <option value="3d">3 days</option>
-                                <option value="7d" selected>7 days</option>
-                                <option value="14d">14 days</option>
-                                <option value="30d">30 days</option>
-                                <option value="unlimited">Unlimited</option>
-                            </select>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="btn-approve" onclick="approveAccessRequest('req-1')">✓ Approve</button>
-                            <button class="btn-deny" onclick="denyAccessRequest('req-1')">✗ Deny</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="request-card" data-room="tech-roles" data-request-id="req-2">
-                    <div class="request-header">
-                        <div class="requester-info">
-                            <h4>David Chen</h4>
-                            <p class="requester-title">Engineering Manager at Google</p>
-                            <p class="requester-email">dchen@google.com</p>
-                        </div>
-                        <div class="request-time">
-                            <span class="time-badge">5 hours ago</span>
-                        </div>
-                    </div>
-
-                    <div class="request-details">
-                        <div class="requested-room">
-                            <span class="detail-label">Requested Room:</span>
-                            <span class="room-name-tag">Tech Roles Portfolio</span>
-                        </div>
-                        <div class="request-message">
-                            <p class="detail-label">Message:</p>
-                            <p class="message-text">Your background looks interesting for our team. Would love to review your projects and experience.</p>
-                        </div>
-                    </div>
-
-                    <div class="request-actions">
-                        <div class="time-limit-group">
-                            <label>Access Duration:</label>
-                            <select class="time-limit-select">
-                                <option value="24h">24 hours</option>
-                                <option value="3d">3 days</option>
-                                <option value="7d" selected>7 days</option>
-                                <option value="14d">14 days</option>
-                                <option value="30d">30 days</option>
-                                <option value="unlimited">Unlimited</option>
-                            </select>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="btn-approve" onclick="approveAccessRequest('req-2')">✓ Approve</button>
-                            <button class="btn-deny" onclick="denyAccessRequest('req-2')">✗ Deny</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Finance Roles Requests -->
-                <div class="request-card" data-room="finance-roles" data-request-id="req-3">
-                    <div class="request-header">
-                        <div class="requester-info">
-                            <h4>Emily Thompson</h4>
-                            <p class="requester-title">VP Talent Acquisition at Goldman Sachs</p>
-                            <p class="requester-email">emily.thompson@gs.com</p>
-                        </div>
-                        <div class="request-time">
-                            <span class="time-badge">1 day ago</span>
-                        </div>
-                    </div>
-
-                    <div class="request-details">
-                        <div class="requested-room">
-                            <span class="detail-label">Requested Room:</span>
-                            <span class="room-name-tag">Finance & Consulting</span>
-                        </div>
-                        <div class="request-message">
-                            <p class="detail-label">Message:</p>
-                            <p class="message-text">We're recruiting for our summer analyst program. Your profile matches what we're looking for in quantitative finance roles.</p>
-                        </div>
-                    </div>
-
-                    <div class="request-actions">
-                        <div class="time-limit-group">
-                            <label>Access Duration:</label>
-                            <select class="time-limit-select">
-                                <option value="24h">24 hours</option>
-                                <option value="3d">3 days</option>
-                                <option value="7d" selected>7 days</option>
-                                <option value="14d">14 days</option>
-                                <option value="30d">30 days</option>
-                                <option value="unlimited">Unlimited</option>
-                            </select>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="btn-approve" onclick="approveAccessRequest('req-3')">✓ Approve</button>
-                            <button class="btn-deny" onclick="denyAccessRequest('req-3')">✗ Deny</button>
-                        </div>
-                    </div>
-                </div>
+                ${requestCardsHTML}
             </div>
         </div>
     `;
@@ -1082,10 +1041,10 @@ function viewDataRoomComments() {
         <div style="margin: 20px 0;">
             <!-- Tabs for filtering -->
             <div class="request-tabs">
-                <button class="tab-button active" onclick="filterDataRoomComments('all')">All (3)</button>
+                <button class="tab-button active" onclick="filterDataRoomComments('all')">All (4)</button>
                 <button class="tab-button" onclick="filterDataRoomComments('tech-roles')">Tech Roles (2)</button>
                 <button class="tab-button" onclick="filterDataRoomComments('finance-roles')">Finance & Consulting (1)</button>
-                <button class="tab-button" onclick="filterDataRoomComments('research-roles')">Research & Academia (0)</button>
+                <button class="tab-button" onclick="filterDataRoomComments('research-roles')">Research & Academia (1)</button>
             </div>
 
             <!-- Comment Cards -->
@@ -1099,7 +1058,6 @@ function viewDataRoomComments() {
                             <p class="commenter-email">s.johnson@microsoft.com</p>
                         </div>
                         <div class="comment-time">
-                            <span class="time-badge unread-indicator">New</span>
                             <span class="time-badge">3 hours ago</span>
                         </div>
                     </div>
@@ -1166,7 +1124,6 @@ function viewDataRoomComments() {
                             <p class="commenter-email">emily.thompson@gs.com</p>
                         </div>
                         <div class="comment-time">
-                            <span class="time-badge unread-indicator">New</span>
                             <span class="time-badge">2 days ago</span>
                         </div>
                     </div>
@@ -1189,6 +1146,40 @@ function viewDataRoomComments() {
                             <button class="btn-reply" onclick="replyToDataRoomComment('comment-3')">Send Reply</button>
                         </div>
                         <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-3')">Mark as Read</button>
+                    </div>
+                </div>
+
+                <!-- Research & Academia Comments -->
+                <div class="comment-card" data-room="research-roles" data-comment-id="comment-4">
+                    <div class="comment-header">
+                        <div class="commenter-info">
+                            <h4>Dr. Michael Rodriguez</h4>
+                            <p class="commenter-title">Principal Research Scientist at Stanford AI Lab</p>
+                            <p class="commenter-email">m.rodriguez@stanford.edu</p>
+                        </div>
+                        <div class="comment-time">
+                            <span class="time-badge">4 hours ago</span>
+                        </div>
+                    </div>
+
+                    <div class="comment-details">
+                        <div class="commented-room">
+                            <span class="detail-label">Room:</span>
+                            <span class="room-name-tag">Research & Academia</span>
+                            <span class="detail-label">Document:</span>
+                            <span class="document-tag">Science Fair Certificate</span>
+                        </div>
+                        <div class="comment-message">
+                            <p class="message-text">Impressive work on neural network optimization! Your research methodology shows great promise. We have a summer research position that would be perfect for your background in AI applications.</p>
+                        </div>
+                    </div>
+
+                    <div class="comment-actions">
+                        <div class="reply-section">
+                            <textarea class="reply-input" placeholder="Type your reply..." rows="2"></textarea>
+                            <button class="btn-reply" onclick="replyToDataRoomComment('comment-4')">Send Reply</button>
+                        </div>
+                        <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-4')">Mark as Read</button>
                     </div>
                 </div>
             </div>
@@ -1256,6 +1247,13 @@ function filterDataRoomComments(roomFilter) {
 }
 
 function approveAccessRequest(requestId) {
+    // Update the persistent state
+    const request = accessRequests.find(req => req.id === requestId);
+    if (request) {
+        request.status = 'approved';
+    }
+
+    // Update the UI
     const card = document.querySelector(`[data-request-id="${requestId}"]`);
     if (card) {
         card.style.opacity = '0.5';
@@ -1272,6 +1270,13 @@ function approveAccessRequest(requestId) {
 }
 
 function denyAccessRequest(requestId) {
+    // Update the persistent state
+    const request = accessRequests.find(req => req.id === requestId);
+    if (request) {
+        request.status = 'denied';
+    }
+
+    // Update the UI
     const card = document.querySelector(`[data-request-id="${requestId}"]`);
     if (card) {
         card.style.opacity = '0.5';
@@ -1312,11 +1317,6 @@ function markDataRoomCommentRead(commentId) {
     if (card) {
         card.classList.add('read');
 
-        // Remove unread indicator
-        const unreadBadge = card.querySelector('.unread-indicator');
-        if (unreadBadge) {
-            unreadBadge.remove();
-        }
 
         // Replace actions with follow-up button
         const actionsDiv = card.querySelector('.comment-actions');

@@ -694,17 +694,12 @@ function editConnection(connectionId) {
                 </div>
             </div>
             
-            <div class="form-group">
-                <label style="color: #e74c3c;">
-                    <input type="checkbox" id="delete-connection" style="margin-right: 8px;">
-                    Delete this connection permanently
-                </label>
-            </div>
-            
-            <div class="button-group">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <button type="button" class="btn btn-secondary" onclick="openConnectionModal('${connectionId}')">Cancel</button>
-                <button type="button" class="btn btn-danger" onclick="deleteConnection('${connectionId}')" style="display: none;" id="delete-btn">Delete Connection</button>
+            <div class="edit-modal-actions">
+                <button type="button" class="btn btn-danger" onclick="deleteConnection('${connectionId}')" id="delete-btn">Delete Connection</button>
+                <div class="action-group">
+                    <button type="button" class="btn btn-secondary" onclick="openConnectionModal('${connectionId}')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
             </div>
         </form>
     `;
@@ -727,18 +722,6 @@ function editConnection(connectionId) {
         });
     }
     
-    // Setup delete checkbox functionality
-    const deleteCheckbox = document.getElementById('delete-connection');
-    const deleteBtn = document.getElementById('delete-btn');
-    if (deleteCheckbox && deleteBtn) {
-        deleteCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                deleteBtn.style.display = 'inline-block';
-            } else {
-                deleteBtn.style.display = 'none';
-            }
-        });
-    }
 }
 
 function saveConnectionChanges(connectionId) {

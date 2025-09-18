@@ -398,14 +398,15 @@ form {
 
 .btn-edit-connection {
     position: absolute;
-    top: 0;
+    bottom: var(--spacing-lg);
     right: 0;
-    background: var(--light-gray);
+    background: var(--white);
     color: var(--imi-blue);
-    border: 1px solid var(--medium-gray);
+    border: 2px solid var(--imi-blue);
     border-radius: var(--radius-sm);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--font-size-xs);
+    padding: 6px 12px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
     display: flex;
@@ -414,15 +415,15 @@ form {
 }
 
 .btn-edit-connection:hover {
-    background: var(--imi-yellow);
-    color: var(--imi-blue);
-    border-color: var(--imi-yellow);
+    background: var(--imi-blue);
+    color: var(--white);
+    border-color: var(--imi-blue);
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
 }
 
 .btn-edit-connection span {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
 }
 
 .centered-buttons {
@@ -444,4 +445,18 @@ form {
 .connection-notes-section p {
     color: var(--text-gray);
     line-height: 1.6;
+}
+
+/* Edit Modal Actions */
+.edit-modal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--medium-gray);
+}
+
+.edit-modal-actions .action-group {
+    display: flex;
+    gap: 12px;
 }

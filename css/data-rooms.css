@@ -513,7 +513,7 @@
 
 .performance-item .doc-name {
     width: 120px;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     color: #374151;
 }
@@ -673,7 +673,7 @@
 .document-category h5 {
     margin: 0 0 12px 0;
     color: #374151;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -721,7 +721,7 @@
 }
 
 .doc-name {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     color: #374151;
     display: block;
@@ -733,8 +733,8 @@
 }
 
 .permission-select {
-    font-size: 11px;
-    padding: 2px 6px;
+    font-size: var(--font-size-xs);
+    padding: 4px 8px;
     border: 1px solid #d1d5db;
     border-radius: 4px;
     background: #ffffff;
