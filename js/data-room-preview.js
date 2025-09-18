@@ -126,8 +126,7 @@ function generatePreviewModeHTML(room) {
                         <span class="preview-title">Student Portfolio Preview</span>
                     </div>
                     <div class="preview-actions">
-                        <span class="preview-badge">PREVIEW MODE</span>
-                        <button class="btn btn-outline" onclick="exitPreviewMode()">← Exit Preview</button>
+                        <button class="btn btn-primary" onclick="exitPreviewMode()">← Exit Preview</button>
                     </div>
                 </div>
             </header>
@@ -174,8 +173,8 @@ function generatePreviewModeHTML(room) {
                                 <span class="stat-label">Downloads</span>
                             </div>
                             <div class="stat">
-                                <span class="stat-number">4.8</span>
-                                <span class="stat-label">Rating</span>
+                                <span class="stat-number">${room.stats.uniqueVisitors || 0}</span>
+                                <span class="stat-label">Unique Visitors</span>
                             </div>
                         </div>
                     </div>

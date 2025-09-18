@@ -290,17 +290,17 @@
     background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
     border: 1px solid #0ea5e9;
     border-radius: 12px;
-    padding: 24px;
-    margin: 24px 0 32px 0;
+    padding: 16px 20px;
+    margin: 0 0 0px 0;
     display: flex;
-    gap: 16px;
-    align-items: flex-start;
+    gap: 12px;
+    align-items: center;
+    min-height: fit-content;
 }
 
 .message-icon {
-    font-size: 32px;
+    font-size: 24px;
     flex-shrink: 0;
-    margin-top: 4px;
 }
 
 .message-content {
@@ -308,8 +308,8 @@
 }
 
 .message-content p {
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.5;
     color: #0c4a6e;
     margin: 0;
     font-style: italic;
@@ -324,7 +324,7 @@
     font-size: 24px;
     font-weight: 700;
     color: #042847;
-    margin: 0 0 24px 0;
+    margin: 0 0 0px 0;
 }
 
 .documents-grid {
@@ -651,11 +651,11 @@
     margin-top: 32px;
     background: #fef3c7;
     border: 1px solid #fde047;
-    border-radius: 8px;
-    padding: 16px;
+    border-radius: 12px;
+    padding: 16px 20px;
     display: flex;
     gap: 12px;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .notice-icon {
