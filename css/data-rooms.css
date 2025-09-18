@@ -1,0 +1,413 @@
+/* Virtual Data Rooms Styles */
+/* Using specific selectors to avoid conflicts with existing styles */
+
+#data-rooms-page .data-rooms-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+/* Page Header */
+#data-rooms-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+#data-rooms-page .page-description {
+    color: #6b7280;
+    margin: 8px 0 0 0;
+    font-size: 14px;
+}
+
+/* Rooms List */
+#data-rooms-page .rooms-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#data-rooms-page .room-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 20px;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+#data-rooms-page .room-item:hover {
+    border-color: #042847;
+    box-shadow: 0 4px 12px rgba(4, 40, 71, 0.1);
+    transform: translateY(-1px);
+}
+
+#data-rooms-page .room-info {
+    min-width: 0;
+}
+
+#data-rooms-page .room-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+#data-rooms-page .room-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #042847;
+    margin: 0;
+    flex: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#data-rooms-page .room-name:hover {
+    color: #ffd502;
+}
+
+#data-rooms-page .unread-count {
+    color: #6b7280;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+#data-rooms-page .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#data-rooms-page .status-public {
+    background: #dcfce7;
+    color: #166534;
+}
+
+#data-rooms-page .status-request {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+#data-rooms-page .status-private {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+#data-rooms-page .room-description {
+    color: #6b7280;
+    margin: 8px 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+#data-rooms-page .room-meta {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+#data-rooms-page .meta-item {
+    font-size: 12px;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+#data-rooms-page .room-privacy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#data-rooms-page .room-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 160px;
+    margin-right: 38px;
+}
+
+#data-rooms-page .room-actions .btn-icon {
+    width: 100%;
+    height: auto;
+    padding: 6px 8px;
+    background-color: var(--white);
+    color: var(--imi-blue);
+    border: 2px solid var(--imi-blue);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    gap: 4px;
+    text-align: center;
+    white-space: nowrap;
+    text-decoration: none;
+    outline: none;
+}
+
+/* Primary action button (Preview) */
+#data-rooms-page .room-actions .btn-icon.btn-primary {
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+    border-color: var(--imi-yellow);
+}
+
+#data-rooms-page .room-actions .btn-icon:hover {
+    background-color: var(--imi-blue) !important;
+    color: var(--white) !important;
+    border-color: var(--imi-blue) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+#data-rooms-page .room-actions .btn-icon.btn-primary:hover {
+    background-color: var(--imi-blue) !important;
+    color: var(--imi-yellow) !important;
+    border-color: var(--imi-blue) !important;
+}
+
+/* Sidebar Styles */
+#data-rooms-page .rooms-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#data-rooms-page .stats-card .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+#data-rooms-page .stat-item {
+    text-align: center;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+#data-rooms-page .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #042847;
+    margin-bottom: 4px;
+    margin-top: 18px;
+}
+
+#data-rooms-page .stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#data-rooms-page .stat-clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+#data-rooms-page .stat-clickable:hover {
+    background: #042847;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(4, 40, 71, 0.15);
+}
+
+#data-rooms-page .stat-clickable .stat-value,
+#data-rooms-page .stat-clickable .stat-label {
+    transition: color 0.2s ease;
+}
+
+#data-rooms-page .stat-clickable:hover .stat-value,
+#data-rooms-page .stat-clickable:hover .stat-label,
+#data-rooms-page .stat-clickable:hover .stat-action {
+    color: white;
+}
+
+#data-rooms-page .stat-action {
+    font-size: 10px;
+    color: #6b7280;
+    margin-top: 4px;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.2s ease;
+}
+
+#data-rooms-page .stat-clickable:hover .stat-action {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Activity List */
+#data-rooms-page .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+#data-rooms-page .activity-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+#data-rooms-page .activity-icon {
+    font-size: 16px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#data-rooms-page .activity-content {
+    flex: 1;
+    min-width: 0;
+}
+
+#data-rooms-page .activity-content p {
+    margin: 0 0 4px 0;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+#data-rooms-page .activity-time {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+/* Quick Actions */
+#data-rooms-page .quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+#data-rooms-page .btn-block {
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    #data-rooms-page .data-rooms-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #data-rooms-page .rooms-sidebar {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    #data-rooms-page .room-item {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    #data-rooms-page .room-privacy {
+        justify-content: flex-start;
+        order: -1;
+    }
+
+    #data-rooms-page .room-actions {
+        width: 100%;
+        grid-template-columns: 1fr 1fr;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    #data-rooms-page .stats-card .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #data-rooms-page .activity-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+}
+
+/* Animation for new room creation */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#data-rooms-page .room-item.new {
+    animation: slideInUp 0.3s ease;
+}
+
+/* Loading states */
+#data-rooms-page .rooms-list.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+#data-rooms-page .loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #042847;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success and error states */
+#data-rooms-page .status-message {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+#data-rooms-page .status-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+#data-rooms-page .status-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}

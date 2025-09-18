@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="css/projects.css">
     <link rel="stylesheet" href="css/companies.css">
     <link rel="stylesheet" href="css/network.css">
+    <link rel="stylesheet" href="css/data-rooms.css">
     <link rel="stylesheet" href="css/resources.css">
     <link rel="stylesheet" href="css/tracking.css">
     <link rel="stylesheet" href="css/profile.css">
@@ -55,6 +56,7 @@
                     </ul>
                 </li>
                 <li><a href="#network" id="nav-network">Network</a></li>
+                <li><a href="#data-rooms" id="nav-data-rooms">Data Rooms</a></li>
                 <li><a href="#resources" id="nav-resources">Resources</a></li>
                 <li><a href="#tracking" id="nav-tracking">Time Tracking</a></li>
             </ul>
@@ -2484,6 +2486,176 @@
                     </div>
                 </div>
 
+
+        <!-- Page: data-rooms.html -->
+        <!-- Virtual Data Rooms Page -->
+                <div id="data-rooms-page" class="page-section">
+                    <div class="page-header">
+                        <h2>Virtual Data Rooms</h2>
+                        <p class="page-description">Create professional portfolios to share with recruiters and potential employers</p>
+                        <button class="btn btn-primary" onclick="createNewDataRoom()">+ Create New Room</button>
+                    </div>
+        
+                    <!-- Rooms Overview -->
+                    <div class="data-rooms-grid">
+                        <!-- My Rooms Section -->
+                        <div class="rooms-main">
+                            <div class="card">
+                                <div class="section-header">
+                                    <h3 class="section-title">📁 My Data Rooms</h3>
+                                    <span class="text-muted">Manage your virtual portfolios</span>
+                                </div>
+        
+                                <div class="rooms-list" id="rooms-list">
+                                    <!-- Sample rooms - will be populated dynamically -->
+                                    <div class="room-item" data-room-id="tech-roles">
+                                        <div class="room-info">
+                                            <div class="room-header">
+                                                <h4 class="room-name" onclick="viewDataRoomActivity('tech-roles')">Tech Roles Portfolio <span class="unread-count">(5 Unread)</span></h4>
+                                            </div>
+                                            <p class="room-description">Portfolio tailored for software engineering and data science roles</p>
+                                            <div class="room-meta">
+                                                <span class="meta-item">📄 12 documents</span>
+                                                <span class="meta-item">👀 47 views</span>
+                                                <span class="meta-item">📅 Updated Dec 8, 2024</span>
+                                            </div>
+                                        </div>
+                                        <div class="room-privacy">
+                                            <span class="status-badge status-public">Public</span>
+                                        </div>
+                                        <div class="room-actions">
+                                            <button class="btn-icon btn-primary" onclick="previewDataRoom('tech-roles')" title="Preview">👁️ Preview</button>
+                                            <button class="btn-icon" onclick="editDataRoom('tech-roles')" title="Edit">✏️ Edit</button>
+                                            <button class="btn-icon" onclick="shareDataRoom('tech-roles')" title="Share">🔗 Share</button>
+                                            <button class="btn-icon" onclick="viewDataRoomAnalytics('tech-roles')" title="Analytics">📊 Analytics</button>
+                                        </div>
+                                    </div>
+        
+                                    <div class="room-item" data-room-id="finance-roles">
+                                        <div class="room-info">
+                                            <div class="room-header">
+                                                <h4 class="room-name" onclick="viewDataRoomActivity('finance-roles')">Finance & Consulting <span class="unread-count">(7 Unread)</span></h4>
+                                            </div>
+                                            <p class="room-description">Focused on finance, consulting, and business strategy positions</p>
+                                            <div class="room-meta">
+                                                <span class="meta-item">📄 8 documents</span>
+                                                <span class="meta-item">👀 23 views</span>
+                                                <span class="meta-item">📅 Updated Dec 5, 2024</span>
+                                            </div>
+                                        </div>
+                                        <div class="room-privacy">
+                                            <span class="status-badge status-request">Request Access</span>
+                                        </div>
+                                        <div class="room-actions">
+                                            <button class="btn-icon btn-primary" onclick="previewDataRoom('finance-roles')" title="Preview">👁️ Preview</button>
+                                            <button class="btn-icon" onclick="editDataRoom('finance-roles')" title="Edit">✏️ Edit</button>
+                                            <button class="btn-icon" onclick="shareDataRoom('finance-roles')" title="Share">🔗 Share</button>
+                                            <button class="btn-icon" onclick="viewDataRoomAnalytics('finance-roles')" title="Analytics">📊 Analytics</button>
+                                        </div>
+                                    </div>
+        
+                                    <div class="room-item" data-room-id="research-roles">
+                                        <div class="room-info">
+                                            <div class="room-header">
+                                                <h4 class="room-name" onclick="viewDataRoomActivity('research-roles')">Research & Academia</h4>
+                                            </div>
+                                            <p class="room-description">Materials for research internships and academic programs</p>
+                                            <div class="room-meta">
+                                                <span class="meta-item">📄 15 documents</span>
+                                                <span class="meta-item">👀 12 views</span>
+                                                <span class="meta-item">📅 Updated Nov 28, 2024</span>
+                                            </div>
+                                        </div>
+                                        <div class="room-privacy">
+                                            <span class="status-badge status-private">Private</span>
+                                        </div>
+                                        <div class="room-actions">
+                                            <button class="btn-icon btn-primary" onclick="previewDataRoom('research-roles')" title="Preview">👁️ Preview</button>
+                                            <button class="btn-icon" onclick="editDataRoom('research-roles')" title="Edit">✏️ Edit</button>
+                                            <button class="btn-icon" onclick="shareDataRoom('research-roles')" title="Share">🔗 Share</button>
+                                            <button class="btn-icon" onclick="viewDataRoomAnalytics('research-roles')" title="Analytics">📊 Analytics</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <!-- Sidebar -->
+                        <div class="rooms-sidebar">
+                            <!-- Quick Stats -->
+                            <div class="card stats-card">
+                                <h3 class="section-title">📊 Room Statistics</h3>
+                                <div class="stats-grid">
+                                    <div class="stat-item">
+                                        <div class="stat-value">3</div>
+                                        <div class="stat-label">Active Rooms</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">82</div>
+                                        <div class="stat-label">Total Views</div>
+                                    </div>
+                                    <div class="stat-item stat-clickable" onclick="viewAccessRequests()">
+                                        <div class="stat-value">5</div>
+                                        <div class="stat-label">Access Requests</div>
+                                        <div class="stat-action">View All →</div>
+                                    </div>
+                                    <div class="stat-item stat-clickable" onclick="viewDataRoomComments()">
+                                        <div class="stat-value">12</div>
+                                        <div class="stat-label">Comments</div>
+                                        <div class="stat-action">View All →</div>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <!-- Recent Activity -->
+                            <div class="card activity-card">
+                                <h3 class="section-title">🔔 Recent Activity</h3>
+                                <div class="activity-list">
+                                    <div class="activity-item">
+                                        <div class="activity-icon">👁️</div>
+                                        <div class="activity-content">
+                                            <p><strong>Microsoft Recruiter</strong> viewed your Tech Roles Portfolio</p>
+                                            <span class="activity-time">2 hours ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">📝</div>
+                                        <div class="activity-content">
+                                            <p><strong>Goldman Sachs HR</strong> left a comment on your Finance portfolio</p>
+                                            <span class="activity-time">1 day ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">🔑</div>
+                                        <div class="activity-content">
+                                            <p><strong>Tesla Research</strong> requested access to your Research portfolio</p>
+                                            <span class="activity-time">2 days ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">⬇️</div>
+                                        <div class="activity-content">
+                                            <p><strong>Apple HR</strong> downloaded your resume from Tech Roles</p>
+                                            <span class="activity-time">3 days ago</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <!-- Quick Actions -->
+                            <div class="card quick-actions-card">
+                                <h3 class="section-title">⚡ Quick Actions</h3>
+                                <div class="quick-actions">
+                                    <button class="btn btn-secondary btn-block" onclick="manageDataRoomDocuments()">📄 Manage Documents</button>
+                                    <button class="btn btn-secondary btn-block" onclick="viewAllDataRoomAnalytics()">📊 View All Analytics</button>
+                                    <button class="btn btn-secondary btn-block" onclick="exportDataRoomData()">📦 Export Room Data</button>
+                                    <button class="btn btn-secondary btn-block" onclick="shareMultipleDataRooms()">🔗 Bulk Share</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
         <!-- BUILD:PAGES:END -->
 
         <!-- Modal Container -->
@@ -2507,6 +2679,7 @@
     <script src="js/ideas.js"></script>
     <script src="js/modal.js"></script>
     <script src="js/companies.js"></script>
+    <script src="js/data-rooms.js"></script>
     <script src="js/tracking.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/notifications.js"></script>
