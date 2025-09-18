@@ -84,37 +84,21 @@ let dataRooms = [
     }
 ];
 
-// Sample document library - represents documents uploaded to profile
-const documentLibrary = {
+// Document library - represents documents uploaded to profile (synced with profile page)
+let documentLibrary = {
     resumes: [
-        { id: 'resume-1', name: 'Jane_Doe_Resume_2024.pdf', uploadDate: '2024-12-01', size: '1.2 MB' },
-        { id: 'resume-2', name: 'Jane_Doe_Tech_Resume.pdf', uploadDate: '2024-12-01', size: '1.1 MB' },
-        { id: 'resume-3', name: 'Jane_Doe_Finance_Resume.pdf', uploadDate: '2024-11-28', size: '1.3 MB' },
-        { id: 'resume-4', name: 'Jane_Doe_Academic_Resume.pdf', uploadDate: '2024-11-25', size: '1.4 MB' }
+        { id: 'resume-1', name: 'Jane_Doe_Resume_2024.pdf', uploadDate: '2024-12-01', size: '1.2 MB' }
     ],
     projects: [
         { id: 'proj-1', name: 'ML_Sentiment_Analysis_Project.pdf', uploadDate: '2024-11-25', size: '4.2 MB' },
-        { id: 'proj-2', name: 'React_Dashboard_Portfolio.pdf', uploadDate: '2024-11-20', size: '3.1 MB' },
-        { id: 'proj-3', name: 'Data_Pipeline_Architecture.pdf', uploadDate: '2024-11-15', size: '2.8 MB' },
-        { id: 'proj-4', name: 'Investment_Portfolio_Analysis.pdf', uploadDate: '2024-11-10', size: '3.5 MB' },
-        { id: 'proj-5', name: 'Neural_Network_Research_Paper.pdf', uploadDate: '2024-10-28', size: '5.1 MB' },
-        { id: 'proj-6', name: 'Lab_Research_Portfolio.pdf', uploadDate: '2024-10-15', size: '6.3 MB' }
+        { id: 'proj-2', name: 'React_Dashboard_Portfolio.pdf', uploadDate: '2024-11-20', size: '3.1 MB' }
     ],
     certificates: [
         { id: 'cert-1', name: 'AWS_Cloud_Practitioner.pdf', uploadDate: '2024-11-15', size: '856 KB' },
-        { id: 'cert-2', name: 'Google_Data_Analytics.pdf', uploadDate: '2024-11-10', size: '934 KB' },
-        { id: 'cert-3', name: 'Microsoft_AI_Fundamentals.pdf', uploadDate: '2024-10-28', size: '1.1 MB' },
-        { id: 'cert-4', name: 'CFA_Level_I.pdf', uploadDate: '2024-10-15', size: '2.3 MB' },
-        { id: 'cert-5', name: 'Financial_Modeling_Certificate.pdf', uploadDate: '2024-09-20', size: '1.8 MB' },
-        { id: 'cert-6', name: 'Science_Fair_First_Place.jpg', uploadDate: '2024-06-10', size: '2.1 MB' },
-        { id: 'cert-7', name: 'Research_Excellence_Award.pdf', uploadDate: '2024-05-15', size: '743 KB' }
+        { id: 'cert-2', name: 'Science_Fair_First_Place.jpg', uploadDate: '2024-06-10', size: '2.1 MB' }
     ],
     references: [
-        { id: 'ref-1', name: 'Reference_TechCorp_CEO.pdf', uploadDate: '2024-12-05', size: '623 KB' },
-        { id: 'ref-2', name: 'Reference_Professor_Smith.pdf', uploadDate: '2024-12-01', size: '534 KB' },
-        { id: 'ref-3', name: 'Reference_Goldman_Sachs_VP.pdf', uploadDate: '2024-11-28', size: '687 KB' },
-        { id: 'ref-4', name: 'Reference_Professor_Johnson.pdf', uploadDate: '2024-11-25', size: '598 KB' },
-        { id: 'ref-5', name: 'Reference_Research_Supervisor.pdf', uploadDate: '2024-11-20', size: '612 KB' }
+        { id: 'ref-1', name: 'Reference_TechCorp_CEO.pdf', uploadDate: '2024-12-05', size: '623 KB' }
     ]
 };
 
@@ -412,7 +396,7 @@ function editDataRoom(roomId) {
                 </div>
 
                 <!-- Document Selection -->
-                <div class="edit-room-documents">
+                <div class="edit-room-documents" id="data-room-documents-section">
                     <h4>Select Documents</h4>
                     <div class="document-categories" id="document-categories">
                         ${generateDocumentSelection(room)}
@@ -1473,3 +1457,125 @@ window.exportDataRoomData = exportDataRoomData;
 window.shareMultipleDataRooms = shareMultipleDataRooms;
 window.viewAccessRequests = viewAccessRequests;
 window.viewDataRoomComments = viewDataRoomComments;
+
+// Document Library Management Functions
+// These functions sync profile uploads/deletions with data room document selector
+
+function addDocumentToLibrary(category, document) {
+    if (!documentLibrary[category]) {
+        documentLibrary[category] = [];
+    }
+
+    // Generate unique ID if not provided
+    if (!document.id) {
+        document.id = category.slice(0, 4) + '-' + Date.now();
+    }
+
+    // Add to library
+    documentLibrary[category].push(document);
+
+    // Refresh any open data room edit modals to show new document
+    if (currentEditingRoom) {
+        refreshDocumentSelector();
+    }
+
+    console.log(`Added document to ${category}:`, document);
+    return document.id;
+}
+
+function removeDocumentFromLibrary(category, documentId) {
+    if (!documentLibrary[category]) {
+        return false;
+    }
+
+    const index = documentLibrary[category].findIndex(doc => doc.id === documentId);
+    if (index === -1) {
+        return false;
+    }
+
+    // Remove from library
+    const removedDocument = documentLibrary[category].splice(index, 1)[0];
+
+    // Remove from all data rooms that reference this document
+    dataRooms.forEach(room => {
+        room.documents = room.documents.filter(doc => doc.id !== documentId);
+    });
+
+    // Refresh any open data room edit modals
+    if (currentEditingRoom) {
+        refreshDocumentSelector();
+        updateSelectedDocuments();
+    }
+
+    console.log(`Removed document from ${category}:`, removedDocument);
+    return true;
+}
+
+function refreshDocumentSelector() {
+    // Find the document selector section in the modal
+    const documentsSection = document.querySelector('#data-room-documents-section');
+    if (!documentsSection) return;
+
+    // Regenerate the document selector content
+    const room = dataRooms.find(r => r.id === currentEditingRoom);
+    if (!room) return;
+
+    // Rebuild the documents section HTML
+    let documentsHtml = '<h4>📄 Select Documents</h4>';
+
+    const categories = [
+        { key: 'resumes', icon: '📄', label: 'Resumes' },
+        { key: 'projects', icon: '📁', label: 'Projects' },
+        { key: 'certificates', icon: '🏆', label: 'Certificates' },
+        { key: 'references', icon: '📝', label: 'References' }
+    ];
+
+    categories.forEach(category => {
+        const docs = documentLibrary[category.key] || [];
+        if (docs.length > 0) {
+            documentsHtml += `
+                <div class="document-category">
+                    <h5>${category.icon} ${category.label}</h5>
+                    <div class="document-checkboxes">
+            `;
+
+            docs.forEach(doc => {
+                const isSelected = room.documents.some(d => d.id === doc.id);
+                const roomDoc = room.documents.find(d => d.id === doc.id);
+                const permission = roomDoc ? roomDoc.permission : 'view';
+
+                documentsHtml += `
+                    <div class="document-checkbox-item">
+                        <label class="checkbox-label">
+                            <input type="checkbox"
+                                   data-doc-id="${doc.id}"
+                                   data-category="${category.key}"
+                                   data-name="${doc.name}"
+                                   ${isSelected ? 'checked' : ''}
+                                   onchange="toggleDocumentSelection(this)">
+                            ${doc.name}
+                        </label>
+                        <select class="permission-select"
+                                data-doc-id="${doc.id}"
+                                onchange="updateDocumentPermission(this)"
+                                ${!isSelected ? 'disabled' : ''}>
+                            <option value="view" ${permission === 'view' ? 'selected' : ''}>View Only</option>
+                            <option value="download" ${permission === 'download' ? 'selected' : ''}>Downloadable</option>
+                        </select>
+                    </div>
+                `;
+            });
+
+            documentsHtml += `
+                    </div>
+                </div>
+            `;
+        }
+    });
+
+    documentsSection.innerHTML = documentsHtml;
+}
+
+// Export functions to window for profile.js to use
+window.addDocumentToLibrary = addDocumentToLibrary;
+window.removeDocumentFromLibrary = removeDocumentFromLibrary;

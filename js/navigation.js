@@ -342,12 +342,9 @@ function loadTimeTrackingContent() {
 // Profile content loader
 function loadProfileContent() {
     console.log('Loading profile content...');
-    
-    // Load profile data
+
+    // Load profile data and initialize profile functionality
     loadProfileData();
-    
-    // Setup form handlers
-    setupProfileForms();
 }
 
 // Load profile data
