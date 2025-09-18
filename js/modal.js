@@ -120,7 +120,7 @@ const connectionData = {
 
 function openConnectionModal(connectionId) {
     console.log('Opening connection modal for:', connectionId);
-    
+
     try {
         const connection = connectionData[connectionId];
         if (!connection) {
@@ -130,15 +130,15 @@ function openConnectionModal(connectionId) {
             }
             return;
         }
-        
+
         const modal = document.getElementById('modal');
         const modalBody = document.getElementById('modal-body');
-        
+
         if (!modal || !modalBody) {
             console.error('Modal elements not found');
             return;
         }
-        
+
         // Set the modal content
         modalBody.innerHTML = getConnectionDetailModalContent(connection);
         
@@ -198,18 +198,34 @@ function getConnectionDetailModalContent(connection) {
             </div>
             
             <div class="button-group centered-buttons">
-                ${isPeerConnection ? 
+                ${isPeerConnection ?
                     `<button class="btn btn-primary" onclick="viewProfile('${connection.name}')">View Profile</button>
                      <button class="btn btn-secondary" onclick="sendMessage('${connection.name}')">Send Message</button>` :
-                    `<button class="btn btn-primary" onclick="requestReference('${connection.name}')">Request Reference</button>
-                     <button class="btn ${connection.hasReference ? 'btn-secondary' : 'btn-secondary disabled'}" 
-                            ${connection.hasReference ? '' : 'disabled'} 
+                    `${getRequestReferenceButton(connection.name)}
+                     <button class="btn ${connection.hasReference ? 'btn-secondary' : 'btn-secondary disabled'}"
+                            ${connection.hasReference ? '' : 'disabled'}
                             onclick="viewReference('${connection.name}')">View Reference(s)</button>
                      <button class="btn btn-secondary" onclick="sendMessage('${connection.name}')">Send Message</button>`
                 }
             </div>
         </div>
     `;
+}
+
+function getRequestReferenceButton(contactName) {
+    // Ensure the state object exists
+    if (!window.requestedReferences) {
+        window.requestedReferences = new Set();
+    }
+
+    // Check if reference has already been requested
+    const isRequested = window.requestedReferences.has(contactName);
+
+    if (isRequested) {
+        return `<button class="btn btn-primary requested" data-contact="${contactName}" disabled>Requested</button>`;
+    } else {
+        return `<button class="btn btn-primary" data-contact="${contactName}" onclick="requestReference('${contactName}')">Request Reference</button>`;
+    }
 }
 
 function getConnectionIdFromName(name) {
@@ -554,17 +570,38 @@ function closeModal() {
     }
 }
 
+// Global state to track requested references
+window.requestedReferences = window.requestedReferences || new Set();
+
 // Connection action functions
 function requestReference(contactName) {
-    console.log(`Requesting reference from ${contactName}`);
+    console.log(`Requesting reference from "${contactName}"`);
 
-    // Update button state if called from network page
+    // Ensure the state object exists
+    if (!window.requestedReferences) {
+        window.requestedReferences = new Set();
+    }
+
+    // Mark this contact as having a requested reference
+    window.requestedReferences.add(contactName);
+
+    // Update the clicked button
     const button = event.target;
-    if (button && button.classList.contains('btn-action')) {
+    if (button) {
         button.disabled = true;
         button.textContent = 'Requested';
         button.classList.add('requested');
     }
+
+    // Find and disable ALL corresponding buttons with the same contact name
+    const allReferenceButtons = document.querySelectorAll(`button[data-contact="${contactName}"]`);
+    allReferenceButtons.forEach(btn => {
+        if (btn.textContent.includes('Request Reference')) {
+            btn.disabled = true;
+            btn.textContent = 'Requested';
+            btn.classList.add('requested');
+        }
+    });
 
     // Show notification
     if (window.showToast) {

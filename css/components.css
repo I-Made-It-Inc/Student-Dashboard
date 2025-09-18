@@ -114,6 +114,24 @@
     transform: none;
 }
 
+/* Disabled modal buttons */
+.btn-primary.requested,
+.btn-primary:disabled {
+    background-color: var(--medium-gray);
+    color: var(--text-gray);
+    border-color: var(--medium-gray);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.btn-primary.requested:hover,
+.btn-primary:disabled:hover {
+    background-color: var(--medium-gray);
+    color: var(--text-gray);
+    border-color: var(--medium-gray);
+    transform: none;
+}
+
 .btn-link {
     background: none;
     border: none;
