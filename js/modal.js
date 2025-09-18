@@ -563,13 +563,7 @@ function requestReference(contactName) {
     if (button && button.classList.contains('btn-action')) {
         button.disabled = true;
         button.textContent = 'Requested';
-        button.classList.remove('btn-action');
-        button.classList.add('btn-action', 'disabled');
-        button.style.backgroundColor = '#6b7280';
-        button.style.color = '#9ca3af';
-        button.style.cursor = 'not-allowed';
-        button.style.opacity = '0.6';
-        button.style.borderColor = '#6b7280';
+        button.classList.add('requested');
     }
 
     // Show notification
