@@ -451,6 +451,10 @@ function initializeSectionDragDrop() {
         draggable.addEventListener('dragleave', handleDragLeave);
     });
 
+    // Add container-level handlers for gaps between elements
+    container.addEventListener('dragover', handleContainerDragOver);
+    container.addEventListener('drop', handleContainerDrop);
+
     function handleDragStart(e) {
         draggedElement = this;
         this.classList.add('dragging');
@@ -511,7 +515,54 @@ function initializeSectionDragDrop() {
             saveSectionOrder();
         }
 
+        // Clean up
+        delete this.dataset.dropPosition;
         return false;
+    }
+
+    // Handle dragover on container (for gaps between elements)
+    function handleContainerDragOver(e) {
+        // Only handle if we're not over a draggable element
+        if (e.target === container) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+    }
+
+    // Handle drop on container (for gaps between elements)
+    function handleContainerDrop(e) {
+        // Only handle if we're dropping on the container itself (gaps)
+        if (e.target === container) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Find the closest element to insert near
+            const allSections = [...container.querySelectorAll('.draggable-section:not(.dragging)')];
+            let closestElement = null;
+            let closestDistance = Infinity;
+
+            allSections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const distance = Math.abs(rect.top - e.clientY);
+
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestElement = section;
+                }
+            });
+
+            if (closestElement) {
+                const rect = closestElement.getBoundingClientRect();
+                if (e.clientY < rect.top) {
+                    // Drop above the closest element
+                    container.insertBefore(draggedElement, closestElement);
+                } else {
+                    // Drop below the closest element
+                    container.insertBefore(draggedElement, closestElement.nextSibling);
+                }
+                saveSectionOrder();
+            }
+        }
     }
 }
 

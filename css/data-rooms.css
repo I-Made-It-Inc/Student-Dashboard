@@ -608,11 +608,13 @@
 .section-order-container {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 8px;
+    gap: 12px;
+    padding: 16px 8px;
     background: #f8fafc;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
+    min-height: 200px;
+    position: relative;
 }
 
 .draggable-section {
