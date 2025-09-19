@@ -127,6 +127,9 @@ function loadPageContent(pageId) {
         case 'notifications':
             loadNotificationsContent();
             break;
+        case 'data-rooms':
+            loadDataRoomsContent();
+            break;
     }
 }
 
@@ -172,6 +175,39 @@ function loadIdeasContent() {
     
     // Load user's ideas
     loadUserIdeas();
+}
+
+// Data rooms content loader
+function loadDataRoomsContent() {
+    console.log('Loading data rooms content...');
+
+    try {
+        // Initialize data rooms functionality completely
+        console.log('About to call initializeDataRooms...');
+        if (typeof initializeDataRooms === 'function') {
+            initializeDataRooms();
+            console.log('initializeDataRooms called successfully');
+        } else {
+            console.error('initializeDataRooms function not available');
+        }
+
+        // Ensure document library is synchronized
+        console.log('Checking document library sync...');
+        if (typeof window.documentLibrary !== 'undefined') {
+            console.log('Document library available:', Object.keys(window.documentLibrary));
+        } else {
+            console.error('Document library not available - attempting to load from profile...');
+            // Try to initialize document library from profile
+            if (typeof initializeProfile === 'function') {
+                console.log('Calling initializeProfile to set up document library...');
+                initializeProfile();
+                console.log('Profile initialization completed for document library sync');
+            }
+        }
+
+    } catch (error) {
+        console.error('Error loading data rooms content:', error);
+    }
 }
 
 // Load current challenge

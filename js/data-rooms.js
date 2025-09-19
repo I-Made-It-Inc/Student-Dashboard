@@ -12,16 +12,16 @@ let dataRooms = [
         customMessage: 'Welcome to my tech portfolio! I\'m passionate about AI/ML and full-stack development. Feel free to explore my projects and achievements below.',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'], // Custom section order
         documents: [
-            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true },
-            { id: 'resume-2', category: 'resumes', name: 'Jane_Doe_Tech_Resume.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'AWS_Cloud_Practitioner.pdf', permission: 'view', selected: true },
-            { id: 'cert-2', category: 'certificates', name: 'Google_Data_Analytics.pdf', permission: 'view', selected: true },
-            { id: 'cert-3', category: 'certificates', name: 'Microsoft_AI_Fundamentals.pdf', permission: 'view', selected: true },
-            { id: 'ref-1', category: 'references', name: 'Reference_TechCorp_CEO.pdf', permission: 'view', selected: true },
-            { id: 'ref-2', category: 'references', name: 'Reference_Professor_Smith.pdf', permission: 'view', selected: true },
-            { id: 'proj-1', category: 'projects', name: 'ML_Sentiment_Analysis_Project.pdf', permission: 'download', selected: true },
-            { id: 'proj-2', category: 'projects', name: 'React_Dashboard_Portfolio.pdf', permission: 'download', selected: true },
-            { id: 'proj-3', category: 'projects', name: 'Data_Pipeline_Architecture.pdf', permission: 'download', selected: true }
+            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'resume-2', category: 'resumes', name: 'Jane_Doe_Tech_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Technical resume focused on software engineering and data science roles' },
+            { id: 'cert-1', category: 'certificates', name: 'AWS_Cloud_Practitioner.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'cert-2', category: 'certificates', name: 'Google_Data_Analytics.pdf', permission: 'view', selected: true, descriptionType: 'none', customDescription: '' },
+            { id: 'cert-3', category: 'certificates', name: 'Microsoft_AI_Fundamentals.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'ref-1', category: 'references', name: 'Reference_TechCorp_CEO.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'ref-2', category: 'references', name: 'Reference_Professor_Smith.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-1', category: 'projects', name: 'ML_Sentiment_Analysis_Project.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-2', category: 'projects', name: 'React_Dashboard_Portfolio.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-3', category: 'projects', name: 'Data_Pipeline_Architecture.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' }
         ],
         stats: {
             views: 47,
@@ -41,11 +41,11 @@ let dataRooms = [
         customMessage: '',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
         documents: [
-            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Finance_Resume.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'CFA_Level_I.pdf', permission: 'view', selected: true },
-            { id: 'cert-2', category: 'certificates', name: 'Financial_Modeling_Certificate.pdf', permission: 'view', selected: true },
-            { id: 'ref-1', category: 'references', name: 'Reference_Goldman_Sachs_VP.pdf', permission: 'view', selected: true },
-            { id: 'proj-1', category: 'projects', name: 'Investment_Portfolio_Analysis.pdf', permission: 'view', selected: true }
+            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Finance_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Finance-focused resume emphasizing quantitative analysis and modeling' },
+            { id: 'cert-1', category: 'certificates', name: 'CFA_Level_I.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'cert-2', category: 'certificates', name: 'Financial_Modeling_Certificate.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'ref-1', category: 'references', name: 'Reference_Goldman_Sachs_VP.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-1', category: 'projects', name: 'Investment_Portfolio_Analysis.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' }
         ],
         stats: {
             views: 23,
@@ -65,13 +65,13 @@ let dataRooms = [
         customMessage: 'Focused on advancing AI research and academic excellence.',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
         documents: [
-            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Academic_Resume.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true },
-            { id: 'cert-2', category: 'certificates', name: 'Research_Excellence_Award.pdf', permission: 'view', selected: true },
-            { id: 'ref-1', category: 'references', name: 'Reference_Professor_Johnson.pdf', permission: 'view', selected: true },
-            { id: 'ref-2', category: 'references', name: 'Reference_Research_Supervisor.pdf', permission: 'view', selected: true },
-            { id: 'proj-1', category: 'projects', name: 'Neural_Network_Research_Paper.pdf', permission: 'download', selected: true },
-            { id: 'proj-2', category: 'projects', name: 'Lab_Research_Portfolio.pdf', permission: 'view', selected: true }
+            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Academic_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Academic CV showcasing research experience and publications' },
+            { id: 'cert-1', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'cert-2', category: 'certificates', name: 'Research_Excellence_Award.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'ref-1', category: 'references', name: 'Reference_Professor_Johnson.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'ref-2', category: 'references', name: 'Reference_Research_Supervisor.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-1', category: 'projects', name: 'Neural_Network_Research_Paper.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-2', category: 'projects', name: 'Lab_Research_Portfolio.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' }
         ],
         stats: {
             views: 12,
@@ -87,18 +87,54 @@ let dataRooms = [
 // Document library - represents documents uploaded to profile (synced with profile page)
 let documentLibrary = {
     resumes: [
-        { id: 'resume-1', name: 'Jane_Doe_Resume_2024.pdf', uploadDate: '2024-12-01', size: '1.2 MB' }
+        {
+            id: 'resume-1',
+            name: 'Jane_Doe_Resume_2024.pdf',
+            uploadDate: '2024-12-01',
+            size: '1.2 MB',
+            defaultDescription: 'General resume highlighting full-stack development and AI/ML experience'
+        }
     ],
     projects: [
-        { id: 'proj-1', name: 'ML_Sentiment_Analysis_Project.pdf', uploadDate: '2024-11-25', size: '4.2 MB' },
-        { id: 'proj-2', name: 'React_Dashboard_Portfolio.pdf', uploadDate: '2024-11-20', size: '3.1 MB' }
+        {
+            id: 'proj-1',
+            name: 'ML_Sentiment_Analysis_Project.pdf',
+            uploadDate: '2024-11-25',
+            size: '4.2 MB',
+            defaultDescription: 'Machine learning project analyzing social media sentiment using neural networks'
+        },
+        {
+            id: 'proj-2',
+            name: 'React_Dashboard_Portfolio.pdf',
+            uploadDate: '2024-11-20',
+            size: '3.1 MB',
+            defaultDescription: 'Full-stack web application built with React, Node.js, and MongoDB'
+        }
     ],
     certificates: [
-        { id: 'cert-1', name: 'AWS_Cloud_Practitioner.pdf', uploadDate: '2024-11-15', size: '856 KB' },
-        { id: 'cert-2', name: 'Science_Fair_First_Place.jpg', uploadDate: '2024-06-10', size: '2.1 MB' }
+        {
+            id: 'cert-1',
+            name: 'AWS_Cloud_Practitioner.pdf',
+            uploadDate: '2024-11-15',
+            size: '856 KB',
+            defaultDescription: 'Amazon Web Services Cloud Practitioner certification'
+        },
+        {
+            id: 'cert-2',
+            name: 'Science_Fair_First_Place.jpg',
+            uploadDate: '2024-06-10',
+            size: '2.1 MB',
+            defaultDescription: 'First place award from National Science Fair for AI research project'
+        }
     ],
     references: [
-        { id: 'ref-1', name: 'Reference_TechCorp_CEO.pdf', uploadDate: '2024-12-05', size: '623 KB' }
+        {
+            id: 'ref-1',
+            name: 'Reference_TechCorp_CEO.pdf',
+            uploadDate: '2024-12-05',
+            size: '623 KB',
+            defaultDescription: 'Letter of recommendation from TechCorp CEO highlighting leadership and technical skills'
+        }
     ]
 };
 
@@ -477,7 +513,12 @@ function generateDocumentSelection(room) {
                         const isSelected = roomDoc?.selected || false;
                         const permission = roomDoc?.permission || 'view';
 
-                        const currentDescription = roomDoc?.description || '';
+                        const currentDescriptionType = roomDoc?.descriptionType || 'default';
+                        const currentCustomDescription = roomDoc?.customDescription || '';
+
+                        // Get the default description from the document library
+                        const libraryDoc = window.documentLibrary[category]?.find(d => d.id === doc.id);
+                        const defaultDescription = libraryDoc?.defaultDescription || '';
 
                         return `
                             <div class="document-item ${isSelected ? 'selected' : ''}">
@@ -497,14 +538,32 @@ function generateDocumentSelection(room) {
                                         </select>
                                     </div>
                                     <div class="doc-description-row">
-                                        <label for="desc-${doc.id}">Custom Description for this Room:</label>
-                                        <textarea
-                                            id="desc-${doc.id}"
-                                            class="doc-description-input"
-                                            data-doc-id="${doc.id}"
-                                            onchange="updateDocumentDescription('${doc.id}', this.value)"
-                                            rows="1">${currentDescription}</textarea>
-                                        <small class="help-text">This description will only appear in this data room</small>
+                                        <label>Description for this Room:</label>
+                                        <div class="description-type-selector">
+                                            <label class="description-option">
+                                                <input type="radio" name="desc-type-${doc.id}" value="none" ${currentDescriptionType === 'none' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <span>None</span>
+                                            </label>
+                                            <label class="description-option">
+                                                <input type="radio" name="desc-type-${doc.id}" value="default" ${currentDescriptionType === 'default' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <span>Default</span>
+                                            </label>
+                                            <label class="description-option">
+                                                <input type="radio" name="desc-type-${doc.id}" value="custom" ${currentDescriptionType === 'custom' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <span>Custom</span>
+                                            </label>
+                                        </div>
+                                        ${defaultDescription ? `<div class="default-preview ${currentDescriptionType === 'default' ? 'visible' : ''}">Default: "${defaultDescription}"</div>` : ''}
+                                        <div class="custom-description-container ${currentDescriptionType === 'custom' ? 'visible' : ''}">
+                                            <textarea
+                                                id="desc-${doc.id}"
+                                                class="doc-description-input"
+                                                data-doc-id="${doc.id}"
+                                                placeholder="Enter custom description for this room..."
+                                                onchange="updateCustomDescription('${doc.id}', this.value)"
+                                                rows="1">${currentCustomDescription}</textarea>
+                                            <small class="help-text">This custom description will only appear in this data room</small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -742,9 +801,14 @@ function handleSaveDataRoom() {
             });
 
             if (docData) {
-                // Get the custom description for this room
-                const descriptionTextarea = document.querySelector(`textarea[data-doc-id="${docId}"]`);
-                const description = descriptionTextarea ? descriptionTextarea.value.trim() : '';
+                // Get the description type from radio buttons
+                const descriptionTypeRadio = document.querySelector(`input[name="desc-type-${docId}"]:checked`);
+                const descriptionType = descriptionTypeRadio ? descriptionTypeRadio.value : 'none';
+
+                // Get the custom description if type is custom
+                const customDescriptionTextarea = document.querySelector(`textarea[data-doc-id="${docId}"]`);
+                const customDescription = (descriptionType === 'custom' && customDescriptionTextarea) ?
+                    customDescriptionTextarea.value.trim() : '';
 
                 room.documents.push({
                     id: docId,
@@ -752,7 +816,8 @@ function handleSaveDataRoom() {
                     name: docData.name,
                     permission: permission,
                     selected: true,
-                    description: description
+                    descriptionType: descriptionType,
+                    customDescription: customDescription
                 });
             }
         }
@@ -1498,9 +1563,30 @@ function updateDocumentPermission(docId, permission) {
     // Permission updates will be handled in the save function
 }
 
-function updateDocumentDescription(docId, description) {
-    console.log(`Updated description for ${docId}: ${description}`);
-    // Description updates will be handled in the save function
+function updateDescriptionType(docId, type) {
+    console.log(`Updated description type for ${docId}: ${type}`);
+
+    // Show/hide appropriate sections based on type
+    const documentItem = document.querySelector(`[data-doc-id="${docId}"]`).closest('.document-item');
+    const defaultPreview = documentItem.querySelector('.default-preview');
+    const customContainer = documentItem.querySelector('.custom-description-container');
+
+    // Hide all sections first
+    if (defaultPreview) defaultPreview.classList.remove('visible');
+    if (customContainer) customContainer.classList.remove('visible');
+
+    // Show appropriate section based on type
+    if (type === 'default' && defaultPreview) {
+        defaultPreview.classList.add('visible');
+    } else if (type === 'custom' && customContainer) {
+        customContainer.classList.add('visible');
+    }
+}
+
+function updateCustomDescription(docId, description) {
+    console.log(`Updated custom description for ${docId}: ${description}`);
+    // Store the description temporarily until save
+    // The actual saving happens in handleSaveDataRoom function
 }
 
 // Export data and functions for global use
@@ -1522,7 +1608,8 @@ window.viewAccessRequests = viewAccessRequests;
 window.viewDataRoomComments = viewDataRoomComments;
 window.toggleDocumentSelection = toggleDocumentSelection;
 window.updateDocumentPermission = updateDocumentPermission;
-window.updateDocumentDescription = updateDocumentDescription;
+window.updateDescriptionType = updateDescriptionType;
+window.updateCustomDescription = updateCustomDescription;
 
 // Document Library Management Functions
 // These functions sync profile uploads/deletions with data room document selector

@@ -196,12 +196,18 @@
 
 .document-item {
     display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
+    flex-direction: column;
+    margin-bottom: var(--spacing-md);
     border: 1px solid var(--medium-gray);
     border-radius: var(--radius-sm);
     background-color: var(--white);
+}
+
+.document-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
 }
 
 .doc-icon {
@@ -582,4 +588,47 @@
 .warning-actions .btn-danger:hover {
     background: #dc2626;
     border-color: #dc2626;
+}
+
+/* Default description section in profile */
+.default-description-section {
+    padding: var(--spacing-sm);
+    border-top: 1px solid var(--medium-gray);
+    background-color: var(--bg-light);
+}
+
+.default-description-section label {
+    display: block;
+    font-weight: 500;
+    color: var(--imi-blue);
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.default-description-input {
+    width: 100%;
+    min-height: 32px;
+    height: 32px;
+    padding: 8px;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
+    resize: vertical;
+    transition: border-color var(--transition-fast);
+}
+
+.default-description-input:focus {
+    outline: none;
+    border-color: var(--imi-blue);
+    box-shadow: 0 0 0 2px rgba(4, 40, 71, 0.1);
+}
+
+.default-description-section .help-text {
+    display: block;
+    font-size: 11px;
+    color: var(--text-gray);
+    margin-top: 4px;
+    font-style: italic;
 }

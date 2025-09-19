@@ -96,14 +96,27 @@ function loadDocumentsFromLibrary() {
             const uploadDate = doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString() : 'Recently';
 
             documentItem.innerHTML = `
-                <span class="doc-icon">${docIcon}</span>
-                <div class="doc-info">
-                    <span class="doc-name">${doc.name}</span>
-                    <span class="doc-meta">Uploaded ${uploadDate} • ${doc.size}</span>
+                <div class="document-header">
+                    <span class="doc-icon">${docIcon}</span>
+                    <div class="doc-info">
+                        <span class="doc-name">${doc.name}</span>
+                        <span class="doc-meta">Uploaded ${uploadDate} • ${doc.size}</span>
+                    </div>
+                    <div class="doc-actions">
+                        <button class="btn-icon" title="Download" onclick="downloadDocument('${doc.id}')">⬇️</button>
+                        <button class="btn-icon" title="Delete" onclick="deleteDocument('${doc.id}', '${type}')">🗑️</button>
+                    </div>
                 </div>
-                <div class="doc-actions">
-                    <button class="btn-icon" title="Download" onclick="downloadDocument('${doc.id}')">⬇️</button>
-                    <button class="btn-icon" title="Delete" onclick="deleteDocument('${doc.id}', '${type}')">🗑️</button>
+                <div class="default-description-section">
+                    <label for="default-desc-${doc.id}">Default Description:</label>
+                    <textarea
+                        id="default-desc-${doc.id}"
+                        class="default-description-input"
+                        data-doc-id="${doc.id}"
+                        placeholder="Add a default description for this document..."
+                        onchange="updateDefaultDescription('${doc.id}', this.value)"
+                        rows="1">${doc.defaultDescription || ''}</textarea>
+                    <small class="help-text">This description will be used by default in all data rooms</small>
                 </div>
             `;
 
@@ -635,6 +648,32 @@ function loadPrivacySettings() {
     }
 }
 
+// Update default description for a document
+function updateDefaultDescription(docId, description) {
+    console.log(`Updating default description for ${docId}: ${description}`);
+
+    // Find and update the document in the library
+    let found = false;
+    Object.entries(window.documentLibrary || {}).forEach(([category, docs]) => {
+        docs.forEach(doc => {
+            if (doc.id === docId) {
+                doc.defaultDescription = description;
+                found = true;
+                console.log(`✅ Updated default description for ${docId}`);
+            }
+        });
+    });
+
+    if (!found) {
+        console.error(`❌ Document ${docId} not found in library`);
+    }
+
+    // Refresh any open data room edit modals to show updated default descriptions
+    if (window.refreshDocumentSelector && typeof window.refreshDocumentSelector === 'function') {
+        window.refreshDocumentSelector();
+    }
+}
+
 // Load profile data
 function loadProfileData() {
     const savedProfile = localStorage.getItem('profileData');
@@ -643,7 +682,7 @@ function loadProfileData() {
         populateProfileForm(profileData);
         updateProfilePreview(profileData);
     }
-    
+
     const savedSocial = localStorage.getItem('socialLinks');
     if (savedSocial) {
         const socialData = JSON.parse(savedSocial);
@@ -835,3 +874,4 @@ window.downloadDocument = downloadDocument;
 window.deleteDocument = deleteDocument;
 window.closeDeletionWarning = closeDeletionWarning;
 window.confirmDeleteDocument = confirmDeleteDocument;
+window.updateDefaultDescription = updateDefaultDescription;
