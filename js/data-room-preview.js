@@ -308,6 +308,7 @@ function generateExternalViewHTML(room) {
                     <div class="room-header-card">
                         <div class="room-header-top">
                             <h1 class="room-title">${room.name}</h1>
+                            <span class="privacy-badge privacy-${room.privacy}">${getPrivacyLabel(room.privacy)}</span>
                             ${room.privacy === 'request' ? '<span class="access-granted-badge">✓ Access Granted</span>' : ''}
                         </div>
                         <p class="room-description">${room.description}</p>
@@ -322,8 +323,8 @@ function generateExternalViewHTML(room) {
                                 <p class="student-title">High School Senior • IMI Co-op Student</p>
                                 <div class="student-meta">
                                     <span class="meta-item">📍 Toronto, ON</span>
-                                    <span class="meta-item">🎓 Expected Graduation: June 2025</span>
-                                    <span class="meta-item">💼 ${room.industry.join(', ')}</span>
+                                    <span class="meta-item">📧 jane.doe@example.com</span>
+                                    <span class="meta-item">💼 8 months with IMI</span>
                                 </div>
                                 <div class="student-bio">
                                     <p>${getStudentBio()}</p>
