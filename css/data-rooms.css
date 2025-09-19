@@ -138,7 +138,25 @@
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     width: 160px;
-    margin-right: 38px;
+    margin-right: 0px;
+}
+
+/* Grid layout for 5 buttons (3 in top row, 2 in bottom) */
+#data-rooms-page .room-actions-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    width: 250px;
+}
+
+/* Make share and analytics span specific positions in the grid */
+#data-rooms-page .room-actions-grid > button:nth-child(4) {
+    grid-column: 1; /* Share button - bottom left */
+    grid-row: 2;
+}
+
+#data-rooms-page .room-actions-grid > button:nth-child(5) {
+    grid-column: 2 / 4; /* Analytics button - bottom spanning 2 columns */
+    grid-row: 2;
 }
 
 #data-rooms-page .room-actions .btn-icon {

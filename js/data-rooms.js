@@ -225,9 +225,10 @@ function createRoomElement(room) {
         <div class="room-privacy">
             <span class="status-badge ${statusClass}">${statusText}</span>
         </div>
-        <div class="room-actions">
+        <div class="room-actions room-actions-grid">
             <button class="btn-icon btn-primary" onclick="previewDataRoom('${room.id}')" title="Preview">👁️ Preview</button>
             <button class="btn-icon" onclick="editDataRoom('${room.id}')" title="Edit">✏️ Edit</button>
+            <button class="btn-icon" onclick="cloneDataRoom('${room.id}')" title="Clone">📋 Clone</button>
             <button class="btn-icon" onclick="shareDataRoom('${room.id}')" title="Share">🔗 Share</button>
             <button class="btn-icon" onclick="viewDataRoomAnalytics('${room.id}')" title="Analytics">📊 Analytics</button>
         </div>
@@ -750,6 +751,64 @@ function saveSectionOrder() {
 
     console.log('New section order:', order);
     // In production, this would save to the backend
+}
+
+// Clone data room
+function cloneDataRoom(roomId) {
+    const originalRoom = dataRooms.find(r => r.id === roomId);
+    if (!originalRoom) {
+        console.error('Room not found for cloning:', roomId);
+        return;
+    }
+
+    // Generate unique name for the clone
+    const baseName = originalRoom.name;
+    let cloneName = `${baseName} (Copy)`;
+    let counter = 1;
+
+    // Check if name already exists and increment counter
+    while (dataRooms.some(room => room.name === cloneName)) {
+        cloneName = `${baseName} (${counter})`;
+        counter++;
+    }
+
+    // Generate unique ID for the clone
+    const cloneId = `clone-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    // Deep clone the room data
+    const clonedRoom = {
+        ...originalRoom,
+        id: cloneId,
+        name: cloneName,
+        createdAt: new Date().toISOString().split('T')[0],
+        updatedAt: new Date().toISOString().split('T')[0],
+        // Reset stats for the new room
+        stats: {
+            views: 0,
+            uniqueVisitors: 0,
+            downloads: 0,
+            printAttempts: 0
+        },
+        // Deep clone documents array to avoid reference sharing
+        documents: originalRoom.documents.map(doc => ({ ...doc })),
+        // Deep clone other arrays
+        industry: [...originalRoom.industry],
+        sectionOrder: [...originalRoom.sectionOrder]
+    };
+
+    // Add the cloned room to the data rooms array
+    dataRooms.push(clonedRoom);
+
+    // Refresh the display
+    loadDataRooms();
+    updateRoomStats();
+
+    // Show success notification
+    if (window.showToast) {
+        window.showToast(`Room "${cloneName}" created successfully!`, 'success');
+    }
+
+    console.log(`Cloned room: ${originalRoom.name} → ${cloneName}`);
 }
 
 // Handle save room changes
@@ -1594,6 +1653,7 @@ window.dataRooms = dataRooms;
 window.initializeDataRooms = initializeDataRooms;
 window.createNewDataRoom = createNewDataRoom;
 window.editDataRoom = editDataRoom;
+window.cloneDataRoom = cloneDataRoom;
 window.deleteDataRoom = deleteDataRoom;
 window.shareDataRoom = shareDataRoom;
 window.copyDataRoomLink = copyDataRoomLink;
