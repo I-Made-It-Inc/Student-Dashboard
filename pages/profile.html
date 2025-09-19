@@ -78,6 +78,105 @@
                         </form>
                     </div>
 
+                    <!-- Achievements -->
+                    <div class="card profile-settings-card">
+                        <div class="section-header">
+                            <h3 class="section-title">🏆 Achievements</h3>
+                            <span class="text-muted">View your IMI-earned achievements and add custom ones</span>
+                        </div>
+
+                        <div class="achievements-section">
+                            <!-- IMI Verified Achievements -->
+                            <div class="achievement-category">
+                                <h4>✓ IMI-Verified Achievements</h4>
+                                <p class="category-description">These achievements are automatically awarded by IMI based on your performance and milestones.</p>
+
+                                <div class="verified-achievements-grid" id="verified-achievements-list">
+                                    <!-- Will be populated by JavaScript -->
+                                </div>
+                            </div>
+
+                            <!-- Custom Achievements -->
+                            <div class="achievement-category">
+                                <h4>📝 Custom Achievements</h4>
+                                <p class="category-description">Add your own achievements from outside IMI (awards, competitions, certifications, etc.)</p>
+
+                                <div class="custom-achievements-section">
+                                    <!-- Add Custom Achievement Form -->
+                                    <div class="add-achievement-form" id="add-achievement-form" style="display: none;">
+                                        <form id="custom-achievement-form">
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label>Achievement Title *</label>
+                                                    <input type="text" class="form-input" placeholder="e.g., Regional Science Fair Winner" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Icon</label>
+                                                    <select class="form-select">
+                                                        <option value="🏆">🏆 Trophy</option>
+                                                        <option value="🥇">🥇 Gold Medal</option>
+                                                        <option value="🏅">🏅 Medal</option>
+                                                        <option value="⭐">⭐ Star</option>
+                                                        <option value="🎯">🎯 Target</option>
+                                                        <option value="💡">💡 Innovation</option>
+                                                        <option value="🚀">🚀 Achievement</option>
+                                                        <option value="📚">📚 Education</option>
+                                                        <option value="🔬">🔬 Science</option>
+                                                        <option value="💻">💻 Technology</option>
+                                                        <option value="🎨">🎨 Creative</option>
+                                                        <option value="🤝">🤝 Leadership</option>
+                                                        <option value="🌟">🌟 Excellence</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Description *</label>
+                                                <textarea class="form-textarea" rows="2" placeholder="Brief description of what you achieved..." required></textarea>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label>Category</label>
+                                                    <select class="form-select">
+                                                        <option value="academic">Academic</option>
+                                                        <option value="leadership">Leadership</option>
+                                                        <option value="skills">Skills</option>
+                                                        <option value="projects">Projects</option>
+                                                        <option value="competition">Competition</option>
+                                                        <option value="volunteer">Volunteer</option>
+                                                        <option value="sports">Sports</option>
+                                                        <option value="arts">Arts</option>
+                                                        <option value="other">Other</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Date Achieved</label>
+                                                    <input type="date" class="form-input">
+                                                </div>
+                                            </div>
+                                            <div class="form-actions">
+                                                <button type="button" class="btn btn-secondary" onclick="cancelAddAchievement()">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Add Achievement</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <!-- Add Achievement Button -->
+                                    <div class="add-achievement-button-container" id="add-achievement-button">
+                                        <button class="btn btn-outline add-achievement-btn" onclick="showAddAchievementForm()">
+                                            <span class="btn-icon">➕</span>
+                                            Add Custom Achievement
+                                        </button>
+                                    </div>
+
+                                    <!-- Custom Achievements List -->
+                                    <div class="custom-achievements-grid" id="custom-achievements-list">
+                                        <!-- Will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Documents & Certificates -->
                     <div class="card profile-settings-card">
                         <div class="section-header">

@@ -1935,10 +1935,28 @@ function refreshDocumentSelector() {
     documentsSection.innerHTML = documentsHtml;
 }
 
+// Refresh achievement selector for sync with profile page
+function refreshAchievementSelector() {
+    // Find the achievements selector section in the modal
+    const achievementsSection = document.querySelector('#data-room-achievements-section');
+    if (!achievementsSection) return;
+
+    // Regenerate the achievements selector content
+    const room = dataRooms.find(r => r.id === currentEditingRoom);
+    if (!room) return;
+
+    // Rebuild the achievements section HTML
+    const achievementsHtml = generateAchievementsSelection(room);
+    achievementsSection.querySelector('#achievements-selection').innerHTML = achievementsHtml;
+
+    console.log('Refreshed achievement selector with latest achievements library');
+}
+
 // Export functions to window for profile.js to use
 window.addDocumentToLibrary = addDocumentToLibrary;
 window.removeDocumentFromLibrary = removeDocumentFromLibrary;
 window.refreshDocumentSelector = refreshDocumentSelector;
+window.refreshAchievementSelector = refreshAchievementSelector;
 
 // Export documentLibrary for global access
 window.documentLibrary = documentLibrary;
