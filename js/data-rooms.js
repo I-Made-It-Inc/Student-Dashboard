@@ -150,7 +150,7 @@ let achievementsLibrary = [
         description: 'Ranked in top 5% based on XP and project completions',
         isVerified: true,
         icon: '🏆',
-        category: 'performance'
+        category: 'academic'
     },
     {
         id: 'ach-2',
@@ -166,7 +166,7 @@ let achievementsLibrary = [
         description: 'Featured insights in Blueprint for the Future 3 times',
         isVerified: true,
         icon: '⚡',
-        category: 'innovation'
+        category: 'academic'
     },
     {
         id: 'ach-4',
@@ -182,7 +182,7 @@ let achievementsLibrary = [
         description: 'Worked with companies in Tech, Finance, and Healthcare',
         isVerified: true,
         icon: '🌐',
-        category: 'experience'
+        category: 'leadership'
     },
     {
         id: 'ach-6',
@@ -190,7 +190,7 @@ let achievementsLibrary = [
         description: 'Connected with 50+ industry professionals',
         isVerified: true,
         icon: '🤝',
-        category: 'networking'
+        category: 'leadership'
     },
     {
         id: 'ach-7',
@@ -206,7 +206,7 @@ let achievementsLibrary = [
         description: 'Co-authored paper on neural network optimization',
         isVerified: false,
         icon: '📚',
-        category: 'research'
+        category: 'academic'
     }
 ];
 
