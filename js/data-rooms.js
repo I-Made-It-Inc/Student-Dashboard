@@ -1489,12 +1489,26 @@ function viewDataRoomActivity(roomId) {
     const room = dataRooms.find(r => r.id === roomId);
     if (!room) return;
 
-    // Filter access requests for this room
-    const roomAccessRequests = accessRequests.filter(req => req.room === roomId || req.room === room.customId);
+    // Filter access requests for this room and sort by status (pending first)
+    const roomAccessRequests = accessRequests
+        .filter(req => req.room === roomId || req.room === room.customId)
+        .sort((a, b) => {
+            // Pending requests come first
+            if (a.status === 'pending' && b.status !== 'pending') return -1;
+            if (a.status !== 'pending' && b.status === 'pending') return 1;
+            return 0;
+        });
     const pendingRequests = roomAccessRequests.filter(req => req.status === 'pending');
 
-    // Filter comments for this room
-    const roomComments = dataRoomComments.filter(comment => comment.room === roomId || comment.room === room.customId);
+    // Filter comments for this room and sort by status (unread first)
+    const roomComments = dataRoomComments
+        .filter(comment => comment.room === roomId || comment.room === room.customId)
+        .sort((a, b) => {
+            // Unread comments come first
+            if (a.status === 'unread' && b.status === 'read') return -1;
+            if (a.status === 'read' && b.status === 'unread') return 1;
+            return 0;
+        });
 
     // Generate request cards matching the existing style
     const requestCardsHTML = roomAccessRequests.map(request => `
