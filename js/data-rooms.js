@@ -541,15 +541,15 @@ function generateDocumentSelection(room) {
                                         <label>Description for this Room:</label>
                                         <div class="description-type-selector">
                                             <label class="description-option">
-                                                <input type="radio" name="desc-type-${doc.id}" value="none" ${currentDescriptionType === 'none' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <input type="radio" name="desc-type-${doc.id}" value="none" data-doc-id="${doc.id}" ${currentDescriptionType === 'none' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
                                                 <span>None</span>
                                             </label>
                                             <label class="description-option">
-                                                <input type="radio" name="desc-type-${doc.id}" value="default" ${currentDescriptionType === 'default' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <input type="radio" name="desc-type-${doc.id}" value="default" data-doc-id="${doc.id}" ${currentDescriptionType === 'default' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
                                                 <span>Default</span>
                                             </label>
                                             <label class="description-option">
-                                                <input type="radio" name="desc-type-${doc.id}" value="custom" ${currentDescriptionType === 'custom' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <input type="radio" name="desc-type-${doc.id}" value="custom" data-doc-id="${doc.id}" ${currentDescriptionType === 'custom' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
                                                 <span>Custom</span>
                                             </label>
                                         </div>
