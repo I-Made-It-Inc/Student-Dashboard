@@ -470,6 +470,18 @@ function generateRequestAccessHTML(room) {
                                 <label>Reason for Access *</label>
                                 <textarea class="form-textarea" rows="3" placeholder="Please describe why you'd like to view this portfolio..." required></textarea>
                             </div>
+                            <div class="form-group">
+                                <label>Requested Access Duration *</label>
+                                <select class="form-select" required>
+                                    <option value="24h">24 hours</option>
+                                    <option value="3d">3 days</option>
+                                    <option value="7d" selected>7 days</option>
+                                    <option value="14d">14 days</option>
+                                    <option value="30d">30 days</option>
+                                    <option value="unlimited">Unlimited</option>
+                                </select>
+                                <small class="help-text">How long you need access to review this portfolio</small>
+                            </div>
                             <button type="submit" class="btn btn-primary btn-large">Send Access Request</button>
                         </form>
                     </div>
