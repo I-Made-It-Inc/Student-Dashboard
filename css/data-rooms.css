@@ -707,11 +707,31 @@
     gap: 12px;
     padding: 12px;
     cursor: pointer;
-    border-bottom: 1px solid transparent;
+    margin: 0; /* Remove any default label margins */
+    line-height: 1; /* Normalize line height */
+}
+
+/* Ensure checkbox and text elements don't add extra spacing */
+.modal .document-header input[type="checkbox"] {
+    margin: 0;
+    vertical-align: baseline;
+}
+
+.modal .document-header .doc-info {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    line-height: 1;
+}
+
+.modal .document-header .doc-name {
+    margin: 0;
+    line-height: 1;
+    display: inline; /* Override the block display */
 }
 
 .modal .document-item.selected .document-header {
-    border-bottom-color: var(--medium-gray);
+    border-bottom: 1px solid var(--medium-gray);
 }
 
 /* Profile page document items - restore original layout */
@@ -758,26 +778,28 @@
 
 /* Modal-specific styles for document options */
 .modal .document-options {
-    padding: 0 12px;
+    padding: 0;
     max-height: 0;
     overflow: hidden;
     transition: all var(--transition-normal);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Force left alignment */
+    display: none; /* Completely hide when collapsed */
 }
 
 .modal .document-options.visible {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     padding: 12px;
     max-height: 300px;
     width: 100%; /* Ensure full width */
+    gap: 16px; /* Use gap instead of margins for spacing */
 }
 
 .modal .doc-permissions-row {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 0;
 }
 
 .modal .doc-permissions-row label {
