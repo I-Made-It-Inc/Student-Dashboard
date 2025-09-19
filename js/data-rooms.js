@@ -1676,32 +1676,68 @@ function showRoomActivityTab(tab, roomId) {
     }
 }
 
-// Approve access request
+// Approve access request - merged function for both modals
 function approveAccessRequest(requestId) {
     const request = accessRequests.find(r => r.id === requestId);
     if (request) {
         request.status = 'approved';
-        // Refresh the current modal
-        const room = dataRooms.find(r => r.id === request.room || r.customId === request.room);
-        if (room) {
-            viewDataRoomActivity(room.id);
+
+        // Check if we're in the room activity modal
+        const modal = document.getElementById('modal');
+        if (modal && modal.querySelector('#room-activity-requests')) {
+            // Room activity modal - refresh it
+            const room = dataRooms.find(r => r.id === request.room || r.customId === request.room);
+            if (room) {
+                viewDataRoomActivity(room.id);
+            }
+        } else {
+            // All Access Requests modal - animate and remove card
+            const card = document.querySelector(`[data-request-id="${requestId}"]`);
+            if (card) {
+                card.style.opacity = '0.5';
+                card.style.transform = 'translateX(20px)';
+                setTimeout(() => {
+                    card.remove();
+                    updateAccessRequestCounts();
+                    updateRoomStats();
+                }, 300);
+            }
         }
+
         if (window.showToast) {
             window.showToast('Access request approved!', 'success');
         }
     }
 }
 
-// Deny access request
+// Deny access request - merged function for both modals
 function denyAccessRequest(requestId) {
     const request = accessRequests.find(r => r.id === requestId);
     if (request) {
         request.status = 'denied';
-        // Refresh the current modal
-        const room = dataRooms.find(r => r.id === request.room || r.customId === request.room);
-        if (room) {
-            viewDataRoomActivity(room.id);
+
+        // Check if we're in the room activity modal
+        const modal = document.getElementById('modal');
+        if (modal && modal.querySelector('#room-activity-requests')) {
+            // Room activity modal - refresh it
+            const room = dataRooms.find(r => r.id === request.room || r.customId === request.room);
+            if (room) {
+                viewDataRoomActivity(room.id);
+            }
+        } else {
+            // All Access Requests modal - animate and remove card
+            const card = document.querySelector(`[data-request-id="${requestId}"]`);
+            if (card) {
+                card.style.opacity = '0.5';
+                card.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    card.remove();
+                    updateAccessRequestCounts();
+                    updateRoomStats();
+                }, 300);
+            }
         }
+
         if (window.showToast) {
             window.showToast('Access request denied', 'info');
         }
@@ -2008,53 +2044,7 @@ function filterDataRoomComments(roomFilter) {
     }
 }
 
-function approveAccessRequest(requestId) {
-    // Update the persistent state
-    const request = accessRequests.find(req => req.id === requestId);
-    if (request) {
-        request.status = 'approved';
-    }
-
-    // Update the UI
-    const card = document.querySelector(`[data-request-id="${requestId}"]`);
-    if (card) {
-        card.style.opacity = '0.5';
-        card.style.transform = 'translateX(20px)';
-        setTimeout(() => {
-            card.remove();
-            updateAccessRequestCounts();
-            updateRoomStats(); // Update main page stats
-        }, 300);
-    }
-
-    if (window.showToast) {
-        window.showToast('Access request approved!', 'success');
-    }
-}
-
-function denyAccessRequest(requestId) {
-    // Update the persistent state
-    const request = accessRequests.find(req => req.id === requestId);
-    if (request) {
-        request.status = 'denied';
-    }
-
-    // Update the UI
-    const card = document.querySelector(`[data-request-id="${requestId}"]`);
-    if (card) {
-        card.style.opacity = '0.5';
-        card.style.transform = 'translateX(-20px)';
-        setTimeout(() => {
-            card.remove();
-            updateAccessRequestCounts();
-            updateRoomStats(); // Update main page stats
-        }, 300);
-    }
-
-    if (window.showToast) {
-        window.showToast('Access request denied', 'info');
-    }
-}
+// Duplicate functions removed - using merged versions above
 
 
 function toggleCommentReadStatus(commentId) {
