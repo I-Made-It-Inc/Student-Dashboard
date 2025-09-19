@@ -819,15 +819,19 @@
 }
 
 .add-achievement-form .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 0px;
+}
+
+.add-achievement-form .form-row .form-group {
+    margin-bottom: 0;
 }
 
 .add-achievement-form .form-actions {
     display: flex;
     gap: 12px;
     justify-content: flex-end;
-    margin-top: 20px;
-    padding-top: 16px;
+    margin-top: 0px;
+    padding-top: 12px;
     border-top: 1px solid #e5e7eb;
 }
 
