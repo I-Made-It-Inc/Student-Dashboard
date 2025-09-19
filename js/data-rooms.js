@@ -11,6 +11,7 @@ let dataRooms = [
         industry: ['Technology'],
         customMessage: 'Welcome to my tech portfolio! I\'m passionate about AI/ML and full-stack development. Feel free to explore my projects and achievements below.',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'], // Custom section order
+        achievements: ['ach-1', 'ach-2', 'ach-4', 'ach-5'], // Selected achievement IDs
         documents: [
             { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' },
             { id: 'resume-2', category: 'resumes', name: 'Jane_Doe_Tech_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Technical resume focused on software engineering and data science roles' },
@@ -40,6 +41,7 @@ let dataRooms = [
         industry: ['Finance', 'Consulting'],
         customMessage: '',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
+        achievements: ['ach-1', 'ach-3', 'ach-5'], // Selected achievement IDs
         documents: [
             { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Finance_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Finance-focused resume emphasizing quantitative analysis and modeling' },
             { id: 'cert-1', category: 'certificates', name: 'CFA_Level_I.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
@@ -64,6 +66,7 @@ let dataRooms = [
         industry: ['Research', 'Education'],
         customMessage: 'Focused on advancing AI research and academic excellence.',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
+        achievements: ['ach-1', 'ach-8'], // Selected achievement IDs
         documents: [
             { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Academic_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Academic CV showcasing research experience and publications' },
             { id: 'cert-1', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
@@ -137,6 +140,75 @@ let documentLibrary = {
         }
     ]
 };
+
+// Achievements library - represents achievements from profile (synced with profile page)
+// IMI-generated achievements have isVerified: true
+let achievementsLibrary = [
+    {
+        id: 'ach-1',
+        title: 'Top 5% IMI Student',
+        description: 'Ranked in top 5% based on XP and project completions',
+        isVerified: true,
+        icon: '🏆',
+        category: 'performance'
+    },
+    {
+        id: 'ach-2',
+        title: '12 Completed Projects',
+        description: 'Successfully delivered 12 co-op projects across 3 companies',
+        isVerified: true,
+        icon: '✓',
+        category: 'projects'
+    },
+    {
+        id: 'ach-3',
+        title: '3x Blueprint Pioneer',
+        description: 'Featured insights in Blueprint for the Future 3 times',
+        isVerified: true,
+        icon: '⚡',
+        category: 'innovation'
+    },
+    {
+        id: 'ach-4',
+        title: 'AI/ML Specialist',
+        description: 'Completed advanced AI/ML coursework with distinction',
+        isVerified: true,
+        icon: '🤖',
+        category: 'skills'
+    },
+    {
+        id: 'ach-5',
+        title: 'Cross-Industry Experience',
+        description: 'Worked with companies in Tech, Finance, and Healthcare',
+        isVerified: true,
+        icon: '🌐',
+        category: 'experience'
+    },
+    {
+        id: 'ach-6',
+        title: 'Networking Champion',
+        description: 'Connected with 50+ industry professionals',
+        isVerified: true,
+        icon: '🤝',
+        category: 'networking'
+    },
+    {
+        id: 'ach-7',
+        title: 'Python Expert',
+        description: 'Advanced proficiency in Python, Django, and data science libraries',
+        isVerified: false,
+        icon: '🐍',
+        category: 'skills'
+    },
+    {
+        id: 'ach-8',
+        title: 'Published Researcher',
+        description: 'Co-authored paper on neural network optimization',
+        isVerified: false,
+        icon: '📚',
+        category: 'research'
+    }
+];
 
 // Current room being edited
 let currentEditingRoom = null;
@@ -365,6 +437,7 @@ function handleCreateDataRoom(form) {
         description: form.querySelector('textarea').value,
         privacy: form.querySelector('select').value,
         industry: Array.from(form.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.closest('label').textContent.trim()),
+        achievements: [], // Start with no achievements selected
         documents: [],
         stats: {
             views: 0,
@@ -494,6 +567,15 @@ function editDataRoom(roomId) {
                             <small class="help-text">Drag to reorder how sections appear in your data room</small>
                         </div>
                     </form>
+                </div>
+
+                <!-- Achievements Selection -->
+                <div class="edit-room-achievements" id="data-room-achievements-section">
+                    <h4>Select Key Achievements</h4>
+                    <p class="help-text" style="margin-bottom: 16px;">Choose up to 4 achievements to highlight at the top of your data room</p>
+                    <div class="achievements-selection" id="achievements-selection">
+                        ${generateAchievementsSelection(room)}
+                    </div>
                 </div>
 
                 <!-- Document Selection -->
@@ -653,6 +735,85 @@ function getDocumentIcon(filename) {
     if (['jpg', 'jpeg', 'png'].includes(ext)) return '🖼️';
     if (['doc', 'docx'].includes(ext)) return '📝';
     return '📄';
+}
+
+// Generate achievements selection HTML
+function generateAchievementsSelection(room) {
+    const selectedAchievements = room.achievements || [];
+    const maxAchievements = 4;
+
+    let html = '<div class="achievements-selector-list">';
+
+    // Generate 4 dropdown selectors
+    for (let i = 0; i < maxAchievements; i++) {
+        const currentAchievementId = selectedAchievements[i] || '';
+        const currentAchievement = currentAchievementId ? achievementsLibrary.find(a => a.id === currentAchievementId) : null;
+
+        html += `
+            <div class="achievement-selector-item">
+                <label class="selector-label">Achievement ${i + 1}</label>
+                <select class="form-select achievement-select" data-index="${i}" id="achievement-select-${i}" onchange="updateAchievementSelection(${i}, this.value)">
+                    <option value="">None</option>
+                    <optgroup label="✓ IMI Verified Achievements">
+                        ${achievementsLibrary.filter(a => a.isVerified).map(achievement =>
+                            `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
+                                ${achievement.icon} ${achievement.title}
+                            </option>`
+                        ).join('')}
+                    </optgroup>
+                    <optgroup label="Custom Achievements">
+                        ${achievementsLibrary.filter(a => !a.isVerified).map(achievement =>
+                            `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
+                                ${achievement.icon} ${achievement.title}
+                            </option>`
+                        ).join('')}
+                    </optgroup>
+                </select>
+                ${currentAchievement ? `
+                    <div class="achievement-preview">
+                        <small class="achievement-description">${currentAchievement.description}</small>
+                        ${currentAchievement.isVerified ? '<span class="verified-badge">✓ IMI Verified</span>' : ''}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    html += `</div>
+        <div class="achievements-help-section">
+            <small class="help-text">💡 Tip: Manage all your achievements in your <a href="#" onclick="showPage('profile'); closeModal(); return false;">Profile</a> page</small>
+        </div>`;
+
+    return html;
+}
+
+// Update achievement selection
+function updateAchievementSelection(index, achievementId) {
+    console.log(`Updated achievement at index ${index}: ${achievementId || 'None'}`);
+
+    // Update the preview for the selected achievement
+    const selector = document.querySelector(`#achievement-select-${index}`);
+    const selectorItem = selector.closest('.achievement-selector-item');
+    const existingPreview = selectorItem.querySelector('.achievement-preview');
+
+    // Remove existing preview
+    if (existingPreview) {
+        existingPreview.remove();
+    }
+
+    // Add new preview if achievement is selected
+    if (achievementId) {
+        const achievement = achievementsLibrary.find(a => a.id === achievementId);
+        if (achievement) {
+            const previewHtml = `
+                <div class="achievement-preview">
+                    <small class="achievement-description">${achievement.description}</small>
+                    ${achievement.isVerified ? '<span class="verified-badge">✓ IMI Verified</span>' : ''}
+                </div>
+            `;
+            selector.insertAdjacentHTML('afterend', previewHtml);
+        }
+    }
 }
 
 // Initialize section drag and drop
@@ -841,7 +1002,8 @@ function cloneDataRoom(roomId) {
         documents: originalRoom.documents.map(doc => ({ ...doc })),
         // Deep clone other arrays
         industry: [...originalRoom.industry],
-        sectionOrder: [...originalRoom.sectionOrder]
+        sectionOrder: [...originalRoom.sectionOrder],
+        achievements: [...(originalRoom.achievements || [])]
     };
 
     // Add the cloned room to the data rooms array
@@ -879,6 +1041,16 @@ function handleSaveDataRoom() {
         const sections = sectionOrderContainer.querySelectorAll('.draggable-section');
         room.sectionOrder = Array.from(sections).map(section => section.dataset.section);
     }
+
+    // Update achievements selection
+    room.achievements = [];
+    const achievementSelectors = document.querySelectorAll('.achievement-select');
+    achievementSelectors.forEach(selector => {
+        const achievementId = selector.value;
+        if (achievementId) {
+            room.achievements.push(achievementId);
+        }
+    });
 
     // Update document selection
     const checkboxes = document.querySelectorAll('.document-item input[type="checkbox"]');
@@ -1643,6 +1815,7 @@ window.toggleDocumentSelection = toggleDocumentSelection;
 window.updateDocumentPermission = updateDocumentPermission;
 window.updateDescriptionType = updateDescriptionType;
 window.updateCustomDescription = updateCustomDescription;
+window.updateAchievementSelection = updateAchievementSelection;
 
 // Document Library Management Functions
 // These functions sync profile uploads/deletions with data room document selector
@@ -1769,3 +1942,5 @@ window.refreshDocumentSelector = refreshDocumentSelector;
 
 // Export documentLibrary for global access
 window.documentLibrary = documentLibrary;
+// Export achievementsLibrary for global access
+window.achievementsLibrary = achievementsLibrary;

@@ -37,6 +37,50 @@ function getSelectedDocumentsForDropdown(room) {
     return options.join('');
 }
 
+// Helper function to generate achievements HTML
+function generateAchievementsHTML(room) {
+    // Get the selected achievements
+    const selectedAchievementIds = room.achievements || [];
+
+    // If no achievements selected, return empty
+    if (selectedAchievementIds.length === 0) {
+        return '';
+    }
+
+    // Get achievements library
+    const achievementsLib = window.achievementsLibrary || [];
+
+    // Generate achievement badges
+    const achievementBadges = selectedAchievementIds
+        .map(id => {
+            const achievement = achievementsLib.find(a => a.id === id);
+            if (!achievement) return null;
+
+            return `
+                <div class="achievement-badge ${achievement.isVerified ? 'verified' : ''}">
+                    <span class="badge-icon">${achievement.icon || '⭐'}</span>
+                    <span class="badge-text">${achievement.title}</span>
+                    ${achievement.isVerified ? '<span class="verified-indicator" title="IMI Verified">✓</span>' : ''}
+                </div>
+            `;
+        })
+        .filter(html => html !== null)
+        .join('');
+
+    if (!achievementBadges) {
+        return '';
+    }
+
+    return `
+        <div class="achievements-section">
+            <h3 class="subsection-title">Key Achievements</h3>
+            <div class="achievement-badges">
+                ${achievementBadges}
+            </div>
+        </div>
+    `;
+}
+
 // Show data room preview (both preview mode and external view)
 function showDataRoomPreview(roomId, isPreviewMode = false) {
     console.log('🎬 === SHOW DATA ROOM PREVIEW STARTED ===');
@@ -195,25 +239,8 @@ function generatePreviewModeHTML(room) {
                             </div>
                         </div>
 
-                        <!-- Quick Stats -->
-                        <div class="room-stats">
-                            <div class="stat">
-                                <span class="stat-number">${room.stats.views}</span>
-                                <span class="stat-label">Views</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">${getSelectedDocumentCount(room)}</span>
-                                <span class="stat-label">Documents</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">${room.stats.downloads}</span>
-                                <span class="stat-label">Downloads</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">${room.stats.uniqueVisitors || 0}</span>
-                                <span class="stat-label">Unique Visitors</span>
-                            </div>
-                        </div>
+                        <!-- Key Achievements -->
+                        ${generateAchievementsHTML(room)}
                     </div>
 
                     <!-- Documents Section -->
@@ -304,27 +331,7 @@ function generateExternalViewHTML(room) {
                         </div>
 
                         <!-- Key Achievements -->
-                        <div class="achievements-section">
-                            <h3 class="subsection-title">Key Achievements</h3>
-                            <div class="achievement-badges">
-                                <div class="achievement-badge">
-                                    <span class="badge-icon">🏆</span>
-                                    <span class="badge-text">Top 5% IMI Student</span>
-                                </div>
-                                <div class="achievement-badge">
-                                    <span class="badge-icon">💡</span>
-                                    <span class="badge-text">3 Innovation Awards</span>
-                                </div>
-                                <div class="achievement-badge">
-                                    <span class="badge-icon">🚀</span>
-                                    <span class="badge-text">12 Completed Projects</span>
-                                </div>
-                                <div class="achievement-badge">
-                                    <span class="badge-icon">⭐</span>
-                                    <span class="badge-text">4.9/5 Company Rating</span>
-                                </div>
-                            </div>
-                        </div>
+                        ${generateAchievementsHTML(room)}
                     </div>
 
                     <!-- Documents Section -->
