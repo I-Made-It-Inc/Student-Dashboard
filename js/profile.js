@@ -19,6 +19,9 @@ function initializeProfile() {
     // Load documents from shared library
     loadDocumentsFromLibrary();
 
+    // Load achievements
+    loadAchievements();
+
     // Setup real-time preview updates
     setupProfilePreviewUpdates();
 }
@@ -387,14 +390,27 @@ function addDocumentToList(file, type) {
     documentItem.dataset.documentId = documentId;
 
     documentItem.innerHTML = `
-        <span class="doc-icon">${fileIcon}</span>
-        <div class="doc-info">
-            <span class="doc-name">${file.name}</span>
-            <span class="doc-meta">Uploaded ${new Date().toLocaleDateString()} • ${fileSize} MB</span>
+        <div class="document-header">
+            <span class="doc-icon">${fileIcon}</span>
+            <div class="doc-info">
+                <span class="doc-name">${file.name}</span>
+                <span class="doc-meta">Uploaded ${new Date().toLocaleDateString()} • ${fileSize} MB</span>
+            </div>
+            <div class="doc-actions">
+                <button class="btn-icon" title="Download" onclick="downloadDocument('${documentId}')">⬇️</button>
+                <button class="btn-icon" title="Delete" onclick="deleteDocument('${documentId}', '${type}')">🗑️</button>
+            </div>
         </div>
-        <div class="doc-actions">
-            <button class="btn-icon" title="Download" onclick="downloadDocument('${documentId}')">⬇️</button>
-            <button class="btn-icon" title="Delete" onclick="deleteDocument('${documentId}', '${type}')">🗑️</button>
+        <div class="default-description-section">
+            <label for="default-desc-${documentId}">Default Description:</label>
+            <textarea
+                id="default-desc-${documentId}"
+                class="default-description-input"
+                data-doc-id="${documentId}"
+                placeholder="Add a default description for this document..."
+                onchange="updateDefaultDescription('${documentId}', this.value)"
+                rows="1"></textarea>
+            <small class="help-text">This description will be used by default in all data rooms</small>
         </div>
     `;
 
@@ -679,9 +695,13 @@ function loadProfileData() {
     const savedProfile = localStorage.getItem('profileData');
     if (savedProfile) {
         const profileData = JSON.parse(savedProfile);
+
+
+
         populateProfileForm(profileData);
         updateProfilePreview(profileData);
     }
+
 
     const savedSocial = localStorage.getItem('socialLinks');
     if (savedSocial) {
@@ -695,12 +715,12 @@ function loadProfileData() {
 function populateProfileForm(data) {
     const inputs = document.querySelectorAll('#personal-info-form input, #personal-info-form textarea, #personal-info-form select');
     
-    // Map data to form fields
+    // Map data to form fields (excluding bio - let it use HTML default)
     const fieldMap = {
         'firstName': data.firstName,
         'lastName': data.lastName,
         'displayName': data.displayName,
-        'bio': data.bio,
+        // 'bio': data.bio, // Excluded - will use HTML default on refresh
         'school': data.school,
         'graduationYear': data.graduationYear,
         'phoneNumber': data.phoneNumber
@@ -780,7 +800,10 @@ function updateProfilePreview(data) {
     if (previewName) previewName.textContent = data.displayName;
     
     const previewBio = document.querySelector('.preview-bio');
-    if (previewBio) previewBio.textContent = data.bio;
+    const bioTextarea = document.getElementById('profile-bio');
+    if (previewBio && bioTextarea) {
+        previewBio.textContent = bioTextarea.value || data.bio || '';
+    }
     
     const previewSchool = document.querySelector('.preview-school');
     if (previewSchool) {
@@ -862,10 +885,360 @@ function triggerFileUpload(type) {
     if (input) input.click();
 }
 
+// Load achievements section
+function loadAchievements() {
+    console.log('Loading achievements...');
+
+    // Initialize achievements library if not available
+    if (!window.achievementsLibrary) {
+        console.log('Achievements library not available yet, will load when data-rooms.js loads');
+        return;
+    }
+
+    // Clean up any existing empty achievements
+    cleanupEmptyAchievements();
+
+    loadVerifiedAchievements();
+    loadCustomAchievements();
+    setupAchievementFormHandlers();
+}
+
+// Clean up empty achievements from library
+function cleanupEmptyAchievements() {
+    if (!window.achievementsLibrary) return;
+
+    const originalLength = window.achievementsLibrary.length;
+    window.achievementsLibrary = window.achievementsLibrary.filter(achievement => {
+        // Keep verified achievements regardless
+        if (achievement.isVerified) return true;
+
+        // For custom achievements, require non-empty title and description
+        return achievement.title &&
+               achievement.title.trim() &&
+               achievement.description &&
+               achievement.description.trim();
+    });
+
+    const removedCount = originalLength - window.achievementsLibrary.length;
+    if (removedCount > 0) {
+        console.log(`Cleaned up ${removedCount} empty custom achievements`);
+    }
+}
+
+// Load IMI-verified achievements (read-only)
+function loadVerifiedAchievements() {
+    const verifiedList = document.getElementById('verified-achievements-list');
+    if (!verifiedList) return;
+
+    const verifiedAchievements = window.achievementsLibrary.filter(a => a.isVerified);
+
+    if (verifiedAchievements.length === 0) {
+        verifiedList.innerHTML = '<p class="no-achievements">No verified achievements yet. Keep working hard!</p>';
+        return;
+    }
+
+    verifiedList.innerHTML = verifiedAchievements.map(achievement => `
+        <div class="achievement-card verified">
+            <div class="achievement-header">
+                <span class="achievement-icon">${achievement.icon}</span>
+                <div class="achievement-info">
+                    <h5 class="achievement-title">${achievement.title}</h5>
+                    <p class="achievement-description">${achievement.description}</p>
+                </div>
+                <div class="verified-indicator" title="Verified">✓</div>
+            </div>
+            <div class="achievement-meta">
+                <span class="achievement-category">${achievement.category}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Load custom achievements
+function loadCustomAchievements() {
+    const customList = document.getElementById('custom-achievements-list');
+    if (!customList) return;
+
+    // Filter out any achievements with empty titles or descriptions
+    const customAchievements = window.achievementsLibrary.filter(a =>
+        !a.isVerified && a.title && a.title.trim() && a.description && a.description.trim()
+    );
+
+    if (customAchievements.length === 0) {
+        customList.innerHTML = '<p class="no-achievements">No custom achievements added yet.</p>';
+        return;
+    }
+
+    customList.innerHTML = customAchievements.map(achievement => `
+        <div class="achievement-card custom" data-achievement-id="${achievement.id}">
+            <div class="achievement-header">
+                <span class="achievement-icon">${achievement.icon}</span>
+                <div class="achievement-info">
+                    <h5 class="achievement-title">${achievement.title}</h5>
+                    <p class="achievement-description">${achievement.description}</p>
+                </div>
+                <div class="achievement-actions">
+                    <button class="btn-icon" title="Edit" onclick="editCustomAchievement('${achievement.id}')">✏️</button>
+                    <button class="btn-icon" title="Delete" onclick="deleteCustomAchievement('${achievement.id}')">🗑️</button>
+                </div>
+            </div>
+            <div class="achievement-meta">
+                <span class="achievement-category">${achievement.category}</span>
+                ${achievement.dateAchieved ? `<span class="achievement-date">${formatDate(achievement.dateAchieved)}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Setup achievement form handlers
+function setupAchievementFormHandlers() {
+    const form = document.getElementById('custom-achievement-form');
+    if (!form) return;
+
+    // Remove any existing event listeners first
+    const newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+
+    // Add single event listener
+    newForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleAddCustomAchievement(this);
+    });
+}
+
+// Show add achievement form
+function showAddAchievementForm() {
+    document.getElementById('add-achievement-form').style.display = 'block';
+    document.getElementById('add-achievement-button').style.display = 'none';
+
+    // Focus on first input
+    const firstInput = document.querySelector('#add-achievement-form input[type="text"]');
+    if (firstInput) firstInput.focus();
+}
+
+// Cancel add achievement
+function cancelAddAchievement() {
+    document.getElementById('add-achievement-form').style.display = 'none';
+    document.getElementById('add-achievement-button').style.display = 'block';
+
+    // Reset form
+    document.getElementById('custom-achievement-form').reset();
+
+    // Reset submission flag
+    isSubmittingAchievement = false;
+}
+
+// Prevent double submission
+let isSubmittingAchievement = false;
+
+// Handle add custom achievement
+function handleAddCustomAchievement(form) {
+    // Prevent double submission
+    if (isSubmittingAchievement) {
+        console.log('Already submitting, ignoring duplicate submission');
+        return;
+    }
+    isSubmittingAchievement = true;
+
+    const titleInput = form.querySelector('input[type="text"]');
+    const iconSelect = form.querySelector('select');
+    const descriptionTextarea = form.querySelector('textarea');
+    const categorySelect = form.querySelectorAll('select')[1];
+    const dateInput = form.querySelector('input[type="date"]');
+
+    // Validate required fields
+    const title = titleInput.value.trim();
+    const description = descriptionTextarea.value.trim();
+
+    if (!title || !description) {
+        if (window.showToast) {
+            window.showToast('Please fill in both title and description', 'error');
+        }
+        isSubmittingAchievement = false;
+        return;
+    }
+
+    const achievement = {
+        id: 'custom-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+        title: title,
+        description: description,
+        icon: iconSelect.value || '🏆',
+        category: categorySelect.value || 'other',
+        dateAchieved: dateInput.value || null,
+        isVerified: false
+    };
+
+    // Add to achievements library (global window.achievementsLibrary is the single source of truth)
+    if (!window.achievementsLibrary) {
+        window.achievementsLibrary = [];
+    }
+
+    window.achievementsLibrary.push(achievement);
+
+    console.log('Added achievement to global library. Total achievements:', window.achievementsLibrary.length);
+
+    // Refresh any open data room edit modals to show new achievement
+    if (window.currentEditingRoom && typeof window.refreshAchievementSelector === 'function') {
+        window.refreshAchievementSelector();
+    }
+
+    // Refresh display
+    loadCustomAchievements();
+
+    // Hide form
+    cancelAddAchievement();
+
+    // Show success message
+    if (window.showToast) {
+        window.showToast('Achievement added successfully!', 'success');
+    }
+
+    // Reset submission flag
+    isSubmittingAchievement = false;
+
+    console.log('Added custom achievement:', achievement);
+}
+
+// Edit custom achievement
+function editCustomAchievement(achievementId) {
+    const achievement = window.achievementsLibrary.find(a => a.id === achievementId);
+    if (!achievement) return;
+
+    // Show form
+    showAddAchievementForm();
+
+    // Populate form with existing data
+    const form = document.getElementById('custom-achievement-form');
+    const titleInput = form.querySelector('input[type="text"]');
+    const iconSelect = form.querySelector('select');
+    const descriptionTextarea = form.querySelector('textarea');
+    const categorySelect = form.querySelectorAll('select')[1];
+    const dateInput = form.querySelector('input[type="date"]');
+
+    titleInput.value = achievement.title;
+    iconSelect.value = achievement.icon;
+    descriptionTextarea.value = achievement.description;
+    categorySelect.value = achievement.category;
+    dateInput.value = achievement.dateAchieved || '';
+
+    // Change form to edit mode
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.textContent = 'Update Achievement';
+
+    // Update form handler temporarily
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        handleUpdateCustomAchievement(achievementId, this);
+    };
+}
+
+// Handle update custom achievement
+function handleUpdateCustomAchievement(achievementId, form) {
+    const achievement = window.achievementsLibrary.find(a => a.id === achievementId);
+    if (!achievement) return;
+
+    const titleInput = form.querySelector('input[type="text"]');
+    const iconSelect = form.querySelector('select');
+    const descriptionTextarea = form.querySelector('textarea');
+    const categorySelect = form.querySelectorAll('select')[1];
+    const dateInput = form.querySelector('input[type="date"]');
+
+    // Update achievement (since it's a reference, this updates the global library automatically)
+    achievement.title = titleInput.value.trim();
+    achievement.description = descriptionTextarea.value.trim();
+    achievement.icon = iconSelect.value;
+    achievement.category = categorySelect.value;
+    achievement.dateAchieved = dateInput.value || null;
+
+    console.log('Updated achievement in global library:', achievement.title);
+
+    // Refresh any open data room edit modals to update achievement selectors
+    if (window.currentEditingRoom && typeof window.refreshAchievementSelector === 'function') {
+        window.refreshAchievementSelector();
+    }
+
+    // Refresh display
+    loadCustomAchievements();
+
+    // Hide form and reset
+    cancelAddAchievement();
+
+    // Reset form handler
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.textContent = 'Add Achievement';
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        handleAddCustomAchievement(this);
+    };
+
+    // Show success message
+    if (window.showToast) {
+        window.showToast('Achievement updated successfully!', 'success');
+    }
+
+    console.log('Updated custom achievement:', achievement);
+}
+
+// Delete custom achievement
+function deleteCustomAchievement(achievementId) {
+    const achievement = window.achievementsLibrary.find(a => a.id === achievementId);
+    if (!achievement) return;
+
+    if (confirm(`Are you sure you want to delete "${achievement.title}"?`)) {
+        // Remove from global library (single source of truth)
+        const index = window.achievementsLibrary.findIndex(a => a.id === achievementId);
+        if (index !== -1) {
+            window.achievementsLibrary.splice(index, 1);
+        }
+
+        console.log('Removed achievement from global library. Remaining achievements:', window.achievementsLibrary.length);
+
+        // Remove from any data rooms that reference this achievement
+        if (window.dataRooms) {
+            window.dataRooms.forEach(room => {
+                if (room.achievements) {
+                    room.achievements = room.achievements.filter(id => id !== achievementId);
+                }
+            });
+        }
+
+        // Refresh any open data room edit modals to update achievement selectors
+        if (window.currentEditingRoom && typeof window.refreshAchievementSelector === 'function') {
+            window.refreshAchievementSelector();
+        }
+
+        // Refresh display
+        loadCustomAchievements();
+
+        // Show success message
+        if (window.showToast) {
+            window.showToast('Achievement deleted successfully!', 'success');
+        }
+
+        console.log('Deleted custom achievement:', achievementId);
+    }
+}
+
+// Format date helper
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
 // Export functions
 window.initializeProfile = initializeProfile;
 window.setupDocumentUploads = setupDocumentUploads;
 window.loadDocumentsFromLibrary = loadDocumentsFromLibrary;
+window.loadAchievements = loadAchievements;
+window.showAddAchievementForm = showAddAchievementForm;
+window.cancelAddAchievement = cancelAddAchievement;
+window.editCustomAchievement = editCustomAchievement;
+window.deleteCustomAchievement = deleteCustomAchievement;
 window.exportProfile = exportProfile;
 window.changePassword = changePassword;
 window.confirmDeleteAccount = confirmDeleteAccount;

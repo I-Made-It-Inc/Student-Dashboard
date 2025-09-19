@@ -273,6 +273,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    position: relative;
 }
 
 .badge-icon {
@@ -283,6 +284,22 @@
     font-size: 14px;
     font-weight: 600;
     color: #374151;
+}
+
+.verified-indicator {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(4, 40, 71, 0.15);
+    color: var(--imi-blue);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
 }
 
 /* Custom Message */
@@ -324,7 +341,7 @@
     font-size: 24px;
     font-weight: 700;
     color: #042847;
-    margin: 0 0 0px 0;
+    margin: 0;
 }
 
 .documents-grid {
@@ -630,7 +647,12 @@
 
 /* Comments Section */
 .comments-section {
-    margin-top: 48px;
+    margin-top: 32px;
+    margin-bottom: 48px;
+}
+
+.comments-section .section-title {
+    margin-bottom: 24px;
 }
 
 .comment-form-card {
@@ -797,7 +819,7 @@
     font-size: 20px;
     font-weight: 600;
     color: #042847;
-    margin: 0 0 20px 0;
+    margin: 0 0 0px 0;
     text-align: center;
 }
 

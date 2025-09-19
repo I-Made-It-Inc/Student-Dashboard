@@ -37,6 +37,50 @@ function getSelectedDocumentsForDropdown(room) {
     return options.join('');
 }
 
+// Helper function to generate achievements HTML
+function generateAchievementsHTML(room) {
+    // Get the selected achievements
+    const selectedAchievementIds = room.achievements || [];
+
+    // If no achievements selected, return empty
+    if (selectedAchievementIds.length === 0) {
+        return '';
+    }
+
+    // Get achievements library
+    const achievementsLib = window.achievementsLibrary || [];
+
+    // Generate achievement badges
+    const achievementBadges = selectedAchievementIds
+        .map(id => {
+            const achievement = achievementsLib.find(a => a.id === id);
+            if (!achievement) return null;
+
+            return `
+                <div class="achievement-badge ${achievement.isVerified ? 'verified' : ''}">
+                    <span class="badge-icon">${achievement.icon || '⭐'}</span>
+                    <span class="badge-text">${achievement.title}</span>
+                    ${achievement.isVerified ? '<span class="verified-indicator" title="Verified">✓</span>' : ''}
+                </div>
+            `;
+        })
+        .filter(html => html !== null)
+        .join('');
+
+    if (!achievementBadges) {
+        return '';
+    }
+
+    return `
+        <div class="achievements-section">
+            <h3 class="subsection-title">Key Achievements</h3>
+            <div class="achievement-badges">
+                ${achievementBadges}
+            </div>
+        </div>
+    `;
+}
+
 // Show data room preview (both preview mode and external view)
 function showDataRoomPreview(roomId, isPreviewMode = false) {
     console.log('🎬 === SHOW DATA ROOM PREVIEW STARTED ===');
@@ -67,8 +111,8 @@ function showDataRoomPreview(roomId, isPreviewMode = false) {
     const roomsData = window.dataRooms || dataRooms;
     console.log('📊 Using rooms data:', roomsData ? `${roomsData.length} rooms` : 'null');
 
-    // Find the room data
-    const room = roomsData.find(r => r.id === roomId);
+    // Find the room data (check both id and customId)
+    const room = roomsData.find(r => r.id === roomId || r.customId === roomId);
     console.log('🔍 Found room:', room ? room.name : 'NOT FOUND');
 
     if (!room) {
@@ -192,29 +236,25 @@ function generatePreviewModeHTML(room) {
                                     <span class="meta-item">📧 jane.doe@example.com</span>
                                     <span class="meta-item">💼 8 months with IMI</span>
                                 </div>
+                                <div class="student-bio">
+                                    <p>${getStudentBio()}</p>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Quick Stats -->
-                        <div class="room-stats">
-                            <div class="stat">
-                                <span class="stat-number">${room.stats.views}</span>
-                                <span class="stat-label">Views</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">${getSelectedDocumentCount(room)}</span>
-                                <span class="stat-label">Documents</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">${room.stats.downloads}</span>
-                                <span class="stat-label">Downloads</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">${room.stats.uniqueVisitors || 0}</span>
-                                <span class="stat-label">Unique Visitors</span>
+                        <!-- Key Achievements -->
+                        ${generateAchievementsHTML(room)}
+                    </div>
+
+                    ${room.customMessage && room.customMessage.trim() ? `
+                        <!-- Custom Welcome Message -->
+                        <div class="room-custom-message">
+                            <div class="message-icon">💬</div>
+                            <div class="message-content">
+                                <p>${room.customMessage}</p>
                             </div>
                         </div>
-                    </div>
+                    ` : ''}
 
                     <!-- Documents Section -->
                     <div class="documents-section">
@@ -278,6 +318,7 @@ function generateExternalViewHTML(room) {
                     <div class="room-header-card">
                         <div class="room-header-top">
                             <h1 class="room-title">${room.name}</h1>
+                            <span class="privacy-badge privacy-${room.privacy}">${getPrivacyLabel(room.privacy)}</span>
                             ${room.privacy === 'request' ? '<span class="access-granted-badge">✓ Access Granted</span>' : ''}
                         </div>
                         <p class="room-description">${room.description}</p>
@@ -292,40 +333,28 @@ function generateExternalViewHTML(room) {
                                 <p class="student-title">High School Senior • IMI Co-op Student</p>
                                 <div class="student-meta">
                                     <span class="meta-item">📍 Toronto, ON</span>
-                                    <span class="meta-item">🎓 Expected Graduation: June 2025</span>
-                                    <span class="meta-item">💼 ${room.industry.join(', ')}</span>
+                                    <span class="meta-item">📧 jane.doe@example.com</span>
+                                    <span class="meta-item">💼 8 months with IMI</span>
                                 </div>
                                 <div class="student-bio">
-                                    <p>Passionate about technology and innovation, with hands-on experience in AI/ML projects
-                                    through IMI's co-op program. Seeking opportunities to apply my skills in data analysis
-                                    and software development.</p>
+                                    <p>${getStudentBio()}</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Key Achievements -->
-                        <div class="achievements-section">
-                            <h3 class="subsection-title">Key Achievements</h3>
-                            <div class="achievement-badges">
-                                <div class="achievement-badge">
-                                    <span class="badge-icon">🏆</span>
-                                    <span class="badge-text">Top 5% IMI Student</span>
-                                </div>
-                                <div class="achievement-badge">
-                                    <span class="badge-icon">💡</span>
-                                    <span class="badge-text">3 Innovation Awards</span>
-                                </div>
-                                <div class="achievement-badge">
-                                    <span class="badge-icon">🚀</span>
-                                    <span class="badge-text">12 Completed Projects</span>
-                                </div>
-                                <div class="achievement-badge">
-                                    <span class="badge-icon">⭐</span>
-                                    <span class="badge-text">4.9/5 Company Rating</span>
-                                </div>
+                        ${generateAchievementsHTML(room)}
+                    </div>
+
+                    ${room.customMessage && room.customMessage.trim() ? `
+                        <!-- Custom Welcome Message -->
+                        <div class="room-custom-message">
+                            <div class="message-icon">💬</div>
+                            <div class="message-content">
+                                <p>${room.customMessage}</p>
                             </div>
                         </div>
-                    </div>
+                    ` : ''}
 
                     <!-- Documents Section -->
                     <div class="documents-section">
@@ -441,6 +470,18 @@ function generateRequestAccessHTML(room) {
                                 <label>Reason for Access *</label>
                                 <textarea class="form-textarea" rows="3" placeholder="Please describe why you'd like to view this portfolio..." required></textarea>
                             </div>
+                            <div class="form-group">
+                                <label>Requested Access Duration *</label>
+                                <select class="form-select" required>
+                                    <option value="24h">24 hours</option>
+                                    <option value="3d">3 days</option>
+                                    <option value="7d" selected>7 days</option>
+                                    <option value="14d">14 days</option>
+                                    <option value="30d">30 days</option>
+                                    <option value="unlimited">Unlimited</option>
+                                </select>
+                                <small class="help-text">How long you need access to review this portfolio</small>
+                            </div>
                             <button type="submit" class="btn btn-primary btn-large">Send Access Request</button>
                         </form>
                     </div>
@@ -531,21 +572,7 @@ function generateDocumentsHTML(room, isPreviewMode) {
     // Use room's section order or default order
     const sectionOrder = room.sectionOrder || ['resumes', 'certificates', 'references', 'projects'];
 
-    let html = '';
-
-    // Show custom message if exists
-    if (room.customMessage && room.customMessage.trim()) {
-        html += `
-            <div class="room-custom-message">
-                <div class="message-icon">💬</div>
-                <div class="message-content">
-                    <p>${room.customMessage}</p>
-                </div>
-            </div>
-        `;
-    }
-
-    html += '<div class="documents-grid">';
+    let html = '<div class="documents-grid">';
 
     // Generate sections in the specified order
     sectionOrder.forEach(categoryKey => {
@@ -740,8 +767,10 @@ function generateDocumentDescription(doc) {
     if (doc.descriptionType === 'default') {
         // Use default description from profile
         const docFromLibrary = findDocumentInLibrary(doc.id);
-        if (docFromLibrary && docFromLibrary.defaultDescription && docFromLibrary.defaultDescription.trim()) {
-            return `<div class="document-description">${docFromLibrary.defaultDescription}</div>`;
+        if (docFromLibrary && docFromLibrary.hasOwnProperty('defaultDescription')) {
+            // If defaultDescription exists (even if empty), use it
+            return docFromLibrary.defaultDescription.trim() ?
+                `<div class="document-description">${docFromLibrary.defaultDescription}</div>` : '';
         }
     }
 
@@ -814,6 +843,31 @@ function formatDate(dateString) {
         day: 'numeric',
         year: 'numeric'
     });
+}
+
+// Get student bio from current DOM (like files and achievements)
+function getStudentBio() {
+    // Try to get bio from current DOM element (when on profile page)
+    const bioTextarea = document.getElementById('profile-bio');
+    if (bioTextarea && bioTextarea.value && bioTextarea.value.trim()) {
+        return bioTextarea.value.trim();
+    }
+
+    // If not on profile page, try to get from localStorage as secondary option
+    try {
+        const profileData = localStorage.getItem('profileData');
+        if (profileData) {
+            const profile = JSON.parse(profileData);
+            if (profile.bio && profile.bio.trim()) {
+                return profile.bio.trim();
+            }
+        }
+    } catch (e) {
+        console.warn('Error parsing profile data:', e);
+    }
+
+    // Fallback to default bio if neither DOM nor localStorage available
+    return "Passionate technology student with hands-on experience in AI/ML projects through IMI's co-op program. I enjoy solving complex problems through innovative software solutions and am always eager to learn new technologies. Currently seeking opportunities to apply my skills in data analysis, software development, and project management.";
 }
 
 // Check room access (simplified for demo)

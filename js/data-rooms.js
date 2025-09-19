@@ -4,13 +4,15 @@
 // Sample data - in production this would come from an API
 let dataRooms = [
     {
-        id: 'tech-roles',
+        id: 'tech-roles-2024',
+        customId: 'tech-roles',
         name: 'Tech Roles Portfolio',
         description: 'Portfolio tailored for software engineering and data science roles',
         privacy: 'public',
         industry: ['Technology'],
-        customMessage: 'Welcome to my tech portfolio! I\'m passionate about AI/ML and full-stack development. Feel free to explore my projects and achievements below.',
+        customMessage: 'Welcome to my technology-focused portfolio! This collection showcases my most relevant projects, certifications, and achievements in AI/ML and software development.',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'], // Custom section order
+        achievements: ['ach-1', 'ach-2', 'ach-4', 'ach-5'], // Selected achievement IDs
         documents: [
             { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' },
             { id: 'resume-2', category: 'resumes', name: 'Jane_Doe_Tech_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Technical resume focused on software engineering and data science roles' },
@@ -33,13 +35,15 @@ let dataRooms = [
         updatedAt: '2024-12-08'
     },
     {
-        id: 'finance-roles',
+        id: 'finance-roles-2024',
+        customId: 'finance-roles',
         name: 'Finance & Consulting',
         description: 'Focused on finance, consulting, and business strategy positions',
         privacy: 'request',
         industry: ['Finance', 'Consulting'],
         customMessage: '',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
+        achievements: ['ach-1', 'ach-3', 'ach-5'], // Selected achievement IDs
         documents: [
             { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Finance_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Finance-focused resume emphasizing quantitative analysis and modeling' },
             { id: 'cert-1', category: 'certificates', name: 'CFA_Level_I.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
@@ -57,13 +61,15 @@ let dataRooms = [
         updatedAt: '2024-12-05'
     },
     {
-        id: 'research-roles',
+        id: 'research-roles-2024',
+        customId: 'research-roles',
         name: 'Research & Academia',
         description: 'Materials for research internships and academic programs',
         privacy: 'private',
         industry: ['Research', 'Education'],
-        customMessage: 'Focused on advancing AI research and academic excellence.',
+        customMessage: 'This academic portfolio highlights my research contributions, publications, and scholarly achievements in artificial intelligence.',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
+        achievements: ['ach-1', 'ach-8'], // Selected achievement IDs
         documents: [
             { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Academic_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Academic CV showcasing research experience and publications' },
             { id: 'cert-1', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
@@ -83,6 +89,9 @@ let dataRooms = [
         updatedAt: '2024-11-28'
     }
 ];
+
+// Note: Hard refresh always resets to the 3 default demo rooms
+// This is intentional for demo purposes - no localStorage persistence
 
 // Document library - represents documents uploaded to profile (synced with profile page)
 let documentLibrary = {
@@ -137,6 +146,75 @@ let documentLibrary = {
         }
     ]
 };
+
+// Achievements library - represents achievements from profile (synced with profile page)
+// IMI-generated achievements have isVerified: true
+let achievementsLibrary = [
+    {
+        id: 'ach-1',
+        title: 'Top 5% IMI Student',
+        description: 'Ranked in top 5% based on XP and project completions',
+        isVerified: true,
+        icon: '🏆',
+        category: 'academic'
+    },
+    {
+        id: 'ach-2',
+        title: '12 Completed Projects',
+        description: 'Successfully delivered 12 co-op projects across 3 companies',
+        isVerified: true,
+        icon: '✓',
+        category: 'projects'
+    },
+    {
+        id: 'ach-3',
+        title: '3x Blueprint Pioneer',
+        description: 'Featured insights in Blueprint for the Future 3 times',
+        isVerified: true,
+        icon: '⚡',
+        category: 'academic'
+    },
+    {
+        id: 'ach-4',
+        title: 'AI/ML Specialist',
+        description: 'Completed advanced AI/ML coursework with distinction',
+        isVerified: true,
+        icon: '🤖',
+        category: 'skills'
+    },
+    {
+        id: 'ach-5',
+        title: 'Cross-Industry Experience',
+        description: 'Worked with companies in Tech, Finance, and Healthcare',
+        isVerified: true,
+        icon: '🌐',
+        category: 'leadership'
+    },
+    {
+        id: 'ach-6',
+        title: 'Networking Champion',
+        description: 'Connected with 50+ industry professionals',
+        isVerified: true,
+        icon: '🤝',
+        category: 'leadership'
+    },
+    {
+        id: 'ach-7',
+        title: 'Python Expert',
+        description: 'Advanced proficiency in Python, Django, and data science libraries',
+        isVerified: false,
+        icon: '🐍',
+        category: 'skills'
+    },
+    {
+        id: 'ach-8',
+        title: 'Published Researcher',
+        description: 'Co-authored paper on neural network optimization',
+        isVerified: false,
+        icon: '📚',
+        category: 'academic'
+    }
+];
 
 // Current room being edited
 let currentEditingRoom = null;
@@ -365,6 +443,7 @@ function handleCreateDataRoom(form) {
         description: form.querySelector('textarea').value,
         privacy: form.querySelector('select').value,
         industry: Array.from(form.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.closest('label').textContent.trim()),
+        achievements: [], // Start with no achievements selected
         documents: [],
         stats: {
             views: 0,
@@ -411,8 +490,9 @@ function previewDataRoom(roomId) {
     console.log('✅ Room found:', room.name);
     console.log('📍 Current location hash:', window.location.hash);
 
-    // Navigate to preview mode
-    const newHash = `#data-room-preview/${roomId}`;
+    // Navigate to preview mode using customId if available
+    const displayId = room.customId ? room.customId : roomId;
+    const newHash = `#data-room-preview/${displayId}`;
     console.log('🔄 Setting hash to:', newHash);
     window.location.hash = newHash;
 
@@ -494,13 +574,22 @@ function editDataRoom(roomId) {
                             <small class="help-text">Drag to reorder how sections appear in your data room</small>
                         </div>
                     </form>
+
+                    <!-- Document Selection (in left column) -->
+                    <div class="edit-room-documents" id="data-room-documents-section" style="margin-top: 24px;">
+                        <h4>Select Documents</h4>
+                        <div class="document-categories" id="document-categories">
+                            ${generateDocumentSelection(room)}
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Document Selection -->
-                <div class="edit-room-documents" id="data-room-documents-section">
-                    <h4>Select Documents</h4>
-                    <div class="document-categories" id="document-categories">
-                        ${generateDocumentSelection(room)}
+                <!-- Achievements Selection (in right column) -->
+                <div class="edit-room-achievements" id="data-room-achievements-section">
+                    <h4>Select Key Achievements</h4>
+                    <p class="help-text" style="margin-bottom: 16px;">Choose up to 4 achievements to highlight at the top of your data room</p>
+                    <div class="achievements-selection" id="achievements-selection">
+                        ${generateAchievementsSelection(room)}
                     </div>
                 </div>
             </div>
@@ -590,15 +679,36 @@ function generateDocumentSelection(room) {
                                         <label>Description for this Room:</label>
                                         <div class="description-type-selector">
                                             <label class="description-option">
-                                                <input type="radio" name="desc-type-${doc.id}" value="none" data-doc-id="${doc.id}" ${currentDescriptionType === 'none' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <input type="radio" name="desc-type-${doc.id}" value="none" data-doc-id="${doc.id}" ${currentDescriptionType === 'none' ? 'checked' : ''}
+                                                       onchange="
+                                                           const item = this.closest('.document-item');
+                                                           const defaultPreview = item.querySelector('.default-preview');
+                                                           const customContainer = item.querySelector('.custom-description-container');
+                                                           if(defaultPreview) defaultPreview.style.display = 'none';
+                                                           if(customContainer) customContainer.style.display = 'none';
+                                                       ">
                                                 <span>None</span>
                                             </label>
                                             <label class="description-option">
-                                                <input type="radio" name="desc-type-${doc.id}" value="default" data-doc-id="${doc.id}" ${currentDescriptionType === 'default' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <input type="radio" name="desc-type-${doc.id}" value="default" data-doc-id="${doc.id}" ${currentDescriptionType === 'default' ? 'checked' : ''}
+                                                       onchange="
+                                                           const item = this.closest('.document-item');
+                                                           const defaultPreview = item.querySelector('.default-preview');
+                                                           const customContainer = item.querySelector('.custom-description-container');
+                                                           if(defaultPreview) defaultPreview.style.display = 'block';
+                                                           if(customContainer) customContainer.style.display = 'none';
+                                                       ">
                                                 <span>Default</span>
                                             </label>
                                             <label class="description-option">
-                                                <input type="radio" name="desc-type-${doc.id}" value="custom" data-doc-id="${doc.id}" ${currentDescriptionType === 'custom' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <input type="radio" name="desc-type-${doc.id}" value="custom" data-doc-id="${doc.id}" ${currentDescriptionType === 'custom' ? 'checked' : ''}
+                                                       onchange="
+                                                           const item = this.closest('.document-item');
+                                                           const defaultPreview = item.querySelector('.default-preview');
+                                                           const customContainer = item.querySelector('.custom-description-container');
+                                                           if(defaultPreview) defaultPreview.style.display = 'none';
+                                                           if(customContainer) customContainer.style.display = 'block';
+                                                       ">
                                                 <span>Custom</span>
                                             </label>
                                         </div>
@@ -653,6 +763,108 @@ function getDocumentIcon(filename) {
     if (['jpg', 'jpeg', 'png'].includes(ext)) return '🖼️';
     if (['doc', 'docx'].includes(ext)) return '📝';
     return '📄';
+}
+
+// Generate achievements selection HTML
+function generateAchievementsSelection(room) {
+    const selectedAchievements = room.achievements || [];
+    const maxAchievements = 4;
+
+    // Use global achievements library
+    const globalAchievementsLibrary = window.achievementsLibrary || achievementsLibrary || [];
+
+    let html = '<div class="achievements-selector-list">';
+
+    // Generate 4 dropdown selectors
+    for (let i = 0; i < maxAchievements; i++) {
+        const currentAchievementId = selectedAchievements[i] || '';
+        const currentAchievement = currentAchievementId ? globalAchievementsLibrary.find(a => a.id === currentAchievementId) : null;
+
+        html += `
+            <div class="achievement-selector-item">
+                <label class="selector-label">Achievement ${i + 1}</label>
+                <select class="form-select achievement-select" data-index="${i}" id="achievement-select-${i}" onchange="updateAchievementSelection(${i}, this.value)">
+                    <option value="">None</option>
+                    <optgroup label="✓ Verified Achievements">
+                        ${globalAchievementsLibrary.filter(a => a.isVerified).map(achievement =>
+                            `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
+                                ${achievement.icon} ${achievement.title}
+                            </option>`
+                        ).join('')}
+                    </optgroup>
+                    <optgroup label="Custom Achievements">
+                        ${globalAchievementsLibrary.filter(a => !a.isVerified).map(achievement =>
+                            `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
+                                ${achievement.icon} ${achievement.title}
+                            </option>`
+                        ).join('')}
+                    </optgroup>
+                </select>
+                ${currentAchievement ? `
+                    <div class="achievement-preview">
+                        <small class="achievement-description">${currentAchievement.description}</small>
+                        ${currentAchievement.isVerified ? '<span class="verified-badge">✓ Verified</span>' : ''}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    html += `</div>
+        <div class="achievements-help-section">
+            <small class="help-text">💡 Tip: Manage all your achievements in your <a href="#" onclick="showPage('profile'); closeModal(); return false;">Profile</a> page</small>
+        </div>`;
+
+    return html;
+}
+
+// Update achievement selection
+function updateAchievementSelection(index, achievementId) {
+    console.log(`Updated achievement at index ${index}: ${achievementId || 'None'}`);
+
+    // Use global achievements library
+    const globalAchievementsLibrary = window.achievementsLibrary || achievementsLibrary || [];
+
+    // Update the preview for the selected achievement
+    const selector = document.querySelector(`#achievement-select-${index}`);
+    const selectorItem = selector.closest('.achievement-selector-item');
+    const existingPreview = selectorItem.querySelector('.achievement-preview');
+
+    // Remove existing preview with animation
+    if (existingPreview) {
+        existingPreview.style.opacity = '0';
+        existingPreview.style.transform = 'translateY(-10px)';
+        setTimeout(() => {
+            if (existingPreview.parentNode) {
+                existingPreview.remove();
+            }
+        }, 200);
+    }
+
+    // Add new preview if achievement is selected
+    if (achievementId) {
+        const achievement = globalAchievementsLibrary.find(a => a.id === achievementId);
+        if (achievement) {
+            setTimeout(() => {
+                const previewHtml = `
+                    <div class="achievement-preview" style="opacity: 0; transform: translateY(10px);">
+                        <small class="achievement-description">${achievement.description}</small>
+                        ${achievement.isVerified ? '<span class="verified-badge">✓ Verified</span>' : ''}
+                    </div>
+                `;
+                selector.insertAdjacentHTML('afterend', previewHtml);
+
+                // Animate in
+                const newPreview = selectorItem.querySelector('.achievement-preview');
+                if (newPreview) {
+                    setTimeout(() => {
+                        newPreview.style.opacity = '1';
+                        newPreview.style.transform = 'translateY(0)';
+                    }, 10);
+                }
+            }, existingPreview ? 200 : 0);
+        }
+    }
 }
 
 // Initialize section drag and drop
@@ -823,10 +1035,22 @@ function cloneDataRoom(roomId) {
     // Generate unique ID for the clone
     const cloneId = `clone-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
+    // Generate unique custom ID for the clone based on the original
+    let baseCustomId = originalRoom.customId || originalRoom.id;
+    let cloneCustomId = `${baseCustomId}-copy`;
+    let customCounter = 1;
+
+    // Check if custom ID already exists and increment counter
+    while (dataRooms.some(room => room.customId === cloneCustomId || room.id === cloneCustomId)) {
+        cloneCustomId = `${baseCustomId}-${customCounter}`;
+        customCounter++;
+    }
+
     // Deep clone the room data
     const clonedRoom = {
         ...originalRoom,
         id: cloneId,
+        customId: cloneCustomId,
         name: cloneName,
         createdAt: new Date().toISOString().split('T')[0],
         updatedAt: new Date().toISOString().split('T')[0],
@@ -841,7 +1065,8 @@ function cloneDataRoom(roomId) {
         documents: originalRoom.documents.map(doc => ({ ...doc })),
         // Deep clone other arrays
         industry: [...originalRoom.industry],
-        sectionOrder: [...originalRoom.sectionOrder]
+        sectionOrder: [...originalRoom.sectionOrder],
+        achievements: [...(originalRoom.achievements || [])]
     };
 
     // Add the cloned room to the data rooms array
@@ -879,6 +1104,16 @@ function handleSaveDataRoom() {
         const sections = sectionOrderContainer.querySelectorAll('.draggable-section');
         room.sectionOrder = Array.from(sections).map(section => section.dataset.section);
     }
+
+    // Update achievements selection
+    room.achievements = [];
+    const achievementSelectors = document.querySelectorAll('.achievement-select');
+    achievementSelectors.forEach(selector => {
+        const achievementId = selector.value;
+        if (achievementId) {
+            room.achievements.push(achievementId);
+        }
+    });
 
     // Update document selection
     const checkboxes = document.querySelectorAll('.document-item input[type="checkbox"]');
@@ -978,8 +1213,16 @@ function shareDataRoom(roomId) {
         <div style="margin: 20px 0;">
             <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
                 <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">🔗 Room Link</h4>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label>Custom Room ID</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" class="form-input" id="custom-room-id" value="${room.customId || roomId}" style="flex: 1;" oninput="updateRoomLink('${roomId}')">
+                        <button class="btn btn-outline" onclick="saveCustomRoomId('${roomId}')" id="save-room-id-btn">💾 Save</button>
+                    </div>
+                    <small class="help-text" id="room-id-feedback">Enter a custom ID for your room URL</small>
+                </div>
                 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                    <input type="text" class="form-input" id="room-link-input" value="${window.location.origin}${window.location.pathname}#data-room/${roomId}" readonly style="flex: 1; font-family: monospace; font-size: 12px; background: #f8fafc;">
+                    <input type="text" class="form-input" id="room-link-input" value="${window.location.origin}${window.location.pathname}#data-room/${room.customId || roomId}" readonly style="flex: 1; font-family: monospace; font-size: 12px; background: #f8fafc;">
                     <button class="btn btn-outline" onclick="copyDataRoomLink()">📋 Copy</button>
                 </div>
                 <small style="color: #6b7280;">Anyone with this link can access your room based on your privacy settings</small>
@@ -1014,6 +1257,111 @@ function shareDataRoom(roomId) {
 
     // Use the existing modal system
     openModal('custom', 'Share Data Room', modalContent);
+}
+
+// Update room link preview when custom room ID changes
+function updateRoomLink(originalRoomId) {
+    const customIdInput = document.getElementById('custom-room-id');
+    const linkInput = document.getElementById('room-link-input');
+    const feedback = document.getElementById('room-id-feedback');
+    const saveBtn = document.getElementById('save-room-id-btn');
+
+    if (!customIdInput || !linkInput || !feedback || !saveBtn) return;
+
+    const newId = customIdInput.value.trim();
+
+    // Validate room ID format (alphanumeric, hyphens, underscores only)
+    const validFormat = /^[a-zA-Z0-9_-]+$/.test(newId);
+
+    if (!newId) {
+        feedback.textContent = 'Room ID cannot be empty';
+        feedback.style.color = '#ef4444';
+        saveBtn.disabled = true;
+        return;
+    }
+
+    if (!validFormat) {
+        feedback.textContent = 'Only letters, numbers, hyphens, and underscores allowed';
+        feedback.style.color = '#ef4444';
+        saveBtn.disabled = true;
+        return;
+    }
+
+    // Check for conflicts with existing custom IDs
+    const existingRoom = dataRooms.find(r => (r.customId === newId || r.id === newId) && r.id !== originalRoomId);
+
+    if (existingRoom) {
+        feedback.textContent = 'This room ID is already taken';
+        feedback.style.color = '#ef4444';
+        saveBtn.disabled = true;
+        return;
+    }
+
+    // Valid ID - update link preview
+    feedback.textContent = 'Room ID is available';
+    feedback.style.color = '#059669';
+    saveBtn.disabled = false;
+
+    // Update link preview
+    linkInput.value = `${window.location.origin}${window.location.pathname}#data-room/${newId}`;
+}
+
+// Save custom room ID
+function saveCustomRoomId(originalRoomId) {
+    const customIdInput = document.getElementById('custom-room-id');
+    const feedback = document.getElementById('room-id-feedback');
+    const saveBtn = document.getElementById('save-room-id-btn');
+
+    if (!customIdInput || !feedback || !saveBtn) return;
+
+    const newId = customIdInput.value.trim();
+    const room = dataRooms.find(r => r.id === originalRoomId);
+
+    if (!room) {
+        feedback.textContent = 'Room not found';
+        feedback.style.color = '#ef4444';
+        return;
+    }
+
+    if (newId === (room.customId || originalRoomId)) {
+        feedback.textContent = 'No changes made';
+        feedback.style.color = '#6b7280';
+        return;
+    }
+
+    // Get the old custom ID before updating
+    const oldCustomId = room.customId || originalRoomId;
+
+    // Update custom room ID (keep internal id unchanged)
+    room.customId = newId;
+
+    // Update feedback
+    feedback.textContent = 'Room ID updated for this session!';
+    feedback.style.color = '#059669';
+
+    // Update button state
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '✅ Saved';
+
+    // Show success toast
+    if (window.showToast) {
+        window.showToast('Room ID updated for this session!', 'success');
+    }
+
+    // Update browser URL if currently viewing this room
+    const currentHash = window.location.hash;
+    if (currentHash.includes(`data-room/${oldCustomId}`) || currentHash.includes(`data-room-preview/${oldCustomId}`)) {
+        const newHash = currentHash.replace(oldCustomId, newId);
+        window.location.hash = newHash;
+        console.log('🔄 Updated URL hash from', currentHash, 'to', newHash);
+    }
+
+    // Refresh the data rooms view if it exists
+    if (typeof displayDataRooms === 'function') {
+        setTimeout(() => {
+            displayDataRooms();
+        }, 1000);
+    }
 }
 
 // Copy room link to clipboard
@@ -1136,15 +1484,280 @@ function viewDataRoomAnalytics(roomId) {
     openModal('custom', 'Room Analytics', modalContent);
 }
 
-// View room activity
+// View room activity - shows all access requests and comments for a specific room
 function viewDataRoomActivity(roomId) {
     const room = dataRooms.find(r => r.id === roomId);
     if (!room) return;
 
-    if (window.showToast) {
-        window.showToast(`Viewing activity for "${room.name}"`, 'info');
+    // Filter access requests for this room and sort by status (pending first)
+    const roomAccessRequests = accessRequests
+        .filter(req => req.room === roomId || req.room === room.customId)
+        .sort((a, b) => {
+            // Pending requests come first
+            if (a.status === 'pending' && b.status !== 'pending') return -1;
+            if (a.status !== 'pending' && b.status === 'pending') return 1;
+            return 0;
+        });
+    const pendingRequests = roomAccessRequests.filter(req => req.status === 'pending');
+
+    // Filter comments for this room and sort by status (unread first)
+    const roomComments = dataRoomComments
+        .filter(comment => comment.room === roomId || comment.room === room.customId)
+        .sort((a, b) => {
+            // Unread comments come first
+            if (a.status === 'unread' && b.status === 'read') return -1;
+            if (a.status === 'read' && b.status === 'unread') return 1;
+            return 0;
+        });
+
+    // Generate request cards matching the existing style
+    const requestCardsHTML = roomAccessRequests.map(request => `
+        <div class="request-card" data-room="${request.room}" data-request-id="${request.id}">
+            <div class="request-header">
+                <div class="requester-info">
+                    <h4>${request.name}</h4>
+                    <p class="requester-title">${request.title}</p>
+                    <p class="requester-email">${request.email}</p>
+                </div>
+                <div class="request-time">
+                    <span class="time-badge">${request.timestamp}</span>
+                </div>
+            </div>
+
+            <div class="request-details">
+                <div class="request-message">
+                    <p class="detail-label">Message:</p>
+                    <p class="message-text">${request.message}</p>
+                </div>
+            </div>
+
+            ${request.status === 'pending' ? `
+                <div class="request-actions">
+                    <div class="time-limit-group">
+                        <label>Access Duration:</label>
+                        <select class="time-limit-select">
+                            <option value="24h">24 hours</option>
+                            <option value="3d">3 days</option>
+                            <option value="7d" selected>7 days</option>
+                            <option value="14d">14 days</option>
+                            <option value="30d">30 days</option>
+                            <option value="unlimited">Unlimited</option>
+                        </select>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn-approve" onclick="approveAccessRequest('${request.id}')">✓ Approve</button>
+                        <button class="btn-deny" onclick="denyAccessRequest('${request.id}')">✗ Deny</button>
+                    </div>
+                </div>
+            ` : `
+                <div class="request-status">
+                    <span class="status-badge ${request.status}">${request.status === 'approved' ? 'Approved' : 'Denied'}</span>
+                </div>
+            `}
+        </div>
+    `).join('');
+
+    // Generate comment cards matching the existing style
+    const commentCardsHTML = roomComments.map(comment => `
+        <div class="comment-card ${comment.status === 'read' ? 'read' : ''}" data-room="${comment.room}" data-comment-id="${comment.id}">
+            <div class="comment-header">
+                <div class="commenter-info">
+                    <h4>${comment.commenterName}</h4>
+                    <p class="commenter-title">${comment.commenterTitle}</p>
+                    <p class="commenter-email">${comment.commenterEmail}</p>
+                </div>
+                <div class="comment-time">
+                    <span class="time-badge">${comment.timestamp}</span>
+                </div>
+            </div>
+
+            <div class="comment-details">
+                <div class="commented-room">
+                    <span class="detail-label">Document:</span>
+                    <span class="document-tag">${comment.document}</span>
+                </div>
+                <div class="comment-message">
+                    <p class="message-text">${comment.message}</p>
+                </div>
+            </div>
+
+            <div class="comment-actions">
+                <div class="comment-actions-left">
+                    <button class="btn-primary-compact" onclick="followUpDataRoomComment('${comment.id}')">Follow Up</button>
+                </div>
+                <div class="comment-actions-right">
+                    <button class="btn-secondary-compact" onclick="toggleCommentReadStatus('${comment.id}')">
+                        ${comment.status === 'read' ? 'Mark as Unread' : 'Mark as Read'}
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    `).join('');
+
+    // Build the modal content
+    const modalContent = `
+        <div style="margin-bottom: 24px;">
+            <h2>Activity for "${room.name}"</h2>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <!-- Tabs for filtering between requests and comments -->
+            <div class="request-tabs">
+                <button class="tab-button active" onclick="showRoomActivityTab('requests', '${roomId}')">Access Requests (${roomAccessRequests.length})</button>
+                <button class="tab-button" onclick="showRoomActivityTab('comments', '${roomId}')">Comments (${roomComments.length})</button>
+            </div>
+
+            <!-- Access Requests Tab Content -->
+            <div id="room-activity-requests" class="requests-container">
+                ${roomAccessRequests.length > 0 ? requestCardsHTML : `
+                    <div style="text-align: center; padding: 40px; color: #6b7280;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">🔑</div>
+                        <p>No access requests for this room yet</p>
+                    </div>
+                `}
+            </div>
+
+            <!-- Comments Tab Content -->
+            <div id="room-activity-comments" class="requests-container" style="display: none;">
+                ${roomComments.length > 0 ? commentCardsHTML : `
+                    <div style="text-align: center; padding: 40px; color: #6b7280;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">💬</div>
+                        <p>No comments for this room yet</p>
+                    </div>
+                `}
+            </div>
+        </div>
+    `;
+
+    // Open the modal
+    openModal('custom', `Activity: ${room.name}`, modalContent);
+}
+
+// Helper function to switch tabs in room activity modal
+function showRoomActivityTab(tab, roomId) {
+    const requestsTab = document.getElementById('room-activity-requests');
+    const commentsTab = document.getElementById('room-activity-comments');
+    const modal = document.getElementById('modal');
+
+    if (!modal) return;
+
+    // Find tab buttons within the modal
+    const tabButtons = modal.querySelectorAll('.request-tabs .tab-button');
+
+    if (tab === 'requests') {
+        // Show requests, hide comments
+        if (requestsTab) {
+            requestsTab.style.removeProperty('display');
+            requestsTab.classList.add('requests-container');
+        }
+        if (commentsTab) {
+            commentsTab.style.display = 'none';
+        }
+
+        if (tabButtons.length >= 2) {
+            tabButtons[0].classList.add('active');
+            tabButtons[1].classList.remove('active');
+        }
+    } else {
+        // Hide requests, show comments
+        if (requestsTab) {
+            requestsTab.style.display = 'none';
+        }
+        if (commentsTab) {
+            commentsTab.style.removeProperty('display');
+            commentsTab.classList.add('requests-container');
+        }
+
+        if (tabButtons.length >= 2) {
+            tabButtons[0].classList.remove('active');
+            tabButtons[1].classList.add('active');
+        }
     }
-    console.log('View room activity:', room);
+}
+
+// Approve access request - merged function for both modals
+function approveAccessRequest(requestId) {
+    const request = accessRequests.find(r => r.id === requestId);
+    if (request) {
+        request.status = 'approved';
+
+        // Check if we're in the room activity modal
+        const modal = document.getElementById('modal');
+        if (modal && modal.querySelector('#room-activity-requests')) {
+            // Room activity modal - refresh it
+            const room = dataRooms.find(r => r.id === request.room || r.customId === request.room);
+            if (room) {
+                viewDataRoomActivity(room.id);
+            }
+        } else {
+            // All Access Requests modal - animate and remove card
+            const card = document.querySelector(`[data-request-id="${requestId}"]`);
+            if (card) {
+                card.style.opacity = '0.5';
+                card.style.transform = 'translateX(20px)';
+                setTimeout(() => {
+                    card.remove();
+                    updateAccessRequestCounts();
+                    updateRoomStats();
+                }, 300);
+            }
+        }
+
+        if (window.showToast) {
+            window.showToast('Access request approved!', 'success');
+        }
+    }
+}
+
+// Deny access request - merged function for both modals
+function denyAccessRequest(requestId) {
+    const request = accessRequests.find(r => r.id === requestId);
+    if (request) {
+        request.status = 'denied';
+
+        // Check if we're in the room activity modal
+        const modal = document.getElementById('modal');
+        if (modal && modal.querySelector('#room-activity-requests')) {
+            // Room activity modal - refresh it
+            const room = dataRooms.find(r => r.id === request.room || r.customId === request.room);
+            if (room) {
+                viewDataRoomActivity(room.id);
+            }
+        } else {
+            // All Access Requests modal - animate and remove card
+            const card = document.querySelector(`[data-request-id="${requestId}"]`);
+            if (card) {
+                card.style.opacity = '0.5';
+                card.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    card.remove();
+                    updateAccessRequestCounts();
+                    updateRoomStats();
+                }, 300);
+            }
+        }
+
+        if (window.showToast) {
+            window.showToast('Access request denied', 'info');
+        }
+    }
+}
+
+// Mark comment as read
+function markCommentAsRead(commentId) {
+    const comment = dataRoomComments.find(c => c.id === commentId);
+    if (comment) {
+        comment.status = 'read';
+        // Refresh the current modal
+        const room = dataRooms.find(r => r.id === comment.room || r.customId === comment.room);
+        if (room) {
+            viewDataRoomActivity(room.id);
+        }
+        if (window.showToast) {
+            window.showToast('Comment marked as read', 'success');
+        }
+    }
 }
 
 // Update room statistics in sidebar
@@ -1431,51 +2044,7 @@ function filterDataRoomComments(roomFilter) {
     }
 }
 
-function approveAccessRequest(requestId) {
-    // Update the persistent state
-    const request = accessRequests.find(req => req.id === requestId);
-    if (request) {
-        request.status = 'approved';
-    }
-
-    // Update the UI
-    const card = document.querySelector(`[data-request-id="${requestId}"]`);
-    if (card) {
-        card.style.opacity = '0.5';
-        card.style.transform = 'translateX(20px)';
-        setTimeout(() => {
-            card.remove();
-            updateAccessRequestCounts();
-        }, 300);
-    }
-
-    if (window.showToast) {
-        window.showToast('Access request approved!', 'success');
-    }
-}
-
-function denyAccessRequest(requestId) {
-    // Update the persistent state
-    const request = accessRequests.find(req => req.id === requestId);
-    if (request) {
-        request.status = 'denied';
-    }
-
-    // Update the UI
-    const card = document.querySelector(`[data-request-id="${requestId}"]`);
-    if (card) {
-        card.style.opacity = '0.5';
-        card.style.transform = 'translateX(-20px)';
-        setTimeout(() => {
-            card.remove();
-            updateAccessRequestCounts();
-        }, 300);
-    }
-
-    if (window.showToast) {
-        window.showToast('Access request denied', 'info');
-    }
-}
+// Duplicate functions removed - using merged versions above
 
 
 function toggleCommentReadStatus(commentId) {
@@ -1598,8 +2167,13 @@ function updateDocumentPermission(docId, permission) {
 function updateDescriptionType(docId, type) {
     console.log(`Updated description type for ${docId}: ${type}`);
 
-    // Show/hide appropriate sections based on type
-    const documentItem = document.querySelector(`[data-doc-id="${docId}"]`).closest('.document-item');
+    // Find the document item more reliably
+    const documentItem = document.querySelector(`[data-doc-id="${docId}"]`)?.closest('.document-item');
+    if (!documentItem) {
+        console.error(`Document item not found for docId: ${docId}`);
+        return;
+    }
+
     const defaultPreview = documentItem.querySelector('.default-preview');
     const customContainer = documentItem.querySelector('.custom-description-container');
 
@@ -1630,9 +2204,15 @@ window.cloneDataRoom = cloneDataRoom;
 window.deleteDataRoom = deleteDataRoom;
 window.shareDataRoom = shareDataRoom;
 window.copyDataRoomLink = copyDataRoomLink;
+window.updateRoomLink = updateRoomLink;
+window.saveCustomRoomId = saveCustomRoomId;
 window.previewDataRoom = previewDataRoom;
 window.viewDataRoomAnalytics = viewDataRoomAnalytics;
 window.viewDataRoomActivity = viewDataRoomActivity;
+window.showRoomActivityTab = showRoomActivityTab;
+window.approveAccessRequest = approveAccessRequest;
+window.denyAccessRequest = denyAccessRequest;
+window.markCommentAsRead = markCommentAsRead;
 window.manageDataRoomDocuments = manageDataRoomDocuments;
 window.viewAllDataRoomAnalytics = viewAllDataRoomAnalytics;
 window.exportDataRoomData = exportDataRoomData;
@@ -1643,6 +2223,10 @@ window.toggleDocumentSelection = toggleDocumentSelection;
 window.updateDocumentPermission = updateDocumentPermission;
 window.updateDescriptionType = updateDescriptionType;
 window.updateCustomDescription = updateCustomDescription;
+window.updateAchievementSelection = updateAchievementSelection;
+window.followUpDataRoomComment = followUpDataRoomComment;
+window.toggleCommentReadStatus = toggleCommentReadStatus;
+
 
 // Document Library Management Functions
 // These functions sync profile uploads/deletions with data room document selector
@@ -1762,10 +2346,35 @@ function refreshDocumentSelector() {
     documentsSection.innerHTML = documentsHtml;
 }
 
+// Refresh achievement selector for sync with profile page
+function refreshAchievementSelector() {
+    // Find the achievements selector section in the modal
+    const achievementsSection = document.querySelector('#data-room-achievements-section');
+    if (!achievementsSection) return;
+
+    // Regenerate the achievements selector content
+    const room = dataRooms.find(r => r.id === currentEditingRoom);
+    if (!room) return;
+
+    // Rebuild the achievements section HTML
+    const achievementsHtml = generateAchievementsSelection(room);
+    achievementsSection.querySelector('#achievements-selection').innerHTML = achievementsHtml;
+
+    console.log('Refreshed achievement selector with latest achievements library');
+}
+
 // Export functions to window for profile.js to use
 window.addDocumentToLibrary = addDocumentToLibrary;
 window.removeDocumentFromLibrary = removeDocumentFromLibrary;
 window.refreshDocumentSelector = refreshDocumentSelector;
+window.refreshAchievementSelector = refreshAchievementSelector;
 
 // Export documentLibrary for global access
 window.documentLibrary = documentLibrary;
+// Export achievementsLibrary for global access - always use window.achievementsLibrary as the single source of truth
+if (!window.achievementsLibrary) {
+    window.achievementsLibrary = achievementsLibrary;
+} else {
+    // If window.achievementsLibrary already exists (e.g., from profile.js), use that
+    achievementsLibrary = window.achievementsLibrary;
+}
