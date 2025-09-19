@@ -390,14 +390,27 @@ function addDocumentToList(file, type) {
     documentItem.dataset.documentId = documentId;
 
     documentItem.innerHTML = `
-        <span class="doc-icon">${fileIcon}</span>
-        <div class="doc-info">
-            <span class="doc-name">${file.name}</span>
-            <span class="doc-meta">Uploaded ${new Date().toLocaleDateString()} • ${fileSize} MB</span>
+        <div class="document-header">
+            <span class="doc-icon">${fileIcon}</span>
+            <div class="doc-info">
+                <span class="doc-name">${file.name}</span>
+                <span class="doc-meta">Uploaded ${new Date().toLocaleDateString()} • ${fileSize} MB</span>
+            </div>
+            <div class="doc-actions">
+                <button class="btn-icon" title="Download" onclick="downloadDocument('${documentId}')">⬇️</button>
+                <button class="btn-icon" title="Delete" onclick="deleteDocument('${documentId}', '${type}')">🗑️</button>
+            </div>
         </div>
-        <div class="doc-actions">
-            <button class="btn-icon" title="Download" onclick="downloadDocument('${documentId}')">⬇️</button>
-            <button class="btn-icon" title="Delete" onclick="deleteDocument('${documentId}', '${type}')">🗑️</button>
+        <div class="default-description-section">
+            <label for="default-desc-${documentId}">Default Description:</label>
+            <textarea
+                id="default-desc-${documentId}"
+                class="default-description-input"
+                data-doc-id="${documentId}"
+                placeholder="Add a default description for this document..."
+                onchange="updateDefaultDescription('${documentId}', this.value)"
+                rows="1"></textarea>
+            <small class="help-text">This description will be used by default in all data rooms</small>
         </div>
     `;
 
