@@ -762,11 +762,15 @@
     max-height: 0;
     overflow: hidden;
     transition: all var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Force left alignment */
 }
 
 .modal .document-options.visible {
     padding: 12px;
     max-height: 300px;
+    width: 100%; /* Ensure full width */
 }
 
 .modal .doc-permissions-row {
@@ -828,6 +832,53 @@
 .modal .doc-description-row .help-text {
     font-size: 11px;
     color: var(--text-gray);
+    font-style: italic;
+}
+
+/* Description type selector - horizontal flex layout with wrapping */
+.description-type-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.description-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.description-option input[type="radio"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+.description-option span {
+    font-size: 14px;
+    color: var(--imi-dark-gray);
+}
+
+/* Default preview and custom description visibility */
+.default-preview,
+.custom-description-container {
+    display: none;
+    margin-top: 8px;
+}
+
+.default-preview.visible,
+.custom-description-container.visible {
+    display: block;
+}
+
+.default-preview {
+    font-size: 13px;
+    color: var(--text-gray);
+    padding: 8px;
+    background: var(--light-gray);
+    border-radius: 4px;
     font-style: italic;
 }
 
