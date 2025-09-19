@@ -1662,6 +1662,7 @@ function approveAccessRequest(requestId) {
         setTimeout(() => {
             card.remove();
             updateAccessRequestCounts();
+            updateRoomStats(); // Update main page stats
         }, 300);
     }
 
@@ -1685,6 +1686,7 @@ function denyAccessRequest(requestId) {
         setTimeout(() => {
             card.remove();
             updateAccessRequestCounts();
+            updateRoomStats(); // Update main page stats
         }, 300);
     }
 
