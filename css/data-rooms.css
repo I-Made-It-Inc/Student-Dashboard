@@ -686,8 +686,8 @@
     gap: 8px;
 }
 
-/* Updated document item layout - vertical stacking */
-.document-item {
+/* Data room edit modal document layout - vertical stacking */
+.modal .document-item {
     margin-bottom: 16px;
     border: 1px solid var(--medium-gray);
     border-radius: var(--radius-sm);
@@ -696,12 +696,12 @@
     flex-direction: column !important;
 }
 
-.document-item.selected {
+.modal .document-item.selected {
     border-color: var(--imi-blue);
     background-color: rgba(4, 40, 71, 0.02);
 }
 
-.document-header {
+.modal .document-header {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -710,8 +710,29 @@
     border-bottom: 1px solid transparent;
 }
 
-.document-item.selected .document-header {
+.modal .document-item.selected .document-header {
     border-bottom-color: var(--medium-gray);
+}
+
+/* Profile page document items - restore original layout */
+.document-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.document-item:hover {
+    border-color: #042847;
+    background: #f8fafc;
+}
+
+.document-item input[type="checkbox"] {
+    margin: 0;
 }
 
 .doc-icon {
@@ -735,56 +756,56 @@
     display: block;
 }
 
-.document-options {
+/* Modal-specific styles for document options */
+.modal .document-options {
     padding: 0 12px;
     max-height: 0;
     overflow: hidden;
     transition: all var(--transition-normal);
 }
 
-.document-options.visible {
+.modal .document-options.visible {
     padding: 12px;
     max-height: 300px;
 }
 
-.doc-permissions-row {
+.modal .doc-permissions-row {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 16px;
 }
 
-.doc-permissions-row label {
+.modal .doc-permissions-row label {
     font-weight: 500;
     color: var(--imi-blue);
     font-size: var(--font-size-sm);
     min-width: 80px;
 }
 
-.permission-select {
+.modal .permission-select {
     flex: 1;
     max-width: 150px;
     padding: 6px 8px;
     border: 1px solid var(--medium-gray);
     border-radius: var(--radius-sm);
     font-size: var(--font-size-sm);
-    border-radius: 4px;
     background: #ffffff;
 }
 
-.doc-description-row {
+.modal .doc-description-row {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-.doc-description-row label {
+.modal .doc-description-row label {
     font-weight: 500;
     color: var(--imi-blue);
     font-size: var(--font-size-sm);
 }
 
-.doc-description-input {
+.modal .doc-description-input {
     width: 100%;
     min-height: 32px;
     height: 32px;
@@ -798,13 +819,13 @@
     transition: border-color var(--transition-fast);
 }
 
-.doc-description-input:focus {
+.modal .doc-description-input:focus {
     outline: none;
     border-color: var(--imi-blue);
     box-shadow: 0 0 0 2px rgba(4, 40, 71, 0.1);
 }
 
-.doc-description-row .help-text {
+.modal .doc-description-row .help-text {
     font-size: 11px;
     color: var(--text-gray);
     font-style: italic;
