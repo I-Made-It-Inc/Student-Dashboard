@@ -3,22 +3,30 @@
 // Initialize navigation
 function initializeNavigation() {
     console.log('Initializing navigation...');
-    
+
     // Set up nav link click handlers
     setupNavLinks();
-    
+
     // Set up mobile menu
     setupMobileMenu();
-    
+
     // Set up user menu dropdown
     setupUserMenu();
-    
+
     // Handle browser back/forward
     setupHistoryManagement();
-    
+
     // Show initial page from URL or default to dashboard
     const initialPage = getPageFromURL();
-    showPage(initialPage, false); // Don't push state on initial load
+
+    // Check if this is a data room preview/external view
+    if (initialPage.startsWith('data-room-preview/') || initialPage.startsWith('data-room/')) {
+        console.log('Initial page is data room route:', initialPage);
+        handleDataRoomRoute(initialPage);
+    } else {
+        console.log('Initial page is regular page:', initialPage);
+        showPage(initialPage, false); // Don't push state on initial load
+    }
 }
 
 // Show specific page
@@ -42,13 +50,19 @@ function showPage(pageId, pushState = true) {
 
     // Show selected page
     const selectedPage = document.getElementById(`${pageId}-page`);
+    console.log(`🔍 Looking for page element: ${pageId}-page`);
+    console.log(`📄 Page element found:`, !!selectedPage);
+
     if (selectedPage) {
         selectedPage.classList.add('active');
+        console.log(`✅ Page ${pageId} made active`);
 
         // Load page-specific content
+        console.log(`🔄 About to call loadPageContent(${pageId})`);
         loadPageContent(pageId);
+        console.log(`✅ loadPageContent(${pageId}) called`);
     } else {
-        console.error(`Page not found: ${pageId}`);
+        console.error(`❌ Page not found: ${pageId}`);
     }
     
     // Update active nav link (only for pages that have nav links)
@@ -334,21 +348,97 @@ function loadTimeTrackingContent() {
 // Profile content loader
 function loadProfileContent() {
     console.log('Loading profile content...');
-    
-    // Load profile data
-    loadProfileData();
-    
-    // Setup form handlers
-    setupProfileForms();
+
+    try {
+        // Initialize profile functionality completely
+        console.log('About to call initializeProfile...');
+        if (typeof initializeProfile === 'function') {
+            initializeProfile();
+            console.log('initializeProfile called successfully');
+        } else {
+            console.error('initializeProfile function not available');
+            // Fallback to just loading data
+            loadProfileData();
+        }
+    } catch (error) {
+        console.error('Error in loadProfileContent:', error);
+        // Fallback: try to initialize profile directly
+        console.log('Trying fallback initialization...');
+        setTimeout(() => {
+            if (typeof initializeProfile === 'function') {
+                console.log('Fallback: initializeProfile available, calling it');
+                initializeProfile();
+            } else {
+                console.error('Fallback: initializeProfile not available');
+            }
+        }, 200);
+    }
 }
 
 // Load profile data
 function loadProfileData() {
-    console.log('Loading profile data...');
-    // Initialize profile functionality when page loads
+    console.log('🔍 === LOAD PROFILE DATA STARTED ===');
+    console.log('📋 Checking if initializeProfile exists:', typeof initializeProfile);
+    console.log('📁 Profile.js loaded?', !!window.initializeProfile);
+
+    // Force initialize profile functionality - try multiple approaches
+    console.log('🔄 Attempting to initialize profile...');
+
+    // Try direct call first
     if (typeof initializeProfile === 'function') {
+        console.log('✅ initializeProfile available, calling directly');
         initializeProfile();
+        return;
     }
+
+    // Try window.initializeProfile
+    if (typeof window.initializeProfile === 'function') {
+        console.log('✅ window.initializeProfile available, calling it');
+        window.initializeProfile();
+        return;
+    }
+
+    // Force load profile functionality with retries
+    console.log('⚠️ initializeProfile not available, forcing initialization...');
+    let retryCount = 0;
+    const maxRetries = 5;
+
+    const tryInitialize = () => {
+        retryCount++;
+        console.log(`🔄 Initialization attempt ${retryCount}/${maxRetries}`);
+
+        if (typeof initializeProfile === 'function') {
+            console.log('✅ initializeProfile now available');
+            initializeProfile();
+            return;
+        }
+
+        if (typeof window.initializeProfile === 'function') {
+            console.log('✅ window.initializeProfile now available');
+            window.initializeProfile();
+            return;
+        }
+
+        if (retryCount < maxRetries) {
+            setTimeout(tryInitialize, 100 * retryCount); // Exponential backoff
+        } else {
+            console.error('❌ Failed to initialize profile after all retries');
+            // Manual fallback - call the core functions directly
+            console.log('🚨 Attempting manual profile initialization...');
+
+            // Call the core functions directly if available
+            if (typeof window.setupDocumentUploads === 'function') {
+                console.log('📁 Calling setupDocumentUploads directly');
+                window.setupDocumentUploads();
+            }
+            if (typeof window.loadDocumentsFromLibrary === 'function') {
+                console.log('📚 Calling loadDocumentsFromLibrary directly');
+                window.loadDocumentsFromLibrary();
+            }
+        }
+    };
+
+    tryInitialize();
 }
 
 // Setup profile forms
@@ -438,15 +528,82 @@ function setupMobileMenu() {
 // Setup user menu dropdown
 function setupUserMenu() {
     const userAvatar = document.querySelector('.user-avatar');
-    
+
+    console.log('🔍 Looking for user avatar element...');
+    console.log('Avatar element found:', !!userAvatar);
+    console.log('Avatar element:', userAvatar);
+
     if (userAvatar) {
+        console.log('✅ Setting up user avatar click handler');
+        console.log('Avatar classes:', userAvatar.className);
+        console.log('Avatar parent:', userAvatar.parentElement);
+
         userAvatar.addEventListener('click', (e) => {
+            console.log('🎯 AVATAR CLICKED! Event details:');
+            console.log('- Event target:', e.target);
+            console.log('- Current target:', e.currentTarget);
+            console.log('- Event type:', e.type);
+            console.log('- Timestamp:', e.timeStamp);
+            console.log('🚀 Navigating to profile...');
             e.stopPropagation();
+            e.preventDefault();
             // Navigate directly to profile page instead of showing dropdown
             showPage('profile');
         });
+        console.log('✅ User avatar click handler set up successfully');
+
+        // Store a reference to test later
+        window.avatarElement = userAvatar;
+
+        // Test function to verify click handler is still working
+        window.testAvatarClick = () => {
+            console.log('🧪 Testing if avatar click handler is still attached...');
+            const currentAvatar = document.querySelector('.user-avatar');
+            console.log('Current avatar element:', currentAvatar);
+            console.log('Same as stored avatar?', currentAvatar === window.avatarElement);
+            console.log('Avatar classes:', currentAvatar?.className);
+            console.log('Avatar computed styles - pointer-events:', window.getComputedStyle(currentAvatar).pointerEvents);
+            console.log('Avatar computed styles - cursor:', window.getComputedStyle(currentAvatar).cursor);
+
+            // Manually trigger a click to test
+            console.log('🔬 Simulating click...');
+            currentAvatar.click();
+        };
+    } else {
+        console.error('❌ User avatar element not found');
+        console.log('Available elements with "avatar" in class:',
+            document.querySelectorAll('*[class*="avatar"]'));
+        console.log('Available elements with "user" in class:',
+            document.querySelectorAll('*[class*="user"]'));
     }
 }
+
+// Test function to check if avatar navigation is working
+function testAvatarNavigation() {
+    console.log('🧪 Testing avatar navigation...');
+    const userAvatar = document.querySelector('.user-avatar');
+    if (userAvatar) {
+        console.log('✅ User avatar found');
+        console.log('Avatar element:', userAvatar);
+        console.log('Avatar classes:', userAvatar.className);
+        console.log('Click listeners count:', getEventListeners ? Object.keys(getEventListeners(userAvatar)).length : 'unknown');
+
+        // Try to re-establish the click handler as a fallback
+        console.log('🔧 Re-establishing avatar click handler as fallback...');
+        userAvatar.removeEventListener('click', setupUserMenu); // Remove any existing
+        userAvatar.addEventListener('click', (e) => {
+            console.log('🎯 FALLBACK: User avatar clicked! Navigating to profile...');
+            e.stopPropagation();
+            showPage('profile');
+        });
+        console.log('✅ Fallback click handler established');
+    } else {
+        console.error('❌ User avatar not found during test');
+    }
+}
+
+// Export test function
+window.testAvatarNavigation = testAvatarNavigation;
 
 // Toggle user dropdown menu
 function toggleUserDropdown() {
@@ -461,13 +618,71 @@ function setupHistoryManagement() {
     // Handle browser back/forward buttons
     window.addEventListener('popstate', (e) => {
         if (e.state && e.state.page) {
-            showPage(e.state.page, false); // Don't push state when navigating via browser buttons
+            // Check if this is a data room preview/external view
+            if (e.state.page.startsWith('data-room-preview/') || e.state.page.startsWith('data-room/')) {
+                handleDataRoomRoute(e.state.page);
+            } else {
+                showPage(e.state.page, false); // Don't push state when navigating via browser buttons
+            }
         }
     });
-    
+
+    // Handle hash changes (for direct navigation)
+    window.addEventListener('hashchange', () => {
+        console.log('🔄 === HASHCHANGE EVENT FIRED ===');
+        console.log('📍 New hash:', window.location.hash);
+
+        const currentPage = getPageFromURL();
+        console.log('📄 Parsed page:', currentPage);
+
+        if (currentPage.startsWith('data-room-preview/') || currentPage.startsWith('data-room/')) {
+            console.log('🎯 Detected data room route, calling handleDataRoomRoute...');
+            handleDataRoomRoute(currentPage);
+        } else {
+            console.log('📄 Regular page route, calling showPage...');
+            showPage(currentPage, false);
+        }
+        console.log('🔄 === HASHCHANGE HANDLING COMPLETE ===');
+    });
+
     // Set initial state but don't show page here (it's handled in initializeNavigation)
     const initialPage = getPageFromURL() || 'dashboard';
     history.replaceState({ page: initialPage }, '', `#${initialPage}`);
+}
+
+// Handle data room preview and external routes
+function handleDataRoomRoute(route) {
+    const parts = route.split('/');
+    const mode = parts[0]; // 'data-room-preview' or 'data-room'
+    const roomId = parts[1];
+
+    console.log('Handling data room route:', route, 'Mode:', mode, 'Room ID:', roomId);
+
+    // Check if the preview function is available
+    if (typeof window.showDataRoomPreview === 'function') {
+        if (mode === 'data-room-preview') {
+            // Student preview mode
+            window.showDataRoomPreview(roomId, true);
+        } else if (mode === 'data-room') {
+            // External/recruiter view
+            window.showDataRoomPreview(roomId, false);
+        }
+    } else {
+        console.error('showDataRoomPreview function not available. Data room preview functionality may not be loaded.');
+
+        // Fallback: try again after a short delay to allow JS files to load
+        setTimeout(() => {
+            if (typeof window.showDataRoomPreview === 'function') {
+                if (mode === 'data-room-preview') {
+                    window.showDataRoomPreview(roomId, true);
+                } else if (mode === 'data-room') {
+                    window.showDataRoomPreview(roomId, false);
+                }
+            } else {
+                console.error('showDataRoomPreview still not available after delay');
+            }
+        }, 500);
+    }
 }
 
 // Update URL without page reload
@@ -480,6 +695,12 @@ function updateURL(pageId) {
 // Get page from URL hash
 function getPageFromURL() {
     const hash = window.location.hash.slice(1);
+
+    // Check for data room preview/external view first
+    if (hash.startsWith('data-room-preview/') || hash.startsWith('data-room/')) {
+        return hash; // Return the full hash for special handling
+    }
+
     // Validate that the page exists
     const validPages = ['dashboard', 'innovation', 'ideas', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile', 'notifications', 'data-rooms'];
     return validPages.includes(hash) ? hash : 'dashboard';

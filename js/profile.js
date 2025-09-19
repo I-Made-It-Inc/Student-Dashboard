@@ -3,21 +3,113 @@
 // Initialize profile page
 function initializeProfile() {
     console.log('Initializing profile page...');
-    
+
     // Setup form handlers
     setupProfileForms();
-    
+
     // Setup file upload handlers
     setupDocumentUploads();
-    
+
     // Setup privacy settings
     setupPrivacySettings();
-    
+
     // Load profile data
     loadProfileData();
-    
+
+    // Load documents from shared library
+    loadDocumentsFromLibrary();
+
     // Setup real-time preview updates
     setupProfilePreviewUpdates();
+}
+
+// Load documents from shared document library
+function loadDocumentsFromLibrary() {
+    console.log('Loading documents from library...');
+
+    // Initialize documentLibrary if it doesn't exist yet
+    if (!window.documentLibrary) {
+        console.log('Document library not available, initializing...');
+        window.documentLibrary = {
+            resumes: [
+                { id: 'resume-1', name: 'Jane_Doe_Resume_2024.pdf', uploadDate: '2024-12-01', size: '1.2 MB' }
+            ],
+            projects: [
+                { id: 'proj-1', name: 'ML_Sentiment_Analysis_Project.pdf', uploadDate: '2024-11-25', size: '4.2 MB' },
+                { id: 'proj-2', name: 'React_Dashboard_Portfolio.pdf', uploadDate: '2024-11-20', size: '3.1 MB' }
+            ],
+            certificates: [
+                { id: 'cert-1', name: 'AWS_Cloud_Practitioner.pdf', uploadDate: '2024-11-15', size: '856 KB' },
+                { id: 'cert-2', name: 'Science_Fair_First_Place.jpg', uploadDate: '2024-06-10', size: '2.1 MB' }
+            ],
+            references: [
+                { id: 'ref-1', name: 'Reference_TechCorp_CEO.pdf', uploadDate: '2024-12-05', size: '623 KB' }
+            ]
+        };
+    }
+
+    console.log('Document library available, loading documents...');
+    console.log('Current documentLibrary state:', window.documentLibrary);
+
+    // Categories to load
+    const categoryMapping = [
+        { type: 'resume', plural: 'resumes', icon: '📄' },
+        { type: 'project', plural: 'projects', icon: '📄' },
+        { type: 'certificate', plural: 'certificates', icon: '🏆' },
+        { type: 'reference', plural: 'references', icon: '📝' }
+    ];
+
+    categoryMapping.forEach(({ type, plural, icon }) => {
+        const docs = window.documentLibrary[plural] || [];
+        console.log(`📂 Loading ${type} documents:`, docs.length, 'documents');
+
+        const category = document.querySelector(`#${type}-upload`)?.closest('.document-category');
+        if (!category) {
+            console.error(`❌ Category container not found for ${type}`);
+            return;
+        }
+
+        const documentsList = category.querySelector('.uploaded-documents');
+        if (!documentsList) {
+            console.error(`❌ Documents list container not found for ${type}`);
+            return;
+        }
+
+        console.log(`🧹 Clearing existing documents for ${type}`);
+        // Clear existing static documents
+        documentsList.innerHTML = '';
+
+        console.log(`📄 Adding ${docs.length} documents to ${type} UI`);
+        // Add documents from library
+        docs.forEach(doc => {
+            const documentItem = document.createElement('div');
+            documentItem.className = 'document-item';
+            documentItem.dataset.documentId = doc.id;
+
+            // Determine icon based on file type
+            let docIcon = icon;
+            if (doc.name.includes('.jpg') || doc.name.includes('.png')) {
+                docIcon = type === 'certificate' ? '🥇' : '🖼️';
+            }
+
+            // Format date consistently
+            const uploadDate = doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString() : 'Recently';
+
+            documentItem.innerHTML = `
+                <span class="doc-icon">${docIcon}</span>
+                <div class="doc-info">
+                    <span class="doc-name">${doc.name}</span>
+                    <span class="doc-meta">Uploaded ${uploadDate} • ${doc.size}</span>
+                </div>
+                <div class="doc-actions">
+                    <button class="btn-icon" title="Download" onclick="downloadDocument('${doc.id}')">⬇️</button>
+                    <button class="btn-icon" title="Delete" onclick="deleteDocument('${doc.id}', '${type}')">🗑️</button>
+                </div>
+            `;
+
+            documentsList.appendChild(documentItem);
+        });
+    });
 }
 
 // Setup profile forms
@@ -65,7 +157,9 @@ function handlePersonalInfoSubmit(e) {
     updateProfilePreview(profileData);
     
     // Show success message
-    window.IMI.utils.showNotification('Profile updated successfully!', 'success');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('Profile updated successfully!', 'success');
+    }
 }
 
 // Handle social links form submission
@@ -90,7 +184,9 @@ function handleSocialLinksSubmit(e) {
     updateSocialLinksPreview(socialData);
     
     // Show success message
-    window.IMI.utils.showNotification('Social links updated successfully!', 'success');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('Social links updated successfully!', 'success');
+    }
 }
 
 // Get selected interests
@@ -190,8 +286,8 @@ function isValidPhone(phone) {
 
 // Setup document uploads
 function setupDocumentUploads() {
-    const uploadTriggers = ['resume', 'certificate', 'reference'];
-    
+    const uploadTriggers = ['resume', 'project', 'certificate', 'reference'];
+
     uploadTriggers.forEach(type => {
         const input = document.getElementById(`${type}-upload`);
         if (input) {
@@ -216,13 +312,19 @@ function handleDocumentUpload(e, type) {
 
 // Validate document file
 function validateDocumentFile(file, type) {
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    
+    const maxSize = 10 * 1024 * 1024; // 10MB for projects, 5MB for others
+
     // Type-specific validation
     let allowedTypes = [];
+    let actualMaxSize = 5 * 1024 * 1024; // Default 5MB
+
     switch(type) {
         case 'resume':
             allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            break;
+        case 'project':
+            allowedTypes = ['application/pdf'];
+            actualMaxSize = 10 * 1024 * 1024; // 10MB for projects
             break;
         case 'certificate':
             allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
@@ -231,17 +333,22 @@ function validateDocumentFile(file, type) {
             allowedTypes = ['application/pdf'];
             break;
     }
-    
+
     if (!allowedTypes.includes(file.type)) {
-        window.IMI.utils.showNotification(`Invalid file type for ${type}`, 'warning');
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification(`Invalid file type for ${type}`, 'warning');
+        }
         return false;
     }
-    
-    if (file.size > maxSize) {
-        window.IMI.utils.showNotification('File too large (max 5MB)', 'warning');
+
+    if (file.size > actualMaxSize) {
+        const maxSizeMB = actualMaxSize / 1024 / 1024;
+        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+            window.IMI.utils.showNotification(`File too large (max ${maxSizeMB}MB)`, 'warning');
+        }
         return false;
     }
-    
+
     return true;
 }
 
@@ -249,17 +356,23 @@ function validateDocumentFile(file, type) {
 function addDocumentToList(file, type) {
     const category = document.querySelector(`#${type}-upload`).closest('.document-category');
     const documentsList = category.querySelector('.uploaded-documents');
-    
+
     if (!documentsList) return;
-    
-    const documentId = Date.now() + Math.random();
+
+    const documentId = type.slice(0, 4) + '-' + Date.now();
+
+    // Check if document already exists in DOM
+    if (document.querySelector(`[data-document-id="${documentId}"]`)) {
+        console.log('Document already exists in DOM');
+        return;
+    }
     const fileSize = (file.size / 1024 / 1024).toFixed(1);
     const fileIcon = getDocumentIcon(file.type);
-    
+
     const documentItem = document.createElement('div');
     documentItem.className = 'document-item';
     documentItem.dataset.documentId = documentId;
-    
+
     documentItem.innerHTML = `
         <span class="doc-icon">${fileIcon}</span>
         <div class="doc-info">
@@ -268,16 +381,70 @@ function addDocumentToList(file, type) {
         </div>
         <div class="doc-actions">
             <button class="btn-icon" title="Download" onclick="downloadDocument('${documentId}')">⬇️</button>
-            <button class="btn-icon" title="Delete" onclick="deleteDocument('${documentId}')">🗑️</button>
+            <button class="btn-icon" title="Delete" onclick="deleteDocument('${documentId}', '${type}')">🗑️</button>
         </div>
     `;
-    
+
     documentsList.appendChild(documentItem);
-    
-    // Store document data
+
+    // Store document data locally
     storeDocument(documentId, file, type);
-    
-    window.IMI.utils.showNotification(`${type} uploaded successfully!`, 'success');
+
+    // Convert type to plural category for documentLibrary
+    const categoryMap = {
+        'resume': 'resumes',
+        'project': 'projects',
+        'certificate': 'certificates',
+        'reference': 'references'
+    };
+    const libraryCategory = categoryMap[type];
+
+    // Add to shared documentLibrary for data room sync
+    const documentData = {
+        id: documentId,
+        name: file.name,
+        uploadDate: new Date().toISOString().split('T')[0],
+        size: fileSize + ' MB'
+    };
+
+    if (libraryCategory) {
+        console.log('🔄 Adding document to library:', { libraryCategory, documentData });
+        console.log('🔍 window.addDocumentToLibrary available:', typeof window.addDocumentToLibrary);
+        console.log('🔍 window.documentLibrary exists:', !!window.documentLibrary);
+
+        // Use the addDocumentToLibrary function if available (from data-rooms.js)
+        if (window.addDocumentToLibrary) {
+            console.log('✅ Using addDocumentToLibrary function');
+            window.addDocumentToLibrary(libraryCategory, documentData);
+
+            // Force refresh any open data room modals
+            console.log('🔄 Checking for open data room modals to refresh...');
+            if (window.refreshDocumentSelector && typeof window.refreshDocumentSelector === 'function') {
+                console.log('📝 Calling refreshDocumentSelector...');
+                window.refreshDocumentSelector();
+            }
+        } else {
+            // Fallback: add directly to documentLibrary if function not available
+            console.log('⚠️ addDocumentToLibrary not available, adding directly to library');
+            if (!window.documentLibrary) {
+                console.log('📦 Creating new documentLibrary');
+                window.documentLibrary = { resumes: [], projects: [], certificates: [], references: [] };
+            }
+            if (!window.documentLibrary[libraryCategory]) {
+                console.log('📂 Creating category:', libraryCategory);
+                window.documentLibrary[libraryCategory] = [];
+            }
+            console.log('📄 Adding document directly to library');
+            window.documentLibrary[libraryCategory].push(documentData);
+            console.log('✅ Document added. Library now contains:', window.documentLibrary);
+        }
+    }
+
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification(`${type} uploaded successfully!`, 'success');
+    } else {
+        console.log(`${type} uploaded successfully!`);
+    }
 }
 
 // Get document icon
@@ -305,25 +472,123 @@ function storeDocument(id, file, type) {
 
 // Download document
 function downloadDocument(documentId) {
-    window.IMI.utils.showNotification('Download started...', 'info');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('Download started...', 'info');
+    }
     // In production, trigger actual download
     console.log('Downloading document:', documentId);
 }
 
-// Delete document
-function deleteDocument(documentId) {
-    if (confirm('Are you sure you want to delete this document?')) {
-        const documentElement = document.querySelector(`[data-document-id="${documentId}"]`);
-        if (documentElement) {
-            documentElement.remove();
+// Check which data rooms use a document
+function getDataRoomsUsingDocument(documentId) {
+    if (!window.dataRooms) return [];
+
+    return window.dataRooms.filter(room =>
+        room.documents.some(doc => doc.id === documentId && doc.selected !== false)
+    );
+}
+
+// Show deletion warning popup
+function showDeletionWarning(documentId, type, usingRooms) {
+    const popup = document.createElement('div');
+    popup.className = 'deletion-warning-modal';
+    popup.innerHTML = `
+        <div class="deletion-warning-content">
+            <h3>⚠️ Document in Use</h3>
+            <p>This document is currently being used in the following data room${usingRooms.length > 1 ? 's' : ''}:</p>
+            <ul class="room-list">
+                ${usingRooms.map(room => `<li>• ${room.name}</li>`).join('')}
+            </ul>
+            <p>Deleting this document will remove it from ${usingRooms.length > 1 ? 'these data rooms' : 'this data room'} as well.</p>
+            <div class="warning-actions">
+                <button class="btn btn-secondary" onclick="closeDeletionWarning()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDeleteDocument('${documentId}', '${type}')">Delete Anyway</button>
+            </div>
+        </div>
+    `;
+
+    // Add click-to-close functionality
+    popup.addEventListener('click', (e) => {
+        if (e.target === popup) {
+            closeDeletionWarning();
         }
-        
-        // Remove from storage
-        const documents = JSON.parse(localStorage.getItem('documents') || '{}');
-        delete documents[documentId];
-        localStorage.setItem('documents', JSON.stringify(documents));
-        
+    });
+
+    document.body.appendChild(popup);
+}
+
+// Close deletion warning popup
+function closeDeletionWarning() {
+    const popup = document.querySelector('.deletion-warning-modal');
+    if (popup) {
+        popup.remove();
+    }
+}
+
+// Confirm and proceed with deletion
+function confirmDeleteDocument(documentId, type) {
+    closeDeletionWarning();
+    proceedWithDeletion(documentId, type);
+}
+
+// Proceed with actual deletion
+function proceedWithDeletion(documentId, type) {
+    const documentElement = document.querySelector(`[data-document-id="${documentId}"]`);
+    if (documentElement) {
+        documentElement.remove();
+    }
+
+    // Remove from local storage
+    const documents = JSON.parse(localStorage.getItem('documents') || '{}');
+    delete documents[documentId];
+    localStorage.setItem('documents', JSON.stringify(documents));
+
+    // Remove from shared documentLibrary for data room sync
+    if (type) {
+        const categoryMap = {
+            'resume': 'resumes',
+            'project': 'projects',
+            'certificate': 'certificates',
+            'reference': 'references'
+        };
+        const libraryCategory = categoryMap[type];
+
+        if (libraryCategory) {
+            if (window.removeDocumentFromLibrary) {
+                window.removeDocumentFromLibrary(libraryCategory, documentId);
+            } else {
+                // Fallback: remove directly from documentLibrary if function not available
+                console.log('removeDocumentFromLibrary not available, removing directly from library');
+                if (window.documentLibrary && window.documentLibrary[libraryCategory]) {
+                    const index = window.documentLibrary[libraryCategory].findIndex(doc => doc.id === documentId);
+                    if (index !== -1) {
+                        window.documentLibrary[libraryCategory].splice(index, 1);
+                    }
+                }
+            }
+        }
+    }
+
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('Document deleted', 'success');
+    } else {
+        console.log('Document deleted');
+    }
+}
+
+// Delete document
+function deleteDocument(documentId, type) {
+    // Check if document is being used in any data rooms
+    const usingRooms = getDataRoomsUsingDocument(documentId);
+
+    if (usingRooms.length > 0) {
+        // Show warning popup
+        showDeletionWarning(documentId, type, usingRooms);
+    } else {
+        // Simple confirmation for unused documents
+        if (confirm('Are you sure you want to delete this document?')) {
+            proceedWithDeletion(documentId, type);
+        }
     }
 }
 
@@ -529,18 +794,24 @@ function exportProfile() {
     a.click();
     URL.revokeObjectURL(url);
     
-    window.IMI.utils.showNotification('Profile data exported successfully!', 'success');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('Profile data exported successfully!', 'success');
+    }
 }
 
 function changePassword() {
-    window.IMI.utils.showNotification('Password change functionality coming soon!', 'info');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('Password change functionality coming soon!', 'info');
+    }
     // In production, open password change modal
 }
 
 function confirmDeleteAccount() {
     if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
         if (confirm('This will permanently delete all your data, projects, and connections. Continue?')) {
-            window.IMI.utils.showNotification('Account deletion requested. You will receive a confirmation email.', 'info');
+            if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                window.IMI.utils.showNotification('Account deletion requested. You will receive a confirmation email.', 'info');
+            }
             // In production, trigger account deletion process
         }
     }
@@ -554,9 +825,13 @@ function triggerFileUpload(type) {
 
 // Export functions
 window.initializeProfile = initializeProfile;
+window.setupDocumentUploads = setupDocumentUploads;
+window.loadDocumentsFromLibrary = loadDocumentsFromLibrary;
 window.exportProfile = exportProfile;
 window.changePassword = changePassword;
 window.confirmDeleteAccount = confirmDeleteAccount;
 window.triggerFileUpload = triggerFileUpload;
 window.downloadDocument = downloadDocument;
 window.deleteDocument = deleteDocument;
+window.closeDeletionWarning = closeDeletionWarning;
+window.confirmDeleteDocument = confirmDeleteDocument;

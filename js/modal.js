@@ -567,6 +567,45 @@ function closeModal() {
         // Clear any inline styles that might have been set
         modal.removeAttribute('style');
         document.body.classList.remove('modal-open');
+
+        // Clean up any data room editing state
+        if (window.currentEditingRoom) {
+            console.log('Clearing currentEditingRoom on modal close');
+            window.currentEditingRoom = null;
+        }
+
+        // Debug: Check if user avatar is still clickable after modal close
+        console.log('🔍 Modal closed, checking user avatar state...');
+        const userAvatar = document.querySelector('.user-avatar');
+        if (userAvatar) {
+            console.log('✅ User avatar element exists after modal close');
+            console.log('Avatar classes:', userAvatar.className);
+            console.log('Avatar style:', userAvatar.style.cssText);
+
+            // Check for invisible overlays or blocking elements
+            console.log('🔍 Checking for invisible overlays...');
+            const rect = userAvatar.getBoundingClientRect();
+            const elementAtCenter = document.elementFromPoint(
+                rect.left + rect.width / 2,
+                rect.top + rect.height / 2
+            );
+            console.log('Element at avatar center:', elementAtCenter);
+            console.log('Is element the avatar itself?', elementAtCenter === userAvatar);
+
+            if (elementAtCenter !== userAvatar) {
+                console.log('🚨 Avatar is being blocked by:', elementAtCenter);
+                console.log('Blocking element classes:', elementAtCenter?.className);
+                console.log('Blocking element style:', elementAtCenter?.style.cssText);
+                console.log('Blocking element z-index:', window.getComputedStyle(elementAtCenter).zIndex);
+            }
+
+            // Test and fix navigation if needed
+            if (window.testAvatarNavigation) {
+                setTimeout(() => window.testAvatarNavigation(), 100);
+            }
+        } else {
+            console.error('❌ User avatar element not found after modal close');
+        }
     }
 }
 

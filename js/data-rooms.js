@@ -9,11 +9,19 @@ let dataRooms = [
         description: 'Portfolio tailored for software engineering and data science roles',
         privacy: 'public',
         industry: ['Technology'],
+        customMessage: 'Welcome to my tech portfolio! I\'m passionate about AI/ML and full-stack development. Feel free to explore my projects and achievements below.',
+        sectionOrder: ['resumes', 'projects', 'certificates', 'references'], // Custom section order
         documents: [
             { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'AI_Course_Certificate.pdf', permission: 'view', selected: true },
+            { id: 'resume-2', category: 'resumes', name: 'Jane_Doe_Tech_Resume.pdf', permission: 'download', selected: true },
+            { id: 'cert-1', category: 'certificates', name: 'AWS_Cloud_Practitioner.pdf', permission: 'view', selected: true },
+            { id: 'cert-2', category: 'certificates', name: 'Google_Data_Analytics.pdf', permission: 'view', selected: true },
+            { id: 'cert-3', category: 'certificates', name: 'Microsoft_AI_Fundamentals.pdf', permission: 'view', selected: true },
             { id: 'ref-1', category: 'references', name: 'Reference_TechCorp_CEO.pdf', permission: 'view', selected: true },
-            { id: 'proj-1', category: 'projects', name: 'Data_Analysis_Portfolio.pdf', permission: 'download', selected: true }
+            { id: 'ref-2', category: 'references', name: 'Reference_Professor_Smith.pdf', permission: 'view', selected: true },
+            { id: 'proj-1', category: 'projects', name: 'ML_Sentiment_Analysis_Project.pdf', permission: 'download', selected: true },
+            { id: 'proj-2', category: 'projects', name: 'React_Dashboard_Portfolio.pdf', permission: 'download', selected: true },
+            { id: 'proj-3', category: 'projects', name: 'Data_Pipeline_Architecture.pdf', permission: 'download', selected: true }
         ],
         stats: {
             views: 47,
@@ -30,10 +38,14 @@ let dataRooms = [
         description: 'Focused on finance, consulting, and business strategy positions',
         privacy: 'request',
         industry: ['Finance', 'Consulting'],
+        customMessage: '',
+        sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
         documents: [
-            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'AI_Course_Certificate.pdf', permission: 'view', selected: false },
-            { id: 'ref-1', category: 'references', name: 'Reference_TechCorp_CEO.pdf', permission: 'view', selected: true }
+            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Finance_Resume.pdf', permission: 'download', selected: true },
+            { id: 'cert-1', category: 'certificates', name: 'CFA_Level_I.pdf', permission: 'view', selected: true },
+            { id: 'cert-2', category: 'certificates', name: 'Financial_Modeling_Certificate.pdf', permission: 'view', selected: true },
+            { id: 'ref-1', category: 'references', name: 'Reference_Goldman_Sachs_VP.pdf', permission: 'view', selected: true },
+            { id: 'proj-1', category: 'projects', name: 'Investment_Portfolio_Analysis.pdf', permission: 'view', selected: true }
         ],
         stats: {
             views: 23,
@@ -50,12 +62,16 @@ let dataRooms = [
         description: 'Materials for research internships and academic programs',
         privacy: 'private',
         industry: ['Research', 'Education'],
+        customMessage: 'Focused on advancing AI research and academic excellence.',
+        sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
         documents: [
-            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'AI_Course_Certificate.pdf', permission: 'view', selected: true },
-            { id: 'cert-2', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true },
-            { id: 'ref-1', category: 'references', name: 'Reference_TechCorp_CEO.pdf', permission: 'view', selected: true },
-            { id: 'proj-2', category: 'projects', name: 'TechCorp_Marketing_Project.pdf', permission: 'view', selected: false }
+            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Academic_Resume.pdf', permission: 'download', selected: true },
+            { id: 'cert-1', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true },
+            { id: 'cert-2', category: 'certificates', name: 'Research_Excellence_Award.pdf', permission: 'view', selected: true },
+            { id: 'ref-1', category: 'references', name: 'Reference_Professor_Johnson.pdf', permission: 'view', selected: true },
+            { id: 'ref-2', category: 'references', name: 'Reference_Research_Supervisor.pdf', permission: 'view', selected: true },
+            { id: 'proj-1', category: 'projects', name: 'Neural_Network_Research_Paper.pdf', permission: 'download', selected: true },
+            { id: 'proj-2', category: 'projects', name: 'Lab_Research_Portfolio.pdf', permission: 'view', selected: true }
         ],
         stats: {
             views: 12,
@@ -68,21 +84,21 @@ let dataRooms = [
     }
 ];
 
-// Sample document library - represents documents uploaded to profile
-const documentLibrary = {
+// Document library - represents documents uploaded to profile (synced with profile page)
+let documentLibrary = {
     resumes: [
-        { id: 'resume-1', name: 'Jane_Doe_Resume_2024.pdf', uploadDate: '2024-12-01', size: '2.3 MB' }
-    ],
-    certificates: [
-        { id: 'cert-1', name: 'AI_Course_Certificate.pdf', uploadDate: '2024-11-15', size: '1.1 MB' },
-        { id: 'cert-2', name: 'Science_Fair_First_Place.jpg', uploadDate: '2024-10-20', size: '3.2 MB' }
-    ],
-    references: [
-        { id: 'ref-1', name: 'Reference_TechCorp_CEO.pdf', uploadDate: '2024-12-05', size: '890 KB' }
+        { id: 'resume-1', name: 'Jane_Doe_Resume_2024.pdf', uploadDate: '2024-12-01', size: '1.2 MB' }
     ],
     projects: [
-        { id: 'proj-1', name: 'Data_Analysis_Portfolio.pdf', uploadDate: '2024-11-25', size: '4.1 MB' },
-        { id: 'proj-2', name: 'TechCorp_Marketing_Project.pdf', uploadDate: '2024-11-20', size: '2.8 MB' }
+        { id: 'proj-1', name: 'ML_Sentiment_Analysis_Project.pdf', uploadDate: '2024-11-25', size: '4.2 MB' },
+        { id: 'proj-2', name: 'React_Dashboard_Portfolio.pdf', uploadDate: '2024-11-20', size: '3.1 MB' }
+    ],
+    certificates: [
+        { id: 'cert-1', name: 'AWS_Cloud_Practitioner.pdf', uploadDate: '2024-11-15', size: '856 KB' },
+        { id: 'cert-2', name: 'Science_Fair_First_Place.jpg', uploadDate: '2024-06-10', size: '2.1 MB' }
+    ],
+    references: [
+        { id: 'ref-1', name: 'Reference_TechCorp_CEO.pdf', uploadDate: '2024-12-05', size: '623 KB' }
     ]
 };
 
@@ -299,21 +315,57 @@ function generateRoomId() {
 
 // Preview room
 function previewDataRoom(roomId) {
-    const room = dataRooms.find(r => r.id === roomId);
-    if (!room) return;
+    console.log('🔍 PREVIEW FUNCTION CALLED with roomId:', roomId);
 
-    // In a real implementation, this would open a new window/tab
-    // showing the room as a recruiter would see it
-    if (window.showToast) {
-        window.showToast(`Opening preview for "${room.name}"`, 'info');
+    const room = dataRooms.find(r => r.id === roomId);
+    if (!room) {
+        console.error('❌ Room not found:', roomId);
+        return;
     }
-    console.log('Preview room:', room);
+
+    console.log('✅ Room found:', room.name);
+    console.log('📍 Current location hash:', window.location.hash);
+
+    // Navigate to preview mode
+    const newHash = `#data-room-preview/${roomId}`;
+    console.log('🔄 Setting hash to:', newHash);
+    window.location.hash = newHash;
+
+    console.log('📍 Hash after setting:', window.location.hash);
+
+    // Also call the preview function directly as fallback
+    console.log('⏳ Setting up direct call fallback...');
+    setTimeout(() => {
+        console.log('🚀 Executing direct call fallback');
+        if (typeof window.showDataRoomPreview === 'function') {
+            console.log('✅ showDataRoomPreview function exists, calling it...');
+            window.showDataRoomPreview(roomId, true);
+        } else {
+            console.error('❌ showDataRoomPreview function not found on window object');
+        }
+    }, 100);
 }
 
 // Edit room
 function editDataRoom(roomId) {
     const room = dataRooms.find(r => r.id === roomId);
     if (!room) return;
+
+    // Check if we're currently in preview mode and exit it first
+    const previewContainer = document.getElementById('data-room-preview-container');
+    if (previewContainer && previewContainer.style.display !== 'none') {
+        console.log('🔄 Exiting preview mode before opening edit modal...');
+        if (typeof window.exitPreviewMode === 'function') {
+            window.exitPreviewMode();
+        } else {
+            // Fallback: manually exit preview mode
+            previewContainer.style.display = 'none';
+            const mainContainer = document.querySelector('.container');
+            if (mainContainer) {
+                mainContainer.style.display = '';
+            }
+        }
+    }
 
     currentEditingRoom = roomId;
 
@@ -346,28 +398,13 @@ function editDataRoom(roomId) {
 
                         <div class="form-group">
                             <label>Custom Message for Viewers</label>
-                            <textarea class="form-textarea" rows="2" id="edit-room-message" placeholder="Optional welcome message for people viewing this room..."></textarea>
+                            <textarea class="form-textarea" rows="2" id="edit-room-message" placeholder="Optional welcome message for people viewing this room...">${room.customMessage || ''}</textarea>
                         </div>
 
                         <div class="form-group">
                             <label>Section Order</label>
                             <div class="section-order-container" id="section-order-list">
-                                <div class="draggable-section" draggable="true" data-section="resumes">
-                                    <span class="drag-handle">⋮⋮</span>
-                                    <span class="section-name">📋 Resumes</span>
-                                </div>
-                                <div class="draggable-section" draggable="true" data-section="certificates">
-                                    <span class="drag-handle">⋮⋮</span>
-                                    <span class="section-name">🏆 Certificates</span>
-                                </div>
-                                <div class="draggable-section" draggable="true" data-section="references">
-                                    <span class="drag-handle">⋮⋮</span>
-                                    <span class="section-name">📝 References</span>
-                                </div>
-                                <div class="draggable-section" draggable="true" data-section="projects">
-                                    <span class="drag-handle">⋮⋮</span>
-                                    <span class="section-name">💼 Projects</span>
-                                </div>
+                                ${generateSectionOrderHTML(room)}
                             </div>
                             <small class="help-text">Drag to reorder how sections appear in your data room</small>
                         </div>
@@ -375,7 +412,7 @@ function editDataRoom(roomId) {
                 </div>
 
                 <!-- Document Selection -->
-                <div class="edit-room-documents">
+                <div class="edit-room-documents" id="data-room-documents-section">
                     <h4>Select Documents</h4>
                     <div class="document-categories" id="document-categories">
                         ${generateDocumentSelection(room)}
@@ -399,6 +436,30 @@ function editDataRoom(roomId) {
 
     // Initialize drag and drop functionality
     setTimeout(initializeSectionDragDrop, 100);
+}
+
+// Generate section order HTML based on room configuration
+function generateSectionOrderHTML(room) {
+    const sectionMeta = {
+        resumes: { name: '📋 Resumes' },
+        certificates: { name: '🏆 Certificates' },
+        references: { name: '📝 References' },
+        projects: { name: '💼 Projects' }
+    };
+
+    const sectionOrder = room.sectionOrder || ['resumes', 'projects', 'certificates', 'references'];
+
+    return sectionOrder.map(sectionKey => {
+        const meta = sectionMeta[sectionKey];
+        if (!meta) return '';
+
+        return `
+            <div class="draggable-section" draggable="true" data-section="${sectionKey}">
+                <span class="drag-handle">⋮⋮</span>
+                <span class="section-name">${meta.name}</span>
+            </div>
+        `;
+    }).join('');
 }
 
 // Generate document selection HTML
@@ -629,6 +690,13 @@ function handleSaveDataRoom() {
     room.customMessage = document.getElementById('edit-room-message').value;
     room.updatedAt = new Date().toISOString().split('T')[0];
 
+    // Update section order from drag-and-drop
+    const sectionOrderContainer = document.getElementById('section-order-list');
+    if (sectionOrderContainer) {
+        const sections = sectionOrderContainer.querySelectorAll('.draggable-section');
+        room.sectionOrder = Array.from(sections).map(section => section.dataset.section);
+    }
+
     // Update document selection
     const checkboxes = document.querySelectorAll('.document-item input[type="checkbox"]');
     const permissionSelects = document.querySelectorAll('.permission-select');
@@ -717,7 +785,7 @@ function shareDataRoom(roomId) {
             <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
                 <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">🔗 Room Link</h4>
                 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                    <input type="text" class="form-input" value="https://imi.com/dataroom/jane-doe/${roomId}" readonly style="flex: 1; font-family: monospace; font-size: 12px; background: #f8fafc;">
+                    <input type="text" class="form-input" id="room-link-input" value="${window.location.origin}${window.location.pathname}#data-room/${roomId}" readonly style="flex: 1; font-family: monospace; font-size: 12px; background: #f8fafc;">
                     <button class="btn btn-outline" onclick="copyDataRoomLink()">📋 Copy</button>
                 </div>
                 <small style="color: #6b7280;">Anyone with this link can access your room based on your privacy settings</small>
@@ -756,7 +824,7 @@ function shareDataRoom(roomId) {
 
 // Copy room link to clipboard
 function copyDataRoomLink() {
-    const linkInput = document.querySelector('input[readonly]');
+    const linkInput = document.getElementById('room-link-input');
     if (linkInput) {
         linkInput.select();
         document.execCommand('copy');
@@ -1388,7 +1456,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Export functions for global use
+// Export data and functions for global use
+window.dataRooms = dataRooms;
 window.initializeDataRooms = initializeDataRooms;
 window.createNewDataRoom = createNewDataRoom;
 window.editDataRoom = editDataRoom;
@@ -1404,3 +1473,129 @@ window.exportDataRoomData = exportDataRoomData;
 window.shareMultipleDataRooms = shareMultipleDataRooms;
 window.viewAccessRequests = viewAccessRequests;
 window.viewDataRoomComments = viewDataRoomComments;
+
+// Document Library Management Functions
+// These functions sync profile uploads/deletions with data room document selector
+
+function addDocumentToLibrary(category, document) {
+    if (!documentLibrary[category]) {
+        documentLibrary[category] = [];
+    }
+
+    // Generate unique ID if not provided
+    if (!document.id) {
+        document.id = category.slice(0, 4) + '-' + Date.now();
+    }
+
+    // Add to library
+    documentLibrary[category].push(document);
+
+    // Refresh any open data room edit modals to show new document
+    if (currentEditingRoom) {
+        refreshDocumentSelector();
+    }
+
+    console.log(`Added document to ${category}:`, document);
+    return document.id;
+}
+
+function removeDocumentFromLibrary(category, documentId) {
+    if (!documentLibrary[category]) {
+        return false;
+    }
+
+    const index = documentLibrary[category].findIndex(doc => doc.id === documentId);
+    if (index === -1) {
+        return false;
+    }
+
+    // Remove from library
+    const removedDocument = documentLibrary[category].splice(index, 1)[0];
+
+    // Remove from all data rooms that reference this document
+    dataRooms.forEach(room => {
+        room.documents = room.documents.filter(doc => doc.id !== documentId);
+    });
+
+    // Refresh any open data room edit modals
+    if (currentEditingRoom) {
+        refreshDocumentSelector();
+        updateSelectedDocuments();
+    }
+
+    console.log(`Removed document from ${category}:`, removedDocument);
+    return true;
+}
+
+function refreshDocumentSelector() {
+    // Find the document selector section in the modal
+    const documentsSection = document.querySelector('#data-room-documents-section');
+    if (!documentsSection) return;
+
+    // Regenerate the document selector content
+    const room = dataRooms.find(r => r.id === currentEditingRoom);
+    if (!room) return;
+
+    // Rebuild the documents section HTML
+    let documentsHtml = '<h4>📄 Select Documents</h4>';
+
+    const categories = [
+        { key: 'resumes', icon: '📄', label: 'Resumes' },
+        { key: 'projects', icon: '📁', label: 'Projects' },
+        { key: 'certificates', icon: '🏆', label: 'Certificates' },
+        { key: 'references', icon: '📝', label: 'References' }
+    ];
+
+    categories.forEach(category => {
+        const docs = documentLibrary[category.key] || [];
+        if (docs.length > 0) {
+            documentsHtml += `
+                <div class="document-category">
+                    <h5>${category.icon} ${category.label}</h5>
+                    <div class="document-checkboxes">
+            `;
+
+            docs.forEach(doc => {
+                const isSelected = room.documents.some(d => d.id === doc.id);
+                const roomDoc = room.documents.find(d => d.id === doc.id);
+                const permission = roomDoc ? roomDoc.permission : 'view';
+
+                documentsHtml += `
+                    <div class="document-checkbox-item">
+                        <label class="checkbox-label">
+                            <input type="checkbox"
+                                   data-doc-id="${doc.id}"
+                                   data-category="${category.key}"
+                                   data-name="${doc.name}"
+                                   ${isSelected ? 'checked' : ''}
+                                   onchange="toggleDocumentSelection(this)">
+                            ${doc.name}
+                        </label>
+                        <select class="permission-select"
+                                data-doc-id="${doc.id}"
+                                onchange="updateDocumentPermission(this)"
+                                ${!isSelected ? 'disabled' : ''}>
+                            <option value="view" ${permission === 'view' ? 'selected' : ''}>View Only</option>
+                            <option value="download" ${permission === 'download' ? 'selected' : ''}>Downloadable</option>
+                        </select>
+                    </div>
+                `;
+            });
+
+            documentsHtml += `
+                    </div>
+                </div>
+            `;
+        }
+    });
+
+    documentsSection.innerHTML = documentsHtml;
+}
+
+// Export functions to window for profile.js to use
+window.addDocumentToLibrary = addDocumentToLibrary;
+window.removeDocumentFromLibrary = removeDocumentFromLibrary;
+window.refreshDocumentSelector = refreshDocumentSelector;
+
+// Export documentLibrary for global access
+window.documentLibrary = documentLibrary;
