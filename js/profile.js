@@ -925,7 +925,7 @@ function loadVerifiedAchievements() {
                     <h5 class="achievement-title">${achievement.title}</h5>
                     <p class="achievement-description">${achievement.description}</p>
                 </div>
-                <div class="verified-indicator" title="IMI Verified">✓</div>
+                <div class="verified-indicator" title="Verified">✓</div>
             </div>
             <div class="achievement-meta">
                 <span class="achievement-category">${achievement.category}</span>

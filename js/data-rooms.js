@@ -757,7 +757,7 @@ function generateAchievementsSelection(room) {
                 <label class="selector-label">Achievement ${i + 1}</label>
                 <select class="form-select achievement-select" data-index="${i}" id="achievement-select-${i}" onchange="updateAchievementSelection(${i}, this.value)">
                     <option value="">None</option>
-                    <optgroup label="✓ IMI Verified Achievements">
+                    <optgroup label="✓ Verified Achievements">
                         ${globalAchievementsLibrary.filter(a => a.isVerified).map(achievement =>
                             `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
                                 ${achievement.icon} ${achievement.title}
@@ -775,7 +775,7 @@ function generateAchievementsSelection(room) {
                 ${currentAchievement ? `
                     <div class="achievement-preview">
                         <small class="achievement-description">${currentAchievement.description}</small>
-                        ${currentAchievement.isVerified ? '<span class="verified-badge">✓ IMI Verified</span>' : ''}
+                        ${currentAchievement.isVerified ? '<span class="verified-badge">✓ Verified</span>' : ''}
                     </div>
                 ` : ''}
             </div>
@@ -802,22 +802,39 @@ function updateAchievementSelection(index, achievementId) {
     const selectorItem = selector.closest('.achievement-selector-item');
     const existingPreview = selectorItem.querySelector('.achievement-preview');
 
-    // Remove existing preview
+    // Remove existing preview with animation
     if (existingPreview) {
-        existingPreview.remove();
+        existingPreview.style.opacity = '0';
+        existingPreview.style.transform = 'translateY(-10px)';
+        setTimeout(() => {
+            if (existingPreview.parentNode) {
+                existingPreview.remove();
+            }
+        }, 200);
     }
 
     // Add new preview if achievement is selected
     if (achievementId) {
         const achievement = globalAchievementsLibrary.find(a => a.id === achievementId);
         if (achievement) {
-            const previewHtml = `
-                <div class="achievement-preview">
-                    <small class="achievement-description">${achievement.description}</small>
-                    ${achievement.isVerified ? '<span class="verified-badge">✓ IMI Verified</span>' : ''}
-                </div>
-            `;
-            selector.insertAdjacentHTML('afterend', previewHtml);
+            setTimeout(() => {
+                const previewHtml = `
+                    <div class="achievement-preview" style="opacity: 0; transform: translateY(10px);">
+                        <small class="achievement-description">${achievement.description}</small>
+                        ${achievement.isVerified ? '<span class="verified-badge">✓ Verified</span>' : ''}
+                    </div>
+                `;
+                selector.insertAdjacentHTML('afterend', previewHtml);
+
+                // Animate in
+                const newPreview = selectorItem.querySelector('.achievement-preview');
+                if (newPreview) {
+                    setTimeout(() => {
+                        newPreview.style.opacity = '1';
+                        newPreview.style.transform = 'translateY(0)';
+                    }, 10);
+                }
+            }, existingPreview ? 200 : 0);
         }
     }
 }
