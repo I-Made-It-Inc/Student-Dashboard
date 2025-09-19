@@ -351,6 +351,22 @@ function editDataRoom(roomId) {
     const room = dataRooms.find(r => r.id === roomId);
     if (!room) return;
 
+    // Check if we're currently in preview mode and exit it first
+    const previewContainer = document.getElementById('data-room-preview-container');
+    if (previewContainer && previewContainer.style.display !== 'none') {
+        console.log('🔄 Exiting preview mode before opening edit modal...');
+        if (typeof window.exitPreviewMode === 'function') {
+            window.exitPreviewMode();
+        } else {
+            // Fallback: manually exit preview mode
+            previewContainer.style.display = 'none';
+            const mainContainer = document.querySelector('.container');
+            if (mainContainer) {
+                mainContainer.style.display = '';
+            }
+        }
+    }
+
     currentEditingRoom = roomId;
 
     const modalContent = `
@@ -1579,6 +1595,7 @@ function refreshDocumentSelector() {
 // Export functions to window for profile.js to use
 window.addDocumentToLibrary = addDocumentToLibrary;
 window.removeDocumentFromLibrary = removeDocumentFromLibrary;
+window.refreshDocumentSelector = refreshDocumentSelector;
 
 // Export documentLibrary for global access
 window.documentLibrary = documentLibrary;

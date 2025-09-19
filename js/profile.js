@@ -27,11 +27,29 @@ function initializeProfile() {
 function loadDocumentsFromLibrary() {
     console.log('Loading documents from library...');
 
-    // Check if documentLibrary exists (from data-rooms.js)
+    // Initialize documentLibrary if it doesn't exist yet
     if (!window.documentLibrary) {
-        console.log('Document library not available yet');
-        return;
+        console.log('Document library not available, initializing...');
+        window.documentLibrary = {
+            resumes: [
+                { id: 'resume-1', name: 'Jane_Doe_Resume_2024.pdf', uploadDate: '2024-12-01', size: '1.2 MB' }
+            ],
+            projects: [
+                { id: 'proj-1', name: 'ML_Sentiment_Analysis_Project.pdf', uploadDate: '2024-11-25', size: '4.2 MB' },
+                { id: 'proj-2', name: 'React_Dashboard_Portfolio.pdf', uploadDate: '2024-11-20', size: '3.1 MB' }
+            ],
+            certificates: [
+                { id: 'cert-1', name: 'AWS_Cloud_Practitioner.pdf', uploadDate: '2024-11-15', size: '856 KB' },
+                { id: 'cert-2', name: 'Science_Fair_First_Place.jpg', uploadDate: '2024-06-10', size: '2.1 MB' }
+            ],
+            references: [
+                { id: 'ref-1', name: 'Reference_TechCorp_CEO.pdf', uploadDate: '2024-12-05', size: '623 KB' }
+            ]
+        };
     }
+
+    console.log('Document library available, loading documents...');
+    console.log('Current documentLibrary state:', window.documentLibrary);
 
     // Categories to load
     const categoryMapping = [
@@ -43,15 +61,25 @@ function loadDocumentsFromLibrary() {
 
     categoryMapping.forEach(({ type, plural, icon }) => {
         const docs = window.documentLibrary[plural] || [];
+        console.log(`📂 Loading ${type} documents:`, docs.length, 'documents');
+
         const category = document.querySelector(`#${type}-upload`)?.closest('.document-category');
-        if (!category) return;
+        if (!category) {
+            console.error(`❌ Category container not found for ${type}`);
+            return;
+        }
 
         const documentsList = category.querySelector('.uploaded-documents');
-        if (!documentsList) return;
+        if (!documentsList) {
+            console.error(`❌ Documents list container not found for ${type}`);
+            return;
+        }
 
+        console.log(`🧹 Clearing existing documents for ${type}`);
         // Clear existing static documents
         documentsList.innerHTML = '';
 
+        console.log(`📄 Adding ${docs.length} documents to ${type} UI`);
         // Add documents from library
         docs.forEach(doc => {
             const documentItem = document.createElement('div');
@@ -372,14 +400,44 @@ function addDocumentToList(file, type) {
     const libraryCategory = categoryMap[type];
 
     // Add to shared documentLibrary for data room sync
-    if (libraryCategory && window.addDocumentToLibrary) {
-        const documentData = {
-            id: documentId,
-            name: file.name,
-            uploadDate: new Date().toISOString().split('T')[0],
-            size: fileSize + ' MB'
-        };
-        window.addDocumentToLibrary(libraryCategory, documentData);
+    const documentData = {
+        id: documentId,
+        name: file.name,
+        uploadDate: new Date().toISOString().split('T')[0],
+        size: fileSize + ' MB'
+    };
+
+    if (libraryCategory) {
+        console.log('🔄 Adding document to library:', { libraryCategory, documentData });
+        console.log('🔍 window.addDocumentToLibrary available:', typeof window.addDocumentToLibrary);
+        console.log('🔍 window.documentLibrary exists:', !!window.documentLibrary);
+
+        // Use the addDocumentToLibrary function if available (from data-rooms.js)
+        if (window.addDocumentToLibrary) {
+            console.log('✅ Using addDocumentToLibrary function');
+            window.addDocumentToLibrary(libraryCategory, documentData);
+
+            // Force refresh any open data room modals
+            console.log('🔄 Checking for open data room modals to refresh...');
+            if (window.refreshDocumentSelector && typeof window.refreshDocumentSelector === 'function') {
+                console.log('📝 Calling refreshDocumentSelector...');
+                window.refreshDocumentSelector();
+            }
+        } else {
+            // Fallback: add directly to documentLibrary if function not available
+            console.log('⚠️ addDocumentToLibrary not available, adding directly to library');
+            if (!window.documentLibrary) {
+                console.log('📦 Creating new documentLibrary');
+                window.documentLibrary = { resumes: [], projects: [], certificates: [], references: [] };
+            }
+            if (!window.documentLibrary[libraryCategory]) {
+                console.log('📂 Creating category:', libraryCategory);
+                window.documentLibrary[libraryCategory] = [];
+            }
+            console.log('📄 Adding document directly to library');
+            window.documentLibrary[libraryCategory].push(documentData);
+            console.log('✅ Document added. Library now contains:', window.documentLibrary);
+        }
     }
 
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
@@ -421,37 +479,115 @@ function downloadDocument(documentId) {
     console.log('Downloading document:', documentId);
 }
 
-// Delete document
-function deleteDocument(documentId, type) {
-    if (confirm('Are you sure you want to delete this document?')) {
-        const documentElement = document.querySelector(`[data-document-id="${documentId}"]`);
-        if (documentElement) {
-            documentElement.remove();
+// Check which data rooms use a document
+function getDataRoomsUsingDocument(documentId) {
+    if (!window.dataRooms) return [];
+
+    return window.dataRooms.filter(room =>
+        room.documents.some(doc => doc.id === documentId && doc.selected !== false)
+    );
+}
+
+// Show deletion warning popup
+function showDeletionWarning(documentId, type, usingRooms) {
+    const popup = document.createElement('div');
+    popup.className = 'deletion-warning-modal';
+    popup.innerHTML = `
+        <div class="deletion-warning-content">
+            <h3>⚠️ Document in Use</h3>
+            <p>This document is currently being used in the following data room${usingRooms.length > 1 ? 's' : ''}:</p>
+            <ul class="room-list">
+                ${usingRooms.map(room => `<li>• ${room.name}</li>`).join('')}
+            </ul>
+            <p>Deleting this document will remove it from ${usingRooms.length > 1 ? 'these data rooms' : 'this data room'} as well.</p>
+            <div class="warning-actions">
+                <button class="btn btn-secondary" onclick="closeDeletionWarning()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDeleteDocument('${documentId}', '${type}')">Delete Anyway</button>
+            </div>
+        </div>
+    `;
+
+    // Add click-to-close functionality
+    popup.addEventListener('click', (e) => {
+        if (e.target === popup) {
+            closeDeletionWarning();
         }
+    });
 
-        // Remove from local storage
-        const documents = JSON.parse(localStorage.getItem('documents') || '{}');
-        delete documents[documentId];
-        localStorage.setItem('documents', JSON.stringify(documents));
+    document.body.appendChild(popup);
+}
 
-        // Remove from shared documentLibrary for data room sync
-        if (type && window.removeDocumentFromLibrary) {
-            const categoryMap = {
-                'resume': 'resumes',
-                'project': 'projects',
-                'certificate': 'certificates',
-                'reference': 'references'
-            };
-            const libraryCategory = categoryMap[type];
-            if (libraryCategory) {
+// Close deletion warning popup
+function closeDeletionWarning() {
+    const popup = document.querySelector('.deletion-warning-modal');
+    if (popup) {
+        popup.remove();
+    }
+}
+
+// Confirm and proceed with deletion
+function confirmDeleteDocument(documentId, type) {
+    closeDeletionWarning();
+    proceedWithDeletion(documentId, type);
+}
+
+// Proceed with actual deletion
+function proceedWithDeletion(documentId, type) {
+    const documentElement = document.querySelector(`[data-document-id="${documentId}"]`);
+    if (documentElement) {
+        documentElement.remove();
+    }
+
+    // Remove from local storage
+    const documents = JSON.parse(localStorage.getItem('documents') || '{}');
+    delete documents[documentId];
+    localStorage.setItem('documents', JSON.stringify(documents));
+
+    // Remove from shared documentLibrary for data room sync
+    if (type) {
+        const categoryMap = {
+            'resume': 'resumes',
+            'project': 'projects',
+            'certificate': 'certificates',
+            'reference': 'references'
+        };
+        const libraryCategory = categoryMap[type];
+
+        if (libraryCategory) {
+            if (window.removeDocumentFromLibrary) {
                 window.removeDocumentFromLibrary(libraryCategory, documentId);
+            } else {
+                // Fallback: remove directly from documentLibrary if function not available
+                console.log('removeDocumentFromLibrary not available, removing directly from library');
+                if (window.documentLibrary && window.documentLibrary[libraryCategory]) {
+                    const index = window.documentLibrary[libraryCategory].findIndex(doc => doc.id === documentId);
+                    if (index !== -1) {
+                        window.documentLibrary[libraryCategory].splice(index, 1);
+                    }
+                }
             }
         }
+    }
 
-        if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-            window.IMI.utils.showNotification('Document deleted', 'success');
-        } else {
-            console.log('Document deleted');
+    if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+        window.IMI.utils.showNotification('Document deleted', 'success');
+    } else {
+        console.log('Document deleted');
+    }
+}
+
+// Delete document
+function deleteDocument(documentId, type) {
+    // Check if document is being used in any data rooms
+    const usingRooms = getDataRoomsUsingDocument(documentId);
+
+    if (usingRooms.length > 0) {
+        // Show warning popup
+        showDeletionWarning(documentId, type, usingRooms);
+    } else {
+        // Simple confirmation for unused documents
+        if (confirm('Are you sure you want to delete this document?')) {
+            proceedWithDeletion(documentId, type);
         }
     }
 }
@@ -689,9 +825,13 @@ function triggerFileUpload(type) {
 
 // Export functions
 window.initializeProfile = initializeProfile;
+window.setupDocumentUploads = setupDocumentUploads;
+window.loadDocumentsFromLibrary = loadDocumentsFromLibrary;
 window.exportProfile = exportProfile;
 window.changePassword = changePassword;
 window.confirmDeleteAccount = confirmDeleteAccount;
 window.triggerFileUpload = triggerFileUpload;
 window.downloadDocument = downloadDocument;
 window.deleteDocument = deleteDocument;
+window.closeDeletionWarning = closeDeletionWarning;
+window.confirmDeleteDocument = confirmDeleteDocument;

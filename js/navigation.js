@@ -50,13 +50,19 @@ function showPage(pageId, pushState = true) {
 
     // Show selected page
     const selectedPage = document.getElementById(`${pageId}-page`);
+    console.log(`🔍 Looking for page element: ${pageId}-page`);
+    console.log(`📄 Page element found:`, !!selectedPage);
+
     if (selectedPage) {
         selectedPage.classList.add('active');
+        console.log(`✅ Page ${pageId} made active`);
 
         // Load page-specific content
+        console.log(`🔄 About to call loadPageContent(${pageId})`);
         loadPageContent(pageId);
+        console.log(`✅ loadPageContent(${pageId}) called`);
     } else {
-        console.error(`Page not found: ${pageId}`);
+        console.error(`❌ Page not found: ${pageId}`);
     }
     
     // Update active nav link (only for pages that have nav links)
@@ -343,29 +349,96 @@ function loadTimeTrackingContent() {
 function loadProfileContent() {
     console.log('Loading profile content...');
 
-    // Load profile data and initialize profile functionality
-    loadProfileData();
+    try {
+        // Initialize profile functionality completely
+        console.log('About to call initializeProfile...');
+        if (typeof initializeProfile === 'function') {
+            initializeProfile();
+            console.log('initializeProfile called successfully');
+        } else {
+            console.error('initializeProfile function not available');
+            // Fallback to just loading data
+            loadProfileData();
+        }
+    } catch (error) {
+        console.error('Error in loadProfileContent:', error);
+        // Fallback: try to initialize profile directly
+        console.log('Trying fallback initialization...');
+        setTimeout(() => {
+            if (typeof initializeProfile === 'function') {
+                console.log('Fallback: initializeProfile available, calling it');
+                initializeProfile();
+            } else {
+                console.error('Fallback: initializeProfile not available');
+            }
+        }, 200);
+    }
 }
 
 // Load profile data
 function loadProfileData() {
-    console.log('Loading profile data...');
-    // Initialize profile functionality when page loads
+    console.log('🔍 === LOAD PROFILE DATA STARTED ===');
+    console.log('📋 Checking if initializeProfile exists:', typeof initializeProfile);
+    console.log('📁 Profile.js loaded?', !!window.initializeProfile);
+
+    // Force initialize profile functionality - try multiple approaches
+    console.log('🔄 Attempting to initialize profile...');
+
+    // Try direct call first
     if (typeof initializeProfile === 'function') {
-        console.log('initializeProfile is available, calling it');
+        console.log('✅ initializeProfile available, calling directly');
         initializeProfile();
-    } else {
-        console.log('initializeProfile not available yet, waiting...');
-        // Wait for profile.js to load
-        setTimeout(() => {
-            if (typeof initializeProfile === 'function') {
-                console.log('initializeProfile now available, calling it');
-                initializeProfile();
-            } else {
-                console.error('initializeProfile still not available after waiting');
-            }
-        }, 100);
+        return;
     }
+
+    // Try window.initializeProfile
+    if (typeof window.initializeProfile === 'function') {
+        console.log('✅ window.initializeProfile available, calling it');
+        window.initializeProfile();
+        return;
+    }
+
+    // Force load profile functionality with retries
+    console.log('⚠️ initializeProfile not available, forcing initialization...');
+    let retryCount = 0;
+    const maxRetries = 5;
+
+    const tryInitialize = () => {
+        retryCount++;
+        console.log(`🔄 Initialization attempt ${retryCount}/${maxRetries}`);
+
+        if (typeof initializeProfile === 'function') {
+            console.log('✅ initializeProfile now available');
+            initializeProfile();
+            return;
+        }
+
+        if (typeof window.initializeProfile === 'function') {
+            console.log('✅ window.initializeProfile now available');
+            window.initializeProfile();
+            return;
+        }
+
+        if (retryCount < maxRetries) {
+            setTimeout(tryInitialize, 100 * retryCount); // Exponential backoff
+        } else {
+            console.error('❌ Failed to initialize profile after all retries');
+            // Manual fallback - call the core functions directly
+            console.log('🚨 Attempting manual profile initialization...');
+
+            // Call the core functions directly if available
+            if (typeof window.setupDocumentUploads === 'function') {
+                console.log('📁 Calling setupDocumentUploads directly');
+                window.setupDocumentUploads();
+            }
+            if (typeof window.loadDocumentsFromLibrary === 'function') {
+                console.log('📚 Calling loadDocumentsFromLibrary directly');
+                window.loadDocumentsFromLibrary();
+            }
+        }
+    };
+
+    tryInitialize();
 }
 
 // Setup profile forms
@@ -455,15 +528,82 @@ function setupMobileMenu() {
 // Setup user menu dropdown
 function setupUserMenu() {
     const userAvatar = document.querySelector('.user-avatar');
-    
+
+    console.log('🔍 Looking for user avatar element...');
+    console.log('Avatar element found:', !!userAvatar);
+    console.log('Avatar element:', userAvatar);
+
     if (userAvatar) {
+        console.log('✅ Setting up user avatar click handler');
+        console.log('Avatar classes:', userAvatar.className);
+        console.log('Avatar parent:', userAvatar.parentElement);
+
         userAvatar.addEventListener('click', (e) => {
+            console.log('🎯 AVATAR CLICKED! Event details:');
+            console.log('- Event target:', e.target);
+            console.log('- Current target:', e.currentTarget);
+            console.log('- Event type:', e.type);
+            console.log('- Timestamp:', e.timeStamp);
+            console.log('🚀 Navigating to profile...');
             e.stopPropagation();
+            e.preventDefault();
             // Navigate directly to profile page instead of showing dropdown
             showPage('profile');
         });
+        console.log('✅ User avatar click handler set up successfully');
+
+        // Store a reference to test later
+        window.avatarElement = userAvatar;
+
+        // Test function to verify click handler is still working
+        window.testAvatarClick = () => {
+            console.log('🧪 Testing if avatar click handler is still attached...');
+            const currentAvatar = document.querySelector('.user-avatar');
+            console.log('Current avatar element:', currentAvatar);
+            console.log('Same as stored avatar?', currentAvatar === window.avatarElement);
+            console.log('Avatar classes:', currentAvatar?.className);
+            console.log('Avatar computed styles - pointer-events:', window.getComputedStyle(currentAvatar).pointerEvents);
+            console.log('Avatar computed styles - cursor:', window.getComputedStyle(currentAvatar).cursor);
+
+            // Manually trigger a click to test
+            console.log('🔬 Simulating click...');
+            currentAvatar.click();
+        };
+    } else {
+        console.error('❌ User avatar element not found');
+        console.log('Available elements with "avatar" in class:',
+            document.querySelectorAll('*[class*="avatar"]'));
+        console.log('Available elements with "user" in class:',
+            document.querySelectorAll('*[class*="user"]'));
     }
 }
+
+// Test function to check if avatar navigation is working
+function testAvatarNavigation() {
+    console.log('🧪 Testing avatar navigation...');
+    const userAvatar = document.querySelector('.user-avatar');
+    if (userAvatar) {
+        console.log('✅ User avatar found');
+        console.log('Avatar element:', userAvatar);
+        console.log('Avatar classes:', userAvatar.className);
+        console.log('Click listeners count:', getEventListeners ? Object.keys(getEventListeners(userAvatar)).length : 'unknown');
+
+        // Try to re-establish the click handler as a fallback
+        console.log('🔧 Re-establishing avatar click handler as fallback...');
+        userAvatar.removeEventListener('click', setupUserMenu); // Remove any existing
+        userAvatar.addEventListener('click', (e) => {
+            console.log('🎯 FALLBACK: User avatar clicked! Navigating to profile...');
+            e.stopPropagation();
+            showPage('profile');
+        });
+        console.log('✅ Fallback click handler established');
+    } else {
+        console.error('❌ User avatar not found during test');
+    }
+}
+
+// Export test function
+window.testAvatarNavigation = testAvatarNavigation;
 
 // Toggle user dropdown menu
 function toggleUserDropdown() {
