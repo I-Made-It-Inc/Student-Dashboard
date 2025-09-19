@@ -1249,10 +1249,22 @@
 /* Comment Actions */
 .comment-actions {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
     gap: 12px;
     padding-top: 16px;
     border-top: 1px solid #f3f4f6;
+}
+
+.comment-actions-left {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.comment-actions-right {
+    display: flex;
+    align-items: center;
 }
 
 .reply-section {
@@ -1318,6 +1330,48 @@
 
 .btn-follow-up:hover {
     background: #fbbf24;
+}
+
+/* Comment Modal Compact Button Variants */
+.btn-primary-compact {
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+    border: 2px solid var(--imi-yellow);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary-compact:hover {
+    background-color: var(--imi-blue);
+    color: var(--imi-yellow);
+    border-color: var(--imi-blue);
+    transform: translateY(-1px);
+}
+
+.btn-secondary-compact {
+    background-color: var(--white);
+    color: var(--imi-blue);
+    border: 2px solid var(--imi-blue);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary-compact:hover {
+    background-color: var(--imi-blue);
+    color: var(--white);
+    transform: translateY(-1px);
 }
 
 .reply-thread {

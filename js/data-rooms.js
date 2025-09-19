@@ -1322,11 +1322,15 @@ function viewDataRoomComments() {
             </div>
 
             <div class="comment-actions">
-                ${comment.status === 'read' ?
-                    `<button class="btn-follow-up" onclick="followUpDataRoomComment('${comment.id}')">Follow Up</button>` :
-                    `<button class="btn-reply" onclick="replyToDataRoomComment('${comment.id}')">Reply</button>
-                     <button class="btn-mark-read" onclick="markDataRoomCommentRead('${comment.id}')">Mark as Read</button>`
-                }
+                <div class="comment-actions-left">
+                    <button class="btn-primary-compact" onclick="followUpDataRoomComment('${comment.id}')">Follow Up</button>
+                    <button class="btn-secondary-compact" onclick="replyToDataRoomComment('${comment.id}')">Reply</button>
+                </div>
+                <div class="comment-actions-right">
+                    <button class="btn-secondary-compact" onclick="toggleCommentReadStatus('${comment.id}')">
+                        ${comment.status === 'read' ? 'Mark as Unread' : 'Mark as Read'}
+                    </button>
+                </div>
             </div>
 
             ${comment.status !== 'read' ? `
@@ -1498,23 +1502,43 @@ function replyToDataRoomComment(commentId) {
     if (window.showToast) {
         window.showToast('Reply sent successfully!', 'success');
     }
-
-    markDataRoomCommentRead(commentId);
 }
 
-function markDataRoomCommentRead(commentId) {
+function toggleCommentReadStatus(commentId) {
+    // Update the data structure
+    const comment = dataRoomComments.find(c => c.id === commentId);
+    if (!comment) return;
+
+    // Toggle the status
+    const newStatus = comment.status === 'read' ? 'unread' : 'read';
+    comment.status = newStatus;
+
+    // Update the UI
     const card = document.querySelector(`[data-comment-id="${commentId}"]`);
     if (card) {
-        card.classList.add('read');
+        if (newStatus === 'read') {
+            card.classList.add('read');
+        } else {
+            card.classList.remove('read');
+        }
 
-
-        // Replace actions with follow-up button
+        // Update the actions section with new layout
         const actionsDiv = card.querySelector('.comment-actions');
-        actionsDiv.innerHTML = '<button class="btn-follow-up" onclick="followUpDataRoomComment(\'' + commentId + '\')">Follow Up</button>';
+        actionsDiv.innerHTML = `
+            <div class="comment-actions-left">
+                <button class="btn-primary-compact" onclick="followUpDataRoomComment('${commentId}')">Follow Up</button>
+                <button class="btn-secondary-compact" onclick="replyToDataRoomComment('${commentId}')">Reply</button>
+            </div>
+            <div class="comment-actions-right">
+                <button class="btn-secondary-compact" onclick="toggleCommentReadStatus('${commentId}')">
+                    ${newStatus === 'read' ? 'Mark as Unread' : 'Mark as Read'}
+                </button>
+            </div>
+        `;
     }
 
     if (window.showToast) {
-        window.showToast('Comment marked as read', 'success');
+        window.showToast(`Comment marked as ${newStatus}`, 'success');
     }
 }
 
