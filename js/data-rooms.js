@@ -742,12 +742,15 @@ function generateAchievementsSelection(room) {
     const selectedAchievements = room.achievements || [];
     const maxAchievements = 4;
 
+    // Use global achievements library
+    const globalAchievementsLibrary = window.achievementsLibrary || achievementsLibrary || [];
+
     let html = '<div class="achievements-selector-list">';
 
     // Generate 4 dropdown selectors
     for (let i = 0; i < maxAchievements; i++) {
         const currentAchievementId = selectedAchievements[i] || '';
-        const currentAchievement = currentAchievementId ? achievementsLibrary.find(a => a.id === currentAchievementId) : null;
+        const currentAchievement = currentAchievementId ? globalAchievementsLibrary.find(a => a.id === currentAchievementId) : null;
 
         html += `
             <div class="achievement-selector-item">
@@ -755,14 +758,14 @@ function generateAchievementsSelection(room) {
                 <select class="form-select achievement-select" data-index="${i}" id="achievement-select-${i}" onchange="updateAchievementSelection(${i}, this.value)">
                     <option value="">None</option>
                     <optgroup label="✓ IMI Verified Achievements">
-                        ${achievementsLibrary.filter(a => a.isVerified).map(achievement =>
+                        ${globalAchievementsLibrary.filter(a => a.isVerified).map(achievement =>
                             `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
                                 ${achievement.icon} ${achievement.title}
                             </option>`
                         ).join('')}
                     </optgroup>
                     <optgroup label="Custom Achievements">
-                        ${achievementsLibrary.filter(a => !a.isVerified).map(achievement =>
+                        ${globalAchievementsLibrary.filter(a => !a.isVerified).map(achievement =>
                             `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
                                 ${achievement.icon} ${achievement.title}
                             </option>`
@@ -791,6 +794,9 @@ function generateAchievementsSelection(room) {
 function updateAchievementSelection(index, achievementId) {
     console.log(`Updated achievement at index ${index}: ${achievementId || 'None'}`);
 
+    // Use global achievements library
+    const globalAchievementsLibrary = window.achievementsLibrary || achievementsLibrary || [];
+
     // Update the preview for the selected achievement
     const selector = document.querySelector(`#achievement-select-${index}`);
     const selectorItem = selector.closest('.achievement-selector-item');
@@ -803,7 +809,7 @@ function updateAchievementSelection(index, achievementId) {
 
     // Add new preview if achievement is selected
     if (achievementId) {
-        const achievement = achievementsLibrary.find(a => a.id === achievementId);
+        const achievement = globalAchievementsLibrary.find(a => a.id === achievementId);
         if (achievement) {
             const previewHtml = `
                 <div class="achievement-preview">
@@ -1960,5 +1966,10 @@ window.refreshAchievementSelector = refreshAchievementSelector;
 
 // Export documentLibrary for global access
 window.documentLibrary = documentLibrary;
-// Export achievementsLibrary for global access
-window.achievementsLibrary = achievementsLibrary;
+// Export achievementsLibrary for global access - always use window.achievementsLibrary as the single source of truth
+if (!window.achievementsLibrary) {
+    window.achievementsLibrary = achievementsLibrary;
+} else {
+    // If window.achievementsLibrary already exists (e.g., from profile.js), use that
+    achievementsLibrary = window.achievementsLibrary;
+}

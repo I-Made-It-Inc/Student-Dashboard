@@ -875,9 +875,34 @@ function loadAchievements() {
         return;
     }
 
+    // Clean up any existing empty achievements
+    cleanupEmptyAchievements();
+
     loadVerifiedAchievements();
     loadCustomAchievements();
     setupAchievementFormHandlers();
+}
+
+// Clean up empty achievements from library
+function cleanupEmptyAchievements() {
+    if (!window.achievementsLibrary) return;
+
+    const originalLength = window.achievementsLibrary.length;
+    window.achievementsLibrary = window.achievementsLibrary.filter(achievement => {
+        // Keep verified achievements regardless
+        if (achievement.isVerified) return true;
+
+        // For custom achievements, require non-empty title and description
+        return achievement.title &&
+               achievement.title.trim() &&
+               achievement.description &&
+               achievement.description.trim();
+    });
+
+    const removedCount = originalLength - window.achievementsLibrary.length;
+    if (removedCount > 0) {
+        console.log(`Cleaned up ${removedCount} empty custom achievements`);
+    }
 }
 
 // Load IMI-verified achievements (read-only)
@@ -914,7 +939,10 @@ function loadCustomAchievements() {
     const customList = document.getElementById('custom-achievements-list');
     if (!customList) return;
 
-    const customAchievements = window.achievementsLibrary.filter(a => !a.isVerified);
+    // Filter out any achievements with empty titles or descriptions
+    const customAchievements = window.achievementsLibrary.filter(a =>
+        !a.isVerified && a.title && a.title.trim() && a.description && a.description.trim()
+    );
 
     if (customAchievements.length === 0) {
         customList.innerHTML = '<p class="no-achievements">No custom achievements added yet.</p>';
@@ -947,7 +975,12 @@ function setupAchievementFormHandlers() {
     const form = document.getElementById('custom-achievement-form');
     if (!form) return;
 
-    form.addEventListener('submit', function(e) {
+    // Remove any existing event listeners first
+    const newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+
+    // Add single event listener
+    newForm.addEventListener('submit', function(e) {
         e.preventDefault();
         handleAddCustomAchievement(this);
     });
@@ -970,32 +1003,59 @@ function cancelAddAchievement() {
 
     // Reset form
     document.getElementById('custom-achievement-form').reset();
+
+    // Reset submission flag
+    isSubmittingAchievement = false;
 }
+
+// Prevent double submission
+let isSubmittingAchievement = false;
 
 // Handle add custom achievement
 function handleAddCustomAchievement(form) {
-    const formData = new FormData(form);
+    // Prevent double submission
+    if (isSubmittingAchievement) {
+        console.log('Already submitting, ignoring duplicate submission');
+        return;
+    }
+    isSubmittingAchievement = true;
+
     const titleInput = form.querySelector('input[type="text"]');
     const iconSelect = form.querySelector('select');
     const descriptionTextarea = form.querySelector('textarea');
     const categorySelect = form.querySelectorAll('select')[1];
     const dateInput = form.querySelector('input[type="date"]');
 
+    // Validate required fields
+    const title = titleInput.value.trim();
+    const description = descriptionTextarea.value.trim();
+
+    if (!title || !description) {
+        if (window.showToast) {
+            window.showToast('Please fill in both title and description', 'error');
+        }
+        isSubmittingAchievement = false;
+        return;
+    }
+
     const achievement = {
-        id: 'custom-' + Date.now(),
-        title: titleInput.value.trim(),
-        description: descriptionTextarea.value.trim(),
-        icon: iconSelect.value,
-        category: categorySelect.value,
+        id: 'custom-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+        title: title,
+        description: description,
+        icon: iconSelect.value || '🏆',
+        category: categorySelect.value || 'other',
         dateAchieved: dateInput.value || null,
         isVerified: false
     };
 
-    // Add to achievements library
+    // Add to achievements library (global window.achievementsLibrary is the single source of truth)
     if (!window.achievementsLibrary) {
         window.achievementsLibrary = [];
     }
+
     window.achievementsLibrary.push(achievement);
+
+    console.log('Added achievement to global library. Total achievements:', window.achievementsLibrary.length);
 
     // Refresh any open data room edit modals to show new achievement
     if (window.currentEditingRoom && typeof window.refreshAchievementSelector === 'function') {
@@ -1012,6 +1072,9 @@ function handleAddCustomAchievement(form) {
     if (window.showToast) {
         window.showToast('Achievement added successfully!', 'success');
     }
+
+    // Reset submission flag
+    isSubmittingAchievement = false;
 
     console.log('Added custom achievement:', achievement);
 }
@@ -1060,12 +1123,14 @@ function handleUpdateCustomAchievement(achievementId, form) {
     const categorySelect = form.querySelectorAll('select')[1];
     const dateInput = form.querySelector('input[type="date"]');
 
-    // Update achievement
+    // Update achievement (since it's a reference, this updates the global library automatically)
     achievement.title = titleInput.value.trim();
     achievement.description = descriptionTextarea.value.trim();
     achievement.icon = iconSelect.value;
     achievement.category = categorySelect.value;
     achievement.dateAchieved = dateInput.value || null;
+
+    console.log('Updated achievement in global library:', achievement.title);
 
     // Refresh any open data room edit modals to update achievement selectors
     if (window.currentEditingRoom && typeof window.refreshAchievementSelector === 'function') {
@@ -1100,11 +1165,13 @@ function deleteCustomAchievement(achievementId) {
     if (!achievement) return;
 
     if (confirm(`Are you sure you want to delete "${achievement.title}"?`)) {
-        // Remove from library
+        // Remove from global library (single source of truth)
         const index = window.achievementsLibrary.findIndex(a => a.id === achievementId);
         if (index !== -1) {
             window.achievementsLibrary.splice(index, 1);
         }
+
+        console.log('Removed achievement from global library. Remaining achievements:', window.achievementsLibrary.length);
 
         // Remove from any data rooms that reference this achievement
         if (window.dataRooms) {
