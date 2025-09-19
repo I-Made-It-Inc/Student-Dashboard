@@ -1558,21 +1558,26 @@ function viewDataRoomActivity(roomId) {
             </div>
 
             <div class="comment-details">
-                <div class="commented-document">
+                <div class="commented-room">
                     <span class="detail-label">Document:</span>
                     <span class="document-tag">${comment.document}</span>
                 </div>
                 <div class="comment-message">
-                    <p class="detail-label">Comment:</p>
                     <p class="message-text">${comment.message}</p>
                 </div>
             </div>
 
-            ${comment.status === 'unread' ? `
-                <div class="comment-actions">
-                    <button class="btn-mark-read" onclick="markCommentAsRead('${comment.id}')">✓ Mark as Read</button>
+            <div class="comment-actions">
+                <div class="comment-actions-left">
+                    <button class="btn-primary-compact" onclick="followUpDataRoomComment('${comment.id}')">Follow Up</button>
                 </div>
-            ` : ''}
+                <div class="comment-actions-right">
+                    <button class="btn-secondary-compact" onclick="toggleCommentReadStatus('${comment.id}')">
+                        ${comment.status === 'read' ? 'Mark as Unread' : 'Mark as Read'}
+                    </button>
+                </div>
+            </div>
+
         </div>
     `).join('');
 
@@ -1590,7 +1595,7 @@ function viewDataRoomActivity(roomId) {
             </div>
 
             <!-- Access Requests Tab Content -->
-            <div id="room-activity-requests" class="requests-container" style="margin-top: 20px;">
+            <div id="room-activity-requests" class="requests-container">
                 ${roomAccessRequests.length > 0 ? requestCardsHTML : `
                     <div style="text-align: center; padding: 40px; color: #6b7280;">
                         <div style="font-size: 48px; margin-bottom: 12px;">🔑</div>
@@ -1600,7 +1605,7 @@ function viewDataRoomActivity(roomId) {
             </div>
 
             <!-- Comments Tab Content -->
-            <div id="room-activity-comments" class="comments-container" style="margin-top: 20px; display: none;">
+            <div id="room-activity-comments" class="requests-container" style="display: none;">
                 ${roomComments.length > 0 ? commentCardsHTML : `
                     <div style="text-align: center; padding: 40px; color: #6b7280;">
                         <div style="font-size: 48px; margin-bottom: 12px;">💬</div>
@@ -1619,18 +1624,41 @@ function viewDataRoomActivity(roomId) {
 function showRoomActivityTab(tab, roomId) {
     const requestsTab = document.getElementById('room-activity-requests');
     const commentsTab = document.getElementById('room-activity-comments');
-    const tabButtons = document.querySelectorAll('.tab-button');
+    const modal = document.getElementById('modal');
+
+    if (!modal) return;
+
+    // Find tab buttons within the modal
+    const tabButtons = modal.querySelectorAll('.request-tabs .tab-button');
 
     if (tab === 'requests') {
-        requestsTab.style.display = 'block';
-        commentsTab.style.display = 'none';
-        tabButtons[0].classList.add('active');
-        tabButtons[1].classList.remove('active');
+        // Show requests, hide comments
+        if (requestsTab) {
+            requestsTab.style.removeProperty('display');
+            requestsTab.classList.add('requests-container');
+        }
+        if (commentsTab) {
+            commentsTab.style.display = 'none';
+        }
+
+        if (tabButtons.length >= 2) {
+            tabButtons[0].classList.add('active');
+            tabButtons[1].classList.remove('active');
+        }
     } else {
-        requestsTab.style.display = 'none';
-        commentsTab.style.display = 'block';
-        tabButtons[0].classList.remove('active');
-        tabButtons[1].classList.add('active');
+        // Hide requests, show comments
+        if (requestsTab) {
+            requestsTab.style.display = 'none';
+        }
+        if (commentsTab) {
+            commentsTab.style.removeProperty('display');
+            commentsTab.classList.add('requests-container');
+        }
+
+        if (tabButtons.length >= 2) {
+            tabButtons[0].classList.remove('active');
+            tabButtons[1].classList.add('active');
+        }
     }
 }
 
@@ -2192,6 +2220,8 @@ window.updateDocumentPermission = updateDocumentPermission;
 window.updateDescriptionType = updateDescriptionType;
 window.updateCustomDescription = updateCustomDescription;
 window.updateAchievementSelection = updateAchievementSelection;
+window.followUpDataRoomComment = followUpDataRoomComment;
+window.toggleCommentReadStatus = toggleCommentReadStatus;
 
 
 // Document Library Management Functions
