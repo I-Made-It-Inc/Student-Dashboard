@@ -4,7 +4,8 @@
 // Sample data - in production this would come from an API
 let dataRooms = [
     {
-        id: 'tech-roles',
+        id: 'tech-roles-2024',
+        customId: 'tech-roles',
         name: 'Tech Roles Portfolio',
         description: 'Portfolio tailored for software engineering and data science roles',
         privacy: 'public',
@@ -34,7 +35,8 @@ let dataRooms = [
         updatedAt: '2024-12-08'
     },
     {
-        id: 'finance-roles',
+        id: 'finance-roles-2024',
+        customId: 'finance-roles',
         name: 'Finance & Consulting',
         description: 'Focused on finance, consulting, and business strategy positions',
         privacy: 'request',
@@ -59,7 +61,8 @@ let dataRooms = [
         updatedAt: '2024-12-05'
     },
     {
-        id: 'research-roles',
+        id: 'research-roles-2024',
+        customId: 'research-roles',
         name: 'Research & Academia',
         description: 'Materials for research internships and academic programs',
         privacy: 'private',
@@ -86,6 +89,20 @@ let dataRooms = [
         updatedAt: '2024-11-28'
     }
 ];
+
+// Load dataRooms from localStorage if available
+const savedDataRooms = localStorage.getItem('dataRooms');
+if (savedDataRooms) {
+    try {
+        const parsedRooms = JSON.parse(savedDataRooms);
+        if (Array.isArray(parsedRooms) && parsedRooms.length > 0) {
+            dataRooms = parsedRooms;
+            console.log('✅ Loaded dataRooms from localStorage:', dataRooms.length, 'rooms');
+        }
+    } catch (e) {
+        console.error('❌ Failed to parse dataRooms from localStorage:', e);
+    }
+}
 
 // Document library - represents documents uploaded to profile (synced with profile page)
 let documentLibrary = {
@@ -484,8 +501,9 @@ function previewDataRoom(roomId) {
     console.log('✅ Room found:', room.name);
     console.log('📍 Current location hash:', window.location.hash);
 
-    // Navigate to preview mode
-    const newHash = `#data-room-preview/${roomId}`;
+    // Navigate to preview mode using customId if available
+    const displayId = room.customId ? room.customId : roomId;
+    const newHash = `#data-room-preview/${displayId}`;
     console.log('🔄 Setting hash to:', newHash);
     window.location.hash = newHash;
 
@@ -1028,10 +1046,22 @@ function cloneDataRoom(roomId) {
     // Generate unique ID for the clone
     const cloneId = `clone-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
+    // Generate unique custom ID for the clone based on the original
+    let baseCustomId = originalRoom.customId || originalRoom.id;
+    let cloneCustomId = `${baseCustomId}-copy`;
+    let customCounter = 1;
+
+    // Check if custom ID already exists and increment counter
+    while (dataRooms.some(room => room.customId === cloneCustomId || room.id === cloneCustomId)) {
+        cloneCustomId = `${baseCustomId}-${customCounter}`;
+        customCounter++;
+    }
+
     // Deep clone the room data
     const clonedRoom = {
         ...originalRoom,
         id: cloneId,
+        customId: cloneCustomId,
         name: cloneName,
         createdAt: new Date().toISOString().split('T')[0],
         updatedAt: new Date().toISOString().split('T')[0],
@@ -1194,8 +1224,16 @@ function shareDataRoom(roomId) {
         <div style="margin: 20px 0;">
             <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
                 <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">🔗 Room Link</h4>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label>Custom Room ID</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" class="form-input" id="custom-room-id" value="${room.customId || roomId}" style="flex: 1;" oninput="updateRoomLink('${roomId}')">
+                        <button class="btn btn-outline" onclick="saveCustomRoomId('${roomId}')" id="save-room-id-btn">💾 Save</button>
+                    </div>
+                    <small class="help-text" id="room-id-feedback">Enter a custom ID for your room URL</small>
+                </div>
                 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                    <input type="text" class="form-input" id="room-link-input" value="${window.location.origin}${window.location.pathname}#data-room/${roomId}" readonly style="flex: 1; font-family: monospace; font-size: 12px; background: #f8fafc;">
+                    <input type="text" class="form-input" id="room-link-input" value="${window.location.origin}${window.location.pathname}#data-room/${room.customId || roomId}" readonly style="flex: 1; font-family: monospace; font-size: 12px; background: #f8fafc;">
                     <button class="btn btn-outline" onclick="copyDataRoomLink()">📋 Copy</button>
                 </div>
                 <small style="color: #6b7280;">Anyone with this link can access your room based on your privacy settings</small>
@@ -1230,6 +1268,114 @@ function shareDataRoom(roomId) {
 
     // Use the existing modal system
     openModal('custom', 'Share Data Room', modalContent);
+}
+
+// Update room link preview when custom room ID changes
+function updateRoomLink(originalRoomId) {
+    const customIdInput = document.getElementById('custom-room-id');
+    const linkInput = document.getElementById('room-link-input');
+    const feedback = document.getElementById('room-id-feedback');
+    const saveBtn = document.getElementById('save-room-id-btn');
+
+    if (!customIdInput || !linkInput || !feedback || !saveBtn) return;
+
+    const newId = customIdInput.value.trim();
+
+    // Validate room ID format (alphanumeric, hyphens, underscores only)
+    const validFormat = /^[a-zA-Z0-9_-]+$/.test(newId);
+
+    if (!newId) {
+        feedback.textContent = 'Room ID cannot be empty';
+        feedback.style.color = '#ef4444';
+        saveBtn.disabled = true;
+        return;
+    }
+
+    if (!validFormat) {
+        feedback.textContent = 'Only letters, numbers, hyphens, and underscores allowed';
+        feedback.style.color = '#ef4444';
+        saveBtn.disabled = true;
+        return;
+    }
+
+    // Check for conflicts with existing custom IDs
+    const existingRoom = dataRooms.find(r => (r.customId === newId || r.id === newId) && r.id !== originalRoomId);
+
+    if (existingRoom) {
+        feedback.textContent = 'This room ID is already taken';
+        feedback.style.color = '#ef4444';
+        saveBtn.disabled = true;
+        return;
+    }
+
+    // Valid ID - update link preview
+    feedback.textContent = 'Room ID is available';
+    feedback.style.color = '#059669';
+    saveBtn.disabled = false;
+
+    // Update link preview
+    linkInput.value = `${window.location.origin}${window.location.pathname}#data-room/${newId}`;
+}
+
+// Save custom room ID
+function saveCustomRoomId(originalRoomId) {
+    const customIdInput = document.getElementById('custom-room-id');
+    const feedback = document.getElementById('room-id-feedback');
+    const saveBtn = document.getElementById('save-room-id-btn');
+
+    if (!customIdInput || !feedback || !saveBtn) return;
+
+    const newId = customIdInput.value.trim();
+    const room = dataRooms.find(r => r.id === originalRoomId);
+
+    if (!room) {
+        feedback.textContent = 'Room not found';
+        feedback.style.color = '#ef4444';
+        return;
+    }
+
+    if (newId === (room.customId || originalRoomId)) {
+        feedback.textContent = 'No changes made';
+        feedback.style.color = '#6b7280';
+        return;
+    }
+
+    // Get the old custom ID before updating
+    const oldCustomId = room.customId || originalRoomId;
+
+    // Update custom room ID (keep internal id unchanged)
+    room.customId = newId;
+
+    // Save to localStorage
+    localStorage.setItem('dataRooms', JSON.stringify(dataRooms));
+
+    // Update feedback
+    feedback.textContent = 'Room ID saved successfully!';
+    feedback.style.color = '#059669';
+
+    // Update button state
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '✅ Saved';
+
+    // Show success toast
+    if (window.showToast) {
+        window.showToast('Room ID updated successfully!', 'success');
+    }
+
+    // Update browser URL if currently viewing this room
+    const currentHash = window.location.hash;
+    if (currentHash.includes(`data-room/${oldCustomId}`) || currentHash.includes(`data-room-preview/${oldCustomId}`)) {
+        const newHash = currentHash.replace(oldCustomId, newId);
+        window.location.hash = newHash;
+        console.log('🔄 Updated URL hash from', currentHash, 'to', newHash);
+    }
+
+    // Refresh the data rooms view if it exists
+    if (typeof displayDataRooms === 'function') {
+        setTimeout(() => {
+            displayDataRooms();
+        }, 1000);
+    }
 }
 
 // Copy room link to clipboard
@@ -1853,6 +1999,8 @@ window.cloneDataRoom = cloneDataRoom;
 window.deleteDataRoom = deleteDataRoom;
 window.shareDataRoom = shareDataRoom;
 window.copyDataRoomLink = copyDataRoomLink;
+window.updateRoomLink = updateRoomLink;
+window.saveCustomRoomId = saveCustomRoomId;
 window.previewDataRoom = previewDataRoom;
 window.viewDataRoomAnalytics = viewDataRoomAnalytics;
 window.viewDataRoomActivity = viewDataRoomActivity;

@@ -111,8 +111,8 @@ function showDataRoomPreview(roomId, isPreviewMode = false) {
     const roomsData = window.dataRooms || dataRooms;
     console.log('📊 Using rooms data:', roomsData ? `${roomsData.length} rooms` : 'null');
 
-    // Find the room data
-    const room = roomsData.find(r => r.id === roomId);
+    // Find the room data (check both id and customId)
+    const room = roomsData.find(r => r.id === roomId || r.customId === roomId);
     console.log('🔍 Found room:', room ? room.name : 'NOT FOUND');
 
     if (!room) {
