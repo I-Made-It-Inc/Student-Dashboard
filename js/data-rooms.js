@@ -141,6 +141,54 @@ let documentLibrary = {
 // Current room being edited
 let currentEditingRoom = null;
 
+// Comments data - persistent state
+let dataRoomComments = [
+    {
+        id: 'comment-1',
+        commenterName: 'Sarah Johnson',
+        commenterTitle: 'Senior Recruiter at Microsoft',
+        commenterEmail: 's.johnson@microsoft.com',
+        room: 'tech-roles',
+        document: 'Resume',
+        message: 'Impressive background in machine learning! Your experience with neural networks aligns perfectly with our team\'s current projects. Would love to discuss this further.',
+        timestamp: '3 hours ago',
+        status: 'unread'
+    },
+    {
+        id: 'comment-2',
+        commenterName: 'David Chen',
+        commenterTitle: 'Engineering Manager at Google',
+        commenterEmail: 'dchen@google.com',
+        room: 'tech-roles',
+        document: 'Project Portfolio',
+        message: 'The data analysis work is well-structured. Good use of visualization techniques.',
+        timestamp: '1 day ago',
+        status: 'read'
+    },
+    {
+        id: 'comment-3',
+        commenterName: 'Emily Thompson',
+        commenterTitle: 'VP Talent Acquisition at Goldman Sachs',
+        commenterEmail: 'emily.thompson@gs.com',
+        room: 'finance-roles',
+        document: 'Resume',
+        message: 'Strong quantitative background. Your coursework in financial modeling stands out. We\'d like to move forward with an interview.',
+        timestamp: '2 days ago',
+        status: 'unread'
+    },
+    {
+        id: 'comment-4',
+        commenterName: 'Dr. Michael Rodriguez',
+        commenterTitle: 'Principal Research Scientist at Stanford AI Lab',
+        commenterEmail: 'm.rodriguez@stanford.edu',
+        room: 'research-roles',
+        document: 'Science Fair Certificate',
+        message: 'Impressive work on neural network optimization! Your research methodology shows great promise. We have a summer research position that would be perfect for your background in AI applications.',
+        timestamp: '4 hours ago',
+        status: 'unread'
+    }
+];
+
 // Access requests data - persistent state
 let accessRequests = [
     {
@@ -1103,8 +1151,8 @@ function viewDataRoomActivity(roomId) {
 function updateRoomStats() {
     const totalRooms = dataRooms.length;
     const totalViews = dataRooms.reduce((sum, room) => sum + room.stats.views, 0);
-    const totalRequests = 5; // This would come from API
-    const totalComments = 12; // This would come from API
+    const totalRequests = accessRequests.filter(req => req.status === 'pending').length;
+    const totalComments = dataRoomComments.length;
 
     const statItems = document.querySelectorAll('#data-rooms-page .stats-card .stat-value');
     if (statItems.length >= 4) {
@@ -1247,6 +1295,56 @@ function viewAccessRequests() {
 }
 
 function viewDataRoomComments() {
+    // Generate comment cards from data
+    const commentCardsHTML = dataRoomComments.map(comment => `
+        <div class="comment-card ${comment.status === 'read' ? 'read' : ''}" data-room="${comment.room}" data-comment-id="${comment.id}">
+            <div class="comment-header">
+                <div class="commenter-info">
+                    <h4>${comment.commenterName}</h4>
+                    <p class="commenter-title">${comment.commenterTitle}</p>
+                    <p class="commenter-email">${comment.commenterEmail}</p>
+                </div>
+                <div class="comment-time">
+                    <span class="time-badge">${comment.timestamp}</span>
+                </div>
+            </div>
+
+            <div class="comment-details">
+                <div class="commented-room">
+                    <span class="detail-label">Room:</span>
+                    <span class="room-name-tag">${getRoomNameById(comment.room)}</span>
+                    <span class="detail-label">Document:</span>
+                    <span class="document-tag">${comment.document}</span>
+                </div>
+                <div class="comment-message">
+                    <p class="message-text">${comment.message}</p>
+                </div>
+            </div>
+
+            <div class="comment-actions">
+                ${comment.status === 'read' ?
+                    `<button class="btn-follow-up" onclick="followUpDataRoomComment('${comment.id}')">Follow Up</button>` :
+                    `<button class="btn-reply" onclick="replyToDataRoomComment('${comment.id}')">Reply</button>
+                     <button class="btn-mark-read" onclick="markDataRoomCommentRead('${comment.id}')">Mark as Read</button>`
+                }
+            </div>
+
+            ${comment.status !== 'read' ? `
+            <div class="comment-reply" style="display: none;">
+                <textarea class="reply-input" placeholder="Type your reply..."></textarea>
+                <div class="reply-actions">
+                    <button class="btn-send-reply">Send Reply</button>
+                    <button class="btn-cancel-reply" onclick="cancelReply('${comment.id}')">Cancel</button>
+                </div>
+            </div>` : ''}
+        </div>
+    `).join('');
+
+    // Calculate counts dynamically
+    const techComments = dataRoomComments.filter(c => c.room === 'tech-roles').length;
+    const financeComments = dataRoomComments.filter(c => c.room === 'finance-roles').length;
+    const researchComments = dataRoomComments.filter(c => c.room === 'research-roles').length;
+
     const modalContent = `
         <div style="margin-bottom: 24px;">
             <h2>Comments</h2>
@@ -1255,147 +1353,15 @@ function viewDataRoomComments() {
         <div style="margin: 20px 0;">
             <!-- Tabs for filtering -->
             <div class="request-tabs">
-                <button class="tab-button active" onclick="filterDataRoomComments('all')">All (4)</button>
-                <button class="tab-button" onclick="filterDataRoomComments('tech-roles')">Tech Roles (2)</button>
-                <button class="tab-button" onclick="filterDataRoomComments('finance-roles')">Finance & Consulting (1)</button>
-                <button class="tab-button" onclick="filterDataRoomComments('research-roles')">Research & Academia (1)</button>
+                <button class="tab-button active" onclick="filterDataRoomComments('all')">All (${dataRoomComments.length})</button>
+                <button class="tab-button" onclick="filterDataRoomComments('tech-roles')">Tech Roles (${techComments})</button>
+                <button class="tab-button" onclick="filterDataRoomComments('finance-roles')">Finance & Consulting (${financeComments})</button>
+                <button class="tab-button" onclick="filterDataRoomComments('research-roles')">Research & Academia (${researchComments})</button>
             </div>
 
             <!-- Comment Cards -->
             <div class="requests-container" id="comments-container">
-                <!-- Tech Roles Comments -->
-                <div class="comment-card" data-room="tech-roles" data-comment-id="comment-1">
-                    <div class="comment-header">
-                        <div class="commenter-info">
-                            <h4>Sarah Johnson</h4>
-                            <p class="commenter-title">Senior Recruiter at Microsoft</p>
-                            <p class="commenter-email">s.johnson@microsoft.com</p>
-                        </div>
-                        <div class="comment-time">
-                            <span class="time-badge">3 hours ago</span>
-                        </div>
-                    </div>
-
-                    <div class="comment-details">
-                        <div class="commented-room">
-                            <span class="detail-label">Room:</span>
-                            <span class="room-name-tag">Tech Roles Portfolio</span>
-                            <span class="detail-label">Document:</span>
-                            <span class="document-tag">Resume</span>
-                        </div>
-                        <div class="comment-message">
-                            <p class="message-text">Impressive background in machine learning! Your experience with neural networks aligns perfectly with our team's current projects. Would love to discuss this further.</p>
-                        </div>
-                    </div>
-
-                    <div class="comment-actions">
-                        <div class="reply-section">
-                            <textarea class="reply-input" placeholder="Type your reply..." rows="2"></textarea>
-                            <button class="btn-reply" onclick="replyToDataRoomComment('comment-1')">Send Reply</button>
-                        </div>
-                        <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-1')">Mark as Read</button>
-                    </div>
-                </div>
-
-                <div class="comment-card read" data-room="tech-roles" data-comment-id="comment-2">
-                    <div class="comment-header">
-                        <div class="commenter-info">
-                            <h4>David Chen</h4>
-                            <p class="commenter-title">Engineering Manager at Google</p>
-                            <p class="commenter-email">dchen@google.com</p>
-                        </div>
-                        <div class="comment-time">
-                            <span class="time-badge">1 day ago</span>
-                        </div>
-                    </div>
-
-                    <div class="comment-details">
-                        <div class="commented-room">
-                            <span class="detail-label">Room:</span>
-                            <span class="room-name-tag">Tech Roles Portfolio</span>
-                            <span class="detail-label">Document:</span>
-                            <span class="document-tag">Project Portfolio</span>
-                        </div>
-                        <div class="comment-message">
-                            <p class="message-text">The data analysis work is well-structured. Good use of visualization techniques.</p>
-                        </div>
-                        <div class="reply-thread">
-                            <p class="reply-message"><strong>You:</strong> Thank you! I'm particularly proud of the predictive modeling section.</p>
-                        </div>
-                    </div>
-
-                    <div class="comment-actions">
-                        <button class="btn-follow-up" onclick="followUpDataRoomComment('comment-2')">Follow Up</button>
-                    </div>
-                </div>
-
-                <!-- Finance Comments -->
-                <div class="comment-card" data-room="finance-roles" data-comment-id="comment-3">
-                    <div class="comment-header">
-                        <div class="commenter-info">
-                            <h4>Emily Thompson</h4>
-                            <p class="commenter-title">VP Talent Acquisition at Goldman Sachs</p>
-                            <p class="commenter-email">emily.thompson@gs.com</p>
-                        </div>
-                        <div class="comment-time">
-                            <span class="time-badge">2 days ago</span>
-                        </div>
-                    </div>
-
-                    <div class="comment-details">
-                        <div class="commented-room">
-                            <span class="detail-label">Room:</span>
-                            <span class="room-name-tag">Finance & Consulting</span>
-                            <span class="detail-label">Document:</span>
-                            <span class="document-tag">Resume</span>
-                        </div>
-                        <div class="comment-message">
-                            <p class="message-text">Strong quantitative background. Your coursework in financial modeling stands out. We'd like to move forward with an interview.</p>
-                        </div>
-                    </div>
-
-                    <div class="comment-actions">
-                        <div class="reply-section">
-                            <textarea class="reply-input" placeholder="Type your reply..." rows="2"></textarea>
-                            <button class="btn-reply" onclick="replyToDataRoomComment('comment-3')">Send Reply</button>
-                        </div>
-                        <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-3')">Mark as Read</button>
-                    </div>
-                </div>
-
-                <!-- Research & Academia Comments -->
-                <div class="comment-card" data-room="research-roles" data-comment-id="comment-4">
-                    <div class="comment-header">
-                        <div class="commenter-info">
-                            <h4>Dr. Michael Rodriguez</h4>
-                            <p class="commenter-title">Principal Research Scientist at Stanford AI Lab</p>
-                            <p class="commenter-email">m.rodriguez@stanford.edu</p>
-                        </div>
-                        <div class="comment-time">
-                            <span class="time-badge">4 hours ago</span>
-                        </div>
-                    </div>
-
-                    <div class="comment-details">
-                        <div class="commented-room">
-                            <span class="detail-label">Room:</span>
-                            <span class="room-name-tag">Research & Academia</span>
-                            <span class="detail-label">Document:</span>
-                            <span class="document-tag">Science Fair Certificate</span>
-                        </div>
-                        <div class="comment-message">
-                            <p class="message-text">Impressive work on neural network optimization! Your research methodology shows great promise. We have a summer research position that would be perfect for your background in AI applications.</p>
-                        </div>
-                    </div>
-
-                    <div class="comment-actions">
-                        <div class="reply-section">
-                            <textarea class="reply-input" placeholder="Type your reply..." rows="2"></textarea>
-                            <button class="btn-reply" onclick="replyToDataRoomComment('comment-4')">Send Reply</button>
-                        </div>
-                        <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-4')">Mark as Read</button>
-                    </div>
-                </div>
+                ${commentCardsHTML}
             </div>
         </div>
     `;
@@ -1407,6 +1373,16 @@ function viewDataRoomComments() {
     setTimeout(() => {
         updateCommentCounts();
     }, 100);
+}
+
+// Helper function to get room name by ID
+function getRoomNameById(roomId) {
+    const roomNames = {
+        'tech-roles': 'Tech Roles Portfolio',
+        'finance-roles': 'Finance & Consulting',
+        'research-roles': 'Research & Academia'
+    };
+    return roomNames[roomId] || roomId;
 }
 
 // Supporting functions for access requests and comments modals
