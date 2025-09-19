@@ -695,9 +695,13 @@ function loadProfileData() {
     const savedProfile = localStorage.getItem('profileData');
     if (savedProfile) {
         const profileData = JSON.parse(savedProfile);
+
+
+
         populateProfileForm(profileData);
         updateProfilePreview(profileData);
     }
+
 
     const savedSocial = localStorage.getItem('socialLinks');
     if (savedSocial) {
@@ -711,12 +715,12 @@ function loadProfileData() {
 function populateProfileForm(data) {
     const inputs = document.querySelectorAll('#personal-info-form input, #personal-info-form textarea, #personal-info-form select');
     
-    // Map data to form fields
+    // Map data to form fields (excluding bio - let it use HTML default)
     const fieldMap = {
         'firstName': data.firstName,
         'lastName': data.lastName,
         'displayName': data.displayName,
-        'bio': data.bio,
+        // 'bio': data.bio, // Excluded - will use HTML default on refresh
         'school': data.school,
         'graduationYear': data.graduationYear,
         'phoneNumber': data.phoneNumber
@@ -796,7 +800,10 @@ function updateProfilePreview(data) {
     if (previewName) previewName.textContent = data.displayName;
     
     const previewBio = document.querySelector('.preview-bio');
-    if (previewBio) previewBio.textContent = data.bio;
+    const bioTextarea = document.getElementById('profile-bio');
+    if (previewBio && bioTextarea) {
+        previewBio.textContent = bioTextarea.value || data.bio || '';
+    }
     
     const previewSchool = document.querySelector('.preview-school');
     if (previewSchool) {

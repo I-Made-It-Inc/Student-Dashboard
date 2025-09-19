@@ -236,6 +236,9 @@ function generatePreviewModeHTML(room) {
                                     <span class="meta-item">📧 jane.doe@example.com</span>
                                     <span class="meta-item">💼 8 months with IMI</span>
                                 </div>
+                                <div class="student-bio">
+                                    <p>${getStudentBio()}</p>
+                                </div>
                             </div>
                         </div>
 
@@ -323,9 +326,7 @@ function generateExternalViewHTML(room) {
                                     <span class="meta-item">💼 ${room.industry.join(', ')}</span>
                                 </div>
                                 <div class="student-bio">
-                                    <p>Passionate about technology and innovation, with hands-on experience in AI/ML projects
-                                    through IMI's co-op program. Seeking opportunities to apply my skills in data analysis
-                                    and software development.</p>
+                                    <p>${getStudentBio()}</p>
                                 </div>
                             </div>
                         </div>
@@ -823,6 +824,31 @@ function formatDate(dateString) {
         day: 'numeric',
         year: 'numeric'
     });
+}
+
+// Get student bio from current DOM (like files and achievements)
+function getStudentBio() {
+    // Try to get bio from current DOM element (when on profile page)
+    const bioTextarea = document.getElementById('profile-bio');
+    if (bioTextarea && bioTextarea.value && bioTextarea.value.trim()) {
+        return bioTextarea.value.trim();
+    }
+
+    // If not on profile page, try to get from localStorage as secondary option
+    try {
+        const profileData = localStorage.getItem('profileData');
+        if (profileData) {
+            const profile = JSON.parse(profileData);
+            if (profile.bio && profile.bio.trim()) {
+                return profile.bio.trim();
+            }
+        }
+    } catch (e) {
+        console.warn('Error parsing profile data:', e);
+    }
+
+    // Fallback to default bio if neither DOM nor localStorage available
+    return "Passionate technology student with hands-on experience in AI/ML projects through IMI's co-op program. I enjoy solving complex problems through innovative software solutions and am always eager to learn new technologies. Currently seeking opportunities to apply my skills in data analysis, software development, and project management.";
 }
 
 // Check room access (simplified for demo)

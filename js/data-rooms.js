@@ -9,7 +9,7 @@ let dataRooms = [
         description: 'Portfolio tailored for software engineering and data science roles',
         privacy: 'public',
         industry: ['Technology'],
-        customMessage: 'Welcome to my tech portfolio! I\'m passionate about AI/ML and full-stack development. Feel free to explore my projects and achievements below.',
+        customMessage: 'Welcome to my technology-focused portfolio! This collection showcases my most relevant projects, certifications, and achievements in AI/ML and software development.',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'], // Custom section order
         achievements: ['ach-1', 'ach-2', 'ach-4', 'ach-5'], // Selected achievement IDs
         documents: [
@@ -64,7 +64,7 @@ let dataRooms = [
         description: 'Materials for research internships and academic programs',
         privacy: 'private',
         industry: ['Research', 'Education'],
-        customMessage: 'Focused on advancing AI research and academic excellence.',
+        customMessage: 'This academic portfolio highlights my research contributions, publications, and scholarly achievements in artificial intelligence.',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
         achievements: ['ach-1', 'ach-8'], // Selected achievement IDs
         documents: [
