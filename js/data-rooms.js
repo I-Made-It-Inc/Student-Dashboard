@@ -90,19 +90,8 @@ let dataRooms = [
     }
 ];
 
-// Load dataRooms from localStorage if available
-const savedDataRooms = localStorage.getItem('dataRooms');
-if (savedDataRooms) {
-    try {
-        const parsedRooms = JSON.parse(savedDataRooms);
-        if (Array.isArray(parsedRooms) && parsedRooms.length > 0) {
-            dataRooms = parsedRooms;
-            console.log('✅ Loaded dataRooms from localStorage:', dataRooms.length, 'rooms');
-        }
-    } catch (e) {
-        console.error('❌ Failed to parse dataRooms from localStorage:', e);
-    }
-}
+// Note: Hard refresh always resets to the 3 default demo rooms
+// This is intentional for demo purposes - no localStorage persistence
 
 // Document library - represents documents uploaded to profile (synced with profile page)
 let documentLibrary = {
@@ -1346,11 +1335,8 @@ function saveCustomRoomId(originalRoomId) {
     // Update custom room ID (keep internal id unchanged)
     room.customId = newId;
 
-    // Save to localStorage
-    localStorage.setItem('dataRooms', JSON.stringify(dataRooms));
-
     // Update feedback
-    feedback.textContent = 'Room ID saved successfully!';
+    feedback.textContent = 'Room ID updated for this session!';
     feedback.style.color = '#059669';
 
     // Update button state
@@ -1359,7 +1345,7 @@ function saveCustomRoomId(originalRoomId) {
 
     // Show success toast
     if (window.showToast) {
-        window.showToast('Room ID updated successfully!', 'success');
+        window.showToast('Room ID updated for this session!', 'success');
     }
 
     // Update browser URL if currently viewing this room
