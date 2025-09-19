@@ -747,8 +747,10 @@ function generateDocumentDescription(doc) {
     if (doc.descriptionType === 'default') {
         // Use default description from profile
         const docFromLibrary = findDocumentInLibrary(doc.id);
-        if (docFromLibrary && docFromLibrary.defaultDescription && docFromLibrary.defaultDescription.trim()) {
-            return `<div class="document-description">${docFromLibrary.defaultDescription}</div>`;
+        if (docFromLibrary && docFromLibrary.hasOwnProperty('defaultDescription')) {
+            // If defaultDescription exists (even if empty), use it
+            return docFromLibrary.defaultDescription.trim() ?
+                `<div class="document-description">${docFromLibrary.defaultDescription}</div>` : '';
         }
     }
 
