@@ -1,7 +1,7 @@
 /* css/responsive.css - Responsive Design and Media Queries */
 
 /* Tablet View (1024px and below) */
-@media (max-width: 1024px) {
+@media (max-width: 1024px) and (hover: none) and (pointer: coarse) {
     /* Container */
     .container {
         padding: var(--spacing-md);
@@ -124,7 +124,7 @@
 }
 
 /* Mobile View (768px and below) */
-@media (max-width: 768px) {
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
     /* Typography */
     h1 { font-size: calc(var(--font-size-xxl) * 0.85); }
     h2 { font-size: calc(var(--font-size-xl) * 0.85); }
@@ -216,7 +216,7 @@
 }
 
 /* Small Mobile View (480px and below) */
-@media (max-width: 480px) {
+@media (max-width: 480px) and (hover: none) and (pointer: coarse) {
     /* Container */
     .container {
         padding: var(--spacing-sm);
@@ -354,17 +354,17 @@
     }
 }
 
-/* Landscape Mobile */
-@media (max-height: 600px) and (orientation: landscape) {
+/* Landscape Mobile - disabled to prevent console interference */
+@media (max-height: 400px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
     .nav {
         padding: var(--spacing-xs) var(--spacing-md);
     }
-    
+
     .nav-links {
         top: 50px;
         height: calc(100vh - 50px);
     }
-    
+
     .modal-content {
         max-height: 90vh;
         margin: var(--spacing-sm);
