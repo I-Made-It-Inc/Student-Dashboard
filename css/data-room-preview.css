@@ -341,7 +341,7 @@
     font-size: 24px;
     font-weight: 700;
     color: #042847;
-    margin: 0 0 0px 0;
+    margin: 0;
 }
 
 .documents-grid {
@@ -647,7 +647,12 @@
 
 /* Comments Section */
 .comments-section {
-    margin-top: 48px;
+    margin-top: 32px;
+    margin-bottom: 48px;
+}
+
+.comments-section .section-title {
+    margin-bottom: 24px;
 }
 
 .comment-form-card {

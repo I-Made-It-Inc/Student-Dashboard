@@ -246,6 +246,16 @@ function generatePreviewModeHTML(room) {
                         ${generateAchievementsHTML(room)}
                     </div>
 
+                    ${room.customMessage && room.customMessage.trim() ? `
+                        <!-- Custom Welcome Message -->
+                        <div class="room-custom-message">
+                            <div class="message-icon">💬</div>
+                            <div class="message-content">
+                                <p>${room.customMessage}</p>
+                            </div>
+                        </div>
+                    ` : ''}
+
                     <!-- Documents Section -->
                     <div class="documents-section">
                         <h2 class="section-title">Portfolio Documents</h2>
@@ -335,6 +345,16 @@ function generateExternalViewHTML(room) {
                         <!-- Key Achievements -->
                         ${generateAchievementsHTML(room)}
                     </div>
+
+                    ${room.customMessage && room.customMessage.trim() ? `
+                        <!-- Custom Welcome Message -->
+                        <div class="room-custom-message">
+                            <div class="message-icon">💬</div>
+                            <div class="message-content">
+                                <p>${room.customMessage}</p>
+                            </div>
+                        </div>
+                    ` : ''}
 
                     <!-- Documents Section -->
                     <div class="documents-section">
@@ -540,21 +560,7 @@ function generateDocumentsHTML(room, isPreviewMode) {
     // Use room's section order or default order
     const sectionOrder = room.sectionOrder || ['resumes', 'certificates', 'references', 'projects'];
 
-    let html = '';
-
-    // Show custom message if exists
-    if (room.customMessage && room.customMessage.trim()) {
-        html += `
-            <div class="room-custom-message">
-                <div class="message-icon">💬</div>
-                <div class="message-content">
-                    <p>${room.customMessage}</p>
-                </div>
-            </div>
-        `;
-    }
-
-    html += '<div class="documents-grid">';
+    let html = '<div class="documents-grid">';
 
     // Generate sections in the specified order
     sectionOrder.forEach(categoryKey => {
