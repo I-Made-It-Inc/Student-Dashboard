@@ -567,22 +567,22 @@ function editDataRoom(roomId) {
                             <small class="help-text">Drag to reorder how sections appear in your data room</small>
                         </div>
                     </form>
+
+                    <!-- Document Selection (in left column) -->
+                    <div class="edit-room-documents" id="data-room-documents-section" style="margin-top: 24px;">
+                        <h4>Select Documents</h4>
+                        <div class="document-categories" id="document-categories">
+                            ${generateDocumentSelection(room)}
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Achievements Selection -->
+                <!-- Achievements Selection (in right column) -->
                 <div class="edit-room-achievements" id="data-room-achievements-section">
                     <h4>Select Key Achievements</h4>
                     <p class="help-text" style="margin-bottom: 16px;">Choose up to 4 achievements to highlight at the top of your data room</p>
                     <div class="achievements-selection" id="achievements-selection">
                         ${generateAchievementsSelection(room)}
-                    </div>
-                </div>
-
-                <!-- Document Selection -->
-                <div class="edit-room-documents" id="data-room-documents-section">
-                    <h4>Select Documents</h4>
-                    <div class="document-categories" id="document-categories">
-                        ${generateDocumentSelection(room)}
                     </div>
                 </div>
             </div>
