@@ -1324,7 +1324,6 @@ function viewDataRoomComments() {
             <div class="comment-actions">
                 <div class="comment-actions-left">
                     <button class="btn-primary-compact" onclick="followUpDataRoomComment('${comment.id}')">Follow Up</button>
-                    <button class="btn-secondary-compact" onclick="replyToDataRoomComment('${comment.id}')">Reply</button>
                 </div>
                 <div class="comment-actions-right">
                     <button class="btn-secondary-compact" onclick="toggleCommentReadStatus('${comment.id}')">
@@ -1333,14 +1332,6 @@ function viewDataRoomComments() {
                 </div>
             </div>
 
-            ${comment.status !== 'read' ? `
-            <div class="comment-reply" style="display: none;">
-                <textarea class="reply-input" placeholder="Type your reply..."></textarea>
-                <div class="reply-actions">
-                    <button class="btn-send-reply">Send Reply</button>
-                    <button class="btn-cancel-reply" onclick="cancelReply('${comment.id}')">Cancel</button>
-                </div>
-            </div>` : ''}
         </div>
     `).join('');
 
@@ -1486,23 +1477,6 @@ function denyAccessRequest(requestId) {
     }
 }
 
-function replyToDataRoomComment(commentId) {
-    const card = document.querySelector(`[data-comment-id="${commentId}"]`);
-    const replyInput = card.querySelector('.reply-input');
-    const replyText = replyInput.value.trim();
-
-    if (!replyText) {
-        if (window.showToast) {
-            window.showToast('Please enter a reply message', 'error');
-        }
-        return;
-    }
-
-    replyInput.value = '';
-    if (window.showToast) {
-        window.showToast('Reply sent successfully!', 'success');
-    }
-}
 
 function toggleCommentReadStatus(commentId) {
     // Update the data structure
@@ -1527,7 +1501,6 @@ function toggleCommentReadStatus(commentId) {
         actionsDiv.innerHTML = `
             <div class="comment-actions-left">
                 <button class="btn-primary-compact" onclick="followUpDataRoomComment('${commentId}')">Follow Up</button>
-                <button class="btn-secondary-compact" onclick="replyToDataRoomComment('${commentId}')">Reply</button>
             </div>
             <div class="comment-actions-right">
                 <button class="btn-secondary-compact" onclick="toggleCommentReadStatus('${commentId}')">

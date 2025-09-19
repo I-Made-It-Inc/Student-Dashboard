@@ -1041,11 +1041,18 @@
 
 .request-card,
 .comment-card {
-    background: white;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
     padding: 20px;
     transition: all 0.2s ease;
+}
+
+.request-card {
+    background: white;
+}
+
+.comment-card {
+    background: #fffbf0;
 }
 
 .request-card:hover,
@@ -1055,8 +1062,7 @@
 }
 
 .comment-card.read {
-    background: #f8fafc;
-    border-color: #e5e7eb;
+    background: white;
 }
 
 .request-header,
@@ -1267,29 +1273,6 @@
     align-items: center;
 }
 
-.reply-section {
-    display: flex;
-    gap: 8px;
-    align-items: flex-end;
-}
-
-.reply-input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 13px;
-    resize: vertical;
-    min-height: 36px;
-}
-
-.reply-input:focus {
-    outline: none;
-    border-color: #042847;
-    box-shadow: 0 0 0 3px rgba(4, 40, 71, 0.1);
-}
-
-.btn-reply,
 .btn-mark-read,
 .btn-follow-up {
     padding: 8px 16px;
@@ -1299,17 +1282,6 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-.btn-reply {
-    background: #042847;
-    color: white;
-    white-space: nowrap;
-}
-
-.btn-reply:hover {
-    background: #1e40af;
-    transform: translateY(-1px);
 }
 
 .btn-mark-read {
@@ -1374,19 +1346,6 @@
     transform: translateY(-1px);
 }
 
-.reply-thread {
-    margin-top: 12px;
-    padding: 12px;
-    background: #f8fafc;
-    border-radius: 8px;
-    border-left: 3px solid #042847;
-}
-
-.reply-message {
-    font-size: 13px;
-    color: #374151;
-    margin: 0;
-}
 
 /* Responsive for Request/Comment Modals */
 @media (max-width: 768px) {
@@ -1426,10 +1385,6 @@
         max-width: 120px;
     }
 
-    .reply-section {
-        flex-direction: column;
-        align-items: stretch;
-    }
 }
 
 @media (max-width: 640px) {
