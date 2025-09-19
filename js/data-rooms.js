@@ -477,20 +477,37 @@ function generateDocumentSelection(room) {
                         const isSelected = roomDoc?.selected || false;
                         const permission = roomDoc?.permission || 'view';
 
+                        const currentDescription = roomDoc?.description || '';
+
                         return `
-                            <label class="document-item">
-                                <input type="checkbox" ${isSelected ? 'checked' : ''} data-doc-id="${doc.id}">
-                                <span class="doc-icon">${getDocumentIcon(doc.name)}</span>
-                                <div class="doc-info">
-                                    <span class="doc-name">${doc.name}</span>
-                                    <div class="doc-permissions">
-                                        <select class="permission-select" data-doc-id="${doc.id}">
+                            <div class="document-item ${isSelected ? 'selected' : ''}">
+                                <label class="document-header">
+                                    <input type="checkbox" ${isSelected ? 'checked' : ''} data-doc-id="${doc.id}" onchange="toggleDocumentSelection('${doc.id}')">
+                                    <span class="doc-icon">${getDocumentIcon(doc.name)}</span>
+                                    <div class="doc-info">
+                                        <span class="doc-name">${doc.name}</span>
+                                    </div>
+                                </label>
+                                <div class="document-options ${isSelected ? 'visible' : ''}">
+                                    <div class="doc-permissions-row">
+                                        <label for="perm-${doc.id}">Access Level:</label>
+                                        <select id="perm-${doc.id}" class="permission-select" data-doc-id="${doc.id}" onchange="updateDocumentPermission('${doc.id}', this.value)">
                                             <option value="view" ${permission === 'view' ? 'selected' : ''}>View Only</option>
                                             <option value="download" ${permission === 'download' ? 'selected' : ''}>Download</option>
                                         </select>
                                     </div>
+                                    <div class="doc-description-row">
+                                        <label for="desc-${doc.id}">Custom Description for this Room:</label>
+                                        <textarea
+                                            id="desc-${doc.id}"
+                                            class="doc-description-input"
+                                            data-doc-id="${doc.id}"
+                                            onchange="updateDocumentDescription('${doc.id}', this.value)"
+                                            rows="1">${currentDescription}</textarea>
+                                        <small class="help-text">This description will only appear in this data room</small>
+                                    </div>
                                 </div>
-                            </label>
+                            </div>
                         `;
                     }).join('')}
                 </div>
@@ -725,12 +742,17 @@ function handleSaveDataRoom() {
             });
 
             if (docData) {
+                // Get the custom description for this room
+                const descriptionTextarea = document.querySelector(`textarea[data-doc-id="${docId}"]`);
+                const description = descriptionTextarea ? descriptionTextarea.value.trim() : '';
+
                 room.documents.push({
                     id: docId,
                     category: category,
                     name: docData.name,
                     permission: permission,
-                    selected: true
+                    selected: true,
+                    description: description
                 });
             }
         }
@@ -1456,6 +1478,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Document selection and description functions
+function toggleDocumentSelection(docId) {
+    const checkbox = document.querySelector(`input[data-doc-id="${docId}"]`);
+    const documentItem = checkbox.closest('.document-item');
+    const optionsSection = documentItem.querySelector('.document-options');
+
+    if (checkbox.checked) {
+        documentItem.classList.add('selected');
+        optionsSection.classList.add('visible');
+    } else {
+        documentItem.classList.remove('selected');
+        optionsSection.classList.remove('visible');
+    }
+}
+
+function updateDocumentPermission(docId, permission) {
+    console.log(`Updated permission for ${docId}: ${permission}`);
+    // Permission updates will be handled in the save function
+}
+
+function updateDocumentDescription(docId, description) {
+    console.log(`Updated description for ${docId}: ${description}`);
+    // Description updates will be handled in the save function
+}
+
 // Export data and functions for global use
 window.dataRooms = dataRooms;
 window.initializeDataRooms = initializeDataRooms;
@@ -1473,6 +1520,9 @@ window.exportDataRoomData = exportDataRoomData;
 window.shareMultipleDataRooms = shareMultipleDataRooms;
 window.viewAccessRequests = viewAccessRequests;
 window.viewDataRoomComments = viewDataRoomComments;
+window.toggleDocumentSelection = toggleDocumentSelection;
+window.updateDocumentPermission = updateDocumentPermission;
+window.updateDocumentDescription = updateDocumentDescription;
 
 // Document Library Management Functions
 // These functions sync profile uploads/deletions with data room document selector

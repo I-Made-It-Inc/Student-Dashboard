@@ -503,11 +503,12 @@ function generateDocumentsHTML(room, isPreviewMode) {
                     if (!documentsByCategory[category]) {
                         documentsByCategory[category] = [];
                     }
-                    // Merge library doc with room settings (permissions)
+                    // Merge library doc with room settings (permissions and description)
                     documentsByCategory[category].push({
                         ...doc,
                         category: category.slice(0, -1), // Convert plural to singular (resumes -> resume)
                         permission: roomDoc.permission || 'view',
+                        description: roomDoc.description || '', // Include room-specific description
                         selected: true
                     });
                 }
@@ -710,9 +711,15 @@ function generateDocumentThumbnail(doc) {
     }
 }
 
-// Generate document description based on category and name
+// Generate document description based on room-specific custom description or fallback to defaults
 function generateDocumentDescription(doc) {
-    const descriptions = {
+    // First, check if this document has a custom description in the current room
+    if (doc.description && doc.description.trim()) {
+        return `<div class="document-description">${doc.description}</div>`;
+    }
+
+    // Fallback to default descriptions if no custom description is provided
+    const defaultDescriptions = {
         // Resumes
         'Jane_Doe_Resume_2024.pdf': 'General resume highlighting full-stack development and AI/ML experience',
         'Jane_Doe_Tech_Resume.pdf': 'Technical resume focused on software engineering and data science roles',
@@ -744,9 +751,9 @@ function generateDocumentDescription(doc) {
         'Lab_Research_Portfolio.pdf': 'Comprehensive portfolio of laboratory research projects and findings'
     };
 
-    const description = descriptions[doc.name];
-    if (description) {
-        return `<div class="document-description">${description}</div>`;
+    const defaultDescription = defaultDescriptions[doc.name];
+    if (defaultDescription) {
+        return `<div class="document-description">${defaultDescription}</div>`;
     }
     return '';
 }
