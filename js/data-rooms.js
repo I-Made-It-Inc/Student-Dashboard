@@ -12,16 +12,16 @@ let dataRooms = [
         customMessage: 'Welcome to my tech portfolio! I\'m passionate about AI/ML and full-stack development. Feel free to explore my projects and achievements below.',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'], // Custom section order
         documents: [
-            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true },
-            { id: 'resume-2', category: 'resumes', name: 'Jane_Doe_Tech_Resume.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'AWS_Cloud_Practitioner.pdf', permission: 'view', selected: true },
-            { id: 'cert-2', category: 'certificates', name: 'Google_Data_Analytics.pdf', permission: 'view', selected: true },
-            { id: 'cert-3', category: 'certificates', name: 'Microsoft_AI_Fundamentals.pdf', permission: 'view', selected: true },
-            { id: 'ref-1', category: 'references', name: 'Reference_TechCorp_CEO.pdf', permission: 'view', selected: true },
-            { id: 'ref-2', category: 'references', name: 'Reference_Professor_Smith.pdf', permission: 'view', selected: true },
-            { id: 'proj-1', category: 'projects', name: 'ML_Sentiment_Analysis_Project.pdf', permission: 'download', selected: true },
-            { id: 'proj-2', category: 'projects', name: 'React_Dashboard_Portfolio.pdf', permission: 'download', selected: true },
-            { id: 'proj-3', category: 'projects', name: 'Data_Pipeline_Architecture.pdf', permission: 'download', selected: true }
+            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Resume_2024.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'resume-2', category: 'resumes', name: 'Jane_Doe_Tech_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Technical resume focused on software engineering and data science roles' },
+            { id: 'cert-1', category: 'certificates', name: 'AWS_Cloud_Practitioner.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'cert-2', category: 'certificates', name: 'Google_Data_Analytics.pdf', permission: 'view', selected: true, descriptionType: 'none', customDescription: '' },
+            { id: 'cert-3', category: 'certificates', name: 'Microsoft_AI_Fundamentals.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'ref-1', category: 'references', name: 'Reference_TechCorp_CEO.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'ref-2', category: 'references', name: 'Reference_Professor_Smith.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-1', category: 'projects', name: 'ML_Sentiment_Analysis_Project.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-2', category: 'projects', name: 'React_Dashboard_Portfolio.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-3', category: 'projects', name: 'Data_Pipeline_Architecture.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' }
         ],
         stats: {
             views: 47,
@@ -41,11 +41,11 @@ let dataRooms = [
         customMessage: '',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
         documents: [
-            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Finance_Resume.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'CFA_Level_I.pdf', permission: 'view', selected: true },
-            { id: 'cert-2', category: 'certificates', name: 'Financial_Modeling_Certificate.pdf', permission: 'view', selected: true },
-            { id: 'ref-1', category: 'references', name: 'Reference_Goldman_Sachs_VP.pdf', permission: 'view', selected: true },
-            { id: 'proj-1', category: 'projects', name: 'Investment_Portfolio_Analysis.pdf', permission: 'view', selected: true }
+            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Finance_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Finance-focused resume emphasizing quantitative analysis and modeling' },
+            { id: 'cert-1', category: 'certificates', name: 'CFA_Level_I.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'cert-2', category: 'certificates', name: 'Financial_Modeling_Certificate.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'ref-1', category: 'references', name: 'Reference_Goldman_Sachs_VP.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-1', category: 'projects', name: 'Investment_Portfolio_Analysis.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' }
         ],
         stats: {
             views: 23,
@@ -65,13 +65,13 @@ let dataRooms = [
         customMessage: 'Focused on advancing AI research and academic excellence.',
         sectionOrder: ['resumes', 'projects', 'certificates', 'references'],
         documents: [
-            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Academic_Resume.pdf', permission: 'download', selected: true },
-            { id: 'cert-1', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true },
-            { id: 'cert-2', category: 'certificates', name: 'Research_Excellence_Award.pdf', permission: 'view', selected: true },
-            { id: 'ref-1', category: 'references', name: 'Reference_Professor_Johnson.pdf', permission: 'view', selected: true },
-            { id: 'ref-2', category: 'references', name: 'Reference_Research_Supervisor.pdf', permission: 'view', selected: true },
-            { id: 'proj-1', category: 'projects', name: 'Neural_Network_Research_Paper.pdf', permission: 'download', selected: true },
-            { id: 'proj-2', category: 'projects', name: 'Lab_Research_Portfolio.pdf', permission: 'view', selected: true }
+            { id: 'resume-1', category: 'resumes', name: 'Jane_Doe_Academic_Resume.pdf', permission: 'download', selected: true, descriptionType: 'custom', customDescription: 'Academic CV showcasing research experience and publications' },
+            { id: 'cert-1', category: 'certificates', name: 'Science_Fair_First_Place.jpg', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'cert-2', category: 'certificates', name: 'Research_Excellence_Award.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'ref-1', category: 'references', name: 'Reference_Professor_Johnson.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'ref-2', category: 'references', name: 'Reference_Research_Supervisor.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-1', category: 'projects', name: 'Neural_Network_Research_Paper.pdf', permission: 'download', selected: true, descriptionType: 'default', customDescription: '' },
+            { id: 'proj-2', category: 'projects', name: 'Lab_Research_Portfolio.pdf', permission: 'view', selected: true, descriptionType: 'default', customDescription: '' }
         ],
         stats: {
             views: 12,
@@ -87,23 +87,107 @@ let dataRooms = [
 // Document library - represents documents uploaded to profile (synced with profile page)
 let documentLibrary = {
     resumes: [
-        { id: 'resume-1', name: 'Jane_Doe_Resume_2024.pdf', uploadDate: '2024-12-01', size: '1.2 MB' }
+        {
+            id: 'resume-1',
+            name: 'Jane_Doe_Resume_2024.pdf',
+            uploadDate: '2024-12-01',
+            size: '1.2 MB',
+            defaultDescription: 'General resume highlighting full-stack development and AI/ML experience'
+        }
     ],
     projects: [
-        { id: 'proj-1', name: 'ML_Sentiment_Analysis_Project.pdf', uploadDate: '2024-11-25', size: '4.2 MB' },
-        { id: 'proj-2', name: 'React_Dashboard_Portfolio.pdf', uploadDate: '2024-11-20', size: '3.1 MB' }
+        {
+            id: 'proj-1',
+            name: 'ML_Sentiment_Analysis_Project.pdf',
+            uploadDate: '2024-11-25',
+            size: '4.2 MB',
+            defaultDescription: 'Machine learning project analyzing social media sentiment using neural networks'
+        },
+        {
+            id: 'proj-2',
+            name: 'React_Dashboard_Portfolio.pdf',
+            uploadDate: '2024-11-20',
+            size: '3.1 MB',
+            defaultDescription: 'Full-stack web application built with React, Node.js, and MongoDB'
+        }
     ],
     certificates: [
-        { id: 'cert-1', name: 'AWS_Cloud_Practitioner.pdf', uploadDate: '2024-11-15', size: '856 KB' },
-        { id: 'cert-2', name: 'Science_Fair_First_Place.jpg', uploadDate: '2024-06-10', size: '2.1 MB' }
+        {
+            id: 'cert-1',
+            name: 'AWS_Cloud_Practitioner.pdf',
+            uploadDate: '2024-11-15',
+            size: '856 KB',
+            defaultDescription: 'Amazon Web Services Cloud Practitioner certification'
+        },
+        {
+            id: 'cert-2',
+            name: 'Science_Fair_First_Place.jpg',
+            uploadDate: '2024-06-10',
+            size: '2.1 MB',
+            defaultDescription: 'First place award from National Science Fair for AI research project'
+        }
     ],
     references: [
-        { id: 'ref-1', name: 'Reference_TechCorp_CEO.pdf', uploadDate: '2024-12-05', size: '623 KB' }
+        {
+            id: 'ref-1',
+            name: 'Reference_TechCorp_CEO.pdf',
+            uploadDate: '2024-12-05',
+            size: '623 KB',
+            defaultDescription: 'Letter of recommendation from TechCorp CEO highlighting leadership and technical skills'
+        }
     ]
 };
 
 // Current room being edited
 let currentEditingRoom = null;
+
+// Comments data - persistent state
+let dataRoomComments = [
+    {
+        id: 'comment-1',
+        commenterName: 'Sarah Johnson',
+        commenterTitle: 'Senior Recruiter at Microsoft',
+        commenterEmail: 's.johnson@microsoft.com',
+        room: 'tech-roles',
+        document: 'Resume',
+        message: 'Impressive background in machine learning! Your experience with neural networks aligns perfectly with our team\'s current projects. Would love to discuss this further.',
+        timestamp: '3 hours ago',
+        status: 'unread'
+    },
+    {
+        id: 'comment-2',
+        commenterName: 'David Chen',
+        commenterTitle: 'Engineering Manager at Google',
+        commenterEmail: 'dchen@google.com',
+        room: 'tech-roles',
+        document: 'Project Portfolio',
+        message: 'The data analysis work is well-structured. Good use of visualization techniques.',
+        timestamp: '1 day ago',
+        status: 'read'
+    },
+    {
+        id: 'comment-3',
+        commenterName: 'Emily Thompson',
+        commenterTitle: 'VP Talent Acquisition at Goldman Sachs',
+        commenterEmail: 'emily.thompson@gs.com',
+        room: 'finance-roles',
+        document: 'Resume',
+        message: 'Strong quantitative background. Your coursework in financial modeling stands out. We\'d like to move forward with an interview.',
+        timestamp: '2 days ago',
+        status: 'unread'
+    },
+    {
+        id: 'comment-4',
+        commenterName: 'Dr. Michael Rodriguez',
+        commenterTitle: 'Principal Research Scientist at Stanford AI Lab',
+        commenterEmail: 'm.rodriguez@stanford.edu',
+        room: 'research-roles',
+        document: 'Science Fair Certificate',
+        message: 'Impressive work on neural network optimization! Your research methodology shows great promise. We have a summer research position that would be perfect for your background in AI applications.',
+        timestamp: '4 hours ago',
+        status: 'unread'
+    }
+];
 
 // Access requests data - persistent state
 let accessRequests = [
@@ -189,9 +273,10 @@ function createRoomElement(room) {
         <div class="room-privacy">
             <span class="status-badge ${statusClass}">${statusText}</span>
         </div>
-        <div class="room-actions">
+        <div class="room-actions room-actions-grid">
             <button class="btn-icon btn-primary" onclick="previewDataRoom('${room.id}')" title="Preview">👁️ Preview</button>
             <button class="btn-icon" onclick="editDataRoom('${room.id}')" title="Edit">✏️ Edit</button>
+            <button class="btn-icon" onclick="cloneDataRoom('${room.id}')" title="Clone">📋 Clone</button>
             <button class="btn-icon" onclick="shareDataRoom('${room.id}')" title="Share">🔗 Share</button>
             <button class="btn-icon" onclick="viewDataRoomAnalytics('${room.id}')" title="Analytics">📊 Analytics</button>
         </div>
@@ -477,20 +562,60 @@ function generateDocumentSelection(room) {
                         const isSelected = roomDoc?.selected || false;
                         const permission = roomDoc?.permission || 'view';
 
+                        const currentDescriptionType = roomDoc?.descriptionType || 'default';
+                        const currentCustomDescription = roomDoc?.customDescription || '';
+
+                        // Get the default description from the document library
+                        const libraryDoc = window.documentLibrary[category]?.find(d => d.id === doc.id);
+                        const defaultDescription = libraryDoc?.defaultDescription || '';
+
                         return `
-                            <label class="document-item">
-                                <input type="checkbox" ${isSelected ? 'checked' : ''} data-doc-id="${doc.id}">
-                                <span class="doc-icon">${getDocumentIcon(doc.name)}</span>
-                                <div class="doc-info">
-                                    <span class="doc-name">${doc.name}</span>
-                                    <div class="doc-permissions">
-                                        <select class="permission-select" data-doc-id="${doc.id}">
+                            <div class="document-item ${isSelected ? 'selected' : ''}">
+                                <label class="document-header">
+                                    <input type="checkbox" ${isSelected ? 'checked' : ''} data-doc-id="${doc.id}" onchange="toggleDocumentSelection('${doc.id}')">
+                                    <span class="doc-icon">${getDocumentIcon(doc.name)}</span>
+                                    <div class="doc-info">
+                                        <span class="doc-name">${doc.name}</span>
+                                    </div>
+                                </label>
+                                <div class="document-options ${isSelected ? 'visible' : ''}">
+                                    <div class="doc-permissions-row">
+                                        <label for="perm-${doc.id}">Access Level:</label>
+                                        <select id="perm-${doc.id}" class="permission-select" data-doc-id="${doc.id}" onchange="updateDocumentPermission('${doc.id}', this.value)">
                                             <option value="view" ${permission === 'view' ? 'selected' : ''}>View Only</option>
                                             <option value="download" ${permission === 'download' ? 'selected' : ''}>Download</option>
                                         </select>
                                     </div>
+                                    <div class="doc-description-row">
+                                        <label>Description for this Room:</label>
+                                        <div class="description-type-selector">
+                                            <label class="description-option">
+                                                <input type="radio" name="desc-type-${doc.id}" value="none" data-doc-id="${doc.id}" ${currentDescriptionType === 'none' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <span>None</span>
+                                            </label>
+                                            <label class="description-option">
+                                                <input type="radio" name="desc-type-${doc.id}" value="default" data-doc-id="${doc.id}" ${currentDescriptionType === 'default' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <span>Default</span>
+                                            </label>
+                                            <label class="description-option">
+                                                <input type="radio" name="desc-type-${doc.id}" value="custom" data-doc-id="${doc.id}" ${currentDescriptionType === 'custom' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <span>Custom</span>
+                                            </label>
+                                        </div>
+                                        ${defaultDescription ? `<div class="default-preview ${currentDescriptionType === 'default' ? 'visible' : ''}">Default: "${defaultDescription}"</div>` : ''}
+                                        <div class="custom-description-container ${currentDescriptionType === 'custom' ? 'visible' : ''}">
+                                            <textarea
+                                                id="desc-${doc.id}"
+                                                class="doc-description-input"
+                                                data-doc-id="${doc.id}"
+                                                placeholder="Enter custom description for this room..."
+                                                onchange="updateCustomDescription('${doc.id}', this.value)"
+                                                rows="1">${currentCustomDescription}</textarea>
+                                            <small class="help-text">This custom description will only appear in this data room</small>
+                                        </div>
+                                    </div>
                                 </div>
-                            </label>
+                            </div>
                         `;
                     }).join('')}
                 </div>
@@ -676,6 +801,64 @@ function saveSectionOrder() {
     // In production, this would save to the backend
 }
 
+// Clone data room
+function cloneDataRoom(roomId) {
+    const originalRoom = dataRooms.find(r => r.id === roomId);
+    if (!originalRoom) {
+        console.error('Room not found for cloning:', roomId);
+        return;
+    }
+
+    // Generate unique name for the clone
+    const baseName = originalRoom.name;
+    let cloneName = `${baseName} (Copy)`;
+    let counter = 1;
+
+    // Check if name already exists and increment counter
+    while (dataRooms.some(room => room.name === cloneName)) {
+        cloneName = `${baseName} (${counter})`;
+        counter++;
+    }
+
+    // Generate unique ID for the clone
+    const cloneId = `clone-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    // Deep clone the room data
+    const clonedRoom = {
+        ...originalRoom,
+        id: cloneId,
+        name: cloneName,
+        createdAt: new Date().toISOString().split('T')[0],
+        updatedAt: new Date().toISOString().split('T')[0],
+        // Reset stats for the new room
+        stats: {
+            views: 0,
+            uniqueVisitors: 0,
+            downloads: 0,
+            printAttempts: 0
+        },
+        // Deep clone documents array to avoid reference sharing
+        documents: originalRoom.documents.map(doc => ({ ...doc })),
+        // Deep clone other arrays
+        industry: [...originalRoom.industry],
+        sectionOrder: [...originalRoom.sectionOrder]
+    };
+
+    // Add the cloned room to the data rooms array
+    dataRooms.push(clonedRoom);
+
+    // Refresh the display
+    loadDataRooms();
+    updateRoomStats();
+
+    // Show success notification
+    if (window.showToast) {
+        window.showToast(`Room "${cloneName}" created successfully!`, 'success');
+    }
+
+    console.log(`Cloned room: ${originalRoom.name} → ${cloneName}`);
+}
+
 // Handle save room changes
 function handleSaveDataRoom() {
     if (!currentEditingRoom) return;
@@ -725,12 +908,23 @@ function handleSaveDataRoom() {
             });
 
             if (docData) {
+                // Get the description type from radio buttons
+                const descriptionTypeRadio = document.querySelector(`input[name="desc-type-${docId}"]:checked`);
+                const descriptionType = descriptionTypeRadio ? descriptionTypeRadio.value : 'none';
+
+                // Get the custom description if type is custom
+                const customDescriptionTextarea = document.querySelector(`textarea[data-doc-id="${docId}"]`);
+                const customDescription = (descriptionType === 'custom' && customDescriptionTextarea) ?
+                    customDescriptionTextarea.value.trim() : '';
+
                 room.documents.push({
                     id: docId,
                     category: category,
                     name: docData.name,
                     permission: permission,
-                    selected: true
+                    selected: true,
+                    descriptionType: descriptionType,
+                    customDescription: customDescription
                 });
             }
         }
@@ -957,8 +1151,8 @@ function viewDataRoomActivity(roomId) {
 function updateRoomStats() {
     const totalRooms = dataRooms.length;
     const totalViews = dataRooms.reduce((sum, room) => sum + room.stats.views, 0);
-    const totalRequests = 5; // This would come from API
-    const totalComments = 12; // This would come from API
+    const totalRequests = accessRequests.filter(req => req.status === 'pending').length;
+    const totalComments = dataRoomComments.length;
 
     const statItems = document.querySelectorAll('#data-rooms-page .stats-card .stat-value');
     if (statItems.length >= 4) {
@@ -1101,6 +1295,51 @@ function viewAccessRequests() {
 }
 
 function viewDataRoomComments() {
+    // Generate comment cards from data
+    const commentCardsHTML = dataRoomComments.map(comment => `
+        <div class="comment-card ${comment.status === 'read' ? 'read' : ''}" data-room="${comment.room}" data-comment-id="${comment.id}">
+            <div class="comment-header">
+                <div class="commenter-info">
+                    <h4>${comment.commenterName}</h4>
+                    <p class="commenter-title">${comment.commenterTitle}</p>
+                    <p class="commenter-email">${comment.commenterEmail}</p>
+                </div>
+                <div class="comment-time">
+                    <span class="time-badge">${comment.timestamp}</span>
+                </div>
+            </div>
+
+            <div class="comment-details">
+                <div class="commented-room">
+                    <span class="detail-label">Room:</span>
+                    <span class="room-name-tag">${getRoomNameById(comment.room)}</span>
+                    <span class="detail-label">Document:</span>
+                    <span class="document-tag">${comment.document}</span>
+                </div>
+                <div class="comment-message">
+                    <p class="message-text">${comment.message}</p>
+                </div>
+            </div>
+
+            <div class="comment-actions">
+                <div class="comment-actions-left">
+                    <button class="btn-primary-compact" onclick="followUpDataRoomComment('${comment.id}')">Follow Up</button>
+                </div>
+                <div class="comment-actions-right">
+                    <button class="btn-secondary-compact" onclick="toggleCommentReadStatus('${comment.id}')">
+                        ${comment.status === 'read' ? 'Mark as Unread' : 'Mark as Read'}
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    `).join('');
+
+    // Calculate counts dynamically
+    const techComments = dataRoomComments.filter(c => c.room === 'tech-roles').length;
+    const financeComments = dataRoomComments.filter(c => c.room === 'finance-roles').length;
+    const researchComments = dataRoomComments.filter(c => c.room === 'research-roles').length;
+
     const modalContent = `
         <div style="margin-bottom: 24px;">
             <h2>Comments</h2>
@@ -1109,147 +1348,15 @@ function viewDataRoomComments() {
         <div style="margin: 20px 0;">
             <!-- Tabs for filtering -->
             <div class="request-tabs">
-                <button class="tab-button active" onclick="filterDataRoomComments('all')">All (4)</button>
-                <button class="tab-button" onclick="filterDataRoomComments('tech-roles')">Tech Roles (2)</button>
-                <button class="tab-button" onclick="filterDataRoomComments('finance-roles')">Finance & Consulting (1)</button>
-                <button class="tab-button" onclick="filterDataRoomComments('research-roles')">Research & Academia (1)</button>
+                <button class="tab-button active" onclick="filterDataRoomComments('all')">All (${dataRoomComments.length})</button>
+                <button class="tab-button" onclick="filterDataRoomComments('tech-roles')">Tech Roles (${techComments})</button>
+                <button class="tab-button" onclick="filterDataRoomComments('finance-roles')">Finance & Consulting (${financeComments})</button>
+                <button class="tab-button" onclick="filterDataRoomComments('research-roles')">Research & Academia (${researchComments})</button>
             </div>
 
             <!-- Comment Cards -->
             <div class="requests-container" id="comments-container">
-                <!-- Tech Roles Comments -->
-                <div class="comment-card" data-room="tech-roles" data-comment-id="comment-1">
-                    <div class="comment-header">
-                        <div class="commenter-info">
-                            <h4>Sarah Johnson</h4>
-                            <p class="commenter-title">Senior Recruiter at Microsoft</p>
-                            <p class="commenter-email">s.johnson@microsoft.com</p>
-                        </div>
-                        <div class="comment-time">
-                            <span class="time-badge">3 hours ago</span>
-                        </div>
-                    </div>
-
-                    <div class="comment-details">
-                        <div class="commented-room">
-                            <span class="detail-label">Room:</span>
-                            <span class="room-name-tag">Tech Roles Portfolio</span>
-                            <span class="detail-label">Document:</span>
-                            <span class="document-tag">Resume</span>
-                        </div>
-                        <div class="comment-message">
-                            <p class="message-text">Impressive background in machine learning! Your experience with neural networks aligns perfectly with our team's current projects. Would love to discuss this further.</p>
-                        </div>
-                    </div>
-
-                    <div class="comment-actions">
-                        <div class="reply-section">
-                            <textarea class="reply-input" placeholder="Type your reply..." rows="2"></textarea>
-                            <button class="btn-reply" onclick="replyToDataRoomComment('comment-1')">Send Reply</button>
-                        </div>
-                        <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-1')">Mark as Read</button>
-                    </div>
-                </div>
-
-                <div class="comment-card read" data-room="tech-roles" data-comment-id="comment-2">
-                    <div class="comment-header">
-                        <div class="commenter-info">
-                            <h4>David Chen</h4>
-                            <p class="commenter-title">Engineering Manager at Google</p>
-                            <p class="commenter-email">dchen@google.com</p>
-                        </div>
-                        <div class="comment-time">
-                            <span class="time-badge">1 day ago</span>
-                        </div>
-                    </div>
-
-                    <div class="comment-details">
-                        <div class="commented-room">
-                            <span class="detail-label">Room:</span>
-                            <span class="room-name-tag">Tech Roles Portfolio</span>
-                            <span class="detail-label">Document:</span>
-                            <span class="document-tag">Project Portfolio</span>
-                        </div>
-                        <div class="comment-message">
-                            <p class="message-text">The data analysis work is well-structured. Good use of visualization techniques.</p>
-                        </div>
-                        <div class="reply-thread">
-                            <p class="reply-message"><strong>You:</strong> Thank you! I'm particularly proud of the predictive modeling section.</p>
-                        </div>
-                    </div>
-
-                    <div class="comment-actions">
-                        <button class="btn-follow-up" onclick="followUpDataRoomComment('comment-2')">Follow Up</button>
-                    </div>
-                </div>
-
-                <!-- Finance Comments -->
-                <div class="comment-card" data-room="finance-roles" data-comment-id="comment-3">
-                    <div class="comment-header">
-                        <div class="commenter-info">
-                            <h4>Emily Thompson</h4>
-                            <p class="commenter-title">VP Talent Acquisition at Goldman Sachs</p>
-                            <p class="commenter-email">emily.thompson@gs.com</p>
-                        </div>
-                        <div class="comment-time">
-                            <span class="time-badge">2 days ago</span>
-                        </div>
-                    </div>
-
-                    <div class="comment-details">
-                        <div class="commented-room">
-                            <span class="detail-label">Room:</span>
-                            <span class="room-name-tag">Finance & Consulting</span>
-                            <span class="detail-label">Document:</span>
-                            <span class="document-tag">Resume</span>
-                        </div>
-                        <div class="comment-message">
-                            <p class="message-text">Strong quantitative background. Your coursework in financial modeling stands out. We'd like to move forward with an interview.</p>
-                        </div>
-                    </div>
-
-                    <div class="comment-actions">
-                        <div class="reply-section">
-                            <textarea class="reply-input" placeholder="Type your reply..." rows="2"></textarea>
-                            <button class="btn-reply" onclick="replyToDataRoomComment('comment-3')">Send Reply</button>
-                        </div>
-                        <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-3')">Mark as Read</button>
-                    </div>
-                </div>
-
-                <!-- Research & Academia Comments -->
-                <div class="comment-card" data-room="research-roles" data-comment-id="comment-4">
-                    <div class="comment-header">
-                        <div class="commenter-info">
-                            <h4>Dr. Michael Rodriguez</h4>
-                            <p class="commenter-title">Principal Research Scientist at Stanford AI Lab</p>
-                            <p class="commenter-email">m.rodriguez@stanford.edu</p>
-                        </div>
-                        <div class="comment-time">
-                            <span class="time-badge">4 hours ago</span>
-                        </div>
-                    </div>
-
-                    <div class="comment-details">
-                        <div class="commented-room">
-                            <span class="detail-label">Room:</span>
-                            <span class="room-name-tag">Research & Academia</span>
-                            <span class="detail-label">Document:</span>
-                            <span class="document-tag">Science Fair Certificate</span>
-                        </div>
-                        <div class="comment-message">
-                            <p class="message-text">Impressive work on neural network optimization! Your research methodology shows great promise. We have a summer research position that would be perfect for your background in AI applications.</p>
-                        </div>
-                    </div>
-
-                    <div class="comment-actions">
-                        <div class="reply-section">
-                            <textarea class="reply-input" placeholder="Type your reply..." rows="2"></textarea>
-                            <button class="btn-reply" onclick="replyToDataRoomComment('comment-4')">Send Reply</button>
-                        </div>
-                        <button class="btn-mark-read" onclick="markDataRoomCommentRead('comment-4')">Mark as Read</button>
-                    </div>
-                </div>
+                ${commentCardsHTML}
             </div>
         </div>
     `;
@@ -1261,6 +1368,16 @@ function viewDataRoomComments() {
     setTimeout(() => {
         updateCommentCounts();
     }, 100);
+}
+
+// Helper function to get room name by ID
+function getRoomNameById(roomId) {
+    const roomNames = {
+        'tech-roles': 'Tech Roles Portfolio',
+        'finance-roles': 'Finance & Consulting',
+        'research-roles': 'Research & Academia'
+    };
+    return roomNames[roomId] || roomId;
 }
 
 // Supporting functions for access requests and comments modals
@@ -1360,39 +1477,41 @@ function denyAccessRequest(requestId) {
     }
 }
 
-function replyToDataRoomComment(commentId) {
-    const card = document.querySelector(`[data-comment-id="${commentId}"]`);
-    const replyInput = card.querySelector('.reply-input');
-    const replyText = replyInput.value.trim();
 
-    if (!replyText) {
-        if (window.showToast) {
-            window.showToast('Please enter a reply message', 'error');
-        }
-        return;
-    }
+function toggleCommentReadStatus(commentId) {
+    // Update the data structure
+    const comment = dataRoomComments.find(c => c.id === commentId);
+    if (!comment) return;
 
-    replyInput.value = '';
-    if (window.showToast) {
-        window.showToast('Reply sent successfully!', 'success');
-    }
+    // Toggle the status
+    const newStatus = comment.status === 'read' ? 'unread' : 'read';
+    comment.status = newStatus;
 
-    markDataRoomCommentRead(commentId);
-}
-
-function markDataRoomCommentRead(commentId) {
+    // Update the UI
     const card = document.querySelector(`[data-comment-id="${commentId}"]`);
     if (card) {
-        card.classList.add('read');
+        if (newStatus === 'read') {
+            card.classList.add('read');
+        } else {
+            card.classList.remove('read');
+        }
 
-
-        // Replace actions with follow-up button
+        // Update the actions section with new layout
         const actionsDiv = card.querySelector('.comment-actions');
-        actionsDiv.innerHTML = '<button class="btn-follow-up" onclick="followUpDataRoomComment(\'' + commentId + '\')">Follow Up</button>';
+        actionsDiv.innerHTML = `
+            <div class="comment-actions-left">
+                <button class="btn-primary-compact" onclick="followUpDataRoomComment('${commentId}')">Follow Up</button>
+            </div>
+            <div class="comment-actions-right">
+                <button class="btn-secondary-compact" onclick="toggleCommentReadStatus('${commentId}')">
+                    ${newStatus === 'read' ? 'Mark as Unread' : 'Mark as Read'}
+                </button>
+            </div>
+        `;
     }
 
     if (window.showToast) {
-        window.showToast('Comment marked as read', 'success');
+        window.showToast(`Comment marked as ${newStatus}`, 'success');
     }
 }
 
@@ -1456,11 +1575,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Document selection and description functions
+function toggleDocumentSelection(docId) {
+    const checkbox = document.querySelector(`input[data-doc-id="${docId}"]`);
+    const documentItem = checkbox.closest('.document-item');
+    const optionsSection = documentItem.querySelector('.document-options');
+
+    if (checkbox.checked) {
+        documentItem.classList.add('selected');
+        optionsSection.classList.add('visible');
+    } else {
+        documentItem.classList.remove('selected');
+        optionsSection.classList.remove('visible');
+    }
+}
+
+function updateDocumentPermission(docId, permission) {
+    console.log(`Updated permission for ${docId}: ${permission}`);
+    // Permission updates will be handled in the save function
+}
+
+function updateDescriptionType(docId, type) {
+    console.log(`Updated description type for ${docId}: ${type}`);
+
+    // Show/hide appropriate sections based on type
+    const documentItem = document.querySelector(`[data-doc-id="${docId}"]`).closest('.document-item');
+    const defaultPreview = documentItem.querySelector('.default-preview');
+    const customContainer = documentItem.querySelector('.custom-description-container');
+
+    // Hide all sections first
+    if (defaultPreview) defaultPreview.classList.remove('visible');
+    if (customContainer) customContainer.classList.remove('visible');
+
+    // Show appropriate section based on type
+    if (type === 'default' && defaultPreview) {
+        defaultPreview.classList.add('visible');
+    } else if (type === 'custom' && customContainer) {
+        customContainer.classList.add('visible');
+    }
+}
+
+function updateCustomDescription(docId, description) {
+    console.log(`Updated custom description for ${docId}: ${description}`);
+    // Store the description temporarily until save
+    // The actual saving happens in handleSaveDataRoom function
+}
+
 // Export data and functions for global use
 window.dataRooms = dataRooms;
 window.initializeDataRooms = initializeDataRooms;
 window.createNewDataRoom = createNewDataRoom;
 window.editDataRoom = editDataRoom;
+window.cloneDataRoom = cloneDataRoom;
 window.deleteDataRoom = deleteDataRoom;
 window.shareDataRoom = shareDataRoom;
 window.copyDataRoomLink = copyDataRoomLink;
@@ -1473,6 +1639,10 @@ window.exportDataRoomData = exportDataRoomData;
 window.shareMultipleDataRooms = shareMultipleDataRooms;
 window.viewAccessRequests = viewAccessRequests;
 window.viewDataRoomComments = viewDataRoomComments;
+window.toggleDocumentSelection = toggleDocumentSelection;
+window.updateDocumentPermission = updateDocumentPermission;
+window.updateDescriptionType = updateDescriptionType;
+window.updateCustomDescription = updateCustomDescription;
 
 // Document Library Management Functions
 // These functions sync profile uploads/deletions with data room document selector

@@ -503,11 +503,16 @@ function generateDocumentsHTML(room, isPreviewMode) {
                     if (!documentsByCategory[category]) {
                         documentsByCategory[category] = [];
                     }
-                    // Merge library doc with room settings (permissions)
+                    // Merge library doc with room settings (permissions and description structure)
                     documentsByCategory[category].push({
                         ...doc,
                         category: category.slice(0, -1), // Convert plural to singular (resumes -> resume)
                         permission: roomDoc.permission || 'view',
+                        // Handle new structure with backwards compatibility
+                        descriptionType: roomDoc.descriptionType || (roomDoc.description ? 'custom' : 'none'),
+                        customDescription: roomDoc.customDescription || roomDoc.description || '',
+                        // Keep old description field for backwards compatibility
+                        description: roomDoc.description || '',
                         selected: true
                     });
                 }
@@ -662,6 +667,17 @@ function getDocumentFileSize(filename) {
     return sizeMap[filename] || '1.5 MB';
 }
 
+// Helper function to find document in library by ID
+function findDocumentInLibrary(docId) {
+    if (!window.documentLibrary) return null;
+
+    for (const [category, docs] of Object.entries(window.documentLibrary)) {
+        const doc = docs.find(d => d.id === docId);
+        if (doc) return doc;
+    }
+    return null;
+}
+
 // Helper function to get file type description
 function getDocumentFileType(filename) {
     const ext = filename.split('.').pop().toLowerCase();
@@ -710,9 +726,32 @@ function generateDocumentThumbnail(doc) {
     }
 }
 
-// Generate document description based on category and name
+// Generate document description based on room-specific description type (none/default/custom)
 function generateDocumentDescription(doc) {
-    const descriptions = {
+    // Handle the new 3-way description system
+    if (doc.descriptionType === 'none') {
+        return ''; // No description to show
+    }
+
+    if (doc.descriptionType === 'custom' && doc.customDescription && doc.customDescription.trim()) {
+        return `<div class="document-description">${doc.customDescription}</div>`;
+    }
+
+    if (doc.descriptionType === 'default') {
+        // Use default description from profile
+        const docFromLibrary = findDocumentInLibrary(doc.id);
+        if (docFromLibrary && docFromLibrary.defaultDescription && docFromLibrary.defaultDescription.trim()) {
+            return `<div class="document-description">${docFromLibrary.defaultDescription}</div>`;
+        }
+    }
+
+    // Backwards compatibility: handle old description field
+    if (doc.description && doc.description.trim()) {
+        return `<div class="document-description">${doc.description}</div>`;
+    }
+
+    // Fallback to hardcoded default descriptions if profile default is not available
+    const defaultDescriptions = {
         // Resumes
         'Jane_Doe_Resume_2024.pdf': 'General resume highlighting full-stack development and AI/ML experience',
         'Jane_Doe_Tech_Resume.pdf': 'Technical resume focused on software engineering and data science roles',
@@ -744,9 +783,9 @@ function generateDocumentDescription(doc) {
         'Lab_Research_Portfolio.pdf': 'Comprehensive portfolio of laboratory research projects and findings'
     };
 
-    const description = descriptions[doc.name];
-    if (description) {
-        return `<div class="document-description">${description}</div>`;
+    const defaultDescription = defaultDescriptions[doc.name];
+    if (defaultDescription) {
+        return `<div class="document-description">${defaultDescription}</div>`;
     }
     return '';
 }

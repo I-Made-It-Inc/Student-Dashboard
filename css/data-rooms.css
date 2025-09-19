@@ -138,7 +138,25 @@
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     width: 160px;
-    margin-right: 38px;
+    margin-right: 0px;
+}
+
+/* Grid layout for 5 buttons (3 in top row, 2 in bottom) */
+#data-rooms-page .room-actions-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    width: 250px;
+}
+
+/* Make share and analytics span specific positions in the grid */
+#data-rooms-page .room-actions-grid > button:nth-child(4) {
+    grid-column: 1; /* Share button - bottom left */
+    grid-row: 2;
+}
+
+#data-rooms-page .room-actions-grid > button:nth-child(5) {
+    grid-column: 2 / 4; /* Analytics button - bottom spanning 2 columns */
+    grid-row: 2;
 }
 
 #data-rooms-page .room-actions .btn-icon {
@@ -686,58 +704,182 @@
     gap: 8px;
 }
 
-.document-item {
+/* Data room edit modal document layout - vertical stacking */
+.modal .document-item {
+    margin-bottom: 16px;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.modal .document-item.selected {
+    border-color: var(--imi-blue);
+    background-color: rgba(4, 40, 71, 0.02);
+}
+
+.modal .document-header {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    margin: 0; /* Remove any default label margins */
+    line-height: 1; /* Normalize line height */
 }
 
-.document-item:hover {
-    border-color: #042847;
-    background: #f8fafc;
-}
-
-.document-item input[type="checkbox"] {
+/* Ensure checkbox and text elements don't add extra spacing */
+.modal .document-header input[type="checkbox"] {
     margin: 0;
+    vertical-align: baseline;
 }
 
-.doc-icon {
-    font-size: 18px;
-    width: 24px;
-    height: 24px;
+.modal .document-header .doc-info {
     display: flex;
     align-items: center;
-    justify-content: center;
+    margin: 0;
+    line-height: 1;
 }
 
-.doc-info {
-    flex: 1;
-    min-width: 0;
+.modal .document-header .doc-name {
+    margin: 0;
+    line-height: 1;
+    display: inline; /* Override the block display */
 }
 
-.doc-name {
-    font-size: var(--font-size-sm);
+.modal .document-item.selected .document-header {
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+/* Removed duplicate - modal document item styles already exist above */
+
+/* Modal-specific styles for document options */
+.modal .document-options {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all var(--transition-normal);
+    display: none; /* Completely hide when collapsed */
+}
+
+.modal .document-options.visible {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px;
+    max-height: 300px;
+    width: 100%; /* Ensure full width */
+    gap: 16px; /* Use gap instead of margins for spacing */
+}
+
+.modal .doc-permissions-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0;
+}
+
+.modal .doc-permissions-row label {
     font-weight: 500;
-    color: #374151;
-    display: block;
-    margin-bottom: 4px;
+    color: var(--imi-blue);
+    font-size: var(--font-size-sm);
+    min-width: 80px;
 }
 
-.doc-permissions {
-    margin-top: 4px;
-}
-
-.permission-select {
-    font-size: var(--font-size-xs);
-    padding: 4px 8px;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
+.modal .permission-select {
+    flex: 1;
+    max-width: 150px;
+    padding: 6px 8px;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
     background: #ffffff;
+}
+
+.modal .doc-description-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.modal .doc-description-row label {
+    font-weight: 500;
+    color: var(--imi-blue);
+    font-size: var(--font-size-sm);
+}
+
+.modal .doc-description-input {
+    width: 100%;
+    min-height: 32px;
+    height: 32px;
+    padding: 8px;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
+    resize: vertical;
+    transition: border-color var(--transition-fast);
+}
+
+.modal .doc-description-input:focus {
+    outline: none;
+    border-color: var(--imi-blue);
+    box-shadow: 0 0 0 2px rgba(4, 40, 71, 0.1);
+}
+
+.modal .doc-description-row .help-text {
+    font-size: 11px;
+    color: var(--text-gray);
+    font-style: italic;
+}
+
+/* Description type selector - horizontal flex layout with wrapping */
+.description-type-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.description-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.description-option input[type="radio"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+.description-option span {
+    font-size: 14px;
+    color: var(--imi-dark-gray);
+}
+
+/* Default preview and custom description visibility */
+.default-preview,
+.custom-description-container {
+    display: none;
+    margin-top: 8px;
+}
+
+.default-preview.visible,
+.custom-description-container.visible {
+    display: block;
+}
+
+.default-preview {
+    font-size: 13px;
+    color: var(--text-gray);
+    padding: 8px;
+    background: var(--light-gray);
+    border-radius: 4px;
+    font-style: italic;
 }
 
 /* Modal Actions */
@@ -899,11 +1041,18 @@
 
 .request-card,
 .comment-card {
-    background: white;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
     padding: 20px;
     transition: all 0.2s ease;
+}
+
+.request-card {
+    background: white;
+}
+
+.comment-card {
+    background: #fffbf0;
 }
 
 .request-card:hover,
@@ -913,8 +1062,7 @@
 }
 
 .comment-card.read {
-    background: #f8fafc;
-    border-color: #e5e7eb;
+    background: white;
 }
 
 .request-header,
@@ -1107,35 +1255,24 @@
 /* Comment Actions */
 .comment-actions {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
     gap: 12px;
     padding-top: 16px;
     border-top: 1px solid #f3f4f6;
 }
 
-.reply-section {
+.comment-actions-left {
     display: flex;
     gap: 8px;
-    align-items: flex-end;
+    align-items: center;
 }
 
-.reply-input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 13px;
-    resize: vertical;
-    min-height: 36px;
+.comment-actions-right {
+    display: flex;
+    align-items: center;
 }
 
-.reply-input:focus {
-    outline: none;
-    border-color: #042847;
-    box-shadow: 0 0 0 3px rgba(4, 40, 71, 0.1);
-}
-
-.btn-reply,
 .btn-mark-read,
 .btn-follow-up {
     padding: 8px 16px;
@@ -1145,17 +1282,6 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-.btn-reply {
-    background: #042847;
-    color: white;
-    white-space: nowrap;
-}
-
-.btn-reply:hover {
-    background: #1e40af;
-    transform: translateY(-1px);
 }
 
 .btn-mark-read {
@@ -1178,19 +1304,48 @@
     background: #fbbf24;
 }
 
-.reply-thread {
-    margin-top: 12px;
-    padding: 12px;
-    background: #f8fafc;
-    border-radius: 8px;
-    border-left: 3px solid #042847;
+/* Comment Modal Compact Button Variants */
+.btn-primary-compact {
+    background-color: var(--imi-yellow);
+    color: var(--imi-blue);
+    border: 2px solid var(--imi-yellow);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
 }
 
-.reply-message {
-    font-size: 13px;
-    color: #374151;
-    margin: 0;
+.btn-primary-compact:hover {
+    background-color: var(--imi-blue);
+    color: var(--imi-yellow);
+    border-color: var(--imi-blue);
+    transform: translateY(-1px);
 }
+
+.btn-secondary-compact {
+    background-color: var(--white);
+    color: var(--imi-blue);
+    border: 2px solid var(--imi-blue);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary-compact:hover {
+    background-color: var(--imi-blue);
+    color: var(--white);
+    transform: translateY(-1px);
+}
+
 
 /* Responsive for Request/Comment Modals */
 @media (max-width: 768px) {
@@ -1230,10 +1385,6 @@
         max-width: 120px;
     }
 
-    .reply-section {
-        flex-direction: column;
-        align-items: stretch;
-    }
 }
 
 @media (max-width: 640px) {
@@ -1252,3 +1403,5 @@
         font-size: 12px;
     }
 }
+
+/* Duplicate CSS removed - consolidated above */
