@@ -672,15 +672,36 @@ function generateDocumentSelection(room) {
                                         <label>Description for this Room:</label>
                                         <div class="description-type-selector">
                                             <label class="description-option">
-                                                <input type="radio" name="desc-type-${doc.id}" value="none" data-doc-id="${doc.id}" ${currentDescriptionType === 'none' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <input type="radio" name="desc-type-${doc.id}" value="none" data-doc-id="${doc.id}" ${currentDescriptionType === 'none' ? 'checked' : ''}
+                                                       onchange="
+                                                           const item = this.closest('.document-item');
+                                                           const defaultPreview = item.querySelector('.default-preview');
+                                                           const customContainer = item.querySelector('.custom-description-container');
+                                                           if(defaultPreview) defaultPreview.style.display = 'none';
+                                                           if(customContainer) customContainer.style.display = 'none';
+                                                       ">
                                                 <span>None</span>
                                             </label>
                                             <label class="description-option">
-                                                <input type="radio" name="desc-type-${doc.id}" value="default" data-doc-id="${doc.id}" ${currentDescriptionType === 'default' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <input type="radio" name="desc-type-${doc.id}" value="default" data-doc-id="${doc.id}" ${currentDescriptionType === 'default' ? 'checked' : ''}
+                                                       onchange="
+                                                           const item = this.closest('.document-item');
+                                                           const defaultPreview = item.querySelector('.default-preview');
+                                                           const customContainer = item.querySelector('.custom-description-container');
+                                                           if(defaultPreview) defaultPreview.style.display = 'block';
+                                                           if(customContainer) customContainer.style.display = 'none';
+                                                       ">
                                                 <span>Default</span>
                                             </label>
                                             <label class="description-option">
-                                                <input type="radio" name="desc-type-${doc.id}" value="custom" data-doc-id="${doc.id}" ${currentDescriptionType === 'custom' ? 'checked' : ''} onchange="updateDescriptionType('${doc.id}', this.value)">
+                                                <input type="radio" name="desc-type-${doc.id}" value="custom" data-doc-id="${doc.id}" ${currentDescriptionType === 'custom' ? 'checked' : ''}
+                                                       onchange="
+                                                           const item = this.closest('.document-item');
+                                                           const defaultPreview = item.querySelector('.default-preview');
+                                                           const customContainer = item.querySelector('.custom-description-container');
+                                                           if(defaultPreview) defaultPreview.style.display = 'none';
+                                                           if(customContainer) customContainer.style.display = 'block';
+                                                       ">
                                                 <span>Custom</span>
                                             </label>
                                         </div>
@@ -1793,8 +1814,13 @@ function updateDocumentPermission(docId, permission) {
 function updateDescriptionType(docId, type) {
     console.log(`Updated description type for ${docId}: ${type}`);
 
-    // Show/hide appropriate sections based on type
-    const documentItem = document.querySelector(`[data-doc-id="${docId}"]`).closest('.document-item');
+    // Find the document item more reliably
+    const documentItem = document.querySelector(`[data-doc-id="${docId}"]`)?.closest('.document-item');
+    if (!documentItem) {
+        console.error(`Document item not found for docId: ${docId}`);
+        return;
+    }
+
     const defaultPreview = documentItem.querySelector('.default-preview');
     const customContainer = documentItem.querySelector('.custom-description-container');
 
@@ -1839,6 +1865,7 @@ window.updateDocumentPermission = updateDocumentPermission;
 window.updateDescriptionType = updateDescriptionType;
 window.updateCustomDescription = updateCustomDescription;
 window.updateAchievementSelection = updateAchievementSelection;
+
 
 // Document Library Management Functions
 // These functions sync profile uploads/deletions with data room document selector
