@@ -1484,15 +1484,280 @@ function viewDataRoomAnalytics(roomId) {
     openModal('custom', 'Room Analytics', modalContent);
 }
 
-// View room activity
+// View room activity - shows all access requests and comments for a specific room
 function viewDataRoomActivity(roomId) {
     const room = dataRooms.find(r => r.id === roomId);
     if (!room) return;
 
-    if (window.showToast) {
-        window.showToast(`Viewing activity for "${room.name}"`, 'info');
+    // Filter access requests for this room and sort by status (pending first)
+    const roomAccessRequests = accessRequests
+        .filter(req => req.room === roomId || req.room === room.customId)
+        .sort((a, b) => {
+            // Pending requests come first
+            if (a.status === 'pending' && b.status !== 'pending') return -1;
+            if (a.status !== 'pending' && b.status === 'pending') return 1;
+            return 0;
+        });
+    const pendingRequests = roomAccessRequests.filter(req => req.status === 'pending');
+
+    // Filter comments for this room and sort by status (unread first)
+    const roomComments = dataRoomComments
+        .filter(comment => comment.room === roomId || comment.room === room.customId)
+        .sort((a, b) => {
+            // Unread comments come first
+            if (a.status === 'unread' && b.status === 'read') return -1;
+            if (a.status === 'read' && b.status === 'unread') return 1;
+            return 0;
+        });
+
+    // Generate request cards matching the existing style
+    const requestCardsHTML = roomAccessRequests.map(request => `
+        <div class="request-card" data-room="${request.room}" data-request-id="${request.id}">
+            <div class="request-header">
+                <div class="requester-info">
+                    <h4>${request.name}</h4>
+                    <p class="requester-title">${request.title}</p>
+                    <p class="requester-email">${request.email}</p>
+                </div>
+                <div class="request-time">
+                    <span class="time-badge">${request.timestamp}</span>
+                </div>
+            </div>
+
+            <div class="request-details">
+                <div class="request-message">
+                    <p class="detail-label">Message:</p>
+                    <p class="message-text">${request.message}</p>
+                </div>
+            </div>
+
+            ${request.status === 'pending' ? `
+                <div class="request-actions">
+                    <div class="time-limit-group">
+                        <label>Access Duration:</label>
+                        <select class="time-limit-select">
+                            <option value="24h">24 hours</option>
+                            <option value="3d">3 days</option>
+                            <option value="7d" selected>7 days</option>
+                            <option value="14d">14 days</option>
+                            <option value="30d">30 days</option>
+                            <option value="unlimited">Unlimited</option>
+                        </select>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn-approve" onclick="approveAccessRequest('${request.id}')">✓ Approve</button>
+                        <button class="btn-deny" onclick="denyAccessRequest('${request.id}')">✗ Deny</button>
+                    </div>
+                </div>
+            ` : `
+                <div class="request-status">
+                    <span class="status-badge ${request.status}">${request.status === 'approved' ? 'Approved' : 'Denied'}</span>
+                </div>
+            `}
+        </div>
+    `).join('');
+
+    // Generate comment cards matching the existing style
+    const commentCardsHTML = roomComments.map(comment => `
+        <div class="comment-card ${comment.status === 'read' ? 'read' : ''}" data-room="${comment.room}" data-comment-id="${comment.id}">
+            <div class="comment-header">
+                <div class="commenter-info">
+                    <h4>${comment.commenterName}</h4>
+                    <p class="commenter-title">${comment.commenterTitle}</p>
+                    <p class="commenter-email">${comment.commenterEmail}</p>
+                </div>
+                <div class="comment-time">
+                    <span class="time-badge">${comment.timestamp}</span>
+                </div>
+            </div>
+
+            <div class="comment-details">
+                <div class="commented-room">
+                    <span class="detail-label">Document:</span>
+                    <span class="document-tag">${comment.document}</span>
+                </div>
+                <div class="comment-message">
+                    <p class="message-text">${comment.message}</p>
+                </div>
+            </div>
+
+            <div class="comment-actions">
+                <div class="comment-actions-left">
+                    <button class="btn-primary-compact" onclick="followUpDataRoomComment('${comment.id}')">Follow Up</button>
+                </div>
+                <div class="comment-actions-right">
+                    <button class="btn-secondary-compact" onclick="toggleCommentReadStatus('${comment.id}')">
+                        ${comment.status === 'read' ? 'Mark as Unread' : 'Mark as Read'}
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    `).join('');
+
+    // Build the modal content
+    const modalContent = `
+        <div style="margin-bottom: 24px;">
+            <h2>Activity for "${room.name}"</h2>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <!-- Tabs for filtering between requests and comments -->
+            <div class="request-tabs">
+                <button class="tab-button active" onclick="showRoomActivityTab('requests', '${roomId}')">Access Requests (${roomAccessRequests.length})</button>
+                <button class="tab-button" onclick="showRoomActivityTab('comments', '${roomId}')">Comments (${roomComments.length})</button>
+            </div>
+
+            <!-- Access Requests Tab Content -->
+            <div id="room-activity-requests" class="requests-container">
+                ${roomAccessRequests.length > 0 ? requestCardsHTML : `
+                    <div style="text-align: center; padding: 40px; color: #6b7280;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">🔑</div>
+                        <p>No access requests for this room yet</p>
+                    </div>
+                `}
+            </div>
+
+            <!-- Comments Tab Content -->
+            <div id="room-activity-comments" class="requests-container" style="display: none;">
+                ${roomComments.length > 0 ? commentCardsHTML : `
+                    <div style="text-align: center; padding: 40px; color: #6b7280;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">💬</div>
+                        <p>No comments for this room yet</p>
+                    </div>
+                `}
+            </div>
+        </div>
+    `;
+
+    // Open the modal
+    openModal('custom', `Activity: ${room.name}`, modalContent);
+}
+
+// Helper function to switch tabs in room activity modal
+function showRoomActivityTab(tab, roomId) {
+    const requestsTab = document.getElementById('room-activity-requests');
+    const commentsTab = document.getElementById('room-activity-comments');
+    const modal = document.getElementById('modal');
+
+    if (!modal) return;
+
+    // Find tab buttons within the modal
+    const tabButtons = modal.querySelectorAll('.request-tabs .tab-button');
+
+    if (tab === 'requests') {
+        // Show requests, hide comments
+        if (requestsTab) {
+            requestsTab.style.removeProperty('display');
+            requestsTab.classList.add('requests-container');
+        }
+        if (commentsTab) {
+            commentsTab.style.display = 'none';
+        }
+
+        if (tabButtons.length >= 2) {
+            tabButtons[0].classList.add('active');
+            tabButtons[1].classList.remove('active');
+        }
+    } else {
+        // Hide requests, show comments
+        if (requestsTab) {
+            requestsTab.style.display = 'none';
+        }
+        if (commentsTab) {
+            commentsTab.style.removeProperty('display');
+            commentsTab.classList.add('requests-container');
+        }
+
+        if (tabButtons.length >= 2) {
+            tabButtons[0].classList.remove('active');
+            tabButtons[1].classList.add('active');
+        }
     }
-    console.log('View room activity:', room);
+}
+
+// Approve access request - merged function for both modals
+function approveAccessRequest(requestId) {
+    const request = accessRequests.find(r => r.id === requestId);
+    if (request) {
+        request.status = 'approved';
+
+        // Check if we're in the room activity modal
+        const modal = document.getElementById('modal');
+        if (modal && modal.querySelector('#room-activity-requests')) {
+            // Room activity modal - refresh it
+            const room = dataRooms.find(r => r.id === request.room || r.customId === request.room);
+            if (room) {
+                viewDataRoomActivity(room.id);
+            }
+        } else {
+            // All Access Requests modal - animate and remove card
+            const card = document.querySelector(`[data-request-id="${requestId}"]`);
+            if (card) {
+                card.style.opacity = '0.5';
+                card.style.transform = 'translateX(20px)';
+                setTimeout(() => {
+                    card.remove();
+                    updateAccessRequestCounts();
+                    updateRoomStats();
+                }, 300);
+            }
+        }
+
+        if (window.showToast) {
+            window.showToast('Access request approved!', 'success');
+        }
+    }
+}
+
+// Deny access request - merged function for both modals
+function denyAccessRequest(requestId) {
+    const request = accessRequests.find(r => r.id === requestId);
+    if (request) {
+        request.status = 'denied';
+
+        // Check if we're in the room activity modal
+        const modal = document.getElementById('modal');
+        if (modal && modal.querySelector('#room-activity-requests')) {
+            // Room activity modal - refresh it
+            const room = dataRooms.find(r => r.id === request.room || r.customId === request.room);
+            if (room) {
+                viewDataRoomActivity(room.id);
+            }
+        } else {
+            // All Access Requests modal - animate and remove card
+            const card = document.querySelector(`[data-request-id="${requestId}"]`);
+            if (card) {
+                card.style.opacity = '0.5';
+                card.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    card.remove();
+                    updateAccessRequestCounts();
+                    updateRoomStats();
+                }, 300);
+            }
+        }
+
+        if (window.showToast) {
+            window.showToast('Access request denied', 'info');
+        }
+    }
+}
+
+// Mark comment as read
+function markCommentAsRead(commentId) {
+    const comment = dataRoomComments.find(c => c.id === commentId);
+    if (comment) {
+        comment.status = 'read';
+        // Refresh the current modal
+        const room = dataRooms.find(r => r.id === comment.room || r.customId === comment.room);
+        if (room) {
+            viewDataRoomActivity(room.id);
+        }
+        if (window.showToast) {
+            window.showToast('Comment marked as read', 'success');
+        }
+    }
 }
 
 // Update room statistics in sidebar
@@ -1779,53 +2044,7 @@ function filterDataRoomComments(roomFilter) {
     }
 }
 
-function approveAccessRequest(requestId) {
-    // Update the persistent state
-    const request = accessRequests.find(req => req.id === requestId);
-    if (request) {
-        request.status = 'approved';
-    }
-
-    // Update the UI
-    const card = document.querySelector(`[data-request-id="${requestId}"]`);
-    if (card) {
-        card.style.opacity = '0.5';
-        card.style.transform = 'translateX(20px)';
-        setTimeout(() => {
-            card.remove();
-            updateAccessRequestCounts();
-            updateRoomStats(); // Update main page stats
-        }, 300);
-    }
-
-    if (window.showToast) {
-        window.showToast('Access request approved!', 'success');
-    }
-}
-
-function denyAccessRequest(requestId) {
-    // Update the persistent state
-    const request = accessRequests.find(req => req.id === requestId);
-    if (request) {
-        request.status = 'denied';
-    }
-
-    // Update the UI
-    const card = document.querySelector(`[data-request-id="${requestId}"]`);
-    if (card) {
-        card.style.opacity = '0.5';
-        card.style.transform = 'translateX(-20px)';
-        setTimeout(() => {
-            card.remove();
-            updateAccessRequestCounts();
-            updateRoomStats(); // Update main page stats
-        }, 300);
-    }
-
-    if (window.showToast) {
-        window.showToast('Access request denied', 'info');
-    }
-}
+// Duplicate functions removed - using merged versions above
 
 
 function toggleCommentReadStatus(commentId) {
@@ -1990,6 +2209,10 @@ window.saveCustomRoomId = saveCustomRoomId;
 window.previewDataRoom = previewDataRoom;
 window.viewDataRoomAnalytics = viewDataRoomAnalytics;
 window.viewDataRoomActivity = viewDataRoomActivity;
+window.showRoomActivityTab = showRoomActivityTab;
+window.approveAccessRequest = approveAccessRequest;
+window.denyAccessRequest = denyAccessRequest;
+window.markCommentAsRead = markCommentAsRead;
 window.manageDataRoomDocuments = manageDataRoomDocuments;
 window.viewAllDataRoomAnalytics = viewAllDataRoomAnalytics;
 window.exportDataRoomData = exportDataRoomData;
@@ -2001,6 +2224,8 @@ window.updateDocumentPermission = updateDocumentPermission;
 window.updateDescriptionType = updateDescriptionType;
 window.updateCustomDescription = updateCustomDescription;
 window.updateAchievementSelection = updateAchievementSelection;
+window.followUpDataRoomComment = followUpDataRoomComment;
+window.toggleCommentReadStatus = toggleCommentReadStatus;
 
 
 // Document Library Management Functions
