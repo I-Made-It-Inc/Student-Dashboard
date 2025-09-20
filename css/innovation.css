@@ -1,9 +1,27 @@
 /* css/innovation.css - Innovation Challenge Page Styles */
 
-.innovation-grid {
+.blueprint-grid {
     display: grid;
     grid-template-columns: 1fr 380px;
     gap: var(--spacing-lg);
+}
+
+.blueprint-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* Remove gap to avoid double spacing with card margins */
+}
+
+.blueprint-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* Remove gap to avoid double spacing with card margins */
+}
+
+/* Remove margin from last card in containers to prevent extra spacing */
+.blueprint-main > .card:last-child,
+.blueprint-sidebar > .card:last-child {
+    margin-bottom: 0;
 }
 
 .challenge-stats-card {
@@ -125,7 +143,7 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    margin-top: var(--spacing-xl); /* Increased spacing from sections */
+    margin-top: var(--spacing-lg); /* Standard spacing from sections */
     padding-top: var(--spacing-lg);
     border-top: 2px solid var(--medium-gray);
 }
@@ -273,21 +291,16 @@
 
 /* XP Progress Chart */
 .xp-progress-section {
-    margin-top: var(--spacing-xl);
     padding-top: var(--spacing-lg);
     border-top: 2px solid var(--medium-gray);
 }
 
 .past-seasons-card {
-    margin-top: var(--spacing-xl);
-    padding-top: var(--spacing-lg);
-    border-top: 2px solid var(--medium-gray);
+    /* Removed margin-top to prevent double spacing */
 }
 
 .xp-chart-card {
-    margin-top: var(--spacing-lg);
-    padding-top: var(--spacing-lg);
-    border-top: 2px solid var(--medium-gray);
+    /* Removed margin-top to prevent double spacing */
 }
 
 .xp-chart-container {
@@ -467,7 +480,7 @@
 
 /* Updated Feedback Styles */
 .feedback-card {
-    margin-bottom: var(--spacing-xl);
+    /* Removed extra margin-bottom to maintain consistent spacing */
 }
 
 .feedback-status {
@@ -511,7 +524,7 @@
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-sm);
     border-top: 3px solid var(--imi-blue);
-    margin-top: var(--spacing-md);
+    /* Removed margin-top to maintain consistent spacing */
 }
 
 .section-subtitle {

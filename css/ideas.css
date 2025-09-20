@@ -11,13 +11,13 @@
 .ideas-main {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: 0; /* Remove gap to avoid double spacing with card margins */
 }
 
 .ideas-sidebar {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: 0; /* Remove gap to avoid double spacing with card margins */
 }
 
 /* Idea Submission Form */

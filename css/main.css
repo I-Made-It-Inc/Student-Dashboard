@@ -170,6 +170,13 @@ a:hover {
     box-shadow: var(--shadow-md);
 }
 
+/* Remove margin from last card in containers to prevent extra spacing */
+.sidebar > .card:last-child,
+.main-content > .card:last-child,
+.dashboard-grid > div > .card:last-child {
+    margin-bottom: 0;
+}
+
 /* Section Headers */
 .section-header {
     display: flex;
@@ -333,7 +340,7 @@ a:hover {
 .sidebar {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: 0; /* Remove gap to avoid double spacing with card margins */
 }
 
 /* Loading State */
