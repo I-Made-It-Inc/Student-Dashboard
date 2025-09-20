@@ -4,7 +4,7 @@
 .resources-grid {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xl);
+    gap: 0; /* Remove gap to avoid double spacing with card margins */
 }
 
 /* Resource Card Base */

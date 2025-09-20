@@ -131,7 +131,7 @@
 /* Companies Directory Grid */
 .companies-directory {
     display: grid;
-    gap: var(--spacing-lg);
+    gap: 0; /* Remove gap to avoid double spacing with card margins */
 }
 
 .company-directory-card {

@@ -206,7 +206,7 @@
 #data-rooms-page .rooms-sidebar {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 0; /* Remove gap to avoid double spacing with card margins */
 }
 
 #data-rooms-page .stats-card .stats-grid {

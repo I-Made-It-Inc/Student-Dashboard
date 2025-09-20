@@ -10,13 +10,13 @@
 .network-main {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: 0; /* Remove gap to avoid double spacing with card margins */
 }
 
 .network-sidebar {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: 0; /* Remove gap to avoid double spacing with card margins */
 }
 
 /* Network Card Base */
