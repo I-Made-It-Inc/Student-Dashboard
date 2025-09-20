@@ -28,7 +28,7 @@
     
     /* Grid Layouts */
     .dashboard-grid,
-    .innovation-grid,
+    .blueprint-grid,
     .network-grid,
     .tracking-grid {
         grid-template-columns: 1fr;
@@ -392,7 +392,7 @@
     }
     
     .dashboard-grid,
-    .innovation-grid,
+    .blueprint-grid,
     .network-grid,
     .tracking-grid {
         grid-template-columns: 1fr;

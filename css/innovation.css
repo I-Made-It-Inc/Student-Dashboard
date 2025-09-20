@@ -1,26 +1,26 @@
 /* css/innovation.css - Innovation Challenge Page Styles */
 
-.innovation-grid {
+.blueprint-grid {
     display: grid;
     grid-template-columns: 1fr 380px;
     gap: var(--spacing-lg);
 }
 
-.innovation-main {
+.blueprint-main {
     display: flex;
     flex-direction: column;
     gap: 0; /* Remove gap to avoid double spacing with card margins */
 }
 
-.innovation-sidebar {
+.blueprint-sidebar {
     display: flex;
     flex-direction: column;
     gap: 0; /* Remove gap to avoid double spacing with card margins */
 }
 
 /* Remove margin from last card in containers to prevent extra spacing */
-.innovation-main > .card:last-child,
-.innovation-sidebar > .card:last-child {
+.blueprint-main > .card:last-child,
+.blueprint-sidebar > .card:last-child {
     margin-bottom: 0;
 }
 
