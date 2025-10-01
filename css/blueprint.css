@@ -587,12 +587,13 @@
     gap: var(--spacing-sm);
 }
 
-.btn-secondary-small {
+/* Blueprint page specific secondary button styling */
+#blueprint-page .btn-secondary-small {
     display: inline-block;
     padding: 6px 12px;
-    background: var(--white);
+    background: transparent;
     color: var(--imi-blue);
-    border: 2px solid var(--medium-gray);
+    border: 2px solid var(--imi-blue);
     border-radius: var(--radius-sm);
     font-size: var(--font-size-sm);
     font-weight: 500;
@@ -603,7 +604,7 @@
     outline: none;
 }
 
-.btn-secondary-small:hover {
+#blueprint-page .btn-secondary-small:hover {
     background: var(--imi-blue);
     color: var(--white);
     border-color: var(--imi-blue);
