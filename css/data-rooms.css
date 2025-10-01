@@ -444,7 +444,8 @@
     font-weight: 600;
 }
 
-.stats-row {
+#data-rooms-page .stats-row,
+.analytics-section .stats-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
