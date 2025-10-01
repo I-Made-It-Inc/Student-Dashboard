@@ -488,7 +488,10 @@ function loadCompanyRecommendations() {
         <div class="company-recommendation-card" onclick="viewCompanyDetails(${company.id})">
             <div class="match-percentage">${Math.floor(85 + Math.random() * 15)}% Match</div>
             <h4>${company.name}</h4>
-            <div class="company-rating"><i class="fa-solid fa-star"></i> ${company.rating} (${company.reviewCount} reviews)</div>
+            <div class="company-rating">
+                <span class="stars">${'<i class="fa-solid fa-star"></i>'.repeat(Math.round(company.rating))}</span>
+                <span>${company.rating} (${company.reviewCount} reviews)</span>
+            </div>
             <p>Matches your interests in ${company.tags[0]}</p>
             <button class="btn btn-primary-small" onclick="event.stopPropagation(); viewCompanyDetails(${company.id})">Explore</button>
         </div>
