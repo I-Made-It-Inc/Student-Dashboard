@@ -165,6 +165,71 @@ This is what gives the points tangible value. The system is based on a **Milesto
     - There should be a summary section listing all available referral programs
 - When students click their personal icon on the top right, they should be able to edit their public social bio and interests for other peers to read and reach out for networking
 
+## Virtual Data Rooms
+
+The platform includes a professional Virtual Data Room feature that functions similar to data rooms used in corporate mergers and acquisitions. This space allows students to showcase their professional materials to recruiters when applying for jobs.
+
+### Core Features
+
+- **Multiple Room Creation**: Students can create multiple customized rooms tailored to different applications
+- **Access Control**: Each room can be set to:
+  - **Public**: Visible to anyone with the link
+  - **Unpublished**: Not visible to anyone (draft mode)
+  - **Visible by Request**: Recruiters can request access
+    - Student receives email notification with requester's name and company
+    - Student can grant access with optional time limit
+
+### Content Management
+
+- **Centralized Upload**: Students upload documents to their profile in organized sections (e.g., reference letters, certificates, projects)
+- **Room-Specific Selection**: For each room, students use a hierarchical dropdown to select which files to include
+- **Customization Options**:
+  - Re-organize display order of items
+  - Set items as read-only or downloadable
+  - Preview room from published perspective
+- **Security**: Print attempts are logged and IMI is notified
+
+### Recruiter Interaction
+
+- **Commenting**: Companies can leave comments on individual items
+- **Interview Requests**: Easy interview request system that sends emails to student's inbox
+
+### Future Expansions
+
+**Enhanced Security & Tracking:**
+- Dynamic watermarking with viewer's name/company and timestamp
+- Session tracking: time spent on documents, download attempts, viewing patterns
+- Expiring links with view-count limits (e.g., "expires after 10 views or 7 days")
+
+**Templates & Efficiency:**
+- Industry-specific templates (tech, finance, healthcare)
+- Quick clone functionality to duplicate successful room configurations
+
+**Rich Content:**
+- Embedded video introductions (Loom-style explanations)
+- Interactive portfolios with live demos for design/coding students
+- Structured asynchronous Q&A sections
+- Recruiter bookmarking for internal discussions
+
+**Smart Notifications:**
+- Activity digest emails with weekly viewing summaries
+- Anonymous viewing option with reveal-on-interest
+
+**Network Integration:**
+- Highlight existing relationships with IMI partner companies
+- Display mutual connections between student and viewing company
+- Showcase IMI certifications and milestone achievements
+
+**Analytics & Intelligence:**
+- Engagement heatmaps showing document attention
+- AI-powered suggestions based on job descriptions
+- ML-based document arrangement optimization
+- Missing document alerts for target roles
+
+**Sharing & Discovery:**
+- Teaser mode showing titles/descriptions before granting access
+- QR code generation for in-person networking events
+
 # Core Principles for Implementation
 
 - **Fair & Inclusive by Design:** The Milestone Model ensures that every user who puts in the effort has access to the same opportunities, regardless of how quickly they accumulate points.
