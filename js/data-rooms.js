@@ -352,11 +352,11 @@ function createRoomElement(room) {
             <span class="status-badge ${statusClass}">${statusText}</span>
         </div>
         <div class="room-actions room-actions-grid">
-            <button class="btn-icon btn-primary" onclick="previewDataRoom('${room.id}')" title="Preview">👁️ Preview</button>
-            <button class="btn-icon" onclick="editDataRoom('${room.id}')" title="Edit">✏️ Edit</button>
-            <button class="btn-icon" onclick="cloneDataRoom('${room.id}')" title="Clone">📋 Clone</button>
-            <button class="btn-icon" onclick="shareDataRoom('${room.id}')" title="Share">🔗 Share</button>
-            <button class="btn-icon" onclick="viewDataRoomAnalytics('${room.id}')" title="Analytics">📊 Analytics</button>
+            <button class="btn-icon btn-primary" onclick="previewDataRoom('${room.id}')" title="Preview"><i class="fa-regular fa-eye"></i> Preview</button>
+            <button class="btn-icon" onclick="editDataRoom('${room.id}')" title="Edit"><i class="fa-solid fa-pen"></i> Edit</button>
+            <button class="btn-icon" onclick="cloneDataRoom('${room.id}')" title="Clone"><i class="fa-regular fa-copy"></i> Clone</button>
+            <button class="btn-icon" onclick="shareDataRoom('${room.id}')" title="Share"><i class="fa-solid fa-link"></i> Share</button>
+            <button class="btn-icon" onclick="viewDataRoomAnalytics('${room.id}')" title="Analytics"><i class="fa-solid fa-chart-column"></i> Analytics</button>
         </div>
     `;
 
