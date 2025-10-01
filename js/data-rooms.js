@@ -343,9 +343,9 @@ function createRoomElement(room) {
             </div>
             <p class="room-description">${room.description}</p>
             <div class="room-meta">
-                <span class="meta-item">📄 ${room.documents.filter(d => d.selected).length} documents</span>
-                <span class="meta-item">👀 ${room.stats.views} views</span>
-                <span class="meta-item">📅 Updated ${formatDate(room.updatedAt)}</span>
+                <span class="meta-item"><i class="fa-regular fa-file"></i> ${room.documents.filter(d => d.selected).length} documents</span>
+                <span class="meta-item"><i class="fa-regular fa-eye"></i> ${room.stats.views} views</span>
+                <span class="meta-item"><i class="fa-regular fa-calendar"></i> Updated ${formatDate(room.updatedAt)}</span>
             </div>
         </div>
         <div class="room-privacy">
