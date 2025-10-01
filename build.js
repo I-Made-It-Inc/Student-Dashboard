@@ -32,7 +32,7 @@ const colors = {
 // Define the order of pages (dashboard first, then alphabetical)
 const PAGE_ORDER = [
     'dashboard.html',
-    'innovation.html',
+    'blueprint.html',
     'ideas.html',
     'projects.html',
     'companies.html',

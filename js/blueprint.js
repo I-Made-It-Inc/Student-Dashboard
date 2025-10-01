@@ -1,4 +1,4 @@
-// js/innovation.js - Blueprint for the Future Functionality
+// js/blueprint.js - Blueprint for the Future Functionality
 
 // Initialize Blueprint Challenge
 function initializeBlueprintChallenge() {
