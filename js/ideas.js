@@ -74,7 +74,7 @@ function initializeLikeStates() {
         if (likeData[ideaId] && likeData[ideaId].liked) {
             // Set liked state
             const likeIcon = button.querySelector('.like-icon');
-            likeIcon.textContent = '❤️';
+            likeIcon.innerHTML = '<i class="fa-solid fa-heart"></i>';
             button.classList.add('liked');
         }
     });
@@ -92,20 +92,20 @@ function toggleLike(button) {
     
     if (button.classList.contains('liked')) {
         // Unlike
-        likeIcon.textContent = '🤍';
+        likeIcon.innerHTML = '<i class="fa-regular fa-heart"></i>';
         button.classList.remove('liked');
         likeCountElement.textContent = `${currentCount - 1} likes`;
-        
+
         // Update stored data
         delete likeData[ideaId];
-        
+
         // Show notification
         if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
             window.IMI.utils.showNotification('💔 Removed like', 'info');
         }
     } else {
         // Like
-        likeIcon.textContent = '❤️';
+        likeIcon.innerHTML = '<i class="fa-solid fa-heart"></i>';
         button.classList.add('liked');
         likeCountElement.textContent = `${currentCount + 1} likes`;
         

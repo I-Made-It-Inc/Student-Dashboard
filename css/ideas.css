@@ -386,6 +386,10 @@
     transition: all 0.2s ease;
 }
 
+.btn-like.liked .like-icon .fa-heart {
+    color: #e74c3c;
+}
+
 .btn-like:hover .like-icon {
     animation: heartBeat 0.6s ease;
 }
@@ -442,9 +446,11 @@
 }
 
 .like-count::before {
-    content: '❤️';
+    content: '\f004';
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
     font-size: 14px;
-    opacity: 0.7;
+    color: #e74c3c;
 }
 
 .crowdfunding-progress,
