@@ -101,7 +101,7 @@ function toggleLike(button) {
 
         // Show notification
         if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-            window.IMI.utils.showNotification('💔 Removed like', 'info');
+            window.IMI.utils.showNotification('<i class="fa-solid fa-heart-crack"></i> Removed like', 'info');
         }
     } else {
         // Like
@@ -114,7 +114,7 @@ function toggleLike(button) {
         
         // Show notification
         if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-            window.IMI.utils.showNotification('❤️ Liked!', 'success');
+            window.IMI.utils.showNotification('<i class="fa-solid fa-heart"></i> Liked!', 'success');
         }
     }
     
@@ -142,7 +142,7 @@ function handleIdeaSubmission(event) {
     
     // Show success message
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-        window.IMI.utils.showNotification('🎉 Your idea has been submitted successfully!', 'success');
+        window.IMI.utils.showNotification('<i class="fa-solid fa-circle-check"></i> Your idea has been submitted successfully!', 'success');
     }
     
     // Reset form
@@ -153,7 +153,7 @@ function handleIdeaSubmission(event) {
     // For demo purposes, we'll just simulate success
     setTimeout(() => {
         if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-            window.IMI.utils.showNotification('💡 Your idea is now live in the community feed!', 'info');
+            window.IMI.utils.showNotification('<i class="fa-solid fa-lightbulb"></i> Your idea is now live in the community feed!', 'info');
         }
     }, 2000);
 }
@@ -173,7 +173,7 @@ function saveDraft() {
     }));
     
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-        window.IMI.utils.showNotification('💾 Draft saved successfully!', 'success');
+        window.IMI.utils.showNotification('<i class="fa-solid fa-floppy-disk"></i> Draft saved successfully!', 'success');
     }
 }
 
@@ -291,7 +291,7 @@ function handleXPInvestment(event) {
     // Check if button is disabled
     if (event.target.disabled || event.target.classList.contains('disabled')) {
         if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-            window.IMI.utils.showNotification('❌ This idea is not currently seeking XP investment.', 'error');
+            window.IMI.utils.showNotification('<i class="fa-solid fa-circle-xmark"></i> This idea is not currently seeking XP investment.', 'error');
         }
         return;
     }
@@ -306,7 +306,7 @@ function handleXPInvestment(event) {
         const amount = parseInt(investmentAmount);
         if (amount <= 1850) { // Check available XP
             if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-                window.IMI.utils.showNotification(`🎉 Successfully invested ${amount} XP in "${ideaTitle}"!`, 'success');
+                window.IMI.utils.showNotification(`<i class="fa-solid fa-circle-check"></i> Successfully invested ${amount} XP in "${ideaTitle}"!`, 'success');
             }
             
             // Update progress bar if it exists
@@ -326,7 +326,7 @@ function handleXPInvestment(event) {
             }
         } else {
             if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-                window.IMI.utils.showNotification('❌ Insufficient XP for this investment amount.', 'error');
+                window.IMI.utils.showNotification('<i class="fa-solid fa-circle-xmark"></i> Insufficient XP for this investment amount.', 'error');
             }
         }
     }
@@ -337,7 +337,7 @@ function handleJoinTeam(event) {
     const ideaTitle = ideaCard.querySelector('h4').textContent;
     
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-        window.IMI.utils.showNotification(`🤝 Join request sent for "${ideaTitle}"! The team lead will review your application.`, 'success');
+        window.IMI.utils.showNotification(`<i class="fa-solid fa-handshake"></i> Join request sent for "${ideaTitle}"! The team lead will review your application.`, 'success');
     }
     
     // Change button text and style to indicate request sent
@@ -354,7 +354,7 @@ function handleOpenTeams(event) {
     
     // Simulate opening MS Teams
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-        window.IMI.utils.showNotification(`💬 Opening MS Teams collaboration space for "${ideaTitle}"...`, 'info');
+        window.IMI.utils.showNotification(`<i class="fa-solid fa-comments"></i> Opening MS Teams collaboration space for "${ideaTitle}"...`, 'info');
     }
     
     // In a real app, this would open MS Teams or redirect to the collaboration space
@@ -397,7 +397,7 @@ function loadDraft() {
             form.inspiration.value = draftData.inspiration || '';
 
             if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
-                window.IMI.utils.showNotification('📝 Draft loaded from previous session.', 'info');
+                window.IMI.utils.showNotification('<i class="fa-solid fa-file-lines"></i> Draft loaded from previous session.', 'info');
             }
 
             // Mark as loaded to prevent duplicate notifications
