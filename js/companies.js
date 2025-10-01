@@ -318,12 +318,12 @@ function createCompanyCard(company) {
             <div class="company-info">
                 <h3>${company.name}</h3>
                 <div class="company-rating">
-                    <span class="stars">${'⭐'.repeat(Math.round(company.rating))}</span>
+                    <span class="stars">${'<i class="fa-solid fa-star"></i>'.repeat(Math.round(company.rating))}</span>
                     <span>${company.rating}/5 (${company.reviewCount} reviews)</span>
                 </div>
                 <div class="company-tags">
                     ${company.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    ${company.hasReferral ? '<span class="tag referral">💰 Referral Program</span>' : ''}
+                    ${company.hasReferral ? '<span class="tag referral">Referral Program</span>' : ''}
                 </div>
             </div>
         </div>
@@ -337,7 +337,7 @@ function createCompanyCard(company) {
             <button class="btn btn-primary" onclick="applyForCoop(${company.id})">Apply for Co-op</button>
             <button class="btn btn-secondary" onclick="viewCompanyDetails(${company.id})">View Details</button>
             <button class="btn btn-secondary" onclick="openReviewModal(${company.id})">Write Review</button>
-            ${company.hasReferral ? `<button class="btn btn-referral" onclick="viewReferralProgram(${company.id})">💰 Referral Info</button>` : ''}
+            ${company.hasReferral ? `<button class="btn btn-referral" onclick="viewReferralProgram(${company.id})">Referral Info</button>` : ''}
         </div>
     `;
     
@@ -488,7 +488,7 @@ function loadCompanyRecommendations() {
         <div class="company-recommendation-card" onclick="viewCompanyDetails(${company.id})">
             <div class="match-percentage">${Math.floor(85 + Math.random() * 15)}% Match</div>
             <h4>${company.name}</h4>
-            <div class="company-rating">⭐ ${company.rating} (${company.reviewCount} reviews)</div>
+            <div class="company-rating"><i class="fa-solid fa-star"></i> ${company.rating} (${company.reviewCount} reviews)</div>
             <p>Matches your interests in ${company.tags[0]}</p>
             <button class="btn btn-primary-small" onclick="event.stopPropagation(); viewCompanyDetails(${company.id})">Explore</button>
         </div>
@@ -568,7 +568,7 @@ function openReviewModal(companyId) {
                         <div class="form-group">
                             <label>${labels[key]}</label>
                             <div class="star-rating-container" data-dimension="${key}">
-                                ${[1,2,3,4,5].map(i => `<span class="star-rating" data-rating="${i}">⭐</span>`).join('')}
+                                ${[1,2,3,4,5].map(i => `<span class="star-rating" data-rating="${i}"><i class="fa-solid fa-star"></i></span>`).join('')}
                             </div>
                         </div>
                     `;
