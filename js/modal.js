@@ -170,7 +170,7 @@ function getConnectionDetailModalContent(connection) {
                     </div>
                 </div>
                 <button class="btn-edit-connection" onclick="editConnection('${getConnectionIdFromName(connection.name)}')">
-                    <span>✏️</span> Edit
+                    Edit
                 </button>
             </div>
             
@@ -728,7 +728,7 @@ function editConnection(connectionId) {
                 <label>Photo Upload</label>
                 <div class="photo-upload-area">
                     <input type="file" multiple accept="image/*" style="display: none;">
-                    <p>📷 Click to upload photos from events</p>
+                    <p>Click to upload photos from events</p>
                     <p style="font-size: 12px; color: var(--text-gray);">${connection.photos} photos currently stored</p>
                 </div>
             </div>

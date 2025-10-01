@@ -1212,24 +1212,24 @@ function shareDataRoom(roomId) {
         <h2>Share Data Room</h2>
         <div style="margin: 20px 0;">
             <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
-                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">🔗 Room Link</h4>
+                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">Room Link</h4>
                 <div class="form-group" style="margin-bottom: 12px;">
                     <label>Custom Room ID</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" class="form-input" id="custom-room-id" value="${room.customId || roomId}" style="flex: 1;" oninput="updateRoomLink('${roomId}')">
-                        <button class="btn btn-outline" onclick="saveCustomRoomId('${roomId}')" id="save-room-id-btn">💾 Save</button>
+                        <button class="btn btn-outline" onclick="saveCustomRoomId('${roomId}')" id="save-room-id-btn">Save</button>
                     </div>
                     <small class="help-text" id="room-id-feedback">Enter a custom ID for your room URL</small>
                 </div>
                 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
                     <input type="text" class="form-input" id="room-link-input" value="${window.location.origin}${window.location.pathname}#data-room/${room.customId || roomId}" readonly style="flex: 1; font-family: monospace; font-size: 12px; background: #f8fafc;">
-                    <button class="btn btn-outline" onclick="copyDataRoomLink()">📋 Copy</button>
+                    <button class="btn btn-outline" onclick="copyDataRoomLink()">Copy</button>
                 </div>
                 <small style="color: #6b7280;">Anyone with this link can access your room based on your privacy settings</small>
             </div>
 
             <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
-                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">📧 Email Sharing</h4>
+                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">Email Sharing</h4>
                 <div class="form-group">
                     <label>Recipient Email(s)</label>
                     <input type="email" class="form-input" placeholder="recruiter@company.com">
@@ -1240,12 +1240,12 @@ function shareDataRoom(roomId) {
                     <textarea class="form-textarea" rows="3" placeholder="Hi! I'd like to share my professional portfolio with you..."></textarea>
                 </div>
                 <div style="margin-top: 16px;">
-                    <button class="btn btn-primary">📧 Send Email</button>
+                    <button class="btn btn-primary">Send Email</button>
                 </div>
             </div>
 
             <div style="margin-bottom: 24px;">
-                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">📱 QR Code</h4>
+                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">QR Code</h4>
                 <div class="qr-code-container">
                     <div class="qr-placeholder">QR Code would be generated here</div>
                     <button class="btn btn-outline">⬇️ Download QR</button>
@@ -1386,7 +1386,7 @@ function viewDataRoomAnalytics(roomId) {
         <div style="margin: 20px 0;">
             <div class="analytics-grid">
                 <div class="analytics-section">
-                    <h4>📊 View Statistics</h4>
+                    <h4>View Statistics</h4>
                     <div class="stats-row">
                         <div class="stat-box">
                             <div class="stat-number">${room.stats.views}</div>
@@ -1408,7 +1408,7 @@ function viewDataRoomAnalytics(roomId) {
                 </div>
 
                 <div class="analytics-section">
-                    <h4>👥 Recent Visitors</h4>
+                    <h4>Recent Visitors</h4>
                     <div class="visitor-list">
                         <div class="visitor-item">
                             <div class="visitor-info">
@@ -1444,7 +1444,7 @@ function viewDataRoomAnalytics(roomId) {
                 </div>
 
                 <div class="analytics-section">
-                    <h4>📄 Document Performance</h4>
+                    <h4>Document Performance</h4>
                     <div class="document-performance">
                         <div class="performance-item">
                             <span class="doc-name">Resume</span>
