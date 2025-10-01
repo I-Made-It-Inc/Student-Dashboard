@@ -226,6 +226,10 @@
     margin-bottom: var(--spacing-xs);
 }
 
+.company-rating .fa-star {
+    color: var(--imi-yellow);
+}
+
 /* Leaderboard Widget */
 .leaderboard-list {
     display: flex;
