@@ -615,10 +615,10 @@ function editDataRoom(roomId) {
 // Generate section order HTML based on room configuration
 function generateSectionOrderHTML(room) {
     const sectionMeta = {
-        resumes: { name: '📋 Resumes' },
-        certificates: { name: '🏆 Certificates' },
-        references: { name: '📝 References' },
-        projects: { name: '💼 Projects' }
+        resumes: { name: '<i class="fa-solid fa-file"></i> Resumes' },
+        certificates: { name: '<i class="fa-solid fa-trophy"></i> Certificates' },
+        references: { name: '<i class="fa-solid fa-pen-to-square"></i> References' },
+        projects: { name: '<i class="fa-solid fa-folder"></i> Projects' }
     };
 
     const sectionOrder = room.sectionOrder || ['resumes', 'projects', 'certificates', 'references'];
@@ -737,12 +737,12 @@ function generateDocumentSelection(room) {
 // Get category icon
 function getCategoryIcon(category) {
     const icons = {
-        resumes: '📋',
-        certificates: '🏆',
-        references: '📝',
-        projects: '💼'
+        resumes: '<i class="fa-solid fa-file"></i>',
+        certificates: '<i class="fa-solid fa-trophy"></i>',
+        references: '<i class="fa-solid fa-pen-to-square"></i>',
+        projects: '<i class="fa-solid fa-folder"></i>'
     };
-    return icons[category] || '📄';
+    return icons[category] || '<i class="fa-solid fa-file"></i>';
 }
 
 // Get category title
@@ -759,10 +759,35 @@ function getCategoryTitle(category) {
 // Get document icon based on file extension
 function getDocumentIcon(filename) {
     const ext = filename.split('.').pop().toLowerCase();
-    if (ext === 'pdf') return '📄';
-    if (['jpg', 'jpeg', 'png'].includes(ext)) return '🖼️';
-    if (['doc', 'docx'].includes(ext)) return '📝';
-    return '📄';
+    if (ext === 'pdf') return '<i class="fa-solid fa-file"></i>';
+    if (['jpg', 'jpeg', 'png'].includes(ext)) return '<i class="fa-solid fa-image"></i>';
+    if (['doc', 'docx'].includes(ext)) return '<i class="fa-solid fa-pen-to-square"></i>';
+    return '<i class="fa-solid fa-file"></i>';
+}
+
+// Map FA icon class names to emoji for dropdown display
+function getEmojiForIcon(iconClass) {
+    const iconMap = {
+        'fa-trophy': '🏆',
+        'fa-medal': '🥇',
+        'fa-award': '🏅',
+        'fa-star': '⭐',
+        'fa-bullseye': '🎯',
+        'fa-lightbulb': '💡',
+        'fa-rocket': '🚀',
+        'fa-book': '📚',
+        'fa-flask': '🔬',
+        'fa-laptop': '💻',
+        'fa-palette': '🎨',
+        'fa-handshake': '🤝',
+        'fa-certificate': '📜',
+        'fa-check': '✓',
+        'fa-bolt': '⚡',
+        'fa-robot': '🤖',
+        'fa-globe': '🌐',
+        'fa-code': '💻'
+    };
+    return iconMap[iconClass] || '⭐';
 }
 
 // Generate achievements selection HTML
@@ -788,14 +813,14 @@ function generateAchievementsSelection(room) {
                     <optgroup label="✓ Verified Achievements">
                         ${globalAchievementsLibrary.filter(a => a.isVerified).map(achievement =>
                             `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
-                                ${achievement.icon} ${achievement.title}
+                                ${getEmojiForIcon(achievement.icon)} ${achievement.title}
                             </option>`
                         ).join('')}
                     </optgroup>
                     <optgroup label="Custom Achievements">
                         ${globalAchievementsLibrary.filter(a => !a.isVerified).map(achievement =>
                             `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
-                                ${achievement.icon} ${achievement.title}
+                                ${getEmojiForIcon(achievement.icon)} ${achievement.title}
                             </option>`
                         ).join('')}
                     </optgroup>
@@ -1248,7 +1273,7 @@ function shareDataRoom(roomId) {
                 <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">QR Code</h4>
                 <div class="qr-code-container">
                     <div class="qr-placeholder">QR Code would be generated here</div>
-                    <button class="btn btn-outline">⬇️ Download QR</button>
+                    <button class="btn btn-outline"><i class="fa-solid fa-download"></i> Download QR</button>
                 </div>
                 <small style="color: #6b7280;">Perfect for business cards and networking events</small>
             </div>
@@ -2291,7 +2316,7 @@ function refreshDocumentSelector() {
     if (!room) return;
 
     // Rebuild the documents section HTML
-    let documentsHtml = '<h4>📄 Select Documents</h4>';
+    let documentsHtml = '<h4><i class="fa-solid fa-file"></i> Select Documents</h4>';
 
     const categories = [
         { key: 'resumes', icon: '<i class="fa-solid fa-file"></i>', label: 'Resumes' },
