@@ -58,9 +58,9 @@ function generateAchievementsHTML(room) {
 
             return `
                 <div class="achievement-badge ${achievement.isVerified ? 'verified' : ''}">
-                    <span class="badge-icon">${achievement.icon || '⭐'}</span>
+                    <span class="badge-icon"><i class="fa-solid ${achievement.icon || 'fa-star'}"></i></span>
                     <span class="badge-text">${achievement.title}</span>
-                    ${achievement.isVerified ? '<span class="verified-indicator" title="Verified">✓</span>' : ''}
+                    ${achievement.isVerified ? '<span class="verified-indicator" title="Verified"><i class="fa-solid fa-check"></i></span>' : ''}
                 </div>
             `;
         })
@@ -232,9 +232,9 @@ function generatePreviewModeHTML(room) {
                                 <h3 class="student-name">Jane Doe</h3>
                                 <p class="student-title">High School Senior • IMI Co-op Student</p>
                                 <div class="student-meta">
-                                    <span class="meta-item">📍 Toronto, ON</span>
-                                    <span class="meta-item">📧 jane.doe@example.com</span>
-                                    <span class="meta-item">💼 8 months with IMI</span>
+                                    <span class="meta-item"><i class="fa-solid fa-location-dot"></i> Toronto, ON</span>
+                                    <span class="meta-item"><i class="fa-solid fa-envelope"></i> jane.doe@example.com</span>
+                                    <span class="meta-item"><i class="fa-solid fa-briefcase"></i> 8 months with IMI</span>
                                 </div>
                                 <div class="student-bio">
                                     <p>${getStudentBio()}</p>
@@ -249,7 +249,7 @@ function generatePreviewModeHTML(room) {
                     ${room.customMessage && room.customMessage.trim() ? `
                         <!-- Custom Welcome Message -->
                         <div class="room-custom-message">
-                            <div class="message-icon">💬</div>
+                            <div class="message-icon"><i class="fa-solid fa-comment"></i></div>
                             <div class="message-content">
                                 <p>${room.customMessage}</p>
                             </div>
@@ -305,8 +305,8 @@ function generateExternalViewHTML(room) {
                         <span class="preview-title">IMI Student Portfolio</span>
                     </div>
                     <div class="preview-actions">
-                        <button class="btn btn-outline" onclick="printDataRoom()">🖨️ Print</button>
-                        <button class="btn btn-primary" onclick="contactStudent('${room.id}')">📧 Contact Student</button>
+                        <button class="btn btn-outline" onclick="printDataRoom()"><i class="fa-solid fa-print"></i> Print</button>
+                        <button class="btn btn-primary" onclick="contactStudent('${room.id}')"><i class="fa-solid fa-envelope"></i> Contact Student</button>
                     </div>
                 </div>
             </header>
@@ -332,9 +332,9 @@ function generateExternalViewHTML(room) {
                                 <h3 class="student-name">Jane Doe</h3>
                                 <p class="student-title">High School Senior • IMI Co-op Student</p>
                                 <div class="student-meta">
-                                    <span class="meta-item">📍 Toronto, ON</span>
-                                    <span class="meta-item">📧 jane.doe@example.com</span>
-                                    <span class="meta-item">💼 8 months with IMI</span>
+                                    <span class="meta-item"><i class="fa-solid fa-location-dot"></i> Toronto, ON</span>
+                                    <span class="meta-item"><i class="fa-solid fa-envelope"></i> jane.doe@example.com</span>
+                                    <span class="meta-item"><i class="fa-solid fa-briefcase"></i> 8 months with IMI</span>
                                 </div>
                                 <div class="student-bio">
                                     <p>${getStudentBio()}</p>
@@ -349,7 +349,7 @@ function generateExternalViewHTML(room) {
                     ${room.customMessage && room.customMessage.trim() ? `
                         <!-- Custom Welcome Message -->
                         <div class="room-custom-message">
-                            <div class="message-icon">💬</div>
+                            <div class="message-icon"><i class="fa-solid fa-comment"></i></div>
                             <div class="message-content">
                                 <p>${room.customMessage}</p>
                             </div>
@@ -424,7 +424,7 @@ function generateRequestAccessHTML(room) {
             <main class="preview-main">
                 <div class="preview-container centered">
                     <div class="request-access-card">
-                        <div class="lock-icon">🔒</div>
+                        <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
                         <h1 class="request-title">Access Required</h1>
                         <p class="request-description">This portfolio requires permission to view</p>
 
@@ -442,8 +442,8 @@ function generateRequestAccessHTML(room) {
                             </div>
 
                             <div class="room-preview-stats">
-                                <span class="preview-stat">📄 ${getSelectedDocumentCount(room)} Documents</span>
-                                <span class="preview-stat">🏢 ${room.industry.join(', ')}</span>
+                                <span class="preview-stat"><i class="fa-solid fa-file"></i> ${getSelectedDocumentCount(room)} Documents</span>
+                                <span class="preview-stat"><i class="fa-solid fa-building"></i> ${room.industry.join(', ')}</span>
                             </div>
                         </div>
 
@@ -509,7 +509,7 @@ function generatePrivateRoomHTML() {
             <main class="preview-main">
                 <div class="preview-container centered">
                     <div class="private-room-card">
-                        <div class="lock-icon">🔐</div>
+                        <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
                         <h1 class="private-title">Private Portfolio</h1>
                         <p class="private-description">This portfolio is private and cannot be accessed</p>
                         <p class="private-help">If you believe you should have access, please contact the student directly.</p>
@@ -524,10 +524,10 @@ function generatePrivateRoomHTML() {
 // Generate documents HTML based on room configuration
 function generateDocumentsHTML(room, isPreviewMode) {
     const categoryMeta = {
-        resumes: { title: 'Resumes', icon: '📋' },
-        certificates: { title: 'Certificates', icon: '🏆' },
-        references: { title: 'References', icon: '📝' },
-        projects: { title: 'Projects', icon: '💼' }
+        resumes: { title: 'Resumes', icon: '<i class="fa-solid fa-file-lines"></i>' },
+        certificates: { title: 'Certificates', icon: '<i class="fa-solid fa-trophy"></i>' },
+        references: { title: 'References', icon: '<i class="fa-solid fa-pen-to-square"></i>' },
+        projects: { title: 'Projects', icon: '<i class="fa-solid fa-briefcase"></i>' }
     };
 
     // Get selected documents grouped by category using documentLibrary as source of truth
@@ -598,8 +598,8 @@ function generateDocumentsHTML(room, isPreviewMode) {
                 const actionButton = isPreviewMode ?
                     '<button class="btn-document disabled">Preview Mode</button>' :
                     canDownload ?
-                        `<button class="btn-document download" onclick="downloadDocument('${doc.id}', '${doc.name}')">⬇️ Download</button>` :
-                        `<button class="btn-document view" onclick="viewDocument('${doc.id}', '${doc.name}')">👁️ View</button>`;
+                        `<button class="btn-document download" onclick="downloadDocument('${doc.id}', '${doc.name}')"><i class="fa-solid fa-download"></i> Download</button>` :
+                        `<button class="btn-document view" onclick="viewDocument('${doc.id}', '${doc.name}')"><i class="fa-solid fa-eye"></i> View</button>`;
 
                 html += `
                     <div class="document-item-card">
@@ -614,7 +614,7 @@ function generateDocumentsHTML(room, isPreviewMode) {
                             <div class="document-meta">
                                 <span class="file-size">${fileSize}</span>
                                 <span class="file-type">${fileType}</span>
-                                <span class="permission-badge ${doc.permission}">${doc.permission === 'download' ? '⬇️ Downloadable' : '👁️ View Only'}</span>
+                                <span class="permission-badge ${doc.permission}">${doc.permission === 'download' ? '<i class="fa-solid fa-download"></i> Downloadable' : '<i class="fa-solid fa-eye"></i> View Only'}</span>
                             </div>
                             ${generateDocumentDescription(doc)}
                         </div>
@@ -638,7 +638,7 @@ function generateDocumentsHTML(room, isPreviewMode) {
     if (Object.keys(documentsByCategory).length === 0) {
         html = `
             <div class="empty-documents-state">
-                <div class="empty-icon">📄</div>
+                <div class="empty-icon"><i class="fa-solid fa-file"></i></div>
                 <h3>No Documents Selected</h3>
                 <p>This portfolio doesn't have any documents configured yet.</p>
             </div>
@@ -651,10 +651,10 @@ function generateDocumentsHTML(room, isPreviewMode) {
 // Helper function to get document icon
 function getDocumentIcon(filename) {
     const ext = filename.split('.').pop().toLowerCase();
-    if (ext === 'pdf') return '📄';
-    if (['jpg', 'jpeg', 'png'].includes(ext)) return '🖼️';
-    if (['doc', 'docx'].includes(ext)) return '📝';
-    return '📄';
+    if (ext === 'pdf') return '<i class="fa-solid fa-file-pdf"></i>';
+    if (['jpg', 'jpeg', 'png'].includes(ext)) return '<i class="fa-solid fa-image"></i>';
+    if (['doc', 'docx'].includes(ext)) return '<i class="fa-solid fa-file-word"></i>';
+    return '<i class="fa-solid fa-file"></i>';
 }
 
 // Helper function to get document-specific file size
@@ -736,7 +736,7 @@ function generateDocumentThumbnail(doc) {
         return `
             <div class="image-thumbnail">
                 <div class="image-placeholder">
-                    <span class="image-icon">🖼️</span>
+                    <span class="image-icon"><i class="fa-solid fa-image"></i></span>
                 </div>
             </div>
         `;
@@ -828,9 +828,9 @@ function getFileSize() {
 // Helper function to get privacy label
 function getPrivacyLabel(privacy) {
     const labels = {
-        public: '🌐 Public',
-        request: '🔑 Request Access',
-        private: '🔒 Private'
+        public: '<i class="fa-solid fa-globe"></i> Public',
+        request: '<i class="fa-solid fa-key"></i> Request Access',
+        private: '<i class="fa-solid fa-lock"></i> Private'
     };
     return labels[privacy] || privacy;
 }

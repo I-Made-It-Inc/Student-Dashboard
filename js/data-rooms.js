@@ -155,7 +155,7 @@ let achievementsLibrary = [
         title: 'Top 5% IMI Student',
         description: 'Ranked in top 5% based on XP and project completions',
         isVerified: true,
-        icon: '🏆',
+        icon: 'fa-trophy',
         category: 'academic'
     },
     {
@@ -163,7 +163,7 @@ let achievementsLibrary = [
         title: '12 Completed Projects',
         description: 'Successfully delivered 12 co-op projects across 3 companies',
         isVerified: true,
-        icon: '✓',
+        icon: 'fa-check',
         category: 'projects'
     },
     {
@@ -171,7 +171,7 @@ let achievementsLibrary = [
         title: '3x Blueprint Pioneer',
         description: 'Featured insights in Blueprint for the Future 3 times',
         isVerified: true,
-        icon: '⚡',
+        icon: 'fa-bolt',
         category: 'academic'
     },
     {
@@ -179,7 +179,7 @@ let achievementsLibrary = [
         title: 'AI/ML Specialist',
         description: 'Completed advanced AI/ML coursework with distinction',
         isVerified: true,
-        icon: '🤖',
+        icon: 'fa-robot',
         category: 'skills'
     },
     {
@@ -187,7 +187,7 @@ let achievementsLibrary = [
         title: 'Cross-Industry Experience',
         description: 'Worked with companies in Tech, Finance, and Healthcare',
         isVerified: true,
-        icon: '🌐',
+        icon: 'fa-globe',
         category: 'leadership'
     },
     {
@@ -195,7 +195,7 @@ let achievementsLibrary = [
         title: 'Networking Champion',
         description: 'Connected with 50+ industry professionals',
         isVerified: true,
-        icon: '🤝',
+        icon: 'fa-handshake',
         category: 'leadership'
     },
     {
@@ -203,7 +203,7 @@ let achievementsLibrary = [
         title: 'Python Expert',
         description: 'Advanced proficiency in Python, Django, and data science libraries',
         isVerified: false,
-        icon: '🐍',
+        icon: 'fa-code',
         category: 'skills'
     },
     {
@@ -211,7 +211,7 @@ let achievementsLibrary = [
         title: 'Published Researcher',
         description: 'Co-authored paper on neural network optimization',
         isVerified: false,
-        icon: '📚',
+        icon: 'fa-book',
         category: 'academic'
     }
 ];
@@ -343,20 +343,20 @@ function createRoomElement(room) {
             </div>
             <p class="room-description">${room.description}</p>
             <div class="room-meta">
-                <span class="meta-item">📄 ${room.documents.filter(d => d.selected).length} documents</span>
-                <span class="meta-item">👀 ${room.stats.views} views</span>
-                <span class="meta-item">📅 Updated ${formatDate(room.updatedAt)}</span>
+                <span class="meta-item"><i class="fa-regular fa-file"></i> ${room.documents.filter(d => d.selected).length} documents</span>
+                <span class="meta-item"><i class="fa-regular fa-eye"></i> ${room.stats.views} views</span>
+                <span class="meta-item"><i class="fa-regular fa-calendar"></i> Updated ${formatDate(room.updatedAt)}</span>
             </div>
         </div>
         <div class="room-privacy">
             <span class="status-badge ${statusClass}">${statusText}</span>
         </div>
         <div class="room-actions room-actions-grid">
-            <button class="btn-icon btn-primary" onclick="previewDataRoom('${room.id}')" title="Preview">👁️ Preview</button>
-            <button class="btn-icon" onclick="editDataRoom('${room.id}')" title="Edit">✏️ Edit</button>
-            <button class="btn-icon" onclick="cloneDataRoom('${room.id}')" title="Clone">📋 Clone</button>
-            <button class="btn-icon" onclick="shareDataRoom('${room.id}')" title="Share">🔗 Share</button>
-            <button class="btn-icon" onclick="viewDataRoomAnalytics('${room.id}')" title="Analytics">📊 Analytics</button>
+            <button class="btn-icon btn-primary" onclick="previewDataRoom('${room.id}')" title="Preview"><i class="fa-regular fa-eye"></i> Preview</button>
+            <button class="btn-icon" onclick="editDataRoom('${room.id}')" title="Edit"><i class="fa-solid fa-pen"></i> Edit</button>
+            <button class="btn-icon" onclick="cloneDataRoom('${room.id}')" title="Clone"><i class="fa-regular fa-copy"></i> Clone</button>
+            <button class="btn-icon" onclick="shareDataRoom('${room.id}')" title="Share"><i class="fa-solid fa-link"></i> Share</button>
+            <button class="btn-icon" onclick="viewDataRoomAnalytics('${room.id}')" title="Analytics"><i class="fa-solid fa-chart-column"></i> Analytics</button>
         </div>
     `;
 
@@ -615,10 +615,10 @@ function editDataRoom(roomId) {
 // Generate section order HTML based on room configuration
 function generateSectionOrderHTML(room) {
     const sectionMeta = {
-        resumes: { name: '📋 Resumes' },
-        certificates: { name: '🏆 Certificates' },
-        references: { name: '📝 References' },
-        projects: { name: '💼 Projects' }
+        resumes: { name: '<i class="fa-solid fa-file"></i> Resumes' },
+        certificates: { name: '<i class="fa-solid fa-trophy"></i> Certificates' },
+        references: { name: '<i class="fa-solid fa-pen-to-square"></i> References' },
+        projects: { name: '<i class="fa-solid fa-folder"></i> Projects' }
     };
 
     const sectionOrder = room.sectionOrder || ['resumes', 'projects', 'certificates', 'references'];
@@ -737,12 +737,12 @@ function generateDocumentSelection(room) {
 // Get category icon
 function getCategoryIcon(category) {
     const icons = {
-        resumes: '📋',
-        certificates: '🏆',
-        references: '📝',
-        projects: '💼'
+        resumes: '<i class="fa-solid fa-file"></i>',
+        certificates: '<i class="fa-solid fa-trophy"></i>',
+        references: '<i class="fa-solid fa-pen-to-square"></i>',
+        projects: '<i class="fa-solid fa-folder"></i>'
     };
-    return icons[category] || '📄';
+    return icons[category] || '<i class="fa-solid fa-file"></i>';
 }
 
 // Get category title
@@ -759,10 +759,35 @@ function getCategoryTitle(category) {
 // Get document icon based on file extension
 function getDocumentIcon(filename) {
     const ext = filename.split('.').pop().toLowerCase();
-    if (ext === 'pdf') return '📄';
-    if (['jpg', 'jpeg', 'png'].includes(ext)) return '🖼️';
-    if (['doc', 'docx'].includes(ext)) return '📝';
-    return '📄';
+    if (ext === 'pdf') return '<i class="fa-solid fa-file"></i>';
+    if (['jpg', 'jpeg', 'png'].includes(ext)) return '<i class="fa-solid fa-image"></i>';
+    if (['doc', 'docx'].includes(ext)) return '<i class="fa-solid fa-pen-to-square"></i>';
+    return '<i class="fa-solid fa-file"></i>';
+}
+
+// Map FA icon class names to emoji for dropdown display
+function getEmojiForIcon(iconClass) {
+    const iconMap = {
+        'fa-trophy': '🏆',
+        'fa-medal': '🥇',
+        'fa-award': '🏅',
+        'fa-star': '⭐',
+        'fa-bullseye': '🎯',
+        'fa-lightbulb': '💡',
+        'fa-rocket': '🚀',
+        'fa-book': '📚',
+        'fa-flask': '🔬',
+        'fa-laptop': '💻',
+        'fa-palette': '🎨',
+        'fa-handshake': '🤝',
+        'fa-certificate': '📜',
+        'fa-check': '✓',
+        'fa-bolt': '⚡',
+        'fa-robot': '🤖',
+        'fa-globe': '🌐',
+        'fa-code': '💻'
+    };
+    return iconMap[iconClass] || '⭐';
 }
 
 // Generate achievements selection HTML
@@ -788,14 +813,14 @@ function generateAchievementsSelection(room) {
                     <optgroup label="✓ Verified Achievements">
                         ${globalAchievementsLibrary.filter(a => a.isVerified).map(achievement =>
                             `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
-                                ${achievement.icon} ${achievement.title}
+                                ${getEmojiForIcon(achievement.icon)} ${achievement.title}
                             </option>`
                         ).join('')}
                     </optgroup>
                     <optgroup label="Custom Achievements">
                         ${globalAchievementsLibrary.filter(a => !a.isVerified).map(achievement =>
                             `<option value="${achievement.id}" ${achievement.id === currentAchievementId ? 'selected' : ''}>
-                                ${achievement.icon} ${achievement.title}
+                                ${getEmojiForIcon(achievement.icon)} ${achievement.title}
                             </option>`
                         ).join('')}
                     </optgroup>
@@ -812,7 +837,7 @@ function generateAchievementsSelection(room) {
 
     html += `</div>
         <div class="achievements-help-section">
-            <small class="help-text">💡 Tip: Manage all your achievements in your <a href="#" onclick="showPage('profile'); closeModal(); return false;">Profile</a> page</small>
+            <small class="help-text"><i class="fa-solid fa-lightbulb"></i> Tip: Manage all your achievements in your <a href="#" onclick="showPage('profile'); closeModal(); return false;">Profile</a> page</small>
         </div>`;
 
     return html;
@@ -1212,24 +1237,24 @@ function shareDataRoom(roomId) {
         <h2>Share Data Room</h2>
         <div style="margin: 20px 0;">
             <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
-                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">🔗 Room Link</h4>
+                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">Room Link</h4>
                 <div class="form-group" style="margin-bottom: 12px;">
                     <label>Custom Room ID</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" class="form-input" id="custom-room-id" value="${room.customId || roomId}" style="flex: 1;" oninput="updateRoomLink('${roomId}')">
-                        <button class="btn btn-outline" onclick="saveCustomRoomId('${roomId}')" id="save-room-id-btn">💾 Save</button>
+                        <button class="btn btn-outline" onclick="saveCustomRoomId('${roomId}')" id="save-room-id-btn">Save</button>
                     </div>
                     <small class="help-text" id="room-id-feedback">Enter a custom ID for your room URL</small>
                 </div>
                 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
                     <input type="text" class="form-input" id="room-link-input" value="${window.location.origin}${window.location.pathname}#data-room/${room.customId || roomId}" readonly style="flex: 1; font-family: monospace; font-size: 12px; background: #f8fafc;">
-                    <button class="btn btn-outline" onclick="copyDataRoomLink()">📋 Copy</button>
+                    <button class="btn btn-outline" onclick="copyDataRoomLink()">Copy</button>
                 </div>
                 <small style="color: #6b7280;">Anyone with this link can access your room based on your privacy settings</small>
             </div>
 
             <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
-                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">📧 Email Sharing</h4>
+                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">Email Sharing</h4>
                 <div class="form-group">
                     <label>Recipient Email(s)</label>
                     <input type="email" class="form-input" placeholder="recruiter@company.com">
@@ -1240,15 +1265,15 @@ function shareDataRoom(roomId) {
                     <textarea class="form-textarea" rows="3" placeholder="Hi! I'd like to share my professional portfolio with you..."></textarea>
                 </div>
                 <div style="margin-top: 16px;">
-                    <button class="btn btn-primary">📧 Send Email</button>
+                    <button class="btn btn-primary">Send Email</button>
                 </div>
             </div>
 
             <div style="margin-bottom: 24px;">
-                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">📱 QR Code</h4>
+                <h4 style="margin: 0 0 12px 0; color: #042847; font-size: 14px; font-weight: 600;">QR Code</h4>
                 <div class="qr-code-container">
                     <div class="qr-placeholder">QR Code would be generated here</div>
-                    <button class="btn btn-outline">⬇️ Download QR</button>
+                    <button class="btn btn-outline"><i class="fa-solid fa-download"></i> Download QR</button>
                 </div>
                 <small style="color: #6b7280;">Perfect for business cards and networking events</small>
             </div>
@@ -1386,7 +1411,7 @@ function viewDataRoomAnalytics(roomId) {
         <div style="margin: 20px 0;">
             <div class="analytics-grid">
                 <div class="analytics-section">
-                    <h4>📊 View Statistics</h4>
+                    <h4>View Statistics</h4>
                     <div class="stats-row">
                         <div class="stat-box">
                             <div class="stat-number">${room.stats.views}</div>
@@ -1408,7 +1433,7 @@ function viewDataRoomAnalytics(roomId) {
                 </div>
 
                 <div class="analytics-section">
-                    <h4>👥 Recent Visitors</h4>
+                    <h4>Recent Visitors</h4>
                     <div class="visitor-list">
                         <div class="visitor-item">
                             <div class="visitor-info">
@@ -1444,7 +1469,7 @@ function viewDataRoomAnalytics(roomId) {
                 </div>
 
                 <div class="analytics-section">
-                    <h4>📄 Document Performance</h4>
+                    <h4>Document Performance</h4>
                     <div class="document-performance">
                         <div class="performance-item">
                             <span class="doc-name">Resume</span>
@@ -2291,13 +2316,13 @@ function refreshDocumentSelector() {
     if (!room) return;
 
     // Rebuild the documents section HTML
-    let documentsHtml = '<h4>📄 Select Documents</h4>';
+    let documentsHtml = '<h4><i class="fa-solid fa-file"></i> Select Documents</h4>';
 
     const categories = [
-        { key: 'resumes', icon: '📄', label: 'Resumes' },
-        { key: 'projects', icon: '📁', label: 'Projects' },
-        { key: 'certificates', icon: '🏆', label: 'Certificates' },
-        { key: 'references', icon: '📝', label: 'References' }
+        { key: 'resumes', icon: '<i class="fa-solid fa-file"></i>', label: 'Resumes' },
+        { key: 'projects', icon: '<i class="fa-solid fa-folder"></i>', label: 'Projects' },
+        { key: 'certificates', icon: '<i class="fa-solid fa-trophy"></i>', label: 'Certificates' },
+        { key: 'references', icon: '<i class="fa-solid fa-pen-to-square"></i>', label: 'References' }
     ];
 
     categories.forEach(category => {

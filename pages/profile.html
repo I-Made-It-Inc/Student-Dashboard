@@ -7,7 +7,7 @@
                     <!-- Personal Information -->
                     <div class="card profile-settings-card">
                         <div class="section-header">
-                            <h3 class="section-title">👤 Personal Information</h3>
+                            <h3 class="section-title">Personal Information</h3>
                             <span class="text-muted">This information will be visible to your peers and mentors</span>
                         </div>
 
@@ -81,14 +81,14 @@
                     <!-- Achievements -->
                     <div class="card profile-settings-card">
                         <div class="section-header">
-                            <h3 class="section-title">🏆 Achievements</h3>
+                            <h3 class="section-title">Achievements</h3>
                             <span class="text-muted">View your IMI-earned achievements and add custom ones</span>
                         </div>
 
                         <div class="achievements-section">
                             <!-- Verified Achievements -->
                             <div class="achievement-category">
-                                <h4>✓ Verified Achievements</h4>
+                                <h4>Verified Achievements</h4>
                                 <p class="category-description">These achievements are automatically awarded by IMI based on your performance and milestones.</p>
 
                                 <div class="verified-achievements-grid" id="verified-achievements-list">
@@ -98,7 +98,7 @@
 
                             <!-- Custom Achievements -->
                             <div class="achievement-category">
-                                <h4>📝 Custom Achievements</h4>
+                                <h4>Custom Achievements</h4>
                                 <p class="category-description">Add your own achievements from outside IMI (awards, competitions, certifications, etc.)</p>
 
                                 <div class="custom-achievements-section">
@@ -113,19 +113,19 @@
                                                 <div class="form-group">
                                                     <label>Icon</label>
                                                     <select class="form-select">
-                                                        <option value="🏆">🏆 Trophy</option>
-                                                        <option value="🥇">🥇 Gold Medal</option>
-                                                        <option value="🏅">🏅 Medal</option>
-                                                        <option value="⭐">⭐ Star</option>
-                                                        <option value="🎯">🎯 Target</option>
-                                                        <option value="💡">💡 Innovation</option>
-                                                        <option value="🚀">🚀 Achievement</option>
-                                                        <option value="📚">📚 Education</option>
-                                                        <option value="🔬">🔬 Science</option>
-                                                        <option value="💻">💻 Technology</option>
-                                                        <option value="🎨">🎨 Creative</option>
-                                                        <option value="🤝">🤝 Leadership</option>
-                                                        <option value="🌟">🌟 Excellence</option>
+                                                        <option value="fa-trophy">🏆 Trophy</option>
+                                                        <option value="fa-medal">🥇 Medal</option>
+                                                        <option value="fa-award">🏅 Award</option>
+                                                        <option value="fa-star">⭐ Star</option>
+                                                        <option value="fa-bullseye">🎯 Target</option>
+                                                        <option value="fa-lightbulb">💡 Innovation</option>
+                                                        <option value="fa-rocket">🚀 Achievement</option>
+                                                        <option value="fa-book">📚 Education</option>
+                                                        <option value="fa-flask">🔬 Science</option>
+                                                        <option value="fa-laptop">💻 Technology</option>
+                                                        <option value="fa-palette">🎨 Creative</option>
+                                                        <option value="fa-handshake">🤝 Leadership</option>
+                                                        <option value="fa-certificate">📜 Excellence</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -163,7 +163,7 @@
                                     <!-- Add Achievement Button -->
                                     <div class="add-achievement-button-container" id="add-achievement-button">
                                         <button class="btn btn-outline add-achievement-btn" onclick="showAddAchievementForm()">
-                                            <span class="btn-icon">➕</span>
+                                            <span class="btn-icon"><i class="fa-solid fa-plus"></i></span>
                                             Add Custom Achievement
                                         </button>
                                     </div>
@@ -180,16 +180,16 @@
                     <!-- Documents & Certificates -->
                     <div class="card profile-settings-card">
                         <div class="section-header">
-                            <h3 class="section-title">📄 Documents & Certificates</h3>
+                            <h3 class="section-title">Documents & Certificates</h3>
                             <span class="text-muted">Upload and manage your professional documents</span>
                         </div>
 
                         <div class="documents-section">
                             <div class="document-category">
-                                <h4>📋 Resumes</h4>
+                                <h4>Resumes</h4>
                                 <div class="document-upload-area">
                                     <div class="upload-zone" onclick="triggerFileUpload('resume')">
-                                        <span class="upload-icon">📄</span>
+                                        <span class="upload-icon"><i class="fa-solid fa-file"></i></span>
                                         <p>Drop your resume here or click to browse</p>
                                         <small>PDF, DOC, DOCX up to 5MB</small>
                                     </div>
@@ -198,24 +198,24 @@
 
                                 <div class="uploaded-documents">
                                     <div class="document-item" data-document-id="resume-1">
-                                        <span class="doc-icon">📄</span>
+                                        <span class="doc-icon"><i class="fa-solid fa-file"></i></span>
                                         <div class="doc-info">
                                             <span class="doc-name">Jane_Doe_Resume_2024.pdf</span>
                                             <span class="doc-meta">Uploaded Dec 1, 2024 • 1.2 MB</span>
                                         </div>
                                         <div class="doc-actions">
-                                            <button class="btn-icon" title="Download" onclick="downloadDocument('resume-1')">⬇️</button>
-                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('resume-1', 'resume')">🗑️</button>
+                                            <button class="btn-icon" title="Download" onclick="downloadDocument('resume-1')"><i class="fa-solid fa-download"></i></button>
+                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('resume-1', 'resume')"><i class="fa-solid fa-trash"></i></button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="document-category">
-                                <h4>💼 Projects & Portfolios</h4>
+                                <h4>Projects & Portfolios</h4>
                                 <div class="document-upload-area">
                                     <div class="upload-zone" onclick="triggerFileUpload('project')">
-                                        <span class="upload-icon">📁</span>
+                                        <span class="upload-icon"><i class="fa-solid fa-folder"></i></span>
                                         <p>Upload project documents</p>
                                         <small>PDF up to 10MB</small>
                                     </div>
@@ -224,35 +224,35 @@
 
                                 <div class="uploaded-documents">
                                     <div class="document-item" data-document-id="proj-1">
-                                        <span class="doc-icon">📄</span>
+                                        <span class="doc-icon"><i class="fa-solid fa-file"></i></span>
                                         <div class="doc-info">
                                             <span class="doc-name">ML_Sentiment_Analysis_Project.pdf</span>
                                             <span class="doc-meta">Uploaded Nov 25, 2024 • 4.2 MB</span>
                                         </div>
                                         <div class="doc-actions">
-                                            <button class="btn-icon" title="Download" onclick="downloadDocument('proj-1')">⬇️</button>
-                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('proj-1', 'project')">🗑️</button>
+                                            <button class="btn-icon" title="Download" onclick="downloadDocument('proj-1')"><i class="fa-solid fa-download"></i></button>
+                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('proj-1', 'project')"><i class="fa-solid fa-trash"></i></button>
                                         </div>
                                     </div>
                                     <div class="document-item" data-document-id="proj-2">
-                                        <span class="doc-icon">📄</span>
+                                        <span class="doc-icon"><i class="fa-solid fa-file"></i></span>
                                         <div class="doc-info">
                                             <span class="doc-name">React_Dashboard_Portfolio.pdf</span>
                                             <span class="doc-meta">Uploaded Nov 20, 2024 • 3.1 MB</span>
                                         </div>
                                         <div class="doc-actions">
-                                            <button class="btn-icon" title="Download" onclick="downloadDocument('proj-2')">⬇️</button>
-                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('proj-2', 'project')">🗑️</button>
+                                            <button class="btn-icon" title="Download" onclick="downloadDocument('proj-2')"><i class="fa-solid fa-download"></i></button>
+                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('proj-2', 'project')"><i class="fa-solid fa-trash"></i></button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="document-category">
-                                <h4>🏆 Certificates & Awards</h4>
+                                <h4>Certificates & Awards</h4>
                                 <div class="document-upload-area">
                                     <div class="upload-zone" onclick="triggerFileUpload('certificate')">
-                                        <span class="upload-icon">🏆</span>
+                                        <span class="upload-icon"><i class="fa-solid fa-trophy"></i></span>
                                         <p>Upload certificates and awards</p>
                                         <small>PDF, JPG, PNG up to 5MB</small>
                                     </div>
@@ -261,36 +261,36 @@
 
                                 <div class="uploaded-documents">
                                     <div class="document-item" data-document-id="cert-1">
-                                        <span class="doc-icon">🏆</span>
+                                        <span class="doc-icon"><i class="fa-solid fa-trophy"></i></span>
                                         <div class="doc-info">
                                             <span class="doc-name">AWS_Cloud_Practitioner.pdf</span>
                                             <span class="doc-meta">Uploaded Nov 15, 2024 • 856 KB</span>
                                         </div>
                                         <div class="doc-actions">
-                                            <button class="btn-icon" title="Download" onclick="downloadDocument('cert-1')">⬇️</button>
-                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('cert-1', 'certificate')">🗑️</button>
+                                            <button class="btn-icon" title="Download" onclick="downloadDocument('cert-1')"><i class="fa-solid fa-download"></i></button>
+                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('cert-1', 'certificate')"><i class="fa-solid fa-trash"></i></button>
                                         </div>
                                     </div>
 
                                     <div class="document-item" data-document-id="cert-2">
-                                        <span class="doc-icon">🥇</span>
+                                        <span class="doc-icon"><i class="fa-solid fa-medal"></i></span>
                                         <div class="doc-info">
                                             <span class="doc-name">Science_Fair_First_Place.jpg</span>
                                             <span class="doc-meta">Uploaded Jun 10, 2024 • 2.1 MB</span>
                                         </div>
                                         <div class="doc-actions">
-                                            <button class="btn-icon" title="Download" onclick="downloadDocument('cert-2')">⬇️</button>
-                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('cert-2', 'certificate')">🗑️</button>
+                                            <button class="btn-icon" title="Download" onclick="downloadDocument('cert-2')"><i class="fa-solid fa-download"></i></button>
+                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('cert-2', 'certificate')"><i class="fa-solid fa-trash"></i></button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="document-category">
-                                <h4>📝 Reference Letters</h4>
+                                <h4>Reference Letters</h4>
                                 <div class="document-upload-area">
                                     <div class="upload-zone" onclick="triggerFileUpload('reference')">
-                                        <span class="upload-icon">📝</span>
+                                        <span class="upload-icon"><i class="fa-solid fa-pen-to-square"></i></span>
                                         <p>Upload reference and recommendation letters</p>
                                         <small>PDF up to 5MB</small>
                                     </div>
@@ -299,14 +299,14 @@
 
                                 <div class="uploaded-documents">
                                     <div class="document-item" data-document-id="ref-1">
-                                        <span class="doc-icon">📝</span>
+                                        <span class="doc-icon"><i class="fa-solid fa-pen-to-square"></i></span>
                                         <div class="doc-info">
                                             <span class="doc-name">Reference_TechCorp_CEO.pdf</span>
                                             <span class="doc-meta">Uploaded Dec 5, 2024 • 623 KB</span>
                                         </div>
                                         <div class="doc-actions">
-                                            <button class="btn-icon" title="Download" onclick="downloadDocument('ref-1')">⬇️</button>
-                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('ref-1', 'reference')">🗑️</button>
+                                            <button class="btn-icon" title="Download" onclick="downloadDocument('ref-1')"><i class="fa-solid fa-download"></i></button>
+                                            <button class="btn-icon" title="Delete" onclick="deleteDocument('ref-1', 'reference')"><i class="fa-solid fa-trash"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -317,13 +317,13 @@
                     <!-- Social Media & Links -->
                     <div class="card profile-settings-card">
                         <div class="section-header">
-                            <h3 class="section-title">🔗 Social Media & Professional Links</h3>
+                            <h3 class="section-title">Social Media & Professional Links</h3>
                             <span class="text-muted">Add links to your professional profiles and portfolios</span>
                         </div>
 
                         <form id="social-links-form" class="profile-form">
                             <div class="social-link-group">
-                                <div class="social-icon">💼</div>
+                                <div class="social-icon"><i class="fa-brands fa-linkedin"></i></div>
                                 <div class="social-input">
                                     <label>LinkedIn Profile</label>
                                     <input type="url" placeholder="https://linkedin.com/in/jane-doe" class="form-input">
@@ -331,7 +331,7 @@
                             </div>
 
                             <div class="social-link-group">
-                                <div class="social-icon">🐙</div>
+                                <div class="social-icon"><i class="fa-brands fa-github"></i></div>
                                 <div class="social-input">
                                     <label>GitHub Profile</label>
                                     <input type="url" placeholder="https://github.com/janedoe" class="form-input">
@@ -339,7 +339,7 @@
                             </div>
 
                             <div class="social-link-group">
-                                <div class="social-icon">🌐</div>
+                                <div class="social-icon"><i class="fa-solid fa-globe"></i></div>
                                 <div class="social-input">
                                     <label>Portfolio Website</label>
                                     <input type="url" placeholder="https://janedoe.com" class="form-input">
@@ -347,7 +347,7 @@
                             </div>
 
                             <div class="social-link-group">
-                                <div class="social-icon">📧</div>
+                                <div class="social-icon"><i class="fa-solid fa-envelope"></i></div>
                                 <div class="social-input">
                                     <label>Personal Email</label>
                                     <input type="email" placeholder="jane.doe@gmail.com" class="form-input">
@@ -355,7 +355,7 @@
                             </div>
 
                             <div class="social-link-group">
-                                <div class="social-icon">🐦</div>
+                                <div class="social-icon"><i class="fa-brands fa-x-twitter"></i></div>
                                 <div class="social-input">
                                     <label>Twitter/X</label>
                                     <input type="url" placeholder="https://twitter.com/janedoe" class="form-input">
@@ -372,7 +372,7 @@
                 <div class="profile-sidebar">
                     <!-- Profile Preview -->
                     <div class="card profile-preview-card">
-                        <h3 class="section-title">👁️ Profile Preview</h3>
+                        <h3 class="section-title">Profile Preview</h3>
                         <div class="profile-preview">
                             <div class="preview-avatar">JD</div>
                             <h4>Jane Doe</h4>
@@ -386,16 +386,16 @@
                                 <span class="interest-tag">Data Science</span>
                             </div>
                             <div class="preview-links">
-                                <a href="#" class="social-link">💼</a>
-                                <a href="#" class="social-link">🐙</a>
-                                <a href="#" class="social-link">🌐</a>
+                                <a href="#" class="social-link"><i class="fa-brands fa-linkedin"></i></a>
+                                <a href="#" class="social-link"><i class="fa-brands fa-github"></i></a>
+                                <a href="#" class="social-link"><i class="fa-solid fa-globe"></i></a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Privacy Settings -->
                     <div class="card privacy-settings-card">
-                        <h3 class="section-title">🔒 Privacy Settings</h3>
+                        <h3 class="section-title">Privacy Settings</h3>
                         <div class="privacy-options">
                             <div class="privacy-option">
                                 <div class="privacy-info">
@@ -446,11 +446,11 @@
 
                     <!-- Account Actions -->
                     <div class="card account-actions-card">
-                        <h3 class="section-title">⚙️ Account Actions</h3>
+                        <h3 class="section-title">Account Actions</h3>
                         <div class="account-actions">
-                            <button class="btn btn-primary" onclick="exportProfile()">📦 Export Profile Data</button>
-                            <button class="btn btn-secondary" onclick="changePassword()">🔑 Change Password</button>
-                            <button class="btn btn-danger" onclick="confirmDeleteAccount()">🗑️ Delete Account</button>
+                            <button class="btn btn-primary" onclick="exportProfile()">Export Profile Data</button>
+                            <button class="btn btn-secondary" onclick="changePassword()">Change Password</button>
+                            <button class="btn btn-danger" onclick="confirmDeleteAccount()">Delete Account</button>
                         </div>
                     </div>
                 </div>

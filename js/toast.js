@@ -117,14 +117,9 @@ function removeToast(toast) {
 
 // Get default icon for toast type
 function getDefaultIcon(type) {
-    const icons = {
-        success: '✅',
-        error: '❌',
-        warning: '⚠️',
-        info: 'ℹ️',
-        loading: '⏳'
-    };
-    return icons[type] || icons.info;
+    // Return empty string - no default icons needed since messages include their own FA icons
+    // and toast color already indicates the type
+    return '';
 }
 
 // Convenience methods for different toast types

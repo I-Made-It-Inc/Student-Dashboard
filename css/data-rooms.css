@@ -267,8 +267,8 @@
     color: #6b7280;
     margin-top: 4px;
     font-weight: 500;
-    opacity: 0;
-    transform: translateY(-5px);
+    opacity: 1;
+    transform: translateY(0);
     transition: all 0.2s ease;
 }
 
@@ -444,7 +444,8 @@
     font-weight: 600;
 }
 
-.stats-row {
+#data-rooms-page .stats-row,
+.analytics-section .stats-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
@@ -692,9 +693,9 @@
 
 .document-category h5 {
     margin: 0 0 12px 0;
-    color: #374151;
-    font-size: var(--font-size-sm);
-    font-weight: 600;
+    color: #042847;
+    font-size: var(--font-size-lg);
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -748,6 +749,19 @@
     margin: 0;
     line-height: 1;
     display: inline; /* Override the block display */
+    font-size: var(--font-size-sm);
+    font-weight: 400;
+}
+
+/* Hide the doc icon in modal */
+.modal .document-header .doc-icon {
+    display: none;
+}
+
+/* Make doc-info full width and left-aligned */
+.modal .document-header .doc-info {
+    flex: 1;
+    text-align: left;
 }
 
 .modal .document-item.selected .document-header {

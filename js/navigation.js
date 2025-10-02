@@ -100,7 +100,7 @@ function loadPageContent(pageId) {
         case 'dashboard':
             loadDashboardContent();
             break;
-        case 'innovation':
+        case 'blueprint':
             loadInnovationContent();
             break;
         case 'ideas':
@@ -738,7 +738,7 @@ function getPageFromURL() {
     }
 
     // Validate that the page exists
-    const validPages = ['dashboard', 'innovation', 'ideas', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile', 'notifications', 'data-rooms'];
+    const validPages = ['dashboard', 'blueprint', 'ideas', 'projects', 'companies', 'network', 'resources', 'tracking', 'profile', 'notifications', 'data-rooms'];
     return validPages.includes(hash) ? hash : 'dashboard';
 }
 
@@ -746,7 +746,7 @@ function getPageFromURL() {
 function updatePageTitle(pageId) {
     const titles = {
         dashboard: 'Dashboard',
-        innovation: 'Innovation Challenge',
+        blueprint: 'Blueprint for the Future',
         ideas: 'Ideas & Innovation Hub',
         projects: 'Co-op Projects',
         companies: 'Companies Directory',

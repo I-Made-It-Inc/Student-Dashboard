@@ -62,7 +62,7 @@ function getAddConnectionModalContent() {
             <div class="form-group">
                 <label>Upload Photos</label>
                 <div class="photo-upload-area">
-                    <p>📷 Drop photos here or click to browse</p>
+                    <p><i class="fa-solid fa-camera"></i> Drop photos here or click to browse</p>
                     <input type="file" multiple accept="image/*" style="display: none;">
                 </div>
             </div>
@@ -170,7 +170,7 @@ function getConnectionDetailModalContent(connection) {
                     </div>
                 </div>
                 <button class="btn-edit-connection" onclick="editConnection('${getConnectionIdFromName(connection.name)}')">
-                    <span>✏️</span> Edit
+                    <i class="fa-solid fa-pen"></i> Edit
                 </button>
             </div>
             
@@ -192,7 +192,7 @@ function getConnectionDetailModalContent(connection) {
             <div style="margin-bottom: 20px;">
                 <h3 style="color: var(--imi-blue); margin-bottom: 15px;">Photos from Events</h3>
                 <div class="connection-photos-grid">
-                    ${Array(connection.photos).fill().map(() => '<div class="connection-photo">📷</div>').join('')}
+                    ${Array(connection.photos).fill().map(() => '<div class="connection-photo"><i class="fa-solid fa-camera"></i></div>').join('')}
                 </div>
                 <p style="font-size: 12px; color: var(--text-gray); margin-top: 8px; text-align: center;">${connection.eventContext}</p>
             </div>
@@ -356,9 +356,9 @@ function getYoungEntrepreneursModalContent() {
                     <h2>Young Entrepreneurs</h2>
                     <p class="course-subtitle">Turn curiosity into real-world literacy</p>
                     <div class="course-details">
-                        <span class="course-detail-item">📅 3 months</span>
-                        <span class="course-detail-item">👨‍🏫 Instructor-led</span>
-                        <span class="course-detail-item">📱 Weekly meetings</span>
+                        <span class="course-detail-item"><i class="fa-regular fa-calendar"></i> 3 months</span>
+                        <span class="course-detail-item"><i class="fa-solid fa-chalkboard-teacher"></i> Instructor-led</span>
+                        <span class="course-detail-item"><i class="fa-solid fa-mobile"></i> Weekly meetings</span>
                     </div>
                 </div>
             </div>
@@ -399,9 +399,9 @@ function getBlueOceanModalContent() {
                     <h2>Blue Ocean Innovation & AI Applications</h2>
                     <p class="course-subtitle">Apply Blue Ocean strategy to design ideas that create new value</p>
                     <div class="course-details">
-                        <span class="course-detail-item">📅 3 months</span>
-                        <span class="course-detail-item">👨‍🏫 Instructor-led</span>
-                        <span class="course-detail-item">🏆 Global challenge</span>
+                        <span class="course-detail-item"><i class="fa-regular fa-calendar"></i> 3 months</span>
+                        <span class="course-detail-item"><i class="fa-solid fa-chalkboard-teacher"></i> Instructor-led</span>
+                        <span class="course-detail-item"><i class="fa-solid fa-trophy"></i> Global challenge</span>
                     </div>
                 </div>
             </div>
@@ -442,9 +442,9 @@ function getAIHighSchoolModalContent() {
                     <h2>AI Application for High School Students</h2>
                     <p class="course-subtitle">A Practical Guide</p>
                     <div class="course-details">
-                        <span class="course-detail-item">⏱️ 4 hours</span>
-                        <span class="course-detail-item">🎯 Self-paced</span>
-                        <span class="course-detail-item">💻 Online course</span>
+                        <span class="course-detail-item"><i class="fa-solid fa-stopwatch"></i> 4 hours</span>
+                        <span class="course-detail-item"><i class="fa-solid fa-bullseye"></i> Self-paced</span>
+                        <span class="course-detail-item"><i class="fa-solid fa-laptop"></i> Online course</span>
                     </div>
                 </div>
             </div>
@@ -728,7 +728,7 @@ function editConnection(connectionId) {
                 <label>Photo Upload</label>
                 <div class="photo-upload-area">
                     <input type="file" multiple accept="image/*" style="display: none;">
-                    <p>📷 Click to upload photos from events</p>
+                    <p>Click to upload photos from events</p>
                     <p style="font-size: 12px; color: var(--text-gray);">${connection.photos} photos currently stored</p>
                 </div>
             </div>

@@ -492,7 +492,9 @@ label {
 
 /* Blue Spark overlay using pseudo-element for navigation avatar */
 .user-avatar.blue-spark-active::after {
-    content: "💎"; /* Using blue diamond emoji which displays as blue by default */
+    content: "\f559"; /* Font Awesome award icon */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
     position: absolute;
     top: -8px;
     right: -8px;
@@ -500,16 +502,20 @@ label {
     line-height: 1;
     z-index: 1000;
     pointer-events: none;
+    color: #0ea5e9; /* Blue color for the award */
 }
 
 /* Blue Spark overlay using pseudo-element for profile avatar */
 .profile-avatar.blue-spark-active::after {
-    content: "💎"; /* Using blue diamond emoji which displays as blue by default */
+    content: "\f559"; /* Font Awesome award icon */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
     position: absolute;
     top: -12px; /* Adjust position for larger size */
-    right: -12px; /* Adjust position for larger size */  
+    right: -12px; /* Adjust position for larger size */
     font-size: 48px; /* 2x the nav avatar sparkle (profile is 80px vs nav 40px = 2x ratio) */
     line-height: 1;
     z-index: 1000;
     pointer-events: none;
+    color: #0ea5e9; /* Blue color for the award */
 }

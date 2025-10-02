@@ -304,8 +304,6 @@
     font-style: italic;
     color: var(--text-muted);
     font-size: var(--font-size-sm);
-    border-left: 3px solid var(--imi-yellow);
-    padding-left: var(--spacing-sm);
 }
 
 .project-rewards {

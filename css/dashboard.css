@@ -7,7 +7,7 @@
     grid-template-rows: auto auto;
     gap: var(--spacing-md);
     padding: var(--spacing-lg) var(--spacing-xl);
-    background: linear-gradient(135deg, var(--white) 0%, rgba(255, 213, 2, 0.02) 100%);
+    background: var(--white);
     border-left: 4px solid var(--imi-yellow);
     align-items: start;
 }
@@ -224,6 +224,10 @@
     font-size: var(--font-size-sm);
     color: var(--text-gray);
     margin-bottom: var(--spacing-xs);
+}
+
+.company-rating .fa-star {
+    color: var(--imi-yellow);
 }
 
 /* Leaderboard Widget */
