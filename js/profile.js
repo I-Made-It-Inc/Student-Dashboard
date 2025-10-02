@@ -56,10 +56,10 @@ function loadDocumentsFromLibrary() {
 
     // Categories to load
     const categoryMapping = [
-        { type: 'resume', plural: 'resumes', icon: '📄' },
-        { type: 'project', plural: 'projects', icon: '📄' },
-        { type: 'certificate', plural: 'certificates', icon: '🏆' },
-        { type: 'reference', plural: 'references', icon: '📝' }
+        { type: 'resume', plural: 'resumes', icon: '<i class="fa-solid fa-file"></i>' },
+        { type: 'project', plural: 'projects', icon: '<i class="fa-solid fa-file"></i>' },
+        { type: 'certificate', plural: 'certificates', icon: '<i class="fa-solid fa-trophy"></i>' },
+        { type: 'reference', plural: 'references', icon: '<i class="fa-solid fa-pen-to-square"></i>' }
     ];
 
     categoryMapping.forEach(({ type, plural, icon }) => {
@@ -92,7 +92,7 @@ function loadDocumentsFromLibrary() {
             // Determine icon based on file type
             let docIcon = icon;
             if (doc.name.includes('.jpg') || doc.name.includes('.png')) {
-                docIcon = type === 'certificate' ? '🥇' : '🖼️';
+                docIcon = type === 'certificate' ? '<i class="fa-solid fa-medal"></i>' : '<i class="fa-solid fa-image"></i>';
             }
 
             // Format date consistently
@@ -106,8 +106,8 @@ function loadDocumentsFromLibrary() {
                         <span class="doc-meta">Uploaded ${uploadDate} • ${doc.size}</span>
                     </div>
                     <div class="doc-actions">
-                        <button class="btn-icon" title="Download" onclick="downloadDocument('${doc.id}')">⬇️</button>
-                        <button class="btn-icon" title="Delete" onclick="deleteDocument('${doc.id}', '${type}')">🗑️</button>
+                        <button class="btn-icon" title="Download" onclick="downloadDocument('${doc.id}')"><i class="fa-solid fa-download"></i></button>
+                        <button class="btn-icon" title="Delete" onclick="deleteDocument('${doc.id}', '${type}')"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
                 <div class="default-description-section">
@@ -397,8 +397,8 @@ function addDocumentToList(file, type) {
                 <span class="doc-meta">Uploaded ${new Date().toLocaleDateString()} • ${fileSize} MB</span>
             </div>
             <div class="doc-actions">
-                <button class="btn-icon" title="Download" onclick="downloadDocument('${documentId}')">⬇️</button>
-                <button class="btn-icon" title="Delete" onclick="deleteDocument('${documentId}', '${type}')">🗑️</button>
+                <button class="btn-icon" title="Download" onclick="downloadDocument('${documentId}')"><i class="fa-solid fa-download"></i></button>
+                <button class="btn-icon" title="Delete" onclick="deleteDocument('${documentId}', '${type}')"><i class="fa-solid fa-trash"></i></button>
             </div>
         </div>
         <div class="default-description-section">
@@ -478,10 +478,10 @@ function addDocumentToList(file, type) {
 
 // Get document icon
 function getDocumentIcon(type) {
-    if (type.includes('pdf')) return '📄';
-    if (type.includes('word') || type.includes('doc')) return '📝';
-    if (type.includes('image')) return '🖼️';
-    return '📁';
+    if (type.includes('pdf')) return '<i class="fa-solid fa-file"></i>';
+    if (type.includes('word') || type.includes('doc')) return '<i class="fa-solid fa-pen-to-square"></i>';
+    if (type.includes('image')) return '<i class="fa-solid fa-image"></i>';
+    return '<i class="fa-solid fa-folder"></i>';
 }
 
 // Store document
@@ -523,7 +523,7 @@ function showDeletionWarning(documentId, type, usingRooms) {
     popup.className = 'deletion-warning-modal';
     popup.innerHTML = `
         <div class="deletion-warning-content">
-            <h3>⚠️ Document in Use</h3>
+            <h3><i class="fa-solid fa-triangle-exclamation"></i> Document in Use</h3>
             <p>This document is currently being used in the following data room${usingRooms.length > 1 ? 's' : ''}:</p>
             <ul class="room-list">
                 ${usingRooms.map(room => `<li>• ${room.name}</li>`).join('')}
@@ -826,9 +826,9 @@ function updateSocialLinksPreview(data) {
     if (!previewLinks) return;
     
     const links = [];
-    if (data.linkedin) links.push('<a href="#" class="social-link">💼</a>');
-    if (data.github) links.push('<a href="#" class="social-link">🐙</a>');
-    if (data.portfolio) links.push('<a href="#" class="social-link">🌐</a>');
+    if (data.linkedin) links.push('<a href="#" class="social-link"><i class="fa-brands fa-linkedin"></i></a>');
+    if (data.github) links.push('<a href="#" class="social-link"><i class="fa-brands fa-github"></i></a>');
+    if (data.portfolio) links.push('<a href="#" class="social-link"><i class="fa-solid fa-globe"></i></a>');
     
     previewLinks.innerHTML = links.join('');
 }
@@ -940,12 +940,12 @@ function loadVerifiedAchievements() {
     verifiedList.innerHTML = verifiedAchievements.map(achievement => `
         <div class="achievement-card verified">
             <div class="achievement-header">
-                <span class="achievement-icon">${achievement.icon}</span>
+                <span class="achievement-icon"><i class="fa-solid ${achievement.icon}"></i></span>
                 <div class="achievement-info">
                     <h5 class="achievement-title">${achievement.title}</h5>
                     <p class="achievement-description">${achievement.description}</p>
                 </div>
-                <div class="verified-indicator" title="Verified">✓</div>
+                <div class="verified-indicator" title="Verified"><i class="fa-solid fa-check"></i></div>
             </div>
             <div class="achievement-meta">
                 <span class="achievement-category">${achievement.category}</span>
@@ -972,14 +972,14 @@ function loadCustomAchievements() {
     customList.innerHTML = customAchievements.map(achievement => `
         <div class="achievement-card custom" data-achievement-id="${achievement.id}">
             <div class="achievement-header">
-                <span class="achievement-icon">${achievement.icon}</span>
+                <span class="achievement-icon"><i class="fa-solid ${achievement.icon}"></i></span>
                 <div class="achievement-info">
                     <h5 class="achievement-title">${achievement.title}</h5>
                     <p class="achievement-description">${achievement.description}</p>
                 </div>
                 <div class="achievement-actions">
-                    <button class="btn-icon" title="Edit" onclick="editCustomAchievement('${achievement.id}')">✏️</button>
-                    <button class="btn-icon" title="Delete" onclick="deleteCustomAchievement('${achievement.id}')">🗑️</button>
+                    <button class="btn-icon" title="Edit" onclick="editCustomAchievement('${achievement.id}')"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-icon" title="Delete" onclick="deleteCustomAchievement('${achievement.id}')"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </div>
             <div class="achievement-meta">
@@ -1062,7 +1062,7 @@ function handleAddCustomAchievement(form) {
         id: 'custom-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
         title: title,
         description: description,
-        icon: iconSelect.value || '🏆',
+        icon: iconSelect.value || 'fa-trophy',
         category: categorySelect.value || 'other',
         dateAchieved: dateInput.value || null,
         isVerified: false

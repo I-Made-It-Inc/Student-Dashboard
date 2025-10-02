@@ -155,7 +155,7 @@ let achievementsLibrary = [
         title: 'Top 5% IMI Student',
         description: 'Ranked in top 5% based on XP and project completions',
         isVerified: true,
-        icon: '🏆',
+        icon: 'fa-trophy',
         category: 'academic'
     },
     {
@@ -163,7 +163,7 @@ let achievementsLibrary = [
         title: '12 Completed Projects',
         description: 'Successfully delivered 12 co-op projects across 3 companies',
         isVerified: true,
-        icon: '✓',
+        icon: 'fa-check',
         category: 'projects'
     },
     {
@@ -171,7 +171,7 @@ let achievementsLibrary = [
         title: '3x Blueprint Pioneer',
         description: 'Featured insights in Blueprint for the Future 3 times',
         isVerified: true,
-        icon: '⚡',
+        icon: 'fa-bolt',
         category: 'academic'
     },
     {
@@ -179,7 +179,7 @@ let achievementsLibrary = [
         title: 'AI/ML Specialist',
         description: 'Completed advanced AI/ML coursework with distinction',
         isVerified: true,
-        icon: '🤖',
+        icon: 'fa-robot',
         category: 'skills'
     },
     {
@@ -187,7 +187,7 @@ let achievementsLibrary = [
         title: 'Cross-Industry Experience',
         description: 'Worked with companies in Tech, Finance, and Healthcare',
         isVerified: true,
-        icon: '🌐',
+        icon: 'fa-globe',
         category: 'leadership'
     },
     {
@@ -195,7 +195,7 @@ let achievementsLibrary = [
         title: 'Networking Champion',
         description: 'Connected with 50+ industry professionals',
         isVerified: true,
-        icon: '🤝',
+        icon: 'fa-handshake',
         category: 'leadership'
     },
     {
@@ -203,7 +203,7 @@ let achievementsLibrary = [
         title: 'Python Expert',
         description: 'Advanced proficiency in Python, Django, and data science libraries',
         isVerified: false,
-        icon: '🐍',
+        icon: 'fa-code',
         category: 'skills'
     },
     {
@@ -211,7 +211,7 @@ let achievementsLibrary = [
         title: 'Published Researcher',
         description: 'Co-authored paper on neural network optimization',
         isVerified: false,
-        icon: '📚',
+        icon: 'fa-book',
         category: 'academic'
     }
 ];
@@ -2294,10 +2294,10 @@ function refreshDocumentSelector() {
     let documentsHtml = '<h4>📄 Select Documents</h4>';
 
     const categories = [
-        { key: 'resumes', icon: '📄', label: 'Resumes' },
-        { key: 'projects', icon: '📁', label: 'Projects' },
-        { key: 'certificates', icon: '🏆', label: 'Certificates' },
-        { key: 'references', icon: '📝', label: 'References' }
+        { key: 'resumes', icon: '<i class="fa-solid fa-file"></i>', label: 'Resumes' },
+        { key: 'projects', icon: '<i class="fa-solid fa-folder"></i>', label: 'Projects' },
+        { key: 'certificates', icon: '<i class="fa-solid fa-trophy"></i>', label: 'Certificates' },
+        { key: 'references', icon: '<i class="fa-solid fa-pen-to-square"></i>', label: 'References' }
     ];
 
     categories.forEach(category => {

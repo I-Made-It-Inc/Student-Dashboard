@@ -58,9 +58,9 @@ function generateAchievementsHTML(room) {
 
             return `
                 <div class="achievement-badge ${achievement.isVerified ? 'verified' : ''}">
-                    <span class="badge-icon">${achievement.icon || '⭐'}</span>
+                    <span class="badge-icon"><i class="fa-solid ${achievement.icon || 'fa-star'}"></i></span>
                     <span class="badge-text">${achievement.title}</span>
-                    ${achievement.isVerified ? '<span class="verified-indicator" title="Verified">✓</span>' : ''}
+                    ${achievement.isVerified ? '<span class="verified-indicator" title="Verified"><i class="fa-solid fa-check"></i></span>' : ''}
                 </div>
             `;
         })
