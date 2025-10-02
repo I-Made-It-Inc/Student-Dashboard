@@ -837,7 +837,7 @@ function generateAchievementsSelection(room) {
 
     html += `</div>
         <div class="achievements-help-section">
-            <small class="help-text">💡 Tip: Manage all your achievements in your <a href="#" onclick="showPage('profile'); closeModal(); return false;">Profile</a> page</small>
+            <small class="help-text"><i class="fa-solid fa-lightbulb"></i> Tip: Manage all your achievements in your <a href="#" onclick="showPage('profile'); closeModal(); return false;">Profile</a> page</small>
         </div>`;
 
     return html;

@@ -693,9 +693,9 @@
 
 .document-category h5 {
     margin: 0 0 12px 0;
-    color: #374151;
-    font-size: var(--font-size-sm);
-    font-weight: 600;
+    color: #042847;
+    font-size: var(--font-size-lg);
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -749,6 +749,19 @@
     margin: 0;
     line-height: 1;
     display: inline; /* Override the block display */
+    font-size: var(--font-size-sm);
+    font-weight: 400;
+}
+
+/* Hide the doc icon in modal */
+.modal .document-header .doc-icon {
+    display: none;
+}
+
+/* Make doc-info full width and left-aligned */
+.modal .document-header .doc-info {
+    flex: 1;
+    text-align: left;
 }
 
 .modal .document-item.selected .document-header {
