@@ -3,10 +3,34 @@
 
 // Initialize app on DOM ready
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('IMI Student Dashboard v0.2 initializing...');
-    
-    // Initialize all modules
+    console.log('IMI Student Dashboard v0.3 initializing...');
+
+    // Check auth FIRST before anything else
+    const isAuth = sessionStorage.getItem('imi_authenticated') === 'true';
+
+    if (!isAuth) {
+        console.log('❌ Not authenticated - showing login only');
+        // Hide navigation
+        const nav = document.querySelector('.nav');
+        if (nav) nav.style.display = 'none';
+
+        // Hide all pages except login
+        document.querySelectorAll('.page-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        const loginPage = document.getElementById('login-page');
+        if (loginPage) loginPage.classList.add('active');
+
+        // Don't initialize anything else
+        return;
+    }
+
+    console.log('✅ Authenticated - initializing app');
+
+    // Initialize navigation
     initializeNavigation();
+
+    // Initialize other modules
     initializeBlueprintChallenge();
     initializeModal();
     initializeCompanies();

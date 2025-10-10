@@ -29,8 +29,9 @@ const colors = {
     red: '\x1b[31m'
 };
 
-// Define the order of pages (dashboard first, then alphabetical)
+// Define the order of pages (login first, dashboard second, then alphabetical)
 const PAGE_ORDER = [
+    'login.html',
     'dashboard.html',
     'blueprint.html',
     'ideas.html',
@@ -111,10 +112,8 @@ async function build() {
 
             totalSize += content.length;
 
-            // Set the first page (dashboard) as active by default
-            if (file === 'dashboard.html') {
-                combinedPages = combinedPages.replace('class="page-section"', 'class="page-section active"');
-            }
+            // No page should be active by default - auth.js or main.js will set the correct one
+            // (Previously this set dashboard as active, but that caused both login and dashboard to be active)
         }
 
         log(`  ✓ Combined ${formatBytes(totalSize)} of page content`, 'green');

@@ -10,6 +10,7 @@
 
     <!-- CSS Files -->
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" href="css/navigation.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/blueprint.css">
@@ -69,7 +70,10 @@
                     <i class="fa-regular fa-bell"></i>
                     <div class="notification-badge">6</div>
                 </div>
-                <div class="user-avatar blue-spark-active" title="Profile Settings">JD</div>
+                <div class="user-avatar blue-spark-active" onclick="showPage('profile')" title="Profile Settings">JD</div>
+                <button class="btn-logout" onclick="if(window.IMI && window.IMI.auth) window.IMI.auth.logout()" title="Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
             </div>
         </nav>
 
@@ -93,6 +97,7 @@
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/toast.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/main.js"></script>
     <script src="js/blue-spark-simple.js"></script>
     <script src="js/navigation.js"></script>
