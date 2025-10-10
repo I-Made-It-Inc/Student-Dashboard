@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up global event listeners
     setupGlobalEventListeners();
 
-    // Load user data
+    // Load user data from Microsoft Graph or mock data
     loadUserData();
 
     // Start session tracking
@@ -101,11 +101,58 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Load user data
-function loadUserData() {
-    // In production, this would fetch from API
+async function loadUserData() {
+    // Fetch real user profile from Microsoft Graph API
+    if (window.IMI && window.IMI.graph && window.IMI.graph.initializeUserProfile) {
+        try {
+            const profileData = await window.IMI.graph.initializeUserProfile();
+
+            if (profileData) {
+                // Combine profile data with mock gamification data (will be from backend later)
+                const userData = {
+                    name: profileData.name,
+                    firstName: profileData.firstName,
+                    initials: profileData.initials,
+                    email: profileData.email,
+                    jobTitle: profileData.jobTitle,
+                    department: profileData.department,
+                    // Mock gamification data (TODO: fetch from backend)
+                    streak: 12,
+                    xp: 1850,
+                    tier: 'Gold',
+                    totalHours: 324,
+                    activeProjects: 5,
+                    companies: 3
+                };
+
+                // Update UI with combined data
+                updateUserInterface(userData);
+
+                // Store in global IMI data object for other modules to use
+                window.IMI.data.userData = userData;
+
+                console.log('✅ User data loaded successfully');
+            }
+        } catch (error) {
+            console.error('❌ Failed to load user data:', error);
+            // Fall back to placeholder data
+            usePlaceholderData();
+        }
+    } else {
+        console.warn('⚠️ Graph API module not loaded, using placeholder data');
+        usePlaceholderData();
+    }
+}
+
+// Fallback to placeholder data if Graph API fails
+function usePlaceholderData() {
     const userData = {
-        name: 'Jane Doe',
-        initials: 'JD',
+        name: '[PLACEHOLDER]',
+        firstName: '[PLACEHOLDER]',
+        initials: 'NA',
+        email: '[PLACEHOLDER]',
+        jobTitle: '[PLACEHOLDER]',
+        department: '[PLACEHOLDER]',
         streak: 12,
         xp: 1850,
         tier: 'Gold',
@@ -113,9 +160,9 @@ function loadUserData() {
         activeProjects: 5,
         companies: 3
     };
-    
-    // Update UI with user data
+
     updateUserInterface(userData);
+    window.IMI.data.userData = userData;
 }
 
 // Update user interface with data

@@ -692,22 +692,74 @@ function updateDefaultDescription(docId, description) {
 
 // Load profile data
 function loadProfileData() {
+    // First, populate with real user data from Microsoft Graph
+    if (window.IMI && window.IMI.data && window.IMI.data.userData) {
+        const userData = window.IMI.data.userData;
+
+        // Populate form fields with Microsoft Graph data
+        const firstNameInput = document.getElementById('profile-first-name');
+        const lastNameInput = document.getElementById('profile-last-name');
+        const displayNameInput = document.getElementById('profile-display-name');
+        const emailInput = document.getElementById('profile-email');
+
+        if (firstNameInput) firstNameInput.value = userData.firstName || '[PLACEHOLDER]';
+        if (lastNameInput) lastNameInput.value = userData.lastName || '[PLACEHOLDER]';
+        if (displayNameInput) displayNameInput.value = userData.name || '[PLACEHOLDER]';
+        if (emailInput) emailInput.value = userData.email || '[PLACEHOLDER]';
+
+        // Update profile preview with real user data
+        updateProfilePreviewWithUserData(userData);
+
+        console.log('✅ Profile form populated with Microsoft Graph data');
+    }
+
+    // Then, load any saved profile data from localStorage (this overrides Graph data if saved)
     const savedProfile = localStorage.getItem('profileData');
     if (savedProfile) {
         const profileData = JSON.parse(savedProfile);
-
-
-
         populateProfileForm(profileData);
         updateProfilePreview(profileData);
     }
-
 
     const savedSocial = localStorage.getItem('socialLinks');
     if (savedSocial) {
         const socialData = JSON.parse(savedSocial);
         populateSocialForm(socialData);
         updateSocialLinksPreview(socialData);
+    }
+}
+
+// Update profile preview with user data from Microsoft Graph
+function updateProfilePreviewWithUserData(userData) {
+    const previewName = document.getElementById('preview-name');
+    const previewAvatar = document.getElementById('preview-avatar');
+    const previewSchool = document.getElementById('preview-school');
+
+    if (previewName) {
+        previewName.textContent = userData.name || '[PLACEHOLDER]';
+    }
+
+    if (previewAvatar) {
+        // Check if user has a photo
+        if (window.IMI && window.IMI.graph) {
+            window.IMI.graph.fetchUserPhoto().then(photoUrl => {
+                if (photoUrl) {
+                    previewAvatar.style.backgroundImage = `url(${photoUrl})`;
+                    previewAvatar.style.backgroundSize = 'cover';
+                    previewAvatar.style.backgroundPosition = 'center';
+                    previewAvatar.textContent = '';
+                } else {
+                    previewAvatar.textContent = userData.initials || 'NA';
+                }
+            });
+        } else {
+            previewAvatar.textContent = userData.initials || 'NA';
+        }
+    }
+
+    // Update school info if available from department or job title
+    if (previewSchool && userData.department !== '[PLACEHOLDER]') {
+        previewSchool.textContent = userData.department;
     }
 }
 
