@@ -1,16 +1,5 @@
 // js/main.js - Main Initialization
-
-// Global configuration
-const IMI_CONFIG = {
-    API_BASE_URL: '/api', // Update with actual API endpoint
-    SESSION_TIMEOUT: 30 * 60 * 1000, // 30 minutes
-    AUTO_SAVE_INTERVAL: 2000, // 2 seconds
-    COLORS: {
-        blue: '#042847',
-        yellow: '#ffd502',
-        darkGray: '#231f20'
-    }
-};
+// NOTE: Configuration is now in js/config.js
 
 // Initialize app on DOM ready
 document.addEventListener('DOMContentLoaded', function() {
@@ -194,7 +183,7 @@ function setupGlobalEventListeners() {
     
     // Auto-save for textareas
     document.querySelectorAll('textarea').forEach(textarea => {
-        textarea.addEventListener('input', debounce(autoSave, IMI_CONFIG.AUTO_SAVE_INTERVAL));
+        textarea.addEventListener('input', debounce(autoSave, window.IMI.config.SESSION.autoSaveInterval));
     });
 }
 
@@ -437,9 +426,8 @@ function updateNotificationBadgeCount() {
     }
 }
 
-// Export for use in other modules
+// Export utilities for use in other modules
 window.IMI = window.IMI || {};
-window.IMI.config = IMI_CONFIG;
 window.IMI.utils = window.IMI.utils || {
     debounce,
     throttle
