@@ -10,8 +10,8 @@
 const IMI_CONFIG = {
     // Azure Active Directory / MSAL Configuration
     MSAL: {
-        clientId: 'YOUR_CLIENT_ID', // Replace with your Azure AD App Registration Client ID
-        authority: 'https://login.microsoftonline.com/YOUR_TENANT_ID', // Replace with your Tenant ID
+        clientId: 'e72211d9-88cf-4e6d-b34b-8d3d4924c74b',
+        authority: 'https://login.microsoftonline.com/4aeaa91e-7669-479e-9283-222abfbda9d5',
         redirectUri: window.location.origin, // Automatically uses current domain
         scopes: ['User.Read', 'openid', 'profile'], // Default scopes for authentication
     },
@@ -128,7 +128,7 @@ const IMI_CONFIG = {
 
     // Feature Flags (enable/disable features)
     FEATURES: {
-        enableMSAL: false, // Set to true when MSAL is configured
+        enableMSAL: true, // Set to true when MSAL is configured
         enableBackend: false, // Set to true when backend is ready
         useMockData: true, // Use mock data when backend is disabled
         enableAnalytics: false, // Enable session tracking/analytics
