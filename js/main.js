@@ -112,6 +112,7 @@ async function loadUserData() {
                 const userData = {
                     name: profileData.name,
                     firstName: profileData.firstName,
+                    lastName: profileData.lastName,
                     initials: profileData.initials,
                     email: profileData.email,
                     jobTitle: profileData.jobTitle,
@@ -147,12 +148,13 @@ async function loadUserData() {
 // Fallback to placeholder data if Graph API fails
 function usePlaceholderData() {
     const userData = {
-        name: '[PLACEHOLDER]',
-        firstName: '[PLACEHOLDER]',
+        name: '[FULL NAME]',
+        firstName: '[FIRST NAME]',
+        lastName: '[LAST NAME]',
         initials: 'NA',
-        email: '[PLACEHOLDER]',
-        jobTitle: '[PLACEHOLDER]',
-        department: '[PLACEHOLDER]',
+        email: '[EMAIL]',
+        jobTitle: '[JOB TITLE]',
+        department: '[DEPARTMENT]',
         streak: 12,
         xp: 1850,
         tier: 'Gold',

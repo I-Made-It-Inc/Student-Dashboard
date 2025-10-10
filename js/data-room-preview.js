@@ -1,5 +1,75 @@
 // js/data-room-preview.js - Data Room Preview/External View Functionality
 
+// Helper function to get current user data
+function getUserDataForPreview() {
+    const userData = window.IMI?.data?.userData;
+
+    if (userData) {
+        return {
+            name: userData.name || '[FULL NAME]',
+            email: userData.email || '[EMAIL]',
+            jobTitle: userData.jobTitle || '[JOB TITLE]',
+            location: userData.officeLocation || '[LOCATION]',
+            initials: userData.initials || 'NA'
+        };
+    }
+
+    // Fallback to placeholder data
+    return {
+        name: '[FULL NAME]',
+        email: '[EMAIL]',
+        jobTitle: '[JOB TITLE]',
+        location: '[LOCATION]',
+        initials: 'NA'
+    };
+}
+
+// Helper function to get user avatar (photo or initials)
+async function getUserAvatar() {
+    // Try to get profile photo first
+    if (window.IMI && window.IMI.graph && window.IMI.graph.fetchUserPhoto) {
+        try {
+            const photoUrl = await window.IMI.graph.fetchUserPhoto();
+            if (photoUrl) {
+                return { type: 'photo', value: photoUrl };
+            }
+        } catch (error) {
+            console.log('Could not fetch photo, using initials');
+        }
+    }
+
+    // Fall back to initials
+    const userData = getUserDataForPreview();
+    return { type: 'initials', value: userData.initials };
+}
+
+// Load user photo for preview (called after HTML is rendered)
+async function loadUserPhotoForPreview() {
+    if (window.IMI && window.IMI.graph && window.IMI.graph.fetchUserPhoto) {
+        try {
+            const photoUrl = await window.IMI.graph.fetchUserPhoto();
+            if (photoUrl) {
+                // Update large avatar in student info section
+                const avatarContainer = document.getElementById('preview-student-avatar');
+                if (avatarContainer) {
+                    avatarContainer.innerHTML = `<img src="${photoUrl}" alt="Student Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                }
+
+                // Update small avatar in compact preview
+                const smallAvatars = document.querySelectorAll('.student-avatar-small');
+                smallAvatars.forEach(avatar => {
+                    avatar.style.backgroundImage = `url(${photoUrl})`;
+                    avatar.style.backgroundSize = 'cover';
+                    avatar.style.backgroundPosition = 'center';
+                    avatar.textContent = '';
+                });
+            }
+        } catch (error) {
+            console.log('Could not load user photo for preview, using initials');
+        }
+    }
+}
+
 // Helper function to count selected documents using documentLibrary as source
 function getSelectedDocumentCount(room) {
     if (window.documentLibrary) {
@@ -163,6 +233,9 @@ function showDataRoomPreview(roomId, isPreviewMode = false) {
             previewContainer.innerHTML = generateExternalViewHTML(room);
         }
         console.log('✅ HTML generated successfully');
+
+        // Load user profile photo after HTML is rendered
+        loadUserPhotoForPreview();
     } catch (error) {
         console.error('❌ Error generating HTML:', error);
         return;
@@ -225,15 +298,15 @@ function generatePreviewModeHTML(room) {
 
                         <!-- Student Info -->
                         <div class="student-info-section">
-                            <div class="student-avatar">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=JaneDoe" alt="Student Avatar">
+                            <div class="student-avatar" id="preview-student-avatar">
+                                <div class="avatar-placeholder">${getUserDataForPreview().initials}</div>
                             </div>
                             <div class="student-details">
-                                <h3 class="student-name">Jane Doe</h3>
-                                <p class="student-title">High School Senior • IMI Co-op Student</p>
+                                <h3 class="student-name">${getUserDataForPreview().name}</h3>
+                                <p class="student-title">${getUserDataForPreview().jobTitle} • IMI Co-op Student</p>
                                 <div class="student-meta">
-                                    <span class="meta-item"><i class="fa-solid fa-location-dot"></i> Toronto, ON</span>
-                                    <span class="meta-item"><i class="fa-solid fa-envelope"></i> jane.doe@example.com</span>
+                                    <span class="meta-item"><i class="fa-solid fa-location-dot"></i> ${getUserDataForPreview().location}</span>
+                                    <span class="meta-item"><i class="fa-solid fa-envelope"></i> ${getUserDataForPreview().email}</span>
                                     <span class="meta-item"><i class="fa-solid fa-briefcase"></i> 8 months with IMI</span>
                                 </div>
                                 <div class="student-bio">
@@ -325,15 +398,15 @@ function generateExternalViewHTML(room) {
 
                         <!-- Student Info -->
                         <div class="student-info-section">
-                            <div class="student-avatar">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=JaneDoe" alt="Student Avatar">
+                            <div class="student-avatar" id="preview-student-avatar">
+                                <div class="avatar-placeholder">${getUserDataForPreview().initials}</div>
                             </div>
                             <div class="student-details">
-                                <h3 class="student-name">Jane Doe</h3>
-                                <p class="student-title">High School Senior • IMI Co-op Student</p>
+                                <h3 class="student-name">${getUserDataForPreview().name}</h3>
+                                <p class="student-title">${getUserDataForPreview().jobTitle} • IMI Co-op Student</p>
                                 <div class="student-meta">
-                                    <span class="meta-item"><i class="fa-solid fa-location-dot"></i> Toronto, ON</span>
-                                    <span class="meta-item"><i class="fa-solid fa-envelope"></i> jane.doe@example.com</span>
+                                    <span class="meta-item"><i class="fa-solid fa-location-dot"></i> ${getUserDataForPreview().location}</span>
+                                    <span class="meta-item"><i class="fa-solid fa-envelope"></i> ${getUserDataForPreview().email}</span>
                                     <span class="meta-item"><i class="fa-solid fa-briefcase"></i> 8 months with IMI</span>
                                 </div>
                                 <div class="student-bio">
@@ -434,9 +507,9 @@ function generateRequestAccessHTML(room) {
                             <p class="room-desc">${room.description}</p>
 
                             <div class="student-preview">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=JaneDoe" alt="Student" class="student-avatar-small">
+                                <div class="student-avatar-small">${getUserDataForPreview().initials}</div>
                                 <div class="student-preview-info">
-                                    <strong>Jane Doe</strong>
+                                    <strong>${getUserDataForPreview().name}</strong>
                                     <span>IMI Co-op Student</span>
                                 </div>
                             </div>

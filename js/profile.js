@@ -702,10 +702,10 @@ function loadProfileData() {
         const displayNameInput = document.getElementById('profile-display-name');
         const emailInput = document.getElementById('profile-email');
 
-        if (firstNameInput) firstNameInput.value = userData.firstName || '[PLACEHOLDER]';
-        if (lastNameInput) lastNameInput.value = userData.lastName || '[PLACEHOLDER]';
-        if (displayNameInput) displayNameInput.value = userData.name || '[PLACEHOLDER]';
-        if (emailInput) emailInput.value = userData.email || '[PLACEHOLDER]';
+        if (firstNameInput) firstNameInput.value = userData.firstName || '[FIRST NAME]';
+        if (lastNameInput) lastNameInput.value = userData.lastName || '[LAST NAME]';
+        if (displayNameInput) displayNameInput.value = userData.name || '[FULL NAME]';
+        if (emailInput) emailInput.value = userData.email || '[EMAIL]';
 
         // Update profile preview with real user data
         updateProfilePreviewWithUserData(userData);
@@ -736,7 +736,7 @@ function updateProfilePreviewWithUserData(userData) {
     const previewSchool = document.getElementById('preview-school');
 
     if (previewName) {
-        previewName.textContent = userData.name || '[PLACEHOLDER]';
+        previewName.textContent = userData.name || '[FULL NAME]';
     }
 
     if (previewAvatar) {
@@ -758,7 +758,7 @@ function updateProfilePreviewWithUserData(userData) {
     }
 
     // Update school info if available from department or job title
-    if (previewSchool && userData.department !== '[PLACEHOLDER]') {
+    if (previewSchool && userData.department && !userData.department.startsWith('[')) {
         previewSchool.textContent = userData.department;
     }
 }

@@ -33,19 +33,19 @@ async function fetchUserProfile() {
         let lastName = data.surname;
         if (!lastName && data.displayName) {
             const nameParts = data.displayName.split(' ');
-            lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : '[PLACEHOLDER]';
+            lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : '[LAST NAME]';
         }
-        if (!lastName) lastName = '[PLACEHOLDER]';
+        if (!lastName) lastName = '[LAST NAME]';
 
         return {
-            name: data.displayName || '[PLACEHOLDER]',
-            email: data.userPrincipalName || data.mail || '[PLACEHOLDER]',
-            firstName: data.givenName || data.displayName?.split(' ')[0] || '[PLACEHOLDER]',
+            name: data.displayName || '[FULL NAME]',
+            email: data.userPrincipalName || data.mail || '[EMAIL]',
+            firstName: data.givenName || data.displayName?.split(' ')[0] || '[FIRST NAME]',
             lastName: lastName,
-            jobTitle: data.jobTitle || '[PLACEHOLDER]',
-            department: data.department || '[PLACEHOLDER]',
-            officeLocation: data.officeLocation || '[PLACEHOLDER]',
-            mobilePhone: data.mobilePhone || '[PLACEHOLDER]',
+            jobTitle: data.jobTitle || '[JOB TITLE]',
+            department: data.department || '[DEPARTMENT]',
+            officeLocation: data.officeLocation || '[LOCATION]',
+            mobilePhone: data.mobilePhone || '[PHONE]',
             businessPhones: data.businessPhones || [],
             initials: getInitials(data.displayName),
             id: data.id
@@ -108,7 +108,7 @@ function blobToBase64(blob) {
  * Get initials from display name
  */
 function getInitials(name) {
-    if (!name || name === '[PLACEHOLDER]') return 'NA';
+    if (!name || name.startsWith('[')) return 'NA';
 
     const parts = name.trim().split(' ');
     if (parts.length === 1) {
@@ -126,14 +126,14 @@ function getPlaceholderUserData() {
     const storedEmail = sessionStorage.getItem('imi_user_email');
 
     return {
-        name: storedName || '[PLACEHOLDER]',
-        email: storedEmail || '[PLACEHOLDER]',
-        firstName: storedName?.split(' ')[0] || '[PLACEHOLDER]',
-        lastName: '[PLACEHOLDER]',
-        jobTitle: '[PLACEHOLDER]',
-        department: '[PLACEHOLDER]',
-        officeLocation: '[PLACEHOLDER]',
-        mobilePhone: '[PLACEHOLDER]',
+        name: storedName || '[FULL NAME]',
+        email: storedEmail || '[EMAIL]',
+        firstName: storedName?.split(' ')[0] || '[FIRST NAME]',
+        lastName: '[LAST NAME]',
+        jobTitle: '[JOB TITLE]',
+        department: '[DEPARTMENT]',
+        officeLocation: '[LOCATION]',
+        mobilePhone: '[PHONE]',
         businessPhones: [],
         initials: getInitials(storedName),
         id: null
@@ -238,10 +238,13 @@ async function initializeUserProfile() {
     // Try to get cached data first
     let userData = getCachedUserData();
 
-    // Check if cached data is stale (has placeholders in critical fields)
+    // Check if cached data is stale (has placeholders in critical fields or old generic placeholders)
     const isCacheStale = userData && (
-        userData.lastName === '[PLACEHOLDER]' ||
-        userData.name === '[PLACEHOLDER]' ||
+        userData.lastName?.startsWith('[') ||
+        userData.name?.startsWith('[') ||
+        userData.jobTitle === '[PLACEHOLDER]' ||  // Check for old generic placeholder
+        userData.department === '[PLACEHOLDER]' ||
+        userData.officeLocation === '[PLACEHOLDER]' ||
         !userData.lastName ||
         !userData.name
     );
