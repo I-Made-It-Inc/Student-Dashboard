@@ -15,18 +15,24 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>First Name</label>
-                                    <input type="text" value="Jane" class="form-input" required>
+                                    <input type="text" id="profile-first-name" class="form-input" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Last Name</label>
-                                    <input type="text" value="Doe" class="form-input" required>
+                                    <input type="text" id="profile-last-name" class="form-input" required>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label>Display Name</label>
-                                <input type="text" value="Jane Doe" class="form-input" required>
+                                <input type="text" id="profile-display-name" class="form-input" required>
                                 <small class="help-text">This is how your name appears to others</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="profile-email" class="form-input" readonly disabled>
+                                <small class="help-text">Your email is managed by your Microsoft account</small>
                             </div>
 
                             <div class="form-group">
@@ -374,10 +380,10 @@
                     <div class="card profile-preview-card">
                         <h3 class="section-title">Profile Preview</h3>
                         <div class="profile-preview">
-                            <div class="preview-avatar">JD</div>
-                            <h4>Jane Doe</h4>
-                            <p class="preview-school">Lincoln High School • Class of 2025</p>
-                            <div class="preview-bio">
+                            <div class="preview-avatar" id="preview-avatar">JD</div>
+                            <h4 id="preview-name">Jane Doe</h4>
+                            <p class="preview-school" id="preview-school">Lincoln High School • Class of 2025</p>
+                            <div class="preview-bio" id="preview-bio">
                                 Passionate technology student with hands-on experience in AI/ML projects through IMI's co-op program. I enjoy solving complex problems through innovative software solutions and am always eager to learn new technologies. Currently seeking opportunities to apply my skills in data analysis, software development, and project management.
                             </div>
                             <div class="preview-interests">

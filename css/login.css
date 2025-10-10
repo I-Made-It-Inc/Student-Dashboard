@@ -1,0 +1,307 @@
+/* css/login.css - Login Page Styles */
+
+/* Login Page Container */
+#login-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--imi-blue) 0%, #063a5f 100%);
+    padding: var(--spacing-xl);
+    /* Break out of the .container constraints */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    width: 100%;
+}
+
+/* Only apply flex layout when active (display: flex overrides display: block from .page-section.active) */
+#login-page.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 480px;
+}
+
+.login-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xxl);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Login Header */
+.login-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.login-logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--radius-md);
+}
+
+.login-header h1 {
+    color: var(--imi-blue);
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
+}
+
+.login-header h2 {
+    color: var(--imi-blue);
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+    margin-bottom: var(--spacing-md);
+}
+
+.login-subtitle {
+    color: var(--text-gray);
+    font-size: var(--font-size-base);
+    margin-bottom: 0;
+}
+
+/* Login Actions */
+.login-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Microsoft Login Button */
+.btn-microsoft {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--white);
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--imi-dark-gray);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-family: var(--font-primary);
+}
+
+.btn-microsoft:hover {
+    background: var(--light-gray);
+    border-color: var(--imi-blue);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-microsoft:active {
+    transform: translateY(0);
+}
+
+.microsoft-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+/* Divider */
+.login-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-gray);
+    margin: var(--spacing-sm) 0;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+.login-divider span {
+    padding: 0 var(--spacing-md);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Developer Mode Button */
+.btn-developer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--imi-blue);
+    border: 2px solid var(--imi-blue);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--white);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-family: var(--font-primary);
+}
+
+.btn-developer:hover {
+    background: #063a5f;
+    border-color: #063a5f;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-developer:active {
+    transform: translateY(0);
+}
+
+.btn-developer i {
+    font-size: 18px;
+}
+
+/* Developer Mode Note */
+.developer-mode-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--imi-blue-light);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-gray);
+    margin: var(--spacing-sm) 0 0 0;
+}
+
+.developer-mode-note i {
+    color: var(--imi-blue);
+    font-size: var(--font-size-base);
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* Login Footer */
+.login-footer {
+    text-align: center;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--medium-gray);
+}
+
+.login-footer p {
+    color: var(--text-gray);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.login-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+.login-links a {
+    color: var(--imi-blue);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.login-links a:hover {
+    color: var(--imi-yellow);
+    text-decoration: underline;
+}
+
+.login-links span {
+    color: var(--medium-gray);
+}
+
+/* Logout Button in Navigation */
+.btn-logout {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid var(--medium-gray);
+    color: var(--text-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-size: 16px;
+}
+
+.btn-logout:hover {
+    background: var(--error-red);
+    border-color: var(--error-red);
+    color: var(--white);
+    transform: scale(1.05);
+}
+
+.btn-logout:active {
+    transform: scale(0.95);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #login-page {
+        padding: var(--spacing-md);
+        margin: calc(-1 * var(--spacing-md));
+        width: calc(100% + 2 * var(--spacing-md));
+    }
+
+    .login-card {
+        padding: var(--spacing-lg);
+    }
+
+    .login-header h1 {
+        font-size: var(--font-size-xl);
+    }
+
+    .login-header h2 {
+        font-size: var(--font-size-base);
+    }
+
+    .login-logo {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: var(--spacing-md);
+    }
+
+    .btn-microsoft,
+    .btn-developer {
+        font-size: var(--font-size-sm);
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .microsoft-icon {
+        width: 20px;
+        height: 20px;
+    }
+}

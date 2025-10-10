@@ -1,23 +1,53 @@
 // js/main.js - Main Initialization
-
-// Global configuration
-const IMI_CONFIG = {
-    API_BASE_URL: '/api', // Update with actual API endpoint
-    SESSION_TIMEOUT: 30 * 60 * 1000, // 30 minutes
-    AUTO_SAVE_INTERVAL: 2000, // 2 seconds
-    COLORS: {
-        blue: '#042847',
-        yellow: '#ffd502',
-        darkGray: '#231f20'
-    }
-};
+// NOTE: Configuration is now in js/config.js
 
 // Initialize app on DOM ready
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('IMI Student Dashboard v0.2 initializing...');
-    
-    // Initialize all modules
+    console.log('IMI Student Dashboard v0.3 initializing...');
+
+    // Check auth FIRST before anything else
+    const isAuth = sessionStorage.getItem('imi_authenticated') === 'true';
+
+    if (!isAuth) {
+        console.log('❌ Not authenticated - showing login only');
+        // Hide navigation
+        const nav = document.querySelector('.nav');
+        if (nav) nav.style.display = 'none';
+
+        // Hide all pages except login
+        document.querySelectorAll('.page-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        const loginPage = document.getElementById('login-page');
+        if (loginPage) loginPage.classList.add('active');
+
+        // Prevent URL manipulation - force back to login if they change the hash
+        window.addEventListener('hashchange', function() {
+            if (sessionStorage.getItem('imi_authenticated') !== 'true') {
+                console.log('❌ Hash change blocked - not authenticated');
+                window.location.hash = 'login';
+                // Hide all pages except login
+                document.querySelectorAll('.page-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                const loginPage = document.getElementById('login-page');
+                if (loginPage) loginPage.classList.add('active');
+            }
+        });
+
+        // Set initial hash to login
+        window.location.hash = 'login';
+
+        // Don't initialize anything else
+        return;
+    }
+
+    console.log('✅ Authenticated - initializing app');
+
+    // Initialize navigation
     initializeNavigation();
+
+    // Initialize other modules
     initializeBlueprintChallenge();
     initializeModal();
     initializeCompanies();
@@ -42,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up global event listeners
     setupGlobalEventListeners();
 
-    // Load user data
+    // Load user data from Microsoft Graph or mock data
     loadUserData();
 
     // Start session tracking
@@ -71,11 +101,60 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Load user data
-function loadUserData() {
-    // In production, this would fetch from API
+async function loadUserData() {
+    // Fetch real user profile from Microsoft Graph API
+    if (window.IMI && window.IMI.graph && window.IMI.graph.initializeUserProfile) {
+        try {
+            const profileData = await window.IMI.graph.initializeUserProfile();
+
+            if (profileData) {
+                // Combine profile data with mock gamification data (will be from backend later)
+                const userData = {
+                    name: profileData.name,
+                    firstName: profileData.firstName,
+                    lastName: profileData.lastName,
+                    initials: profileData.initials,
+                    email: profileData.email,
+                    jobTitle: profileData.jobTitle,
+                    department: profileData.department,
+                    // Mock gamification data (TODO: fetch from backend)
+                    streak: 12,
+                    xp: 1850,
+                    tier: 'Gold',
+                    totalHours: 324,
+                    activeProjects: 5,
+                    companies: 3
+                };
+
+                // Update UI with combined data
+                updateUserInterface(userData);
+
+                // Store in global IMI data object for other modules to use
+                window.IMI.data.userData = userData;
+
+                console.log('✅ User data loaded successfully');
+            }
+        } catch (error) {
+            console.error('❌ Failed to load user data:', error);
+            // Fall back to placeholder data
+            usePlaceholderData();
+        }
+    } else {
+        console.warn('⚠️ Graph API module not loaded, using placeholder data');
+        usePlaceholderData();
+    }
+}
+
+// Fallback to placeholder data if Graph API fails
+function usePlaceholderData() {
     const userData = {
-        name: 'Jane Doe',
-        initials: 'JD',
+        name: '[FULL NAME]',
+        firstName: '[FIRST NAME]',
+        lastName: '[LAST NAME]',
+        initials: 'NA',
+        email: '[EMAIL]',
+        jobTitle: '[JOB TITLE]',
+        department: '[DEPARTMENT]',
         streak: 12,
         xp: 1850,
         tier: 'Gold',
@@ -83,9 +162,9 @@ function loadUserData() {
         activeProjects: 5,
         companies: 3
     };
-    
-    // Update UI with user data
+
     updateUserInterface(userData);
+    window.IMI.data.userData = userData;
 }
 
 // Update user interface with data
@@ -194,7 +273,7 @@ function setupGlobalEventListeners() {
     
     // Auto-save for textareas
     document.querySelectorAll('textarea').forEach(textarea => {
-        textarea.addEventListener('input', debounce(autoSave, IMI_CONFIG.AUTO_SAVE_INTERVAL));
+        textarea.addEventListener('input', debounce(autoSave, window.IMI.config.SESSION.autoSaveInterval));
     });
 }
 
@@ -437,9 +516,8 @@ function updateNotificationBadgeCount() {
     }
 }
 
-// Export for use in other modules
+// Export utilities for use in other modules
 window.IMI = window.IMI || {};
-window.IMI.config = IMI_CONFIG;
 window.IMI.utils = window.IMI.utils || {
     debounce,
     throttle

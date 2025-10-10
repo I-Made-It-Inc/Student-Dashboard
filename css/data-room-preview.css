@@ -169,13 +169,31 @@
 
 .student-avatar {
     flex-shrink: 0;
-}
-
-.student-avatar img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     border: 3px solid #ffd502;
+    overflow: hidden;
+}
+
+.student-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.student-avatar .avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--imi-blue);
+    color: white;
+    font-size: 36px;
+    font-weight: 600;
+    border-radius: 50%;
 }
 
 .student-details {
@@ -782,6 +800,14 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--imi-blue);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
 }
 
 .student-preview-info {
