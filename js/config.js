@@ -12,7 +12,8 @@ const IMI_CONFIG = {
     MSAL: {
         clientId: 'e72211d9-88cf-4e6d-b34b-8d3d4924c74b',
         authority: 'https://login.microsoftonline.com/4aeaa91e-7669-479e-9283-222abfbda9d5',
-        redirectUri: window.location.origin, // Automatically uses current domain
+        // For GitHub Pages, we need to include the repository path
+        redirectUri: window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/'),
         scopes: ['User.Read', 'openid', 'profile'], // Default scopes for authentication
     },
 
