@@ -21,6 +21,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const loginPage = document.getElementById('login-page');
         if (loginPage) loginPage.classList.add('active');
 
+        // Prevent URL manipulation - force back to login if they change the hash
+        window.addEventListener('hashchange', function() {
+            if (sessionStorage.getItem('imi_authenticated') !== 'true') {
+                console.log('❌ Hash change blocked - not authenticated');
+                window.location.hash = 'login';
+                // Hide all pages except login
+                document.querySelectorAll('.page-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                const loginPage = document.getElementById('login-page');
+                if (loginPage) loginPage.classList.add('active');
+            }
+        });
+
+        // Set initial hash to login
+        window.location.hash = 'login';
+
         // Don't initialize anything else
         return;
     }

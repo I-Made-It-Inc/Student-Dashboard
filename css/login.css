@@ -2,11 +2,17 @@
 
 /* Login Page Container */
 #login-page {
-    min-height: calc(100vh - 100px);
+    min-height: 100vh;
     background: linear-gradient(135deg, var(--imi-blue) 0%, #063a5f 100%);
     padding: var(--spacing-xl);
-    margin: calc(-1 * var(--spacing-lg)); /* Offset container padding */
-    width: calc(100% + 2 * var(--spacing-lg));
+    /* Break out of the .container constraints */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    width: 100%;
 }
 
 /* Only apply flex layout when active (display: flex overrides display: block from .page-section.active) */

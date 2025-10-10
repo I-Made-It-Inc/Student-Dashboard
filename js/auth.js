@@ -53,6 +53,23 @@ function logout() {
         loginPage.classList.add('active');
     }
 
+    // Set hash to login
+    window.location.hash = 'login';
+
+    // Prevent URL manipulation after logout - force back to login if they change the hash
+    window.addEventListener('hashchange', function preventURLBypass() {
+        if (sessionStorage.getItem('imi_authenticated') !== 'true') {
+            console.log('❌ Hash change blocked - not authenticated');
+            window.location.hash = 'login';
+            // Hide all pages except login
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            const loginPage = document.getElementById('login-page');
+            if (loginPage) loginPage.classList.add('active');
+        }
+    });
+
     // Show notification
     setTimeout(() => {
         if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
@@ -67,16 +84,7 @@ document.addEventListener('click', function(e) {
     if (e.target && (e.target.id === 'developer-mode-btn' || e.target.closest('#developer-mode-btn'))) {
         console.log('🎯 Developer mode button clicked');
         e.preventDefault();
-
-        const confirmed = confirm(
-            'Developer Mode\n\n' +
-            'This will use static demo data for testing purposes.\n\n' +
-            'Continue with developer mode?'
-        );
-
-        if (confirmed) {
-            loginDeveloperMode();
-        }
+        loginDeveloperMode();
     }
 
     // Microsoft login button
