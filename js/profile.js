@@ -149,9 +149,9 @@ function setupProfileForms() {
 }
 
 // Handle personal info form submission
-function handlePersonalInfoSubmit(e) {
+async function handlePersonalInfoSubmit(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(e.target);
     const profileData = {
         firstName: formData.get('firstName') || document.querySelector('input[type="text"]').value,
@@ -163,15 +163,38 @@ function handlePersonalInfoSubmit(e) {
         phoneNumber: formData.get('phoneNumber'),
         interests: getSelectedInterests()
     };
-    
+
     console.log('Saving profile data:', profileData);
-    
+
+    // Save phone number to Dataverse
+    if (window.IMI && window.IMI.api && window.IMI.data.userData) {
+        try {
+            const email = window.IMI.data.userData.email;
+
+            // Update phone in Dataverse
+            const updated = await window.IMI.api.updateProfile(email, {
+                mobilePhone: profileData.phoneNumber
+            });
+
+            // Update global userData object
+            window.IMI.data.userData.mobilePhone = updated.mobilePhone;
+
+            console.log('✅ Profile saved to Dataverse');
+        } catch (error) {
+            console.error('❌ Failed to save to Dataverse:', error);
+            if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                window.IMI.utils.showNotification('Warning: Failed to sync with server. Changes saved locally.', 'warning');
+            }
+            // Continue with localStorage fallback
+        }
+    }
+
     // Save to localStorage (in production, send to API)
     localStorage.setItem('profileData', JSON.stringify(profileData));
-    
+
     // Update preview
     updateProfilePreview(profileData);
-    
+
     // Show success message
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('Profile updated successfully!', 'success');
@@ -706,6 +729,13 @@ function loadProfileData() {
         if (lastNameInput) lastNameInput.value = userData.lastName || '[LAST NAME]';
         if (displayNameInput) displayNameInput.value = userData.name || '[FULL NAME]';
         if (emailInput) emailInput.value = userData.email || '[EMAIL]';
+
+        // Populate phone number from Dataverse (if available)
+        const phoneInputs = document.querySelectorAll('input[type="tel"]');
+        if (phoneInputs.length > 0 && userData.mobilePhone) {
+            phoneInputs[0].value = userData.mobilePhone;
+            console.log('✅ Phone number loaded from Dataverse:', userData.mobilePhone);
+        }
 
         // Update profile preview with real user data
         updateProfilePreviewWithUserData(userData);

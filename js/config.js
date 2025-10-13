@@ -19,11 +19,18 @@ const IMI_CONFIG = {
 
     // API Configuration
     API: {
-        baseUrl: '/api', // Update to your Azure Functions URL or API Gateway
+        baseUrl: 'http://localhost:7071/api', // Local Azure Functions for testing
+        // baseUrl: 'https://studentdashboardapi.azurewebsites.net/api', // Production (uncomment when deployed)
         timeout: 30000, // Request timeout in milliseconds (30 seconds)
 
         // API Endpoints
         endpoints: {
+            // Profile endpoints (Dataverse)
+            profile: {
+                get: '/GetProfile',
+                update: '/UpdateProfile',
+            },
+
             // User/Student endpoints
             students: {
                 me: '/students/me',

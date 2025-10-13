@@ -105,18 +105,38 @@ async function loadUserData() {
     // Fetch real user profile from Microsoft Graph API
     if (window.IMI && window.IMI.graph && window.IMI.graph.initializeUserProfile) {
         try {
-            const profileData = await window.IMI.graph.initializeUserProfile();
+            const graphData = await window.IMI.graph.initializeUserProfile();
 
-            if (profileData) {
+            if (graphData) {
+                // Fetch extended profile from Dataverse
+                let dataverseProfile = null;
+                if (window.IMI.api) {
+                    try {
+                        dataverseProfile = await window.IMI.api.fetchProfile(
+                            graphData.email,
+                            graphData.firstName,
+                            graphData.lastName
+                        );
+                        console.log('✅ Dataverse profile loaded:', dataverseProfile);
+                    } catch (error) {
+                        console.warn('⚠️ Failed to load Dataverse profile, using Graph only:', error);
+                    }
+                }
+
                 // Combine profile data with mock gamification data (will be from backend later)
                 const userData = {
-                    name: profileData.name,
-                    firstName: profileData.firstName,
-                    lastName: profileData.lastName,
-                    initials: profileData.initials,
-                    email: profileData.email,
-                    jobTitle: profileData.jobTitle,
-                    department: profileData.department,
+                    name: graphData.name,
+                    firstName: graphData.firstName,
+                    lastName: graphData.lastName,
+                    initials: graphData.initials,
+                    email: graphData.email,
+                    jobTitle: graphData.jobTitle,
+                    department: graphData.department,
+
+                    // Use phone from Dataverse if available
+                    mobilePhone: dataverseProfile?.mobilePhone || graphData.mobilePhone,
+                    contactId: dataverseProfile?.contactId,  // Store for updates
+
                     // Mock gamification data (TODO: fetch from backend)
                     streak: 12,
                     xp: 1850,
