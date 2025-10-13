@@ -154,8 +154,7 @@ async function handlePersonalInfoSubmit(e) {
 
     const formData = new FormData(e.target);
     const profileData = {
-        firstName: formData.get('firstName') || '',
-        lastName: formData.get('lastName') || '',
+        // firstName and lastName are read-only (managed by Azure AD), so we don't collect them
         displayName: formData.get('displayName') || '',
         bio: formData.get('bio') || '',
         school: formData.get('school') || '',
@@ -191,9 +190,8 @@ async function handlePersonalInfoSubmit(e) {
     } else if (authMode === 'developer') {
         // Update global userData object so changes persist across pages (until hard refresh)
         if (window.IMI && window.IMI.data && window.IMI.data.userData) {
-            // Update all fields in the single source of truth
-            window.IMI.data.userData.firstName = profileData.firstName;
-            window.IMI.data.userData.lastName = profileData.lastName;
+            // Update editable fields in the single source of truth
+            // firstName and lastName are NOT updated (managed by Azure AD)
             window.IMI.data.userData.name = profileData.displayName;
             window.IMI.data.userData.bio = profileData.bio;
             window.IMI.data.userData.school = profileData.school;
