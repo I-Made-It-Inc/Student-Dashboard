@@ -152,22 +152,50 @@ function setupProfileForms() {
 async function handlePersonalInfoSubmit(e) {
     e.preventDefault();
 
-    const formData = new FormData(e.target);
+    // DEBUG: Check which form is being submitted
+    console.log('🔍 DEBUG: Form being submitted:', {
+        formId: e.target.id,
+        formElement: e.target,
+        hasCorrectId: e.target.id === 'personal-info-form'
+    });
+
+    // DEBUG: Check what the actual DOM elements contain RIGHT NOW
+    const firstNameInput = document.getElementById('profile-first-name');
+    const lastNameInput = document.getElementById('profile-last-name');
+    const displayNameInput = document.getElementById('profile-display-name');
+    const schoolInput = document.getElementById('profile-school');
+
+    console.log('🔍 DEBUG: DOM element values at submit time:', {
+        firstName: firstNameInput?.value,
+        lastName: lastNameInput?.value,
+        displayName: displayNameInput?.value,
+        school: schoolInput?.value
+    });
+
+    // Read values directly from DOM elements (bypassing FormData/name attributes)
+    const bioTextarea = document.getElementById('profile-bio');
+    const graduationYearSelect = document.getElementById('profile-graduation-year');
+    const phoneInput = document.getElementById('profile-phone');
+
     const profileData = {
-        firstName: formData.get('firstName') || document.querySelector('input[type="text"]').value,
-        lastName: formData.get('lastName') || document.querySelectorAll('input[type="text"]')[1].value,
-        displayName: formData.get('displayName') || document.querySelectorAll('input[type="text"]')[2].value,
-        bio: formData.get('bio') || document.querySelector('textarea').value,
-        school: formData.get('school') || document.querySelectorAll('input[type="text"]')[3].value,
-        graduationYear: formData.get('graduationYear'),
-        phoneNumber: formData.get('phoneNumber'),
+        firstName: firstNameInput?.value || '',
+        lastName: lastNameInput?.value || '',
+        displayName: displayNameInput?.value || '',
+        bio: bioTextarea?.value || '',
+        school: schoolInput?.value || '',
+        graduationYear: graduationYearSelect?.value || '',
+        phoneNumber: phoneInput?.value || '',
         interests: getSelectedInterests()
     };
 
-    console.log('Saving profile data:', profileData);
+    console.log('💾 FormData extracted values:', profileData);
+    console.log('📊 Current userData BEFORE save:', window.IMI?.data?.userData);
 
-    // Save phone number to Dataverse
-    if (window.IMI && window.IMI.api && window.IMI.data.userData) {
+    // Check auth mode before calling Dataverse
+    const authMode = sessionStorage.getItem('imi_auth_mode');
+
+    // Only save to Dataverse in Microsoft mode
+    if (authMode === 'microsoft' && window.IMI && window.IMI.api && window.IMI.data.userData) {
         try {
             const email = window.IMI.data.userData.email;
 
@@ -187,10 +215,36 @@ async function handlePersonalInfoSubmit(e) {
             }
             // Continue with localStorage fallback
         }
+    } else if (authMode === 'developer') {
+        console.log('🔧 Developer mode - skipping Dataverse API call, changes saved to session only');
+
+        // Update global userData object so changes persist across pages (until hard refresh)
+        if (window.IMI && window.IMI.data && window.IMI.data.userData) {
+            // Update all fields in the single source of truth
+            window.IMI.data.userData.firstName = profileData.firstName;
+            window.IMI.data.userData.lastName = profileData.lastName;
+            window.IMI.data.userData.name = profileData.displayName;
+            window.IMI.data.userData.bio = profileData.bio;
+            window.IMI.data.userData.school = profileData.school;
+            window.IMI.data.userData.graduationYear = profileData.graduationYear;
+            window.IMI.data.userData.mobilePhone = profileData.phoneNumber;
+            window.IMI.data.userData.interests = profileData.interests;
+
+            console.log('✅ Updated session userData with all profile changes');
+            console.log('📊 Current userData AFTER save:', {
+                firstName: window.IMI.data.userData.firstName,
+                lastName: window.IMI.data.userData.lastName,
+                name: window.IMI.data.userData.name,
+                school: window.IMI.data.userData.school
+            });
+        }
     }
 
-    // Save to localStorage (in production, send to API)
-    localStorage.setItem('profileData', JSON.stringify(profileData));
+    // Only save to localStorage in Microsoft mode (as backup)
+    // In developer mode, userData is the single source of truth
+    if (authMode === 'microsoft') {
+        localStorage.setItem('profileData', JSON.stringify(profileData));
+    }
 
     // Update preview
     updateProfilePreview(profileData);
@@ -230,8 +284,8 @@ function handleSocialLinksSubmit(e) {
 
 // Get selected interests
 function getSelectedInterests() {
-    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
-    return Array.from(checkboxes).map(cb => cb.parentElement.textContent.trim());
+    const checkboxes = document.querySelectorAll('#interests-checkboxes input[type="checkbox"]:checked');
+    return Array.from(checkboxes).map(cb => cb.value);
 }
 
 // Validate individual fields
@@ -715,48 +769,75 @@ function updateDefaultDescription(docId, description) {
 
 // Load profile data
 function loadProfileData() {
-    // First, populate with real user data from Microsoft Graph
+    // Single source of truth: window.IMI.data.userData
     if (window.IMI && window.IMI.data && window.IMI.data.userData) {
         const userData = window.IMI.data.userData;
 
-        // Populate form fields with Microsoft Graph data
+        console.log('📋 Loading profile data from userData:', {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            name: userData.name,
+            school: userData.school,
+            graduationYear: userData.graduationYear,
+            mobilePhone: userData.mobilePhone
+        });
+
+        // Populate all form fields from userData
         const firstNameInput = document.getElementById('profile-first-name');
         const lastNameInput = document.getElementById('profile-last-name');
         const displayNameInput = document.getElementById('profile-display-name');
         const emailInput = document.getElementById('profile-email');
+        const bioTextarea = document.getElementById('profile-bio');
+        const schoolInput = document.getElementById('profile-school');
+        const graduationYearSelect = document.getElementById('profile-graduation-year');
+        const phoneInput = document.getElementById('profile-phone');
 
-        if (firstNameInput) firstNameInput.value = userData.firstName || '[FIRST NAME]';
-        if (lastNameInput) lastNameInput.value = userData.lastName || '[LAST NAME]';
-        if (displayNameInput) displayNameInput.value = userData.name || '[FULL NAME]';
-        if (emailInput) emailInput.value = userData.email || '[EMAIL]';
+        // Basic fields
+        if (firstNameInput) firstNameInput.value = userData.firstName || '';
+        if (lastNameInput) lastNameInput.value = userData.lastName || '';
+        if (displayNameInput) displayNameInput.value = userData.name || '';
+        if (emailInput) emailInput.value = userData.email || '';
 
-        // Populate phone number from Dataverse (if available)
-        const phoneInputs = document.querySelectorAll('input[type="tel"]');
-        if (phoneInputs.length > 0 && userData.mobilePhone) {
-            phoneInputs[0].value = userData.mobilePhone;
-            console.log('✅ Phone number loaded from Dataverse:', userData.mobilePhone);
+        // Extended fields
+        if (bioTextarea) bioTextarea.value = userData.bio || '';
+        if (schoolInput) schoolInput.value = userData.school || '';
+        if (graduationYearSelect && userData.graduationYear) graduationYearSelect.value = userData.graduationYear;
+        if (phoneInput) phoneInput.value = userData.mobilePhone || '';
+
+        // Interests checkboxes
+        if (userData.interests && Array.isArray(userData.interests)) {
+            const checkboxes = document.querySelectorAll('#interests-checkboxes input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                const value = checkbox.value;
+                checkbox.checked = userData.interests.includes(value);
+            });
         }
 
-        // Update profile preview with real user data
+        console.log('✅ Profile form populated. Field values:', {
+            firstName: firstNameInput?.value,
+            lastName: lastNameInput?.value,
+            displayName: displayNameInput?.value,
+            school: schoolInput?.value
+        });
+
+        // Update profile preview
         updateProfilePreviewWithUserData(userData);
 
-        console.log('✅ Profile form populated with Microsoft Graph data');
+        // DEBUG: Check field values after a delay to see if something clears them
+        setTimeout(() => {
+            console.log('🔍 DEBUG: Field values after 1 second:', {
+                firstName: firstNameInput?.value,
+                lastName: lastNameInput?.value,
+                displayName: displayNameInput?.value,
+                school: schoolInput?.value
+            });
+        }, 1000);
+    } else {
+        console.error('❌ window.IMI.data.userData is not available!');
     }
 
-    // Then, load any saved profile data from localStorage (this overrides Graph data if saved)
-    const savedProfile = localStorage.getItem('profileData');
-    if (savedProfile) {
-        const profileData = JSON.parse(savedProfile);
-        populateProfileForm(profileData);
-        updateProfilePreview(profileData);
-    }
-
-    const savedSocial = localStorage.getItem('socialLinks');
-    if (savedSocial) {
-        const socialData = JSON.parse(savedSocial);
-        populateSocialForm(socialData);
-        updateSocialLinksPreview(socialData);
-    }
+    // Initialize preview with current form values
+    updatePreview();
 }
 
 // Update profile preview with user data from Microsoft Graph
@@ -853,24 +934,33 @@ function setupProfilePreviewUpdates() {
 
 // Update preview in real-time
 function updatePreview() {
-    const displayName = document.querySelector('#personal-info-form input[type="text"]')?.value || 'Jane Doe';
-    const bio = document.querySelector('#personal-info-form textarea')?.value || '';
-    const school = document.querySelector('#personal-info-form input[type="text"]')?.value || '';
+    // Use specific IDs to get the correct form fields
+    const displayNameInput = document.getElementById('profile-display-name');
+    const bioTextarea = document.getElementById('profile-bio');
+    const schoolInput = document.getElementById('profile-school');
+    const graduationYearSelect = document.getElementById('profile-graduation-year');
+
+    const displayName = displayNameInput?.value || 'Jane Doe';
+    const bio = bioTextarea?.value || '';
+    const school = schoolInput?.value || '';
+    const graduationYear = graduationYearSelect?.value || '2025';
     const interests = getSelectedInterests();
-    
+
     // Update preview elements
     const previewName = document.querySelector('.profile-preview h4');
     if (previewName) previewName.textContent = displayName;
-    
+
     const previewBio = document.querySelector('.preview-bio');
     if (previewBio) previewBio.textContent = bio || 'No bio added yet.';
-    
+
     const previewSchool = document.querySelector('.preview-school');
-    if (previewSchool) previewSchool.textContent = school ? `${school} • Class of 2025` : 'School not specified';
-    
+    if (previewSchool) {
+        previewSchool.textContent = school ? `${school} • Class of ${graduationYear}` : 'School not specified';
+    }
+
     const previewInterests = document.querySelector('.preview-interests');
     if (previewInterests) {
-        previewInterests.innerHTML = interests.map(interest => 
+        previewInterests.innerHTML = interests.map(interest =>
             `<span class="interest-tag">${interest}</span>`
         ).join('');
     }

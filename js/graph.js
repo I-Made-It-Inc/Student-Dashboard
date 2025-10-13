@@ -219,17 +219,26 @@ async function initializeUserProfile() {
     if (authMode === 'developer') {
         console.log('🔧 Developer mode - using mock data');
         const mockData = {
+            // Basic identity
             name: 'Jane Doe (Developer)',
             email: 'developer@imadeit.ai',
             firstName: 'Jane',
             lastName: 'Doe',
+            initials: 'JD',
+            id: 'dev-123',
+
+            // Azure AD fields (repurposed for demo)
             jobTitle: 'Grade 11 Student',
             department: 'Summer 2025 Co-op Stream',
             officeLocation: 'Toronto, ON',
-            mobilePhone: '[PLACEHOLDER]',
             businessPhones: [],
-            initials: 'JD',
-            id: 'dev-123'
+
+            // Profile fields (developer mode defaults)
+            mobilePhone: '',  // Empty by default
+            bio: 'Passionate technology student with hands-on experience in AI/ML projects through IMI\'s co-op program. I enjoy solving complex problems through innovative software solutions and am always eager to learn new technologies. Currently seeking opportunities to apply my skills in data analysis, software development, and project management.',
+            school: 'Lincoln High School',
+            graduationYear: '2025',
+            interests: ['Machine Learning', 'Sustainability', 'Data Science']
         };
         await updateUIWithUserData(mockData);
         return mockData;

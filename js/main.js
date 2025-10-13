@@ -108,9 +108,12 @@ async function loadUserData() {
             const graphData = await window.IMI.graph.initializeUserProfile();
 
             if (graphData) {
-                // Fetch extended profile from Dataverse
+                // Check auth mode before calling Dataverse
+                const authMode = sessionStorage.getItem('imi_auth_mode');
                 let dataverseProfile = null;
-                if (window.IMI.api) {
+
+                // Only call Dataverse API in Microsoft mode
+                if (authMode === 'microsoft' && window.IMI.api) {
                     try {
                         dataverseProfile = await window.IMI.api.fetchProfile(
                             graphData.email,
@@ -121,23 +124,37 @@ async function loadUserData() {
                     } catch (error) {
                         console.warn('⚠️ Failed to load Dataverse profile, using Graph only:', error);
                     }
+                } else if (authMode === 'developer') {
+                    console.log('🔧 Developer mode - skipping Dataverse API call, using session-only data');
                 }
 
                 // Combine profile data with mock gamification data (will be from backend later)
                 const userData = {
+                    // Identity
                     name: graphData.name,
                     firstName: graphData.firstName,
                     lastName: graphData.lastName,
                     initials: graphData.initials,
                     email: graphData.email,
+                    id: graphData.id,
+
+                    // Azure AD / profile fields
                     jobTitle: graphData.jobTitle,
                     department: graphData.department,
+                    officeLocation: graphData.officeLocation,
+                    businessPhones: graphData.businessPhones,
 
-                    // Use phone from Dataverse if available
-                    mobilePhone: dataverseProfile?.mobilePhone || graphData.mobilePhone,
-                    contactId: dataverseProfile?.contactId,  // Store for updates
+                    // Extended profile data (from Dataverse in MS mode, from mock in dev mode)
+                    mobilePhone: dataverseProfile?.mobilePhone || graphData.mobilePhone || '',
+                    bio: graphData.bio || '',
+                    school: graphData.school || '',
+                    graduationYear: graphData.graduationYear || '',
+                    interests: graphData.interests || [],
 
-                    // Mock gamification data (TODO: fetch from backend)
+                    // Dataverse contact ID (MS mode only)
+                    contactId: dataverseProfile?.contactId,
+
+                    // Gamification data (TODO: fetch from backend)
                     streak: 12,
                     xp: 1850,
                     tier: 'Gold',
