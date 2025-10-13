@@ -171,13 +171,22 @@ async function handlePersonalInfoSubmit(e) {
         try {
             const email = window.IMI.data.userData.email;
 
-            // Update phone in Dataverse
+            // Convert interests array to Dataverse format (comma-separated numbers)
+            const careerInterestsString = window.IMI.interestsToDataverse(profileData.interests);
+
+            // Update profile in Dataverse (nickname = displayName, description = bio, imi_careerinterests = interests)
             const updated = await window.IMI.api.updateProfile(email, {
-                mobilePhone: profileData.phoneNumber
+                mobilePhone: profileData.phoneNumber,
+                nickname: profileData.displayName,
+                description: profileData.bio,
+                careerInterests: careerInterestsString
             });
 
-            // Update global userData object
+            // Update global userData object with synced values
             window.IMI.data.userData.mobilePhone = updated.mobilePhone;
+            window.IMI.data.userData.name = updated.nickname || profileData.displayName;
+            window.IMI.data.userData.bio = updated.description || profileData.bio;
+            window.IMI.data.userData.interests = window.IMI.interestsFromDataverse(updated.careerInterests) || profileData.interests;
 
             console.log('✅ Profile saved to Dataverse');
         } catch (error) {

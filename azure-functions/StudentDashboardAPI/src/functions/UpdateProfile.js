@@ -27,7 +27,7 @@ app.http('UpdateProfile', {
             };
         }
 
-        const { email, mobilePhone } = body;
+        const { email, mobilePhone, nickname, description, careerInterests } = body;
 
         try {
             // Find contact by email
@@ -40,12 +40,17 @@ app.http('UpdateProfile', {
                 };
             }
 
-            // Update phone number
-            const updatedContact = await dataverseClient.updateContact(contact.contactid, {
-                mobilephone: mobilePhone || null
-            });
+            // Build update object with only provided fields
+            const updates = {};
+            if (mobilePhone !== undefined) updates.mobilephone = mobilePhone || null;
+            if (nickname !== undefined) updates.nickname = nickname || null;
+            if (description !== undefined) updates.description = description || null;
+            if (careerInterests !== undefined) updates.imi_careerinterests = careerInterests || null;
 
-            context.log(`Updated contact ${contact.contactid}: mobilephone=${mobilePhone}`);
+            // Update contact
+            const updatedContact = await dataverseClient.updateContact(contact.contactid, updates);
+
+            context.log(`Updated contact ${contact.contactid}:`, updates);
 
             // Return updated profile
             return {
@@ -60,6 +65,9 @@ app.http('UpdateProfile', {
                     lastName: updatedContact.lastname,
                     email: updatedContact.emailaddress1,
                     mobilePhone: updatedContact.mobilephone,
+                    nickname: updatedContact.nickname,
+                    description: updatedContact.description,
+                    careerInterests: updatedContact.imi_careerinterests,
                     message: 'Profile updated successfully'
                 }
             };

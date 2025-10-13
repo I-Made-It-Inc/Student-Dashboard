@@ -148,6 +148,18 @@ const IMI_CONFIG = {
         logStateChanges: false, // Log state changes
         showLoadingStates: true, // Show loading spinners
     },
+
+    // Career Interests Mapping (for Dataverse multi-select field)
+    CAREER_INTERESTS: {
+        'Machine Learning': 0,
+        'Sustainability': 1,
+        'Marketing': 2,
+        'Data Science': 3,
+        'UX Design': 4,
+        'Finance': 5,
+        'Healthcare': 6,
+        'Education': 7
+    },
 };
 
 // Freeze config to prevent accidental modifications
@@ -160,6 +172,7 @@ Object.freeze(IMI_CONFIG.COLORS);
 Object.freeze(IMI_CONFIG.GAMIFICATION);
 Object.freeze(IMI_CONFIG.FEATURES);
 Object.freeze(IMI_CONFIG.DEBUG);
+Object.freeze(IMI_CONFIG.CAREER_INTERESTS);
 
 // Export to global IMI namespace
 window.IMI = window.IMI || {};
@@ -179,6 +192,38 @@ window.IMI.getEndpoint = function(category, endpoint, params = {}) {
     });
 
     return IMI_CONFIG.API.baseUrl + url;
+};
+
+// Helper function to convert career interests text array to Dataverse number string
+window.IMI.interestsToDataverse = function(interestsArray) {
+    if (!Array.isArray(interestsArray) || interestsArray.length === 0) {
+        return null;
+    }
+
+    const numbers = interestsArray
+        .map(interest => IMI_CONFIG.CAREER_INTERESTS[interest])
+        .filter(num => num !== undefined);
+
+    return numbers.length > 0 ? numbers.join(',') : null;
+};
+
+// Helper function to convert Dataverse number string to career interests text array
+window.IMI.interestsFromDataverse = function(dataverseString) {
+    if (!dataverseString) {
+        return [];
+    }
+
+    // Create reverse mapping (number -> text)
+    const reverseMap = {};
+    Object.entries(IMI_CONFIG.CAREER_INTERESTS).forEach(([text, num]) => {
+        reverseMap[num] = text;
+    });
+
+    // Convert comma-separated string to array of text labels
+    return dataverseString
+        .split(',')
+        .map(num => reverseMap[parseInt(num.trim())])
+        .filter(text => text !== undefined);
 };
 
 // Log configuration on load (only in debug mode)

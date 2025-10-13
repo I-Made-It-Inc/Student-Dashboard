@@ -32,7 +32,8 @@ app.http('GetProfile', {
                 contact = await dataverseClient.createContact({
                     firstname: firstName,
                     lastname: lastName,
-                    emailaddress1: email
+                    emailaddress1: email,
+                    imi_contacttype: 0  // 0 = Student
                 });
 
                 context.log(`Created new contact: ${contact.contactid}`);
@@ -51,7 +52,10 @@ app.http('GetProfile', {
                     lastName: contact.lastname,
                     fullName: contact.fullname,
                     email: contact.emailaddress1,
-                    mobilePhone: contact.mobilephone || null
+                    mobilePhone: contact.mobilephone || null,
+                    nickname: contact.nickname || null,
+                    description: contact.description || null,
+                    careerInterests: contact.imi_careerinterests || null
                 }
             };
 

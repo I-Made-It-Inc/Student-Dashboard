@@ -131,7 +131,7 @@ async function loadUserData() {
                 // Combine profile data with mock gamification data (will be from backend later)
                 const userData = {
                     // Identity
-                    name: graphData.name,
+                    name: dataverseProfile?.nickname || graphData.name,  // Prefer Dataverse nickname (display name)
                     firstName: graphData.firstName,
                     lastName: graphData.lastName,
                     initials: graphData.initials,
@@ -146,10 +146,10 @@ async function loadUserData() {
 
                     // Extended profile data (from Dataverse in MS mode, from mock in dev mode)
                     mobilePhone: dataverseProfile?.mobilePhone || graphData.mobilePhone || '',
-                    bio: graphData.bio || '',
+                    bio: dataverseProfile?.description || graphData.bio || '',  // Dataverse description = bio
                     school: graphData.school || '',
                     graduationYear: graphData.graduationYear || '',
-                    interests: graphData.interests || [],
+                    interests: window.IMI.interestsFromDataverse(dataverseProfile?.careerInterests) || graphData.interests || [],
 
                     // Dataverse contact ID (MS mode only)
                     contactId: dataverseProfile?.contactId,
