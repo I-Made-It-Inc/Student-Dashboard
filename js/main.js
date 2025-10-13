@@ -147,8 +147,8 @@ async function loadUserData() {
                     // Extended profile data (from Dataverse in MS mode, from mock in dev mode)
                     mobilePhone: dataverseProfile?.mobilePhone || graphData.mobilePhone || '',
                     bio: dataverseProfile?.description || graphData.bio || '',  // Dataverse description = bio
-                    school: graphData.school || '',
-                    graduationYear: graphData.graduationYear || '',
+                    school: dataverseProfile?.school || graphData.school || '',
+                    graduationYear: dataverseProfile?.graduationYear || graphData.graduationYear || '',
                     interests: window.IMI.interestsFromDataverse(dataverseProfile?.careerInterests) || graphData.interests || [],
 
                     // Dataverse contact ID (MS mode only)

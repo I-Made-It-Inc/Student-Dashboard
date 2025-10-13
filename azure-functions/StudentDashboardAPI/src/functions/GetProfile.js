@@ -55,7 +55,9 @@ app.http('GetProfile', {
                     mobilePhone: contact.mobilephone || null,
                     nickname: contact.nickname || null,
                     description: contact.description || null,
-                    careerInterests: contact.imi_careerinterests || null
+                    careerInterests: contact.imi_careerinterests || null,
+                    school: contact.imi_school || null,
+                    graduationYear: contact.imi_graduationyear || null
                 }
             };
 

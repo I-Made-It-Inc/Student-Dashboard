@@ -174,12 +174,17 @@ async function handlePersonalInfoSubmit(e) {
             // Convert interests array to Dataverse format (comma-separated numbers)
             const careerInterestsString = window.IMI.interestsToDataverse(profileData.interests);
 
-            // Update profile in Dataverse (nickname = displayName, description = bio, imi_careerinterests = interests)
+            // Convert graduation year to number (or null if empty)
+            const gradYear = profileData.graduationYear ? parseInt(profileData.graduationYear) : null;
+
+            // Update profile in Dataverse
             const updated = await window.IMI.api.updateProfile(email, {
                 mobilePhone: profileData.phoneNumber,
                 nickname: profileData.displayName,
                 description: profileData.bio,
-                careerInterests: careerInterestsString
+                careerInterests: careerInterestsString,
+                school: profileData.school,
+                graduationYear: gradYear
             });
 
             // Update global userData object with synced values
@@ -187,6 +192,8 @@ async function handlePersonalInfoSubmit(e) {
             window.IMI.data.userData.name = updated.nickname || profileData.displayName;
             window.IMI.data.userData.bio = updated.description || profileData.bio;
             window.IMI.data.userData.interests = window.IMI.interestsFromDataverse(updated.careerInterests) || profileData.interests;
+            window.IMI.data.userData.school = updated.school || profileData.school;
+            window.IMI.data.userData.graduationYear = updated.graduationYear || profileData.graduationYear;
 
             console.log('✅ Profile saved to Dataverse');
         } catch (error) {
