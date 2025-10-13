@@ -84,19 +84,14 @@ function isAuthenticated() {
 
 // Login with developer mode
 function loginDeveloperMode() {
-    console.log('🚀 Developer mode login');
-
     // Clear any old profile data from localStorage (developer mode uses session-only data)
     localStorage.removeItem('profileData');
-    console.log('🧹 Cleared old localStorage profile data');
 
     // Store auth
     sessionStorage.setItem('imi_authenticated', 'true');
     sessionStorage.setItem('imi_auth_mode', 'developer');
     sessionStorage.setItem('imi_user_email', 'developer@imadeit.ai');
     sessionStorage.setItem('imi_user_name', 'Jane Doe (Developer)');
-
-    console.log('✅ Session stored, reloading page to initialize app...');
 
     // Show notification before reload
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {

@@ -152,44 +152,17 @@ function setupProfileForms() {
 async function handlePersonalInfoSubmit(e) {
     e.preventDefault();
 
-    // DEBUG: Check which form is being submitted
-    console.log('🔍 DEBUG: Form being submitted:', {
-        formId: e.target.id,
-        formElement: e.target,
-        hasCorrectId: e.target.id === 'personal-info-form'
-    });
-
-    // DEBUG: Check what the actual DOM elements contain RIGHT NOW
-    const firstNameInput = document.getElementById('profile-first-name');
-    const lastNameInput = document.getElementById('profile-last-name');
-    const displayNameInput = document.getElementById('profile-display-name');
-    const schoolInput = document.getElementById('profile-school');
-
-    console.log('🔍 DEBUG: DOM element values at submit time:', {
-        firstName: firstNameInput?.value,
-        lastName: lastNameInput?.value,
-        displayName: displayNameInput?.value,
-        school: schoolInput?.value
-    });
-
-    // Read values directly from DOM elements (bypassing FormData/name attributes)
-    const bioTextarea = document.getElementById('profile-bio');
-    const graduationYearSelect = document.getElementById('profile-graduation-year');
-    const phoneInput = document.getElementById('profile-phone');
-
+    const formData = new FormData(e.target);
     const profileData = {
-        firstName: firstNameInput?.value || '',
-        lastName: lastNameInput?.value || '',
-        displayName: displayNameInput?.value || '',
-        bio: bioTextarea?.value || '',
-        school: schoolInput?.value || '',
-        graduationYear: graduationYearSelect?.value || '',
-        phoneNumber: phoneInput?.value || '',
+        firstName: formData.get('firstName') || '',
+        lastName: formData.get('lastName') || '',
+        displayName: formData.get('displayName') || '',
+        bio: formData.get('bio') || '',
+        school: formData.get('school') || '',
+        graduationYear: formData.get('graduationYear') || '',
+        phoneNumber: formData.get('phoneNumber') || '',
         interests: getSelectedInterests()
     };
-
-    console.log('💾 FormData extracted values:', profileData);
-    console.log('📊 Current userData BEFORE save:', window.IMI?.data?.userData);
 
     // Check auth mode before calling Dataverse
     const authMode = sessionStorage.getItem('imi_auth_mode');
@@ -216,8 +189,6 @@ async function handlePersonalInfoSubmit(e) {
             // Continue with localStorage fallback
         }
     } else if (authMode === 'developer') {
-        console.log('🔧 Developer mode - skipping Dataverse API call, changes saved to session only');
-
         // Update global userData object so changes persist across pages (until hard refresh)
         if (window.IMI && window.IMI.data && window.IMI.data.userData) {
             // Update all fields in the single source of truth
@@ -229,14 +200,6 @@ async function handlePersonalInfoSubmit(e) {
             window.IMI.data.userData.graduationYear = profileData.graduationYear;
             window.IMI.data.userData.mobilePhone = profileData.phoneNumber;
             window.IMI.data.userData.interests = profileData.interests;
-
-            console.log('✅ Updated session userData with all profile changes');
-            console.log('📊 Current userData AFTER save:', {
-                firstName: window.IMI.data.userData.firstName,
-                lastName: window.IMI.data.userData.lastName,
-                name: window.IMI.data.userData.name,
-                school: window.IMI.data.userData.school
-            });
         }
     }
 
@@ -773,15 +736,6 @@ function loadProfileData() {
     if (window.IMI && window.IMI.data && window.IMI.data.userData) {
         const userData = window.IMI.data.userData;
 
-        console.log('📋 Loading profile data from userData:', {
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            name: userData.name,
-            school: userData.school,
-            graduationYear: userData.graduationYear,
-            mobilePhone: userData.mobilePhone
-        });
-
         // Populate all form fields from userData
         const firstNameInput = document.getElementById('profile-first-name');
         const lastNameInput = document.getElementById('profile-last-name');
@@ -813,27 +767,8 @@ function loadProfileData() {
             });
         }
 
-        console.log('✅ Profile form populated. Field values:', {
-            firstName: firstNameInput?.value,
-            lastName: lastNameInput?.value,
-            displayName: displayNameInput?.value,
-            school: schoolInput?.value
-        });
-
         // Update profile preview
         updateProfilePreviewWithUserData(userData);
-
-        // DEBUG: Check field values after a delay to see if something clears them
-        setTimeout(() => {
-            console.log('🔍 DEBUG: Field values after 1 second:', {
-                firstName: firstNameInput?.value,
-                lastName: lastNameInput?.value,
-                displayName: displayNameInput?.value,
-                school: schoolInput?.value
-            });
-        }, 1000);
-    } else {
-        console.error('❌ window.IMI.data.userData is not available!');
     }
 
     // Initialize preview with current form values
