@@ -236,6 +236,7 @@ async function initializeUserProfile() {
             // Profile fields (developer mode defaults)
             mobilePhone: '',  // Empty by default
             bio: 'Passionate technology student with hands-on experience in AI/ML projects through IMI\'s co-op program. I enjoy solving complex problems through innovative software solutions and am always eager to learn new technologies. Currently seeking opportunities to apply my skills in data analysis, software development, and project management.',
+            city: 'Toronto',
             school: 'Lincoln High School',
             graduationYear: '2025',
             interests: ['Machine Learning', 'Sustainability', 'Data Science']

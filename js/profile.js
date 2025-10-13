@@ -157,6 +157,8 @@ async function handlePersonalInfoSubmit(e) {
         // firstName and lastName are read-only (managed by Azure AD), so we don't collect them
         displayName: formData.get('displayName') || '',
         bio: formData.get('bio') || '',
+        jobTitle: formData.get('jobTitle') || '',
+        city: formData.get('city') || '',
         school: formData.get('school') || '',
         graduationYear: formData.get('graduationYear') || '',
         phoneNumber: formData.get('phoneNumber') || '',
@@ -184,7 +186,9 @@ async function handlePersonalInfoSubmit(e) {
                 description: profileData.bio,
                 careerInterests: careerInterestsString,
                 school: profileData.school,
-                graduationYear: gradYear
+                graduationYear: gradYear,
+                jobTitle: profileData.jobTitle,
+                city: profileData.city
             });
 
             // Update global userData object with synced values
@@ -194,6 +198,8 @@ async function handlePersonalInfoSubmit(e) {
             window.IMI.data.userData.interests = window.IMI.interestsFromDataverse(updated.careerInterests) || profileData.interests;
             window.IMI.data.userData.school = updated.school || profileData.school;
             window.IMI.data.userData.graduationYear = updated.graduationYear || profileData.graduationYear;
+            window.IMI.data.userData.jobTitle = updated.jobTitle || profileData.jobTitle;
+            window.IMI.data.userData.city = updated.city || profileData.city;
 
             console.log('✅ Profile saved to Dataverse');
         } catch (error) {
@@ -210,6 +216,8 @@ async function handlePersonalInfoSubmit(e) {
             // firstName and lastName are NOT updated (managed by Azure AD)
             window.IMI.data.userData.name = profileData.displayName;
             window.IMI.data.userData.bio = profileData.bio;
+            window.IMI.data.userData.jobTitle = profileData.jobTitle;
+            window.IMI.data.userData.city = profileData.city;
             window.IMI.data.userData.school = profileData.school;
             window.IMI.data.userData.graduationYear = profileData.graduationYear;
             window.IMI.data.userData.mobilePhone = profileData.phoneNumber;
@@ -756,6 +764,8 @@ function loadProfileData() {
         const displayNameInput = document.getElementById('profile-display-name');
         const emailInput = document.getElementById('profile-email');
         const bioTextarea = document.getElementById('profile-bio');
+        const jobTitleInput = document.getElementById('profile-job-title');
+        const cityInput = document.getElementById('profile-city');
         const schoolInput = document.getElementById('profile-school');
         const graduationYearSelect = document.getElementById('profile-graduation-year');
         const phoneInput = document.getElementById('profile-phone');
@@ -768,6 +778,8 @@ function loadProfileData() {
 
         // Extended fields
         if (bioTextarea) bioTextarea.value = userData.bio || '';
+        if (jobTitleInput) jobTitleInput.value = userData.jobTitle || '';
+        if (cityInput) cityInput.value = userData.city || '';
         if (schoolInput) schoolInput.value = userData.school || '';
         if (graduationYearSelect && userData.graduationYear) graduationYearSelect.value = userData.graduationYear;
         if (phoneInput) phoneInput.value = userData.mobilePhone || '';

@@ -139,12 +139,13 @@ async function loadUserData() {
                     id: graphData.id,
 
                     // Azure AD / profile fields
-                    jobTitle: graphData.jobTitle,
                     department: graphData.department,
                     officeLocation: graphData.officeLocation,
                     businessPhones: graphData.businessPhones,
 
                     // Extended profile data (from Dataverse in MS mode, from mock in dev mode)
+                    jobTitle: dataverseProfile?.jobTitle || graphData.jobTitle || '',
+                    city: dataverseProfile?.city || '',
                     mobilePhone: dataverseProfile?.mobilePhone || graphData.mobilePhone || '',
                     bio: dataverseProfile?.description || graphData.bio || '',  // Dataverse description = bio
                     school: dataverseProfile?.school || graphData.school || '',

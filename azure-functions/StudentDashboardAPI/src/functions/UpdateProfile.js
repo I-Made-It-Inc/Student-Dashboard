@@ -27,7 +27,7 @@ app.http('UpdateProfile', {
             };
         }
 
-        const { email, mobilePhone, nickname, description, careerInterests, school, graduationYear } = body;
+        const { email, mobilePhone, nickname, description, careerInterests, school, graduationYear, jobTitle, city } = body;
 
         try {
             // Find contact by email
@@ -48,6 +48,8 @@ app.http('UpdateProfile', {
             if (careerInterests !== undefined) updates.imi_careerinterests = careerInterests || null;
             if (school !== undefined) updates.imi_school = school || null;
             if (graduationYear !== undefined) updates.imi_graduationyear = graduationYear || null;
+            if (jobTitle !== undefined) updates.jobtitle = jobTitle || null;
+            if (city !== undefined) updates.address1_city = city || null;
 
             // Update contact
             const updatedContact = await dataverseClient.updateContact(contact.contactid, updates);
@@ -72,6 +74,8 @@ app.http('UpdateProfile', {
                     careerInterests: updatedContact.imi_careerinterests,
                     school: updatedContact.imi_school,
                     graduationYear: updatedContact.imi_graduationyear,
+                    jobTitle: updatedContact.jobtitle,
+                    city: updatedContact.address1_city,
                     message: 'Profile updated successfully'
                 }
             };

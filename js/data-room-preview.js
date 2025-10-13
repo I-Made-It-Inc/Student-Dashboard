@@ -9,7 +9,7 @@ function getUserDataForPreview() {
             name: userData.name || '[FULL NAME]',
             email: userData.email || '[EMAIL]',
             jobTitle: userData.jobTitle || '[JOB TITLE]',
-            location: userData.officeLocation || '[LOCATION]',
+            location: userData.city || '[LOCATION]',
             initials: userData.initials || 'NA'
         };
     }

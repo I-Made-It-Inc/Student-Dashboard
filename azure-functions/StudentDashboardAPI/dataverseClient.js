@@ -61,7 +61,7 @@ async function findContactByEmail(email) {
                 },
                 params: {
                     $filter: `emailaddress1 eq '${email}'`,
-                    $select: 'contactid,firstname,lastname,emailaddress1,mobilephone,fullname,nickname,description,imi_careerinterests,imi_school,imi_graduationyear'
+                    $select: 'contactid,firstname,lastname,emailaddress1,mobilephone,fullname,nickname,description,imi_careerinterests,imi_school,imi_graduationyear,jobtitle,address1_city'
                 }
             }
         );
@@ -125,7 +125,7 @@ async function getContactById(contactId) {
                     'Accept': 'application/json'
                 },
                 params: {
-                    $select: 'contactid,firstname,lastname,emailaddress1,mobilephone,fullname,nickname,description,imi_careerinterests,imi_school,imi_graduationyear'
+                    $select: 'contactid,firstname,lastname,emailaddress1,mobilephone,fullname,nickname,description,imi_careerinterests,imi_school,imi_graduationyear,jobtitle,address1_city'
                 }
             }
         );

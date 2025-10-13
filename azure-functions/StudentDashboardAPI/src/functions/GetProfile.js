@@ -57,7 +57,9 @@ app.http('GetProfile', {
                     description: contact.description || null,
                     careerInterests: contact.imi_careerinterests || null,
                     school: contact.imi_school || null,
-                    graduationYear: contact.imi_graduationyear || null
+                    graduationYear: contact.imi_graduationyear || null,
+                    jobTitle: contact.jobtitle || null,
+                    city: contact.address1_city || null
                 }
             };
 
