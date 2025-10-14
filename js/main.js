@@ -176,6 +176,12 @@ async function loadUserData() {
                     console.log('📄 Initializing profile page with loaded user data');
                     initializeProfile();
                 }
+
+                // Load blueprints if we're on the blueprint page (must happen after userData is loaded)
+                if (currentPage === 'blueprint' && typeof renderPastBlueprints === 'function') {
+                    console.log('📄 Loading blueprints with user data');
+                    renderPastBlueprints();
+                }
             }
         } catch (error) {
             console.error('❌ Failed to load user data:', error);

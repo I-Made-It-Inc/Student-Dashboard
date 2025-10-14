@@ -58,9 +58,11 @@ app.http('GetBlueprints', {
                 context.log('Fetching featured blueprints, limit:', limit);
                 result = await sqlClient.getFeaturedBlueprints(limit);
             } else {
-                // Get all blueprints for a student
-                context.log('Fetching blueprints for:', studentEmail);
-                result = await sqlClient.getBlueprintsByEmail(studentEmail);
+                // Get blueprints for a student with pagination
+                const limit = parseInt(request.query.get('limit')) || 10;
+                const offset = parseInt(request.query.get('offset')) || 0;
+                context.log('Fetching blueprints for:', studentEmail, 'limit:', limit, 'offset:', offset);
+                result = await sqlClient.getBlueprintsByEmail(studentEmail, limit, offset);
             }
 
             context.log('✅ Blueprints retrieved successfully');

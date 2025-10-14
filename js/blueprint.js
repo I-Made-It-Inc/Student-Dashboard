@@ -9,21 +9,24 @@ function initializeBlueprintChallenge() {
 
     // Set up word counters
     setupWordCounters();
-    
+
     // Set up submission handlers
     setupSubmissionHandlers();
-    
+
     // Load current challenge data
     loadCurrentChallenge();
-    
+
     // Set up auto-save for drafts
     setupAutoSaveDrafts();
-    
+
     // Set up XP chart
     setupXPChart();
-    
+
     // Set up redemption handlers
     setupRedemptionHandlers();
+
+    // Load past blueprints
+    renderPastBlueprints();
 }
 
 // Setup word counters for each section
@@ -800,6 +803,15 @@ document.addEventListener('pageChange', function(event) {
 // Past Blueprints Feature
 // ====================
 
+// Pagination state
+let blueprintsPaginationState = {
+    offset: 0,
+    limit: 4,
+    hasMore: false,
+    totalLoaded: 0,
+    totalCount: 0
+};
+
 // Mock blueprint data (developer mode only)
 const mockBlueprints = [
     {
@@ -852,45 +864,133 @@ const mockBlueprints = [
     }
 ];
 
-// Render past blueprints
-function renderPastBlueprints() {
+// Render past blueprints (initial load or reset)
+async function renderPastBlueprints(reset = true) {
+    console.log('📋 renderPastBlueprints called, reset:', reset);
+
     const container = document.getElementById('past-blueprints-container');
     const countElement = document.getElementById('past-blueprints-count');
+    const loadMoreContainer = document.getElementById('load-more-blueprints');
+    const showingCount = document.getElementById('blueprints-showing-count');
 
-    if (!container) return;
-
-    // Get blueprints (mock for developer mode, API for Microsoft mode)
-    const authMode = sessionStorage.getItem('imi_auth_mode');
-    let blueprints = [];
-
-    if (authMode === 'developer') {
-        blueprints = mockBlueprints;
-    } else if (authMode === 'microsoft') {
-        // TODO: Fetch from API for Microsoft mode
-        // const userData = window.IMI?.data?.userData;
-        // blueprints = await window.IMI.api.getBlueprints(userData.email);
-        blueprints = []; // Empty for now
-    }
-
-    // Update count
-    if (countElement) {
-        countElement.textContent = `${blueprints.length} submission${blueprints.length !== 1 ? 's' : ''}`;
-    }
-
-    // Clear container
-    container.innerHTML = '';
-
-    if (blueprints.length === 0) {
-        container.innerHTML = '<p class="empty-state">No blueprints submitted yet.</p>';
+    if (!container) {
+        console.log('❌ Container not found');
         return;
     }
 
-    // Render each blueprint card
-    blueprints.forEach(blueprint => {
-        const card = createBlueprintCard(blueprint);
-        container.appendChild(card);
-    });
+    // Reset pagination state if needed
+    if (reset) {
+        blueprintsPaginationState = {
+            offset: 0,
+            limit: 4,
+            hasMore: false,
+            totalLoaded: 0,
+            totalCount: 0
+        };
+    }
+
+    // Get blueprints (mock for developer mode, API for Microsoft mode)
+    const authMode = sessionStorage.getItem('imi_auth_mode');
+    console.log('🔐 Auth mode:', authMode);
+
+    let blueprints = [];
+
+    try {
+        if (authMode === 'developer') {
+            // Developer mode: use mock data with pagination simulation
+            console.log('🔧 Developer mode - using mock data');
+            blueprints = mockBlueprints.slice(blueprintsPaginationState.offset, blueprintsPaginationState.offset + blueprintsPaginationState.limit);
+            blueprintsPaginationState.totalCount = mockBlueprints.length;
+            blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < mockBlueprints.length;
+        } else if (authMode === 'microsoft') {
+            // Microsoft mode: fetch from API with pagination
+            const userData = window.IMI?.data?.userData;
+            console.log('👤 User data:', userData);
+            console.log('📡 API available:', !!window.IMI?.api?.getBlueprints);
+
+            if (userData && userData.email && window.IMI?.api?.getBlueprints) {
+                console.log('📡 Fetching blueprints for:', userData.email);
+
+                blueprints = await window.IMI.api.getBlueprints(
+                    userData.email,
+                    blueprintsPaginationState.limit,
+                    blueprintsPaginationState.offset
+                );
+                console.log('✅ Blueprints fetched:', blueprints.length);
+
+                // Get total count (we need a separate API call for this, or track it from stats)
+                console.log('📊 Fetching blueprint stats...');
+                const stats = await window.IMI.api.getBlueprintStats(userData.email);
+                console.log('✅ Stats fetched:', stats);
+
+                blueprintsPaginationState.totalCount = stats.totalSubmissions || 0;
+                blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < blueprintsPaginationState.totalCount;
+            } else {
+                console.warn('⚠️ Cannot fetch blueprints - missing requirements:', {
+                    hasUserData: !!userData,
+                    hasEmail: !!userData?.email,
+                    hasAPI: !!window.IMI?.api?.getBlueprints
+                });
+            }
+        }
+
+        // Update loaded count
+        if (reset) {
+            blueprintsPaginationState.totalLoaded = blueprints.length;
+            // Clear container on reset
+            container.innerHTML = '';
+        } else {
+            blueprintsPaginationState.totalLoaded += blueprints.length;
+        }
+
+        // Update header count
+        if (countElement) {
+            countElement.textContent = `${blueprintsPaginationState.totalCount} submission${blueprintsPaginationState.totalCount !== 1 ? 's' : ''}`;
+        }
+
+        // Show empty state if no blueprints
+        if (blueprints.length === 0 && blueprintsPaginationState.totalLoaded === 0) {
+            container.innerHTML = '<p class="empty-state">No blueprints submitted yet.</p>';
+            if (loadMoreContainer) loadMoreContainer.style.display = 'none';
+            return;
+        }
+
+        // Render each blueprint card
+        blueprints.forEach(blueprint => {
+            const card = createBlueprintCard(blueprint);
+            container.appendChild(card);
+        });
+
+        // Update "Load More" button visibility and count
+        if (loadMoreContainer && showingCount) {
+            if (blueprintsPaginationState.hasMore) {
+                loadMoreContainer.style.display = 'flex';
+                showingCount.textContent = `Showing ${blueprintsPaginationState.totalLoaded} of ${blueprintsPaginationState.totalCount} blueprints`;
+            } else {
+                loadMoreContainer.style.display = 'none';
+            }
+        }
+
+    } catch (error) {
+        console.error('❌ Error loading blueprints:', error);
+        container.innerHTML = '<p class="empty-state" style="color: #e74c3c;">Error loading blueprints. Please try again.</p>';
+        if (loadMoreContainer) loadMoreContainer.style.display = 'none';
+    }
 }
+
+// Load more blueprints (pagination)
+async function loadMoreBlueprints() {
+    console.log('Loading more blueprints...');
+
+    // Update offset
+    blueprintsPaginationState.offset += blueprintsPaginationState.limit;
+
+    // Render more blueprints (don't reset)
+    await renderPastBlueprints(false);
+}
+
+// Make loadMoreBlueprints globally accessible
+window.loadMoreBlueprints = loadMoreBlueprints;
 
 function createBlueprintCard(blueprint) {
     const card = document.createElement('div');

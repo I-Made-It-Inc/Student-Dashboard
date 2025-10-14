@@ -14,5 +14,7 @@ Rough steps:
   - 3 required input fields with validation
   - Saved with Blueprint submission
   - Included in draft save/load
-6. Add UI for student to view their past blueprints (next)
+6. Add UI for student to view their past blueprints (WIP)
 7. Dashboard - this week's blueprint challenge: pull from this week's submitted blueprints
+8. Consider what happens if email changes or Dynamics contact gets deleted
+9. Remove unnecessary logs

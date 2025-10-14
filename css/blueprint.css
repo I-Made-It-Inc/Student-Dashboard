@@ -1033,6 +1033,21 @@
     color: #27ae60;
 }
 
+/* Load More Blueprints */
+.load-more-blueprints {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    border-top: 2px solid var(--light-gray);
+}
+
+.blueprints-count {
+    font-size: var(--font-size-sm);
+    color: var(--text-gray);
+}
+
 /* Blueprint Modal */
 .blueprint-modal {
     max-width: 800px;
@@ -1132,5 +1147,11 @@
 
     .blueprint-section-badges {
         justify-content: flex-start;
+    }
+
+    .load-more-blueprints {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        text-align: center;
     }
 }

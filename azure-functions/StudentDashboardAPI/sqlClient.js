@@ -93,21 +93,27 @@ async function submitBlueprint(blueprintData) {
 }
 
 /**
- * Get all blueprints for a student
+ * Get blueprints for a student with pagination
  * @param {string} studentEmail - Student's email address
+ * @param {number} limit - Number of blueprints to return (default: 10)
+ * @param {number} offset - Number of blueprints to skip (default: 0)
  * @returns {Array} List of blueprints
  */
-async function getBlueprintsByEmail(studentEmail) {
+async function getBlueprintsByEmail(studentEmail, limit = 10, offset = 0) {
     const pool = await getPool();
 
     try {
         const result = await pool.request()
             .input('studentEmail', sql.NVarChar(255), studentEmail)
+            .input('limit', sql.Int, limit)
+            .input('offset', sql.Int, offset)
             .query(`
                 SELECT *
                 FROM Blueprints
                 WHERE studentEmail = @studentEmail
                 ORDER BY submissionDate DESC
+                OFFSET @offset ROWS
+                FETCH NEXT @limit ROWS ONLY
             `);
 
         return result.recordset;

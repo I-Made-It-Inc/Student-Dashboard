@@ -107,15 +107,17 @@ async function submitBlueprint(blueprintData) {
 }
 
 /**
- * Get blueprints for a student from Azure SQL Database
+ * Get blueprints for a student from Azure SQL Database with pagination
  * @param {string} studentEmail - Student's email address
+ * @param {number} limit - Number of blueprints to return (default: 10)
+ * @param {number} offset - Number of blueprints to skip (default: 0)
  * @returns {Promise<Array>} List of blueprints
  */
-async function getBlueprints(studentEmail) {
+async function getBlueprints(studentEmail, limit = 10, offset = 0) {
     const baseUrl = window.IMI.config.API.baseUrl;
-    const url = `${baseUrl}/GetBlueprints?studentEmail=${encodeURIComponent(studentEmail)}`;
+    const url = `${baseUrl}/GetBlueprints?studentEmail=${encodeURIComponent(studentEmail)}&limit=${limit}&offset=${offset}`;
 
-    console.log('📡 Fetching blueprints from SQL Database:', studentEmail);
+    console.log('📡 Fetching blueprints from SQL Database:', studentEmail, 'limit:', limit, 'offset:', offset);
 
     try {
         const response = await fetch(url);
