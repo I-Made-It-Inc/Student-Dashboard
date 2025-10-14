@@ -1005,7 +1005,7 @@ function createBlueprintCard(blueprint) {
     const sections = ['trendspotter', 'futureVisionary', 'innovationCatalyst', 'connector', 'growthHacker'];
     const completedSections = sections.filter(s => blueprint[s] && blueprint[s].trim().length > 0);
 
-    // Three-column layout: Info | Stats | Sections
+    // Two-column layout: Info (50%) | Stats + Sections (50%)
     card.innerHTML = `
         <div class="blueprint-card-info">
             <div class="blueprint-card-header">
@@ -1018,13 +1018,13 @@ function createBlueprintCard(blueprint) {
             <div class="blueprint-card-article-source">${blueprint.articleSource}</div>
         </div>
 
-        <div class="blueprint-card-stats">
-            <div class="blueprint-card-xp">${blueprint.xpEarned}</div>
-            <div class="blueprint-card-xp-label">XP Earned</div>
-        </div>
+        <div class="blueprint-card-right">
+            <div class="blueprint-card-stats">
+                <div class="blueprint-card-xp">${blueprint.xpEarned}</div>
+                <div class="blueprint-card-xp-label">XP Earned</div>
+                <div class="blueprint-card-sections-label" style="margin-left: auto;">${completedSections.length}/5 Sections</div>
+            </div>
 
-        <div class="blueprint-card-sections">
-            <div class="blueprint-card-sections-label">${completedSections.length}/5 Sections</div>
             <div class="blueprint-section-badges">
                 ${sections.map(s => {
                     const isCompleted = completedSections.includes(s);
