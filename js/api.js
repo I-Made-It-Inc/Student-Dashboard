@@ -72,11 +72,162 @@ async function updateProfile(email, updates) {
     }
 }
 
+/**
+ * Submit a Blueprint to Azure SQL Database
+ * @param {Object} blueprintData - Blueprint submission data
+ * @returns {Promise<Object>} Submission result with blueprintId
+ */
+async function submitBlueprint(blueprintData) {
+    const baseUrl = window.IMI.config.API.baseUrl;
+    const url = `${baseUrl}/SubmitBlueprint`;
+
+    console.log('📡 Submitting Blueprint to SQL Database:', blueprintData.studentEmail);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(blueprintData)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Blueprint submitted successfully:', data);
+        return data;
+    } catch (error) {
+        console.error('❌ Failed to submit blueprint:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get blueprints for a student from Azure SQL Database
+ * @param {string} studentEmail - Student's email address
+ * @returns {Promise<Array>} List of blueprints
+ */
+async function getBlueprints(studentEmail) {
+    const baseUrl = window.IMI.config.API.baseUrl;
+    const url = `${baseUrl}/GetBlueprints?studentEmail=${encodeURIComponent(studentEmail)}`;
+
+    console.log('📡 Fetching blueprints from SQL Database:', studentEmail);
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Blueprints fetched successfully:', data.count, 'blueprints');
+        return data.data; // Return the array of blueprints
+    } catch (error) {
+        console.error('❌ Failed to fetch blueprints:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get a specific blueprint by ID
+ * @param {number} blueprintId - Blueprint ID
+ * @returns {Promise<Object>} Blueprint data
+ */
+async function getBlueprintById(blueprintId) {
+    const baseUrl = window.IMI.config.API.baseUrl;
+    const url = `${baseUrl}/GetBlueprints?blueprintId=${blueprintId}`;
+
+    console.log('📡 Fetching blueprint by ID:', blueprintId);
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Blueprint fetched successfully');
+        return data.data;
+    } catch (error) {
+        console.error('❌ Failed to fetch blueprint:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get blueprint statistics for a student
+ * @param {string} studentEmail - Student's email
+ * @returns {Promise<Object>} Statistics object
+ */
+async function getBlueprintStats(studentEmail) {
+    const baseUrl = window.IMI.config.API.baseUrl;
+    const url = `${baseUrl}/GetBlueprints?studentEmail=${encodeURIComponent(studentEmail)}&stats=true`;
+
+    console.log('📡 Fetching blueprint stats:', studentEmail);
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Blueprint stats fetched successfully');
+        return data.data;
+    } catch (error) {
+        console.error('❌ Failed to fetch blueprint stats:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get featured blueprints (for peer inspiration)
+ * @param {number} limit - Number of blueprints to return (default: 10)
+ * @returns {Promise<Array>} Featured blueprints
+ */
+async function getFeaturedBlueprints(limit = 10) {
+    const baseUrl = window.IMI.config.API.baseUrl;
+    const url = `${baseUrl}/GetBlueprints?featured=true&limit=${limit}`;
+
+    console.log('📡 Fetching featured blueprints, limit:', limit);
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Featured blueprints fetched successfully:', data.count, 'blueprints');
+        return data.data;
+    } catch (error) {
+        console.error('❌ Failed to fetch featured blueprints:', error);
+        throw error;
+    }
+}
+
 // Export to global namespace
 window.IMI = window.IMI || {};
 window.IMI.api = {
     fetchProfile,
-    updateProfile
+    updateProfile,
+    submitBlueprint,
+    getBlueprints,
+    getBlueprintById,
+    getBlueprintStats,
+    getFeaturedBlueprints
 };
 
 console.log('📡 API module loaded');
