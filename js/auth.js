@@ -49,8 +49,8 @@ async function handleRedirectResponse() {
         const response = await msalInstance.handleRedirectPromise();
 
         if (response) {
-            console.log('✅ Microsoft login successful (redirect):', response);
-            console.log('🆔 Azure AD Account ID:', response.account.localAccountId || response.account.homeAccountId);
+            const azureAdUserId = response.account.localAccountId || response.account.homeAccountId;
+            console.log('✅ Microsoft login successful:', response.account.name, `(${azureAdUserId})`);
 
             // Store authentication data
             sessionStorage.setItem('imi_authenticated', 'true');
@@ -60,10 +60,8 @@ async function handleRedirectResponse() {
             sessionStorage.setItem('imi_access_token', response.accessToken);
 
             // Store Azure AD User ID (Object ID) - use localAccountId which is the AAD Object ID
-            const azureAdUserId = response.account.localAccountId || response.account.homeAccountId;
             if (azureAdUserId) {
                 sessionStorage.setItem('imi_user_id', azureAdUserId);
-                console.log('🆔 Stored Azure AD User ID:', azureAdUserId);
             } else {
                 console.warn('⚠️ Could not extract Azure AD User ID from MSAL response');
             }
@@ -168,7 +166,6 @@ function logout() {
     // Prevent URL manipulation after logout - force back to login if they change the hash
     window.addEventListener('hashchange', function preventURLBypass() {
         if (sessionStorage.getItem('imi_authenticated') !== 'true') {
-            console.log('❌ Hash change blocked - not authenticated');
             window.location.hash = 'login';
             // Hide all pages except login
             document.querySelectorAll('.page-section').forEach(section => {
@@ -191,14 +188,12 @@ function logout() {
 document.addEventListener('click', function(e) {
     // Developer mode button
     if (e.target && (e.target.id === 'developer-mode-btn' || e.target.closest('#developer-mode-btn'))) {
-        console.log('🎯 Developer mode button clicked');
         e.preventDefault();
         loginDeveloperMode();
     }
 
     // Microsoft login button
     if (e.target && (e.target.id === 'microsoft-login-btn' || e.target.closest('#microsoft-login-btn'))) {
-        console.log('🎯 Microsoft login button clicked');
         e.preventDefault();
         loginWithMicrosoft();
     }

@@ -287,67 +287,38 @@ function getCurrentWeekRange() {
 
 // Update dashboard blueprint challenge progress
 async function updateDashboardBlueprintChallenge() {
-    console.log('📊 Updating dashboard blueprint challenge...');
-
     const authMode = sessionStorage.getItem('imi_auth_mode');
-    console.log('🔐 Auth mode in updateDashboardBlueprintChallenge:', authMode);
 
     // Don't update if elements don't exist (not on dashboard page)
     if (!document.querySelector('.challenge-progress .progress-section')) {
-        console.log('⚠️ Dashboard elements not found, skipping update');
         return;
     }
 
     const { monday, sunday } = getCurrentWeekRange();
-
-    console.log('📅 Current week:', monday.toLocaleDateString(), '-', sunday.toLocaleDateString());
-
     let thisWeekBlueprints = [];
 
     try {
         if (authMode === 'developer') {
             // Developer mode: get blueprints from sessionStorage
             const sessionBlueprints = JSON.parse(sessionStorage.getItem('imi_blueprints') || '[]');
-            console.log('📦 Session blueprints in storage:', sessionBlueprints.length);
-            console.log('📦 Raw sessionStorage imi_blueprints:', sessionStorage.getItem('imi_blueprints'));
-
-            // Filter blueprints submitted this week
             thisWeekBlueprints = sessionBlueprints.filter(bp => {
                 const submissionDate = new Date(bp.submissionDate);
                 return submissionDate >= monday && submissionDate <= sunday;
             });
-
-            console.log('📦 Developer mode - This week blueprints:', thisWeekBlueprints.length);
-            console.log('📦 Filtered blueprints:', thisWeekBlueprints);
         } else if (authMode === 'microsoft') {
             // Microsoft mode: fetch from API
             const userData = window.IMI?.data?.userData;
-            console.log('👤 User data available:', !!userData);
-            console.log('🆔 User ID:', userData?.id);
-            console.log('📧 User email:', userData?.email);
-            console.log('📡 API available:', !!window.IMI?.api?.getBlueprintsByUserId, '(userId)', !!window.IMI?.api?.getBlueprints, '(email)');
-
             let allBlueprints = [];
 
             // Try Azure AD User ID first (PRIMARY METHOD)
             if (userData && userData.id && window.IMI?.api?.getBlueprintsByUserId) {
-                console.log('📡 Fetching blueprints by userId from API...');
-                allBlueprints = await window.IMI.api.getBlueprintsByUserId(userData.id, 100, 0); // Get up to 100 to ensure we get this week's
-                console.log('📡 Total blueprints fetched by userId:', allBlueprints.length);
+                allBlueprints = await window.IMI.api.getBlueprintsByUserId(userData.id, 100, 0);
             }
             // Fallback to email-based method (LEGACY)
             else if (userData && userData.email && window.IMI?.api?.getBlueprints) {
-                console.log('📡 Fetching blueprints by email (LEGACY) from API...');
                 allBlueprints = await window.IMI.api.getBlueprints(userData.email, 100, 0);
-                console.log('📡 Total blueprints fetched by email:', allBlueprints.length);
             } else {
-                console.warn('⚠️ Cannot fetch blueprints - missing requirements:', {
-                    hasUserData: !!userData,
-                    hasUserId: !!userData?.id,
-                    hasEmail: !!userData?.email,
-                    hasUserIdAPI: !!window.IMI?.api?.getBlueprintsByUserId,
-                    hasEmailAPI: !!window.IMI?.api?.getBlueprints
-                });
+                console.warn('⚠️ Cannot fetch blueprints - user data or API not available');
             }
 
             // Filter blueprints submitted this week
@@ -356,15 +327,11 @@ async function updateDashboardBlueprintChallenge() {
                     const submissionDate = new Date(bp.submissionDate);
                     return submissionDate >= monday && submissionDate <= sunday;
                 });
-
-                console.log('📡 Microsoft mode - This week blueprints:', thisWeekBlueprints.length);
-                console.log('📡 Filtered blueprints:', thisWeekBlueprints);
             }
         }
 
         // Check which sections are completed this week (any blueprint with ≥100 words counts)
         const sections = ['trendspotter', 'futureVisionary', 'innovationCatalyst', 'connector', 'growthHacker'];
-        const sectionNames = ['The Trendspotter', 'The Future Visionary', 'The Innovation Catalyst', 'The Connector', 'The Growth Hacker'];
         const completedSections = new Set();
 
         thisWeekBlueprints.forEach(bp => {
@@ -380,18 +347,13 @@ async function updateDashboardBlueprintChallenge() {
         // Calculate total XP this week
         const totalXP = thisWeekBlueprints.reduce((sum, bp) => sum + (bp.xpEarned || 0), 0);
 
-        console.log('✅ Completed sections this week:', Array.from(completedSections));
-        console.log('💰 Total XP this week:', totalXP);
+        console.log('📊 Dashboard updated:', thisWeekBlueprints.length, 'blueprints,', completedSections.size, 'sections,', totalXP, 'XP');
 
         // Update UI
         const progressSections = document.querySelectorAll('.challenge-progress .progress-section');
-        console.log('📝 Found progress sections:', progressSections.length);
-
         progressSections.forEach((element, index) => {
             const section = sections[index];
             const isCompleted = completedSections.has(section);
-
-            console.log(`📝 Updating section ${index} (${section}): ${isCompleted ? 'completed' : 'incomplete'}`);
 
             if (isCompleted) {
                 element.classList.add('completed');
@@ -404,10 +366,8 @@ async function updateDashboardBlueprintChallenge() {
 
         // Update XP display
         const xpDisplay = document.querySelector('.challenge-progress .points-earned');
-        console.log('📝 XP display element found:', !!xpDisplay);
         if (xpDisplay) {
             xpDisplay.textContent = `${totalXP} XP earned`;
-            console.log('📝 Updated XP display to:', xpDisplay.textContent);
         }
 
     } catch (error) {
@@ -614,35 +574,28 @@ function throttle(func, limit) {
 
 // Handle redemption action
 function handleRedemption(btn) {
-    console.log('Handling redemption for button:', btn);
-    
     const redemptionItem = btn.closest('.redemption-item');
     if (!redemptionItem) {
-        console.error('Could not find redemption item container');
+        console.error('❌ Could not find redemption item container');
         return;
     }
-    
+
     const itemName = redemptionItem.querySelector('.redemption-title').textContent;
     const costText = redemptionItem.querySelector('.redemption-cost').textContent;
-    
-    console.log(`Redeeming: ${itemName} for ${costText}`);
-    
+
     if (confirm(`Redeem ${itemName} for ${costText}?`)) {
-        console.log('User confirmed redemption');
-        
         if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
             window.IMI.utils.showNotification(`Successfully redeemed ${itemName}!`, 'success');
         }
-        
+
         // Parse cost properly
         const costMatch = costText.match(/(\d+)/);
         if (!costMatch) {
-            console.error('Could not parse cost from:', costText);
+            console.error('❌ Could not parse cost from:', costText);
             return;
         }
         const costXP = parseInt(costMatch[1]);
-        console.log('Parsed cost:', costXP);
-        
+
         // Update available XP in sidebar
         const xpAvailableElement = document.querySelector('.text-muted.small');
         if (xpAvailableElement && xpAvailableElement.textContent.includes('XP available')) {
@@ -650,14 +603,12 @@ function handleRedemption(btn) {
             if (currentXPMatch) {
                 const currentXP = parseInt(currentXPMatch[1].replace(/,/g, ''));
                 const newBalance = currentXP - costXP;
-                console.log(`Updating XP: ${currentXP} - ${costXP} = ${newBalance}`);
-                // Format with comma if needed
                 const formattedBalance = newBalance.toLocaleString();
                 xpAvailableElement.textContent = `${formattedBalance} XP available`;
             }
         }
-        
-        // Update the gamification stats XP display  
+
+        // Update the gamification stats XP display
         const statMainElements = document.querySelectorAll('.stat-main');
         statMainElements.forEach(el => {
             if (el.textContent.includes('pts')) {
@@ -665,46 +616,32 @@ function handleRedemption(btn) {
                 if (currentXPMatch) {
                     const currentXP = parseInt(currentXPMatch[1].replace(/,/g, ''));
                     const newBalance = currentXP - costXP;
-                    console.log(`Updating stat display: ${currentXP} - ${costXP} = ${newBalance}`);
-                    // Format with comma if needed
                     const formattedBalance = newBalance.toLocaleString();
                     el.textContent = `${formattedBalance} pts`;
                 }
             }
         });
-        
+
         // Disable the button and change appearance
         btn.disabled = true;
         btn.textContent = 'Redeemed';
         btn.classList.add('redeemed');
-        
-        console.log('Redemption completed');
-    } else {
-        console.log('User cancelled redemption');
     }
 }
 
 // Set up redemption handlers for dashboard
 function setupDashboardRedemptionHandlers() {
-    console.log('Setting up dashboard redemption handlers...');
-    
     // Handle redemption buttons on the dashboard sidebar
     const dashboardRedeemButtons = document.querySelectorAll('.redemption-item .btn.btn-primary-small');
-    
-    console.log('Found redemption buttons:', dashboardRedeemButtons.length);
-    
-    dashboardRedeemButtons.forEach((btn, index) => {
+
+    dashboardRedeemButtons.forEach((btn) => {
         // Only add handler if button text is "Redeem"
         if (btn.textContent.trim() === 'Redeem') {
-            console.log(`Adding handler to button ${index + 1}: ${btn.textContent}`);
-            
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 handleRedemption(this);
             });
-        } else {
-            console.log(`Skipping button ${index + 1} with text: "${btn.textContent}"`);
         }
     });
 }

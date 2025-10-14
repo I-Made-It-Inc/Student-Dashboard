@@ -27,7 +27,7 @@ async function fetchUserProfile() {
         }
 
         const data = await response.json();
-        console.log('✅ User profile fetched from Graph API:', data);
+        console.log('✅ User profile fetched from Graph API:', data.displayName, data.mail);
 
         // Extract last name with better fallback logic
         let lastName = data.surname;
@@ -39,9 +39,6 @@ async function fetchUserProfile() {
 
         // Get Azure AD User ID from Graph API, or fall back to stored value from MSAL
         const userId = data.id || sessionStorage.getItem('imi_user_id');
-        console.log('🆔 Azure AD User ID from Graph API:', data.id);
-        console.log('🆔 Azure AD User ID from sessionStorage:', sessionStorage.getItem('imi_user_id'));
-        console.log('🆔 Final userId being used:', userId);
 
         return {
             name: data.displayName || '[FULL NAME]',
@@ -70,7 +67,6 @@ async function fetchUserPhoto() {
     const accessToken = sessionStorage.getItem('imi_access_token');
 
     if (!accessToken) {
-        console.error('❌ No access token available');
         return null;
     }
 
@@ -132,8 +128,6 @@ function getPlaceholderUserData() {
     const storedEmail = sessionStorage.getItem('imi_user_email');
     const storedUserId = sessionStorage.getItem('imi_user_id');
 
-    console.log('🆔 getPlaceholderUserData - stored userId:', storedUserId);
-
     return {
         name: storedName || '[FULL NAME]',
         email: storedEmail || '[EMAIL]',
@@ -168,8 +162,6 @@ function getCachedUserData() {
  * Update all UI elements with user data
  */
 async function updateUIWithUserData(userData, photoUrl = null) {
-    console.log('🎨 Updating UI with user data:', userData);
-
     // Update all avatars
     const avatars = document.querySelectorAll('.user-avatar, .profile-avatar');
     avatars.forEach(avatar => {
@@ -211,8 +203,6 @@ async function updateUIWithUserData(userData, photoUrl = null) {
     document.querySelectorAll('[data-user-email]').forEach(el => {
         el.textContent = userData.email;
     });
-
-    console.log('✅ UI updated with user data');
 }
 
 /**
@@ -283,7 +273,6 @@ async function initializeUserProfile() {
 
     // In Microsoft mode, fetch profile photo first to avoid flashing initials
     // before photo loads
-    console.log('📸 Fetching profile photo...');
     const photoUrl = await fetchUserPhoto();
 
     // Update UI once with either photo or initials (no flash)

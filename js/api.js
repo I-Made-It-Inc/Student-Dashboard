@@ -25,7 +25,7 @@ async function fetchProfile(email, firstName, lastName) {
         }
 
         const data = await response.json();
-        console.log('✅ Profile fetched from Dataverse:', data);
+        console.log('✅ Profile fetched:', data.fullName);
         return data;
     } catch (error) {
         console.error('❌ Failed to fetch profile:', error);
@@ -64,7 +64,6 @@ async function updateProfile(email, updates) {
         }
 
         const data = await response.json();
-        console.log('✅ Profile updated in Dataverse:', data);
         return data;
     } catch (error) {
         console.error('❌ Failed to update profile:', error);
@@ -98,7 +97,6 @@ async function submitBlueprint(blueprintData) {
         }
 
         const data = await response.json();
-        console.log('✅ Blueprint submitted successfully:', data);
         return data;
     } catch (error) {
         console.error('❌ Failed to submit blueprint:', error);
@@ -128,7 +126,6 @@ async function getBlueprintsByUserId(azureAdUserId, limit = 10, offset = 0) {
         }
 
         const data = await response.json();
-        console.log('✅ Blueprints fetched successfully:', data.count, 'blueprints');
         return data.data; // Return the array of blueprints
     } catch (error) {
         console.error('❌ Failed to fetch blueprints by user ID:', error);
@@ -158,7 +155,6 @@ async function getBlueprints(studentEmail, limit = 10, offset = 0) {
         }
 
         const data = await response.json();
-        console.log('✅ Blueprints fetched successfully:', data.count, 'blueprints');
         return data.data; // Return the array of blueprints
     } catch (error) {
         console.error('❌ Failed to fetch blueprints:', error);
@@ -186,7 +182,6 @@ async function getBlueprintById(blueprintId) {
         }
 
         const data = await response.json();
-        console.log('✅ Blueprint fetched successfully');
         return data.data;
     } catch (error) {
         console.error('❌ Failed to fetch blueprint:', error);
@@ -214,7 +209,6 @@ async function getBlueprintStatsByUserId(azureAdUserId) {
         }
 
         const data = await response.json();
-        console.log('✅ Blueprint stats fetched successfully');
         return data.data;
     } catch (error) {
         console.error('❌ Failed to fetch blueprint stats by user ID:', error);
@@ -242,7 +236,6 @@ async function getBlueprintStats(studentEmail) {
         }
 
         const data = await response.json();
-        console.log('✅ Blueprint stats fetched successfully');
         return data.data;
     } catch (error) {
         console.error('❌ Failed to fetch blueprint stats:', error);
@@ -270,7 +263,6 @@ async function getFeaturedBlueprints(limit = 10) {
         }
 
         const data = await response.json();
-        console.log('✅ Featured blueprints fetched successfully:', data.count, 'blueprints');
         return data.data;
     } catch (error) {
         console.error('❌ Failed to fetch featured blueprints:', error);

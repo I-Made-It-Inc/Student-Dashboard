@@ -193,8 +193,6 @@ async function submitBlueprint(e) {
             throw new Error('User not authenticated');
         }
 
-        console.log('Submitting blueprint for user:', userData.email);
-
         // Calculate total word count
         const totalWordCount = Object.values(responses).reduce((sum, r) => sum + r.wordCount, 0);
 
@@ -221,9 +219,8 @@ async function submitBlueprint(e) {
 
         // Only submit to database if in Microsoft mode and API is available
         if (authMode === 'microsoft' && window.IMI?.api?.submitBlueprint) {
-            console.log('💾 Saving to database...', blueprintData);
             const result = await window.IMI.api.submitBlueprint(blueprintData);
-            console.log('✅ Blueprint saved to database:', result);
+            console.log('✅ Blueprint submitted:', totalWordCount, 'words,', xpEarned, 'XP');
 
             // Show success with database confirmation
             window.IMI.utils.showNotification(
@@ -242,7 +239,6 @@ async function submitBlueprint(e) {
             }
         } else {
             // Developer mode or API not available - save to sessionStorage
-            console.log('🔧 Developer mode - Saving Blueprint to sessionStorage');
             await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
 
             // Save to sessionStorage (persists until browser closes or hard refresh)
@@ -336,9 +332,7 @@ function collectResponses() {
 
 // Save draft
 function saveDraft() {
-    console.log('saveDraft() called');
     const responses = collectResponses();
-    console.log('Collected responses:', responses);
 
     // Collect article information
     const articleInfo = {
@@ -354,7 +348,6 @@ function saveDraft() {
         timestamp: Date.now()
     };
     localStorage.setItem('blueprint_draft', JSON.stringify(draftData));
-    console.log('Saved to localStorage:', draftData);
 
     window.IMI.utils.showNotification('Draft saved successfully!', 'success');
 
@@ -391,50 +384,30 @@ function clearSubmissionForm() {
 let autoSaveSetupComplete = false;
 function setupAutoSaveDrafts() {
     if (autoSaveSetupComplete) {
-        console.log('setupAutoSaveDrafts already setup, skipping');
         return;
     }
 
-    console.log('setupAutoSaveDrafts called');
     let autoSaveTimer;
-
     const textareas = document.querySelectorAll('.submission-textarea');
-    console.log('Found textareas for auto-save:', textareas.length);
 
-    textareas.forEach((textarea, index) => {
-        console.log(`Setting up auto-save for textarea ${index + 1}:`, textarea.id, textarea);
-        console.log('Textarea exists in DOM:', document.contains(textarea));
-        console.log('Textarea is connected:', textarea.isConnected);
-
-        // Test if we can interact with the textarea
-        textarea.addEventListener('click', () => {
-            console.log('👆 Click detected on textarea:', textarea.id);
-        });
-
-        textarea.addEventListener('focus', () => {
-            console.log('🎯 Focus detected on textarea:', textarea.id);
-        });
-
+    textareas.forEach((textarea) => {
         textarea.addEventListener('input', (event) => {
-            console.log('⌨️ Input detected in textarea:', textarea.id, 'Value length:', textarea.value.length);
             clearTimeout(autoSaveTimer);
-            
+
             // Show saving indicator
             const statusElement = textarea.closest('.submission-section')?.querySelector('.section-status');
             if (statusElement && textarea.value.length > 0) {
                 statusElement.textContent = '⏱ Saving...';
             }
-            
+
             // Auto-save after 2 seconds of inactivity
             autoSaveTimer = setTimeout(() => {
-                console.log('Auto-saving triggered for:', textarea.id);
                 saveDraft();
             }, 2000);
         });
     });
 
     autoSaveSetupComplete = true;
-    console.log('Auto-save setup completed');
 }
 
 // Update tier progress
@@ -614,15 +587,12 @@ let blueprintDraftLoadedThisInitialization = false;
 function loadDraft() {
     // Check if we're on the blueprint page
     const currentPage = window.location.hash.slice(1) || 'dashboard';
-    console.log('Blueprint loadDraft called, current page:', currentPage);
     if (currentPage !== 'blueprint') {
-        console.log('Not on blueprint page, skipping draft load');
         return; // Don't load draft if not on blueprint page
     }
 
     // Prevent multiple draft loads during the same initialization cycle
     if (blueprintDraftLoadedThisInitialization) {
-        console.log('Draft already loaded this initialization, skipping');
         return;
     }
 
@@ -636,14 +606,12 @@ function loadDraft() {
             localStorage.removeItem('innovation_draft');
         }
     }
-    console.log('Blueprint draft found:', !!saved);
+
     if (saved) {
         const draft = JSON.parse(saved);
-        console.log('Draft data:', draft);
 
         // Check if draft is not too old (7 days)
         const age = Date.now() - draft.timestamp;
-        console.log('Draft age (days):', age / (24 * 60 * 60 * 1000));
         if (age < 7 * 24 * 60 * 60 * 1000) {
             // Restore article information
             if (draft.articleInfo) {
@@ -785,9 +753,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // It only clears when tab/window is closed or on logout
         const hasDraft = localStorage.getItem('blueprint_draft');
         if (hasDraft) {
-            console.log('📋 Draft found on page load - will load if on blueprint page');
-            console.log('localStorage blueprint_draft:', localStorage.getItem('blueprint_draft'));
-            console.log('localStorage innovation_draft:', localStorage.getItem('innovation_draft'));
             setTimeout(() => {
                 loadDraft();
             }, 100);
@@ -809,10 +774,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (saveDraftBtn) saveDraftBtn.addEventListener('click', saveDraft);
         if (submitBtn) submitBtn.addEventListener('click', submitBlueprint);
         if (resetBtn) resetBtn.addEventListener('click', resetAllSections);
-
-        console.log('Blueprint page initialized successfully');
     } catch (error) {
-        console.error('Error initializing blueprint page:', error);
+        console.error('❌ Error initializing blueprint page:', error);
     }
 });
 
@@ -890,15 +853,12 @@ const mockBlueprints = [
 
 // Render past blueprints (initial load or reset)
 async function renderPastBlueprints(reset = true) {
-    console.log('📋 renderPastBlueprints called, reset:', reset);
-
     const container = document.getElementById('past-blueprints-container');
     const countElement = document.getElementById('past-blueprints-count');
     const loadMoreContainer = document.getElementById('load-more-blueprints');
     const showingCount = document.getElementById('blueprints-showing-count');
 
     if (!container) {
-        console.log('❌ Container not found');
         return;
     }
 
@@ -915,16 +875,12 @@ async function renderPastBlueprints(reset = true) {
 
     // Get blueprints (mock for developer mode, API for Microsoft mode)
     const authMode = sessionStorage.getItem('imi_auth_mode');
-    console.log('🔐 Auth mode:', authMode);
-
     let blueprints = [];
 
     try {
         if (authMode === 'developer') {
             // Developer mode: combine sessionStorage blueprints with mock data
-            console.log('🔧 Developer mode - loading from sessionStorage + mock data');
             const sessionBlueprints = JSON.parse(sessionStorage.getItem('imi_blueprints') || '[]');
-            console.log('📦 Session blueprints found:', sessionBlueprints.length);
 
             // Combine session blueprints (newest first) with mock blueprints
             const allBlueprints = [...sessionBlueprints, ...mockBlueprints];
@@ -935,58 +891,40 @@ async function renderPastBlueprints(reset = true) {
         } else if (authMode === 'microsoft') {
             // Microsoft mode: fetch from API with pagination
             const userData = window.IMI?.data?.userData;
-            console.log('👤 User data:', userData);
-            console.log('📡 API available:', !!window.IMI?.api?.getBlueprintsByUserId, '(userId)', !!window.IMI?.api?.getBlueprints, '(email)');
 
             if (userData && window.IMI?.api) {
                 // Try Azure AD User ID first (PRIMARY METHOD)
                 if (userData.id && window.IMI.api.getBlueprintsByUserId) {
-                    console.log('📡 Fetching blueprints by userId:', userData.id);
-
                     blueprints = await window.IMI.api.getBlueprintsByUserId(
                         userData.id,
                         blueprintsPaginationState.limit,
                         blueprintsPaginationState.offset
                     );
-                    console.log('✅ Blueprints fetched by userId:', blueprints.length);
 
                     // Get total count from stats
-                    console.log('📊 Fetching blueprint stats by userId...');
                     const stats = await window.IMI.api.getBlueprintStatsByUserId(userData.id);
-                    console.log('✅ Stats fetched:', stats);
 
                     blueprintsPaginationState.totalCount = stats.totalSubmissions || 0;
                     blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < blueprintsPaginationState.totalCount;
                 }
                 // Fallback to email-based method (LEGACY)
                 else if (userData.email && window.IMI.api.getBlueprints) {
-                    console.log('📡 Fetching blueprints by email (LEGACY):', userData.email);
-
                     blueprints = await window.IMI.api.getBlueprints(
                         userData.email,
                         blueprintsPaginationState.limit,
                         blueprintsPaginationState.offset
                     );
-                    console.log('✅ Blueprints fetched by email:', blueprints.length);
 
                     // Get total count from stats
-                    console.log('📊 Fetching blueprint stats by email...');
                     const stats = await window.IMI.api.getBlueprintStats(userData.email);
-                    console.log('✅ Stats fetched:', stats);
 
                     blueprintsPaginationState.totalCount = stats.totalSubmissions || 0;
                     blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < blueprintsPaginationState.totalCount;
                 } else {
-                    console.warn('⚠️ Cannot fetch blueprints - missing requirements:', {
-                        hasUserData: !!userData,
-                        hasUserId: !!userData?.id,
-                        hasEmail: !!userData?.email,
-                        hasUserIdAPI: !!window.IMI?.api?.getBlueprintsByUserId,
-                        hasEmailAPI: !!window.IMI?.api?.getBlueprints
-                    });
+                    console.warn('⚠️ Cannot fetch blueprints - user data or API not available');
                 }
             } else {
-                console.warn('⚠️ Cannot fetch blueprints - missing userData or API');
+                console.warn('⚠️ Cannot fetch blueprints - user data or API not available');
             }
         }
 
