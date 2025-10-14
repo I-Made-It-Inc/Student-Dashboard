@@ -207,18 +207,15 @@ function usePlaceholderData() {
 
 // Update user interface with data
 function updateUserInterface(userData) {
-    // Update profile elements
-    const avatars = document.querySelectorAll('.user-avatar, .profile-avatar');
-    avatars.forEach(avatar => {
-        avatar.textContent = userData.initials;
-    });
-    
+    // Note: Avatar updates are handled by graph.js updateUIWithUserData() to properly support photos
+    // Don't update avatars here to avoid overwriting photo backgrounds
+
     // Update welcome message
     const welcomeMessage = document.querySelector('.profile-info h2');
     if (welcomeMessage) {
         welcomeMessage.textContent = `Welcome back, ${userData.name.split(' ')[0]}!`;
     }
-    
+
     // Update stats
     updateDashboardStats(userData);
 }

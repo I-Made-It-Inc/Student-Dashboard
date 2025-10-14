@@ -169,9 +169,10 @@ async function updateUIWithUserData(userData, photoUrl = null) {
             avatar.style.backgroundImage = `url(${photoUrl})`;
             avatar.style.backgroundSize = 'cover';
             avatar.style.backgroundPosition = 'center';
-            avatar.textContent = ''; // Remove initials
+            avatar.innerHTML = ''; // Clear all text and child elements
         } else {
             // Use initials
+            avatar.style.backgroundImage = 'none'; // Clear any previous photo
             avatar.textContent = userData.initials;
         }
     });
