@@ -372,7 +372,6 @@
 .form-textarea:focus {
     outline: none;
     border-color: var(--imi-blue);
-    box-shadow: 0 0 0 3px rgba(255, 213, 2, 0.2);
 }
 
 .form-textarea {
