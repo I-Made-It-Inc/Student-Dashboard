@@ -705,6 +705,25 @@ function handleDataRoomRoute(route) {
 
     console.log('Handling data room route:', route, 'Mode:', mode, 'Room ID:', roomId);
 
+    // IMMEDIATELY hide nav bar and all page sections before doing anything else
+    // This prevents the dashboard from flashing while we wait for user data
+    const nav = document.querySelector('.nav');
+    if (nav) {
+        nav.style.display = 'none';
+        console.log('✅ Nav bar hidden for data room view');
+    }
+
+    const mainContainer = document.querySelector('.container');
+    if (mainContainer) {
+        mainContainer.style.display = 'none';
+        console.log('✅ Main container hidden for data room view');
+    }
+
+    // Hide all page sections
+    document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.remove('active');
+    });
+
     // Check if the preview function is available
     if (typeof window.showDataRoomPreview === 'function') {
         if (mode === 'data-room-preview') {

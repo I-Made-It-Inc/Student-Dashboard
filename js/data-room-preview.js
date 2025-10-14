@@ -1060,6 +1060,12 @@ function exitPreviewMode() {
         previewContainer.style.display = 'none';
     }
 
+    // Show nav bar
+    const nav = document.querySelector('.nav');
+    if (nav) {
+        nav.style.display = '';
+    }
+
     // Show main container
     const mainContainer = document.querySelector('.container');
     if (mainContainer) {
