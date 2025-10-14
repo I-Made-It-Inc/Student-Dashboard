@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const loginPage = document.getElementById('login-page');
         if (loginPage) loginPage.classList.add('active');
 
+        // Mark page as ready to prevent FOUC
+        document.body.classList.add('js-ready');
+
         // Prevent URL manipulation - force back to login if they change the hash
         window.addEventListener('hashchange', function() {
             if (sessionStorage.getItem('imi_authenticated') !== 'true') {
