@@ -13,10 +13,7 @@ function initializeNavigation() {
     // Set up user menu dropdown
     setupUserMenu();
 
-    // Handle browser back/forward
-    setupHistoryManagement();
-
-    // Show initial page from URL or default to dashboard
+    // Show initial page FIRST (before setting up history management to avoid double-navigation)
     const initialPage = getPageFromURL();
 
     // Check if this is a data room preview/external view
@@ -27,6 +24,14 @@ function initializeNavigation() {
         console.log('Initial page is regular page:', initialPage);
         showPage(initialPage, false); // Don't push state on initial load
     }
+
+    // Set up browser back/forward AFTER initial page is shown
+    // This prevents the hashchange listener from firing during initialization
+    setupHistoryManagement();
+
+    // Mark the page as ready (prevents FOUC)
+    // This will fade in the container via CSS transition
+    document.body.classList.add('js-ready');
 }
 
 // Show specific page
@@ -681,9 +686,15 @@ function setupHistoryManagement() {
         console.log('🔄 === HASHCHANGE HANDLING COMPLETE ===');
     });
 
-    // Set initial state but don't show page here (it's handled in initializeNavigation)
-    const initialPage = getPageFromURL() || 'dashboard';
-    history.replaceState({ page: initialPage }, '', `#${initialPage}`);
+    // Set initial state only if not already set correctly
+    // (Page has already been shown in initializeNavigation before this function is called)
+    const currentHash = window.location.hash.slice(1);
+    const currentPage = getPageFromURL();
+
+    // Only update history state if the current state is not set or is different
+    if (!history.state || history.state.page !== currentPage) {
+        history.replaceState({ page: currentPage }, '', `#${currentPage}`);
+    }
 }
 
 // Handle data room preview and external routes

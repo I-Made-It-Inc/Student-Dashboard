@@ -79,6 +79,14 @@ body {
     max-width: 1400px;
     margin: 0 auto;
     padding: var(--spacing-lg);
+    /* Prevent FOUC - hide container until JavaScript initializes */
+    opacity: 0;
+    transition: opacity 0.15s ease-in;
+}
+
+/* Show container when JavaScript is ready */
+body.js-ready .container {
+    opacity: 1;
 }
 
 /* Typography */
