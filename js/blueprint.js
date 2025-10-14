@@ -9,21 +9,24 @@ function initializeBlueprintChallenge() {
 
     // Set up word counters
     setupWordCounters();
-    
+
     // Set up submission handlers
     setupSubmissionHandlers();
-    
+
     // Load current challenge data
     loadCurrentChallenge();
-    
+
     // Set up auto-save for drafts
     setupAutoSaveDrafts();
-    
+
     // Set up XP chart
     setupXPChart();
-    
+
     // Set up redemption handlers
     setupRedemptionHandlers();
+
+    // Load past blueprints
+    renderPastBlueprints();
 }
 
 // Setup word counters for each section
@@ -144,58 +147,156 @@ function setupSubmissionHandlers() {
 // Submit blueprint
 async function submitBlueprint(e) {
     e.preventDefault();
-    
+
+    // Validate article information first
+    const articleTitle = document.getElementById('article-title')?.value.trim();
+    const articleSource = document.getElementById('article-source')?.value.trim();
+    const articleUrl = document.getElementById('article-url')?.value.trim();
+
+    if (!articleTitle || !articleSource || !articleUrl) {
+        window.IMI.utils.showNotification('Please fill in all article information fields (Title, Source, and URL).', 'warning');
+        // Scroll to article info section
+        document.querySelector('.article-info-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    // Validate URL format
+    try {
+        new URL(articleUrl);
+    } catch {
+        window.IMI.utils.showNotification('Please enter a valid URL for the article link.', 'warning');
+        document.getElementById('article-url')?.focus();
+        return;
+    }
+
     const progress = updateOverallProgress();
-    
+
     if (progress.completedSections === 0) {
         window.IMI.utils.showNotification('Please complete at least one section before submitting.', 'warning');
         return;
     }
-    
+
     // Collect all responses
     const responses = collectResponses();
-    
+
     // Show loading state
     const submitButton = e.target;
     submitButton.disabled = true;
     submitButton.textContent = 'Submitting...';
-    
+
     try {
-        // In production, submit blueprint
-        console.log('Submitting blueprint:', responses);
-        
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Show success - students get full XP for passing
-        window.IMI.utils.showNotification(
-            `Blueprint submitted successfully! You earned ${progress.totalXP} XP.`,
-            'success'
-        );
-        
+        // Check if user is authenticated
+        const userData = window.IMI?.data?.userData;
+        const authMode = sessionStorage.getItem('imi_auth_mode');
+
+        if (!userData || !userData.email) {
+            throw new Error('User not authenticated');
+        }
+
+        // Calculate total word count
+        const totalWordCount = Object.values(responses).reduce((sum, r) => sum + r.wordCount, 0);
+
+        // Calculate XP: 20 XP per section with ≥100 words (max 100 XP for basic submission)
+        const xpEarned = progress.totalXP; // Already calculated in updateOverallProgress()
+
+        // Prepare blueprint data for database
+        const blueprintData = {
+            azureAdUserId: userData.id || null, // Azure AD Object ID (immutable)
+            studentEmail: userData.email,
+            contactId: userData.contactId || null,
+            articleTitle: articleTitle,
+            articleSource: articleSource,
+            articleUrl: articleUrl,
+            trendspotter: responses['trendspotter']?.content || null,
+            futureVisionary: responses['future-visionary']?.content || null,
+            innovationCatalyst: responses['innovation-catalyst']?.content || null,
+            connector: responses['connector']?.content || null,
+            growthHacker: responses['growth-hacker']?.content || null,
+            xpEarned: xpEarned, // 20 XP per completed section (≥100 words)
+            wordCount: totalWordCount,
+            status: 'submitted'
+        };
+
+        // Only submit to database if in Microsoft mode and API is available
+        if (authMode === 'microsoft' && window.IMI?.api?.submitBlueprint) {
+            const result = await window.IMI.api.submitBlueprint(blueprintData);
+            console.log('✅ Blueprint submitted:', totalWordCount, 'words,', xpEarned, 'XP');
+
+            // Show success with database confirmation
+            window.IMI.utils.showNotification(
+                `Blueprint #${result.data.blueprintId} submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections).`,
+                'success'
+            );
+
+            // Refresh past blueprints list
+            if (typeof renderPastBlueprints === 'function') {
+                renderPastBlueprints();
+            }
+
+            // Update dashboard blueprint challenge (if function exists)
+            if (typeof updateDashboardBlueprintChallenge === 'function') {
+                updateDashboardBlueprintChallenge();
+            }
+        } else {
+            // Developer mode or API not available - save to sessionStorage
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
+
+            // Save to sessionStorage (persists until browser closes or hard refresh)
+            const sessionBlueprints = JSON.parse(sessionStorage.getItem('imi_blueprints') || '[]');
+            const newBlueprint = {
+                ...blueprintData,
+                blueprintId: Date.now(), // Use timestamp as ID
+                submissionDate: new Date().toISOString(),
+                studentEmail: userData.email
+            };
+            sessionBlueprints.unshift(newBlueprint); // Add to beginning
+            sessionStorage.setItem('imi_blueprints', JSON.stringify(sessionBlueprints));
+
+            window.IMI.utils.showNotification(
+                `Blueprint submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections). (Saved to session)`,
+                'success'
+            );
+
+            // Refresh past blueprints list
+            if (typeof renderPastBlueprints === 'function') {
+                renderPastBlueprints();
+            }
+
+            // Update dashboard blueprint challenge (if function exists)
+            if (typeof updateDashboardBlueprintChallenge === 'function') {
+                updateDashboardBlueprintChallenge();
+            }
+        }
+
         // Update streak and tier
         updateStreak();
-        updateTierProgress(progress.totalXP);
-        
+        updateTierProgress(xpEarned);
+
         // Trigger Blue Spark for Blueprint submission
         if (window.BlueSpark) {
             const event = new CustomEvent('blueprintSubmitted', {
                 detail: {
-                    topic: 'The Future of Sustainable Cities',
+                    topic: blueprintData.articleTitle,
                     sections: Object.keys(responses),
-                    xpEarned: progress.totalXP,
+                    xpEarned: xpEarned,
                     completedSections: progress.completedSections
                 }
             });
             document.dispatchEvent(event);
         }
-        
-        // Clear form
+
+        // Clear form after successful submission
         clearSubmissionForm();
-        
+
+        // Clear draft from localStorage
+        localStorage.removeItem('blueprint_draft');
+
     } catch (error) {
-        console.error('Submission error:', error);
-        window.IMI.utils.showNotification('Error submitting blueprint. Please try again.', 'error');
+        console.error('❌ Submission error:', error);
+        window.IMI.utils.showNotification(
+            `Error submitting blueprint: ${error.message}. Please try again.`,
+            'error'
+        );
     } finally {
         submitButton.disabled = false;
         submitButton.textContent = 'Submit Blueprint';
@@ -231,20 +332,25 @@ function collectResponses() {
 
 // Save draft
 function saveDraft() {
-    console.log('saveDraft() called');
     const responses = collectResponses();
-    console.log('Collected responses:', responses);
+
+    // Collect article information
+    const articleInfo = {
+        title: document.getElementById('article-title')?.value || '',
+        source: document.getElementById('article-source')?.value || '',
+        url: document.getElementById('article-url')?.value || ''
+    };
 
     // Save to localStorage (in production, save to backend)
     const draftData = {
+        articleInfo,
         responses,
         timestamp: Date.now()
     };
     localStorage.setItem('blueprint_draft', JSON.stringify(draftData));
-    console.log('Saved to localStorage:', draftData);
 
     window.IMI.utils.showNotification('Draft saved successfully!', 'success');
-    
+
     // Update all section statuses to saved
     document.querySelectorAll('.section-status').forEach(status => {
         if (status.textContent !== 'Not started') {
@@ -253,58 +359,20 @@ function saveDraft() {
     });
 }
 
-// Submit blueprint for review
-async function submitBlueprint(e) {
-    e.preventDefault();
-    
-    const progress = updateOverallProgress();
-    
-    if (progress.completedSections === 0) {
-        window.IMI.utils.showNotification('Please complete at least one section before submitting.', 'warning');
-        return;
-    }
-    
-    // Collect all responses
-    const responses = collectResponses();
-    
-    // Show loading state
-    const submitButton = e.target;
-    submitButton.disabled = true;
-    submitButton.textContent = 'Submitting...';
-    
-    try {
-        // In production, send to AI grading API
-        console.log('Submitting blueprint for review:', responses);
-        
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Show success - students get full XP when they pass
-        window.IMI.utils.showNotification(
-            `Blueprint submitted successfully! You earned ${progress.totalXP} XP.`,
-            'success'
-        );
-        
-        // Update streak
-        updateStreak();
-        
-        // Update tier progress
-        updateTierProgress(progress.totalXP);
-        
-        // Clear form
-        clearSubmissionForm();
-        
-    } catch (error) {
-        console.error('Submission error:', error);
-        window.IMI.utils.showNotification('Error submitting blueprint. Please try again.', 'error');
-    } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = 'Submit Blueprint';
-    }
-}
+// Note: submitBlueprint function is defined above (line 145)
 
 // Clear submission form
 function clearSubmissionForm() {
+    // Clear article information fields
+    const articleTitle = document.getElementById('article-title');
+    const articleSource = document.getElementById('article-source');
+    const articleUrl = document.getElementById('article-url');
+
+    if (articleTitle) articleTitle.value = '';
+    if (articleSource) articleSource.value = '';
+    if (articleUrl) articleUrl.value = '';
+
+    // Clear all Blueprint section textareas
     document.querySelectorAll('.submission-textarea').forEach(textarea => {
         textarea.value = '';
         updateWordCount(textarea);
@@ -316,50 +384,30 @@ function clearSubmissionForm() {
 let autoSaveSetupComplete = false;
 function setupAutoSaveDrafts() {
     if (autoSaveSetupComplete) {
-        console.log('setupAutoSaveDrafts already setup, skipping');
         return;
     }
 
-    console.log('setupAutoSaveDrafts called');
     let autoSaveTimer;
-
     const textareas = document.querySelectorAll('.submission-textarea');
-    console.log('Found textareas for auto-save:', textareas.length);
 
-    textareas.forEach((textarea, index) => {
-        console.log(`Setting up auto-save for textarea ${index + 1}:`, textarea.id, textarea);
-        console.log('Textarea exists in DOM:', document.contains(textarea));
-        console.log('Textarea is connected:', textarea.isConnected);
-
-        // Test if we can interact with the textarea
-        textarea.addEventListener('click', () => {
-            console.log('👆 Click detected on textarea:', textarea.id);
-        });
-
-        textarea.addEventListener('focus', () => {
-            console.log('🎯 Focus detected on textarea:', textarea.id);
-        });
-
+    textareas.forEach((textarea) => {
         textarea.addEventListener('input', (event) => {
-            console.log('⌨️ Input detected in textarea:', textarea.id, 'Value length:', textarea.value.length);
             clearTimeout(autoSaveTimer);
-            
+
             // Show saving indicator
             const statusElement = textarea.closest('.submission-section')?.querySelector('.section-status');
             if (statusElement && textarea.value.length > 0) {
                 statusElement.textContent = '⏱ Saving...';
             }
-            
+
             // Auto-save after 2 seconds of inactivity
             autoSaveTimer = setTimeout(() => {
-                console.log('Auto-saving triggered for:', textarea.id);
                 saveDraft();
             }, 2000);
         });
     });
 
     autoSaveSetupComplete = true;
-    console.log('Auto-save setup completed');
 }
 
 // Update tier progress
@@ -535,19 +583,16 @@ function setupRedemptionHandlers() {
 // Track if draft has been loaded to prevent multiple notifications during same initialization
 let blueprintDraftLoadedThisInitialization = false;
 
-// Load saved draft - only when on innovation page
+// Load saved draft - only when on blueprint page
 function loadDraft() {
-    // Check if we're on the innovation page
+    // Check if we're on the blueprint page
     const currentPage = window.location.hash.slice(1) || 'dashboard';
-    console.log('Innovation loadDraft called, current page:', currentPage);
-    if (currentPage !== 'innovation') {
-        console.log('Not on innovation page, skipping draft load');
-        return; // Don't load draft if not on innovation page
+    if (currentPage !== 'blueprint') {
+        return; // Don't load draft if not on blueprint page
     }
 
     // Prevent multiple draft loads during the same initialization cycle
     if (blueprintDraftLoadedThisInitialization) {
-        console.log('Draft already loaded this initialization, skipping');
         return;
     }
 
@@ -561,15 +606,30 @@ function loadDraft() {
             localStorage.removeItem('innovation_draft');
         }
     }
-    console.log('Blueprint draft found:', !!saved);
+
     if (saved) {
         const draft = JSON.parse(saved);
-        console.log('Draft data:', draft);
 
         // Check if draft is not too old (7 days)
         const age = Date.now() - draft.timestamp;
-        console.log('Draft age (days):', age / (24 * 60 * 60 * 1000));
         if (age < 7 * 24 * 60 * 60 * 1000) {
+            // Restore article information
+            if (draft.articleInfo) {
+                const articleTitle = document.getElementById('article-title');
+                const articleSource = document.getElementById('article-source');
+                const articleUrl = document.getElementById('article-url');
+
+                if (articleTitle && draft.articleInfo.title) {
+                    articleTitle.value = draft.articleInfo.title;
+                }
+                if (articleSource && draft.articleInfo.source) {
+                    articleSource.value = draft.articleInfo.source;
+                }
+                if (articleUrl && draft.articleInfo.url) {
+                    articleUrl.value = draft.articleInfo.url;
+                }
+            }
+
             // Restore responses
             Object.entries(draft.responses).forEach(([section, data]) => {
                 const textarea = document.querySelector(`#${section}-textarea`);
@@ -688,22 +748,11 @@ window.showPointsMarketplace = showPointsMarketplace;
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
     try {
-        // Detect hard refresh (Ctrl+Shift+R) vs soft refresh (F5)
-        // Use sessionStorage flag method - sessionStorage persists through soft refresh but not hard refresh
-        const isHardRefresh = !sessionStorage.getItem('pageLoadFlag');
-        sessionStorage.setItem('pageLoadFlag', 'loaded');
-
-        // Clear draft only on hard refresh
-        if (isHardRefresh) {
-            localStorage.removeItem('blueprint_draft');
-            localStorage.removeItem('innovation_draft'); // Also clear old key if it exists
-            console.log('Hard refresh detected - cleared blueprint draft');
-        } else {
-            // On soft refresh, try to load draft regardless of current hash
-            // because the hash might not be set yet when DOMContentLoaded fires
-            console.log('Soft refresh detected - attempting to load draft');
-            console.log('localStorage blueprint_draft:', localStorage.getItem('blueprint_draft'));
-            console.log('localStorage innovation_draft:', localStorage.getItem('innovation_draft'));
+        // Load draft on initial page load
+        // Note: sessionStorage (blueprints) persists through ALL refresh types
+        // It only clears when tab/window is closed or on logout
+        const hasDraft = localStorage.getItem('blueprint_draft');
+        if (hasDraft) {
             setTimeout(() => {
                 loadDraft();
             }, 100);
@@ -725,16 +774,360 @@ document.addEventListener('DOMContentLoaded', function() {
         if (saveDraftBtn) saveDraftBtn.addEventListener('click', saveDraft);
         if (submitBtn) submitBtn.addEventListener('click', submitBlueprint);
         if (resetBtn) resetBtn.addEventListener('click', resetAllSections);
-
-        console.log('Blueprint page initialized successfully');
     } catch (error) {
-        console.error('Error initializing blueprint page:', error);
+        console.error('❌ Error initializing blueprint page:', error);
     }
 });
 
-// Load draft when navigating to innovation page
+// Load draft when navigating to blueprint page
 document.addEventListener('pageChange', function(event) {
-    if (event.detail && event.detail.page === 'innovation') {
+    if (event.detail && event.detail.page === 'blueprint') {
         setTimeout(loadDraft, 100); // Small delay to ensure DOM is ready
+    }
+});
+
+// ====================
+// Past Blueprints Feature
+// ====================
+
+// Pagination state
+let blueprintsPaginationState = {
+    offset: 0,
+    limit: 4,
+    hasMore: false,
+    totalLoaded: 0,
+    totalCount: 0
+};
+
+// Mock blueprint data (developer mode only)
+const mockBlueprints = [
+    {
+        blueprintId: 1,
+        studentEmail: 'developer@imadeit.ai',
+        submissionDate: '2025-10-07T14:30:00Z',
+        articleTitle: 'The Rise of Vertical Farming in Urban Centers',
+        articleSource: 'MIT Technology Review',
+        articleUrl: 'https://technologyreview.com/vertical-farming',
+        trendspotter: 'Urban populations are growing rapidly, and traditional agriculture can\'t keep up. Vertical farming uses hydroponics and LED lighting to grow food in skyscrapers, reducing transportation costs and environmental impact. Singapore and the Netherlands are leading this revolution with government-backed initiatives.',
+        futureVisionary: 'In 10 years, every major city will have vertical farms integrated into residential buildings. Imagine apartment complexes with food-producing walls, where residents grow their own vegetables. This will reduce food waste, cut carbon emissions by 50%, and create new jobs in urban agriculture.',
+        innovationCatalyst: 'This trend could transform healthcare by creating "medical gardens" - vertical farms that grow medicinal plants tailored to individual patients. Pharmacies could become hyper-local, growing customized treatments on-demand using AI to optimize plant genetics.',
+        connector: 'This requires collaboration between urban planners, agricultural engineers, AI developers, and public health experts. Real estate developers need to partner with biotech firms to retrofit buildings with farming infrastructure.',
+        growthHacker: 'This article inspired me to explore sustainable technology careers. I\'m now researching agricultural engineering programs and considering internships in vertical farming startups. My first step: join a community garden and learn hydroponics basics.',
+        xpEarned: 100,
+        wordCount: 487,
+        status: 'submitted'
+    },
+    {
+        blueprintId: 2,
+        studentEmail: 'developer@imadeit.ai',
+        submissionDate: '2025-09-30T10:15:00Z',
+        articleTitle: 'AI-Powered Energy Grids Transform Power Distribution',
+        articleSource: 'Harvard Business Review',
+        articleUrl: 'https://hbr.org/ai-energy-grids',
+        trendspotter: 'Traditional power grids waste 30% of electricity due to inefficient routing. AI-powered smart grids use predictive algorithms to optimize energy distribution in real-time, reducing waste and costs. Companies like Google and Tesla are pioneering this technology.',
+        futureVisionary: null,
+        innovationCatalyst: null,
+        connector: null,
+        growthHacker: null,
+        xpEarned: 20,
+        wordCount: 95,
+        status: 'submitted'
+    },
+    {
+        blueprintId: 3,
+        studentEmail: 'developer@imadeit.ai',
+        submissionDate: '2025-09-23T16:45:00Z',
+        articleTitle: 'The Future of Remote Work: Hybrid Models and Virtual Offices',
+        articleSource: 'Bloomberg',
+        articleUrl: 'https://bloomberg.com/remote-work-future',
+        trendspotter: 'Post-pandemic, companies are adopting hybrid work models that balance flexibility with collaboration. Virtual reality offices are emerging, allowing remote teams to interact in immersive 3D spaces. This is reshaping corporate real estate and talent acquisition.',
+        futureVisionary: 'By 2030, most knowledge workers will split time between home offices, coworking spaces, and VR meeting rooms. Companies will hire globally without location constraints, creating truly international teams and driving innovation through diverse perspectives.',
+        innovationCatalyst: 'This trend could revolutionize education by creating "virtual campuses" where students from different countries attend the same classes in VR, collaborating on projects without travel costs. Universities could expand globally without building physical facilities.',
+        connector: null,
+        growthHacker: null,
+        xpEarned: 60,
+        wordCount: 312,
+        status: 'submitted'
+    }
+];
+
+// Render past blueprints (initial load or reset)
+async function renderPastBlueprints(reset = true) {
+    const container = document.getElementById('past-blueprints-container');
+    const countElement = document.getElementById('past-blueprints-count');
+    const loadMoreContainer = document.getElementById('load-more-blueprints');
+    const showingCount = document.getElementById('blueprints-showing-count');
+
+    if (!container) {
+        return;
+    }
+
+    // Reset pagination state if needed
+    if (reset) {
+        blueprintsPaginationState = {
+            offset: 0,
+            limit: 4,
+            hasMore: false,
+            totalLoaded: 0,
+            totalCount: 0
+        };
+    }
+
+    // Get blueprints (mock for developer mode, API for Microsoft mode)
+    const authMode = sessionStorage.getItem('imi_auth_mode');
+    let blueprints = [];
+
+    try {
+        if (authMode === 'developer') {
+            // Developer mode: combine sessionStorage blueprints with mock data
+            const sessionBlueprints = JSON.parse(sessionStorage.getItem('imi_blueprints') || '[]');
+
+            // Combine session blueprints (newest first) with mock blueprints
+            const allBlueprints = [...sessionBlueprints, ...mockBlueprints];
+
+            blueprints = allBlueprints.slice(blueprintsPaginationState.offset, blueprintsPaginationState.offset + blueprintsPaginationState.limit);
+            blueprintsPaginationState.totalCount = allBlueprints.length;
+            blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < allBlueprints.length;
+        } else if (authMode === 'microsoft') {
+            // Microsoft mode: fetch from API with pagination
+            const userData = window.IMI?.data?.userData;
+
+            if (userData && window.IMI?.api) {
+                // Try Azure AD User ID first (PRIMARY METHOD)
+                if (userData.id && window.IMI.api.getBlueprintsByUserId) {
+                    blueprints = await window.IMI.api.getBlueprintsByUserId(
+                        userData.id,
+                        blueprintsPaginationState.limit,
+                        blueprintsPaginationState.offset
+                    );
+
+                    // Get total count from stats
+                    const stats = await window.IMI.api.getBlueprintStatsByUserId(userData.id);
+
+                    blueprintsPaginationState.totalCount = stats.totalSubmissions || 0;
+                    blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < blueprintsPaginationState.totalCount;
+                }
+                // Fallback to email-based method (LEGACY)
+                else if (userData.email && window.IMI.api.getBlueprints) {
+                    blueprints = await window.IMI.api.getBlueprints(
+                        userData.email,
+                        blueprintsPaginationState.limit,
+                        blueprintsPaginationState.offset
+                    );
+
+                    // Get total count from stats
+                    const stats = await window.IMI.api.getBlueprintStats(userData.email);
+
+                    blueprintsPaginationState.totalCount = stats.totalSubmissions || 0;
+                    blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < blueprintsPaginationState.totalCount;
+                } else {
+                    console.warn('⚠️ Cannot fetch blueprints - user data or API not available');
+                }
+            } else {
+                console.warn('⚠️ Cannot fetch blueprints - user data or API not available');
+            }
+        }
+
+        // Update loaded count
+        if (reset) {
+            blueprintsPaginationState.totalLoaded = blueprints.length;
+            // Clear container on reset
+            container.innerHTML = '';
+        } else {
+            blueprintsPaginationState.totalLoaded += blueprints.length;
+        }
+
+        // Update header count
+        if (countElement) {
+            countElement.textContent = `${blueprintsPaginationState.totalCount} submission${blueprintsPaginationState.totalCount !== 1 ? 's' : ''}`;
+        }
+
+        // Show empty state if no blueprints
+        if (blueprints.length === 0 && blueprintsPaginationState.totalLoaded === 0) {
+            container.innerHTML = '<p class="empty-state">No blueprints submitted yet.</p>';
+            if (loadMoreContainer) loadMoreContainer.style.display = 'none';
+            return;
+        }
+
+        // Render each blueprint card
+        blueprints.forEach(blueprint => {
+            const card = createBlueprintCard(blueprint);
+            container.appendChild(card);
+        });
+
+        // Update "Load More" button visibility and count
+        if (loadMoreContainer && showingCount) {
+            if (blueprintsPaginationState.hasMore) {
+                loadMoreContainer.style.display = 'flex';
+                showingCount.textContent = `Showing ${blueprintsPaginationState.totalLoaded} of ${blueprintsPaginationState.totalCount} blueprints`;
+            } else {
+                loadMoreContainer.style.display = 'none';
+            }
+        }
+
+    } catch (error) {
+        console.error('❌ Error loading blueprints:', error);
+        container.innerHTML = '<p class="empty-state" style="color: #e74c3c;">Error loading blueprints. Please try again.</p>';
+        if (loadMoreContainer) loadMoreContainer.style.display = 'none';
+    }
+}
+
+// Load more blueprints (pagination)
+async function loadMoreBlueprints() {
+    console.log('Loading more blueprints...');
+
+    // Update offset
+    blueprintsPaginationState.offset += blueprintsPaginationState.limit;
+
+    // Render more blueprints (don't reset)
+    await renderPastBlueprints(false);
+}
+
+// Make loadMoreBlueprints globally accessible
+window.loadMoreBlueprints = loadMoreBlueprints;
+
+function createBlueprintCard(blueprint) {
+    const card = document.createElement('div');
+    card.className = 'blueprint-card';
+    card.onclick = () => openBlueprintModal(blueprint);
+
+    // Format date
+    const date = new Date(blueprint.submissionDate);
+    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+    // Count completed sections
+    const sections = ['trendspotter', 'futureVisionary', 'innovationCatalyst', 'connector', 'growthHacker'];
+    const completedSections = sections.filter(s => blueprint[s] && blueprint[s].trim().length > 0);
+
+    // Two-column layout: Info (50%) | Stats + Sections (50%)
+    card.innerHTML = `
+        <div class="blueprint-card-info">
+            <div class="blueprint-card-header">
+                <span class="blueprint-card-date">
+                    <i class="fa-solid fa-calendar"></i>
+                    ${formattedDate}
+                </span>
+            </div>
+            <div class="blueprint-card-article-title">${blueprint.articleTitle}</div>
+            <div class="blueprint-card-article-source">${blueprint.articleSource}</div>
+        </div>
+
+        <div class="blueprint-card-right">
+            <div class="blueprint-card-stats">
+                <div class="blueprint-card-xp">${blueprint.xpEarned}</div>
+                <div class="blueprint-card-xp-label">XP Earned</div>
+                <div class="blueprint-card-sections-label" style="margin-left: auto;">${completedSections.length}/5 Sections</div>
+            </div>
+
+            <div class="blueprint-section-badges">
+                ${sections.map(s => {
+                    const isCompleted = completedSections.includes(s);
+                    return `<span class="blueprint-section-badge ${isCompleted ? 'completed' : ''}">${getSectionName(s)}</span>`;
+                }).join('')}
+            </div>
+        </div>
+    `;
+
+    return card;
+}
+
+function getSectionName(sectionKey) {
+    const names = {
+        trendspotter: 'Trendspotter',
+        futureVisionary: 'Future Visionary',
+        innovationCatalyst: 'Innovation Catalyst',
+        connector: 'Connector',
+        growthHacker: 'Growth Hacker'
+    };
+    return names[sectionKey] || sectionKey;
+}
+
+function openBlueprintModal(blueprint) {
+    console.log('Opening blueprint modal:', blueprint.blueprintId);
+
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modal-body');
+
+    if (!modal || !modalBody) {
+        console.error('Modal elements not found');
+        return;
+    }
+
+    const date = new Date(blueprint.submissionDate);
+    const formattedDate = date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    modalBody.innerHTML = getBlueprintModalContent(blueprint, formattedDate);
+
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+
+    console.log('Blueprint modal opened');
+}
+
+function getBlueprintModalContent(blueprint, formattedDate) {
+    const sections = [
+        { key: 'trendspotter', name: 'The Trendspotter', icon: 'fa-magnifying-glass' },
+        { key: 'futureVisionary', name: 'The Future Visionary', icon: 'fa-road' },
+        { key: 'innovationCatalyst', name: 'The Innovation Catalyst', icon: 'fa-bolt' },
+        { key: 'connector', name: 'The Connector', icon: 'fa-link' },
+        { key: 'growthHacker', name: 'The Growth Hacker', icon: 'fa-chart-line' }
+    ];
+
+    return `
+        <div class="blueprint-modal">
+            <div class="blueprint-modal-header">
+                <h2>Blueprint Submission #${blueprint.blueprintId}</h2>
+                <div class="blueprint-modal-meta">
+                    <span>${formattedDate}</span>
+                    <span class="blueprint-modal-xp">${blueprint.xpEarned} XP</span>
+                </div>
+            </div>
+
+            <div class="blueprint-modal-article">
+                <h3><i class="fa-solid fa-newspaper"></i> Article Information</h3>
+                <p><strong>${blueprint.articleTitle}</strong></p>
+                <p style="color: var(--text-gray); margin: var(--spacing-xs) 0;">${blueprint.articleSource}</p>
+                <p><a href="${blueprint.articleUrl}" target="_blank" class="blueprint-modal-article-link">${blueprint.articleUrl}</a></p>
+            </div>
+
+            ${sections.map(section => {
+                const content = blueprint[section.key];
+                const isEmpty = !content || content.trim().length === 0;
+
+                return `
+                    <div class="blueprint-modal-section ${isEmpty ? 'empty' : ''}">
+                        <h4><i class="fa-solid ${section.icon}"></i> ${section.name}</h4>
+                        <div class="blueprint-modal-section-content">
+                            ${isEmpty ? 'Not completed' : content}
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    `;
+}
+
+// Initialize past blueprints when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('past-blueprints-container')) {
+        renderPastBlueprints();
+    }
+});
+
+// Also render when navigating to blueprint page
+document.addEventListener('pageChange', function(event) {
+    if (event.detail && event.detail.page === 'blueprint') {
+        setTimeout(() => {
+            renderPastBlueprints();
+        }, 100);
     }
 });

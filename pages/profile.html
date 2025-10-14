@@ -15,18 +15,19 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>First Name</label>
-                                    <input type="text" id="profile-first-name" class="form-input" required>
+                                    <input type="text" id="profile-first-name" name="firstName" class="form-input" readonly disabled>
+                                    <small class="help-text">Your first name is managed by your Microsoft account</small>
                                 </div>
                                 <div class="form-group">
                                     <label>Last Name</label>
-                                    <input type="text" id="profile-last-name" class="form-input" required>
+                                    <input type="text" id="profile-last-name" name="lastName" class="form-input" readonly disabled>
+                                    <small class="help-text">Your last name is managed by your Microsoft account</small>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label>Display Name</label>
-                                <input type="text" id="profile-display-name" class="form-input" required>
-                                <small class="help-text">This is how your name appears to others</small>
+                                <input type="text" id="profile-display-name" name="displayName" class="form-input" required>
                             </div>
 
                             <div class="form-group">
@@ -37,42 +38,49 @@
 
                             <div class="form-group">
                                 <label>Bio</label>
-                                <textarea class="form-textarea" rows="4" placeholder="Tell others about yourself, your interests, and goals..." name="bio" id="profile-bio">Passionate technology student with hands-on experience in AI/ML projects through IMI's co-op program. I enjoy solving complex problems through innovative software solutions and am always eager to learn new technologies. Currently seeking opportunities to apply my skills in data analysis, software development, and project management.</textarea>
+                                <textarea class="form-textarea" rows="4" placeholder="Tell others about yourself, your interests, and goals..." name="bio" id="profile-bio"></textarea>
                                 <small class="help-text">Share your interests, goals, and what you're working on</small>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Job Title</label>
+                                    <input type="text" name="jobTitle" id="profile-job-title" placeholder="e.g., Data Science Intern" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>City</label>
+                                    <input type="text" name="city" id="profile-city" placeholder="e.g., Toronto" class="form-input">
+                                </div>
                             </div>
 
                             <div class="form-group">
                                 <label>School</label>
-                                <input type="text" value="Lincoln High School" class="form-input">
+                                <input type="text" name="school" id="profile-school" placeholder="Your school name" class="form-input">
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Graduation Year</label>
-                                    <select class="form-select">
-                                        <option>2025</option>
-                                        <option>2026</option>
-                                        <option>2027</option>
-                                    </select>
+                                    <input type="number" name="graduationYear" id="profile-graduation-year" placeholder="2025" min="2020" max="2035" class="form-input">
                                 </div>
                                 <div class="form-group">
                                     <label>Phone Number</label>
-                                    <input type="tel" placeholder="(555) 123-4567" class="form-input">
+                                    <input type="tel" name="phoneNumber" id="profile-phone" placeholder="(555) 123-4567" class="form-input">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label>Career Interests</label>
                                 <div class="interest-tags">
-                                    <div class="checkbox-group">
-                                        <label class="checkbox-label"><input type="checkbox" checked> Machine Learning</label>
-                                        <label class="checkbox-label"><input type="checkbox" checked> Sustainability</label>
-                                        <label class="checkbox-label"><input type="checkbox"> Marketing</label>
-                                        <label class="checkbox-label"><input type="checkbox" checked> Data Science</label>
-                                        <label class="checkbox-label"><input type="checkbox"> UX Design</label>
-                                        <label class="checkbox-label"><input type="checkbox"> Finance</label>
-                                        <label class="checkbox-label"><input type="checkbox"> Healthcare</label>
-                                        <label class="checkbox-label"><input type="checkbox"> Education</label>
+                                    <div class="checkbox-group" id="interests-checkboxes">
+                                        <label class="checkbox-label"><input type="checkbox" value="Machine Learning"> Machine Learning</label>
+                                        <label class="checkbox-label"><input type="checkbox" value="Sustainability"> Sustainability</label>
+                                        <label class="checkbox-label"><input type="checkbox" value="Marketing"> Marketing</label>
+                                        <label class="checkbox-label"><input type="checkbox" value="Data Science"> Data Science</label>
+                                        <label class="checkbox-label"><input type="checkbox" value="UX Design"> UX Design</label>
+                                        <label class="checkbox-label"><input type="checkbox" value="Finance"> Finance</label>
+                                        <label class="checkbox-label"><input type="checkbox" value="Healthcare"> Healthcare</label>
+                                        <label class="checkbox-label"><input type="checkbox" value="Education"> Education</label>
                                     </div>
                                 </div>
                             </div>
@@ -380,17 +388,11 @@
                     <div class="card profile-preview-card">
                         <h3 class="section-title">Profile Preview</h3>
                         <div class="profile-preview">
-                            <div class="preview-avatar" id="preview-avatar">JD</div>
-                            <h4 id="preview-name">Jane Doe</h4>
-                            <p class="preview-school" id="preview-school">Lincoln High School • Class of 2025</p>
-                            <div class="preview-bio" id="preview-bio">
-                                Passionate technology student with hands-on experience in AI/ML projects through IMI's co-op program. I enjoy solving complex problems through innovative software solutions and am always eager to learn new technologies. Currently seeking opportunities to apply my skills in data analysis, software development, and project management.
-                            </div>
-                            <div class="preview-interests">
-                                <span class="interest-tag">Machine Learning</span>
-                                <span class="interest-tag">Sustainability</span>
-                                <span class="interest-tag">Data Science</span>
-                            </div>
+                            <div class="preview-avatar" id="preview-avatar"></div>
+                            <h4 id="preview-name"></h4>
+                            <p class="preview-school" id="preview-school"></p>
+                            <div class="preview-bio" id="preview-bio"></div>
+                            <div class="preview-interests"></div>
                             <div class="preview-links">
                                 <a href="#" class="social-link"><i class="fa-brands fa-linkedin"></i></a>
                                 <a href="#" class="social-link"><i class="fa-brands fa-github"></i></a>

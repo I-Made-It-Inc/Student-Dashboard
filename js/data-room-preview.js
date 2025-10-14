@@ -1,5 +1,42 @@
 // js/data-room-preview.js - Data Room Preview/External View Functionality
 
+// Helper function to wait for user data to be loaded
+async function waitForUserData() {
+    // If data is already available, return immediately
+    if (window.IMI?.data?.userData) {
+        console.log('✅ User data already available for preview');
+        return;
+    }
+
+    console.log('⏳ Waiting for user data to load...');
+
+    // Wait for user data with timeout
+    const maxWait = 3000; // 3 seconds max
+    const checkInterval = 100; // Check every 100ms
+    let elapsed = 0;
+
+    return new Promise((resolve) => {
+        const checkData = () => {
+            if (window.IMI?.data?.userData) {
+                console.log(`✅ User data loaded after ${elapsed}ms`);
+                resolve();
+                return;
+            }
+
+            elapsed += checkInterval;
+            if (elapsed >= maxWait) {
+                console.warn('⚠️ Timeout waiting for user data, proceeding with placeholders');
+                resolve(); // Resolve anyway to show page
+                return;
+            }
+
+            setTimeout(checkData, checkInterval);
+        };
+
+        checkData();
+    });
+}
+
 // Helper function to get current user data
 function getUserDataForPreview() {
     const userData = window.IMI?.data?.userData;
@@ -9,7 +46,7 @@ function getUserDataForPreview() {
             name: userData.name || '[FULL NAME]',
             email: userData.email || '[EMAIL]',
             jobTitle: userData.jobTitle || '[JOB TITLE]',
-            location: userData.officeLocation || '[LOCATION]',
+            location: userData.city || '[LOCATION]',
             initials: userData.initials || 'NA'
         };
     }
@@ -152,9 +189,12 @@ function generateAchievementsHTML(room) {
 }
 
 // Show data room preview (both preview mode and external view)
-function showDataRoomPreview(roomId, isPreviewMode = false) {
+async function showDataRoomPreview(roomId, isPreviewMode = false) {
     console.log('🎬 === SHOW DATA ROOM PREVIEW STARTED ===');
     console.log('📥 Input params:', { roomId, isPreviewMode });
+
+    // Wait for user data to be loaded before showing preview
+    await waitForUserData();
 
     // Check if dataRooms is available
     console.log('🔍 Checking dataRooms availability...');
@@ -223,19 +263,32 @@ function showDataRoomPreview(roomId, isPreviewMode = false) {
     console.log('📝 Generating preview HTML...');
     console.log('Preview mode:', isPreviewMode);
 
+    // Fetch user photo before generating HTML
+    let userPhotoUrl = null;
+    if (window.IMI?.graph?.fetchUserPhoto) {
+        try {
+            console.log('📸 Fetching user photo...');
+            userPhotoUrl = await window.IMI.graph.fetchUserPhoto();
+            if (userPhotoUrl) {
+                console.log('✅ User photo fetched');
+            } else {
+                console.log('ℹ️ No user photo available, using initials');
+            }
+        } catch (error) {
+            console.log('⚠️ Could not fetch user photo, using initials:', error);
+        }
+    }
+
     try {
         // Generate the preview HTML based on mode
         if (isPreviewMode) {
             console.log('🎨 Generating preview mode HTML...');
-            previewContainer.innerHTML = generatePreviewModeHTML(room);
+            previewContainer.innerHTML = generatePreviewModeHTML(room, userPhotoUrl);
         } else {
             console.log('🎨 Generating external view HTML...');
-            previewContainer.innerHTML = generateExternalViewHTML(room);
+            previewContainer.innerHTML = generateExternalViewHTML(room, userPhotoUrl);
         }
         console.log('✅ HTML generated successfully');
-
-        // Load user profile photo after HTML is rendered
-        loadUserPhotoForPreview();
     } catch (error) {
         console.error('❌ Error generating HTML:', error);
         return;
@@ -267,8 +320,14 @@ function showDataRoomPreview(roomId, isPreviewMode = false) {
 }
 
 // Generate HTML for preview mode (student viewing their own room)
-function generatePreviewModeHTML(room) {
+function generatePreviewModeHTML(room, userPhotoUrl = null) {
     const documentsHTML = generateDocumentsHTML(room, true);
+    const userData = getUserDataForPreview();
+
+    // Generate avatar HTML
+    const avatarHTML = userPhotoUrl
+        ? `<img src="${userPhotoUrl}" alt="Student Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`
+        : `<div class="avatar-placeholder">${userData.initials}</div>`;
 
     return `
         <div class="preview-wrapper preview-mode">
@@ -299,14 +358,14 @@ function generatePreviewModeHTML(room) {
                         <!-- Student Info -->
                         <div class="student-info-section">
                             <div class="student-avatar" id="preview-student-avatar">
-                                <div class="avatar-placeholder">${getUserDataForPreview().initials}</div>
+                                ${avatarHTML}
                             </div>
                             <div class="student-details">
-                                <h3 class="student-name">${getUserDataForPreview().name}</h3>
-                                <p class="student-title">${getUserDataForPreview().jobTitle} • IMI Co-op Student</p>
+                                <h3 class="student-name">${userData.name}</h3>
+                                <p class="student-title">${userData.jobTitle} • IMI Co-op Student</p>
                                 <div class="student-meta">
-                                    <span class="meta-item"><i class="fa-solid fa-location-dot"></i> ${getUserDataForPreview().location}</span>
-                                    <span class="meta-item"><i class="fa-solid fa-envelope"></i> ${getUserDataForPreview().email}</span>
+                                    <span class="meta-item"><i class="fa-solid fa-location-dot"></i> ${userData.location}</span>
+                                    <span class="meta-item"><i class="fa-solid fa-envelope"></i> ${userData.email}</span>
                                     <span class="meta-item"><i class="fa-solid fa-briefcase"></i> 8 months with IMI</span>
                                 </div>
                                 <div class="student-bio">
@@ -353,7 +412,7 @@ function generatePreviewModeHTML(room) {
 }
 
 // Generate HTML for external view (recruiters/companies)
-function generateExternalViewHTML(room) {
+function generateExternalViewHTML(room, userPhotoUrl = null) {
     // Check access permissions
     const hasAccess = checkRoomAccess(room);
 
@@ -362,11 +421,17 @@ function generateExternalViewHTML(room) {
     }
 
     if (room.privacy === 'request' && !hasAccess) {
-        return generateRequestAccessHTML(room);
+        return generateRequestAccessHTML(room, userPhotoUrl);
     }
 
     // Public room or has access
     const documentsHTML = generateDocumentsHTML(room, false);
+    const userData = getUserDataForPreview();
+
+    // Generate avatar HTML
+    const avatarHTML = userPhotoUrl
+        ? `<img src="${userPhotoUrl}" alt="Student Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`
+        : `<div class="avatar-placeholder">${userData.initials}</div>`;
 
     return `
         <div class="preview-wrapper external-view">
@@ -399,14 +464,14 @@ function generateExternalViewHTML(room) {
                         <!-- Student Info -->
                         <div class="student-info-section">
                             <div class="student-avatar" id="preview-student-avatar">
-                                <div class="avatar-placeholder">${getUserDataForPreview().initials}</div>
+                                ${avatarHTML}
                             </div>
                             <div class="student-details">
-                                <h3 class="student-name">${getUserDataForPreview().name}</h3>
-                                <p class="student-title">${getUserDataForPreview().jobTitle} • IMI Co-op Student</p>
+                                <h3 class="student-name">${userData.name}</h3>
+                                <p class="student-title">${userData.jobTitle} • IMI Co-op Student</p>
                                 <div class="student-meta">
-                                    <span class="meta-item"><i class="fa-solid fa-location-dot"></i> ${getUserDataForPreview().location}</span>
-                                    <span class="meta-item"><i class="fa-solid fa-envelope"></i> ${getUserDataForPreview().email}</span>
+                                    <span class="meta-item"><i class="fa-solid fa-location-dot"></i> ${userData.location}</span>
+                                    <span class="meta-item"><i class="fa-solid fa-envelope"></i> ${userData.email}</span>
                                     <span class="meta-item"><i class="fa-solid fa-briefcase"></i> 8 months with IMI</span>
                                 </div>
                                 <div class="student-bio">
@@ -480,7 +545,15 @@ function generateExternalViewHTML(room) {
 }
 
 // Generate request access HTML
-function generateRequestAccessHTML(room) {
+function generateRequestAccessHTML(room, userPhotoUrl = null) {
+    const userData = getUserDataForPreview();
+
+    // Generate small avatar HTML for preview
+    const smallAvatarStyle = userPhotoUrl
+        ? `style="background-image: url(${userPhotoUrl}); background-size: cover; background-position: center;"`
+        : '';
+    const smallAvatarContent = userPhotoUrl ? '' : userData.initials;
+
     return `
         <div class="preview-wrapper request-access-view">
             <!-- Header -->
@@ -507,9 +580,9 @@ function generateRequestAccessHTML(room) {
                             <p class="room-desc">${room.description}</p>
 
                             <div class="student-preview">
-                                <div class="student-avatar-small">${getUserDataForPreview().initials}</div>
+                                <div class="student-avatar-small" ${smallAvatarStyle}>${smallAvatarContent}</div>
                                 <div class="student-preview-info">
-                                    <strong>${getUserDataForPreview().name}</strong>
+                                    <strong>${userData.name}</strong>
                                     <span>IMI Co-op Student</span>
                                 </div>
                             </div>
@@ -920,6 +993,11 @@ function formatDate(dateString) {
 
 // Get student bio from current DOM (like files and achievements)
 function getStudentBio() {
+    // First check userData (single source of truth)
+    if (window.IMI?.data?.userData?.bio) {
+        return window.IMI.data.userData.bio.trim();
+    }
+
     // Try to get bio from current DOM element (when on profile page)
     const bioTextarea = document.getElementById('profile-bio');
     if (bioTextarea && bioTextarea.value && bioTextarea.value.trim()) {
@@ -980,6 +1058,12 @@ function exitPreviewMode() {
     const previewContainer = document.getElementById('data-room-preview-container');
     if (previewContainer) {
         previewContainer.style.display = 'none';
+    }
+
+    // Show nav bar
+    const nav = document.querySelector('.nav');
+    if (nav) {
+        nav.style.display = '';
     }
 
     // Show main container

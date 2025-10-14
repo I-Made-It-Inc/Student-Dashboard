@@ -27,7 +27,7 @@ async function fetchUserProfile() {
         }
 
         const data = await response.json();
-        console.log('✅ User profile fetched from Graph API:', data);
+        console.log('✅ User profile fetched from Graph API:', data.displayName, data.mail);
 
         // Extract last name with better fallback logic
         let lastName = data.surname;
@@ -36,6 +36,9 @@ async function fetchUserProfile() {
             lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : '[LAST NAME]';
         }
         if (!lastName) lastName = '[LAST NAME]';
+
+        // Get Azure AD User ID from Graph API, or fall back to stored value from MSAL
+        const userId = data.id || sessionStorage.getItem('imi_user_id');
 
         return {
             name: data.displayName || '[FULL NAME]',
@@ -48,7 +51,7 @@ async function fetchUserProfile() {
             mobilePhone: data.mobilePhone || '[PHONE]',
             businessPhones: data.businessPhones || [],
             initials: getInitials(data.displayName),
-            id: data.id
+            id: userId
         };
     } catch (error) {
         console.error('❌ Failed to fetch user profile:', error);
@@ -64,7 +67,6 @@ async function fetchUserPhoto() {
     const accessToken = sessionStorage.getItem('imi_access_token');
 
     if (!accessToken) {
-        console.error('❌ No access token available');
         return null;
     }
 
@@ -124,6 +126,7 @@ function getPlaceholderUserData() {
     // Try to get from sessionStorage first
     const storedName = sessionStorage.getItem('imi_user_name');
     const storedEmail = sessionStorage.getItem('imi_user_email');
+    const storedUserId = sessionStorage.getItem('imi_user_id');
 
     return {
         name: storedName || '[FULL NAME]',
@@ -136,7 +139,7 @@ function getPlaceholderUserData() {
         mobilePhone: '[PHONE]',
         businessPhones: [],
         initials: getInitials(storedName),
-        id: null
+        id: storedUserId || null
     };
 }
 
@@ -159,8 +162,6 @@ function getCachedUserData() {
  * Update all UI elements with user data
  */
 async function updateUIWithUserData(userData, photoUrl = null) {
-    console.log('🎨 Updating UI with user data:', userData);
-
     // Update all avatars
     const avatars = document.querySelectorAll('.user-avatar, .profile-avatar');
     avatars.forEach(avatar => {
@@ -169,11 +170,15 @@ async function updateUIWithUserData(userData, photoUrl = null) {
             avatar.style.backgroundImage = `url(${photoUrl})`;
             avatar.style.backgroundSize = 'cover';
             avatar.style.backgroundPosition = 'center';
-            avatar.textContent = ''; // Remove initials
+            avatar.innerHTML = ''; // Clear all text and child elements
         } else {
             // Use initials
+            avatar.style.backgroundImage = 'none'; // Clear any previous photo
             avatar.textContent = userData.initials;
         }
+
+        // Mark as loaded to trigger fade-in animation
+        avatar.classList.add('loaded');
     });
 
     // Update welcome message
@@ -198,8 +203,6 @@ async function updateUIWithUserData(userData, photoUrl = null) {
     document.querySelectorAll('[data-user-email]').forEach(el => {
         el.textContent = userData.email;
     });
-
-    console.log('✅ UI updated with user data');
 }
 
 /**
@@ -219,17 +222,27 @@ async function initializeUserProfile() {
     if (authMode === 'developer') {
         console.log('🔧 Developer mode - using mock data');
         const mockData = {
+            // Basic identity
             name: 'Jane Doe (Developer)',
             email: 'developer@imadeit.ai',
             firstName: 'Jane',
             lastName: 'Doe',
+            initials: 'JD',
+            id: 'dev-123',
+
+            // Azure AD fields (repurposed for demo)
             jobTitle: 'Grade 11 Student',
             department: 'Summer 2025 Co-op Stream',
             officeLocation: 'Toronto, ON',
-            mobilePhone: '[PLACEHOLDER]',
             businessPhones: [],
-            initials: 'JD',
-            id: 'dev-123'
+
+            // Profile fields (developer mode defaults)
+            mobilePhone: '',  // Empty by default
+            bio: 'Passionate technology student with hands-on experience in AI/ML projects through IMI\'s co-op program. I enjoy solving complex problems through innovative software solutions and am always eager to learn new technologies. Currently seeking opportunities to apply my skills in data analysis, software development, and project management.',
+            city: 'Toronto',
+            school: 'Lincoln High School',
+            graduationYear: '2025',
+            interests: ['Machine Learning', 'Sustainability', 'Data Science']
         };
         await updateUIWithUserData(mockData);
         return mockData;
@@ -258,16 +271,12 @@ async function initializeUserProfile() {
         console.log('💾 Using cached user data');
     }
 
-    // Fetch profile photo (don't block on this)
-    fetchUserPhoto().then(photoUrl => {
-        if (photoUrl) {
-            // Update avatars with photo
-            updateUIWithUserData(userData, photoUrl);
-        }
-    });
+    // In Microsoft mode, fetch profile photo first to avoid flashing initials
+    // before photo loads
+    const photoUrl = await fetchUserPhoto();
 
-    // Update UI with user data
-    await updateUIWithUserData(userData);
+    // Update UI once with either photo or initials (no flash)
+    await updateUIWithUserData(userData, photoUrl);
 
     return userData;
 }

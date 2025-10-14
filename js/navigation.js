@@ -2,8 +2,6 @@
 
 // Initialize navigation
 function initializeNavigation() {
-    console.log('Initializing navigation...');
-
     // Set up nav link click handlers
     setupNavLinks();
 
@@ -13,26 +11,27 @@ function initializeNavigation() {
     // Set up user menu dropdown
     setupUserMenu();
 
-    // Handle browser back/forward
-    setupHistoryManagement();
-
-    // Show initial page from URL or default to dashboard
+    // Show initial page FIRST (before setting up history management to avoid double-navigation)
     const initialPage = getPageFromURL();
 
     // Check if this is a data room preview/external view
     if (initialPage.startsWith('data-room-preview/') || initialPage.startsWith('data-room/')) {
-        console.log('Initial page is data room route:', initialPage);
         handleDataRoomRoute(initialPage);
     } else {
-        console.log('Initial page is regular page:', initialPage);
         showPage(initialPage, false); // Don't push state on initial load
     }
+
+    // Set up browser back/forward AFTER initial page is shown
+    // This prevents the hashchange listener from firing during initialization
+    setupHistoryManagement();
+
+    // Mark the page as ready (prevents FOUC)
+    // This will fade in the container via CSS transition
+    document.body.classList.add('js-ready');
 }
 
 // Show specific page
 function showPage(pageId, pushState = true) {
-    console.log(`Navigating to: ${pageId}`);
-
     // Hide all pages
     document.querySelectorAll('.page-section').forEach(section => {
         section.classList.remove('active');
@@ -50,17 +49,11 @@ function showPage(pageId, pushState = true) {
 
     // Show selected page
     const selectedPage = document.getElementById(`${pageId}-page`);
-    console.log(`🔍 Looking for page element: ${pageId}-page`);
-    console.log(`📄 Page element found:`, !!selectedPage);
 
     if (selectedPage) {
         selectedPage.classList.add('active');
-        console.log(`✅ Page ${pageId} made active`);
-
         // Load page-specific content
-        console.log(`🔄 About to call loadPageContent(${pageId})`);
         loadPageContent(pageId);
-        console.log(`✅ loadPageContent(${pageId}) called`);
     } else {
         console.error(`❌ Page not found: ${pageId}`);
     }
@@ -135,22 +128,26 @@ function loadPageContent(pageId) {
 
 // Dashboard content loader
 function loadDashboardContent() {
-    console.log('Loading dashboard content...');
-    
     // Refresh stats
     updateDashboardStats();
-    
+
     // Load recent activity
     loadRecentActivity();
-    
+
     // Update leaderboard
     updateLeaderboard();
+
+    // Update blueprint challenge AFTER everything else has settled
+    // The setTimeout is necessary because something is resetting the dashboard HTML after this function
+    if (typeof updateDashboardBlueprintChallenge === 'function') {
+        setTimeout(() => {
+            updateDashboardBlueprintChallenge();
+        }, 200); // Single timeout value for both modes
+    }
 }
 
 // Innovation content loader
 function loadInnovationContent() {
-    console.log('Loading innovation challenge content...');
-    
     // Load current challenge
     loadCurrentChallenge();
     
@@ -163,8 +160,6 @@ function loadInnovationContent() {
 
 // Ideas content loader
 function loadIdeasContent() {
-    console.log('Loading ideas & innovation content...');
-    
     // Initialize ideas page functionality
     if (typeof initializeIdeasPage === 'function') {
         initializeIdeasPage();
@@ -179,32 +174,22 @@ function loadIdeasContent() {
 
 // Data rooms content loader
 function loadDataRoomsContent() {
-    console.log('Loading data rooms content...');
-
     try {
         // Initialize data rooms functionality completely
-        console.log('About to call initializeDataRooms...');
         if (typeof initializeDataRooms === 'function') {
             initializeDataRooms();
-            console.log('initializeDataRooms called successfully');
         } else {
             console.error('initializeDataRooms function not available');
         }
 
         // Ensure document library is synchronized
-        console.log('Checking document library sync...');
-        if (typeof window.documentLibrary !== 'undefined') {
-            console.log('Document library available:', Object.keys(window.documentLibrary));
-        } else {
+        if (typeof window.documentLibrary === 'undefined') {
             console.error('Document library not available - attempting to load from profile...');
             // Try to initialize document library from profile
             if (typeof initializeProfile === 'function') {
-                console.log('Calling initializeProfile to set up document library...');
                 initializeProfile();
-                console.log('Profile initialization completed for document library sync');
             }
         }
-
     } catch (error) {
         console.error('Error loading data rooms content:', error);
     }
@@ -212,38 +197,31 @@ function loadDataRoomsContent() {
 
 // Load current challenge
 function loadCurrentChallenge() {
-    console.log('Loading current challenge...');
     // In production, fetch from API
 }
 
 // Update progress
 function updateChallengeProgress() {
-    console.log('Updating challenge progress...');
     // In production, fetch from API
 }
 
 // Load innovation leaderboard
 function loadInnovationLeaderboard() {
-    console.log('Loading innovation leaderboard...');
     // In production, fetch from API
 }
 
 // Load community ideas
 function loadCommunityIdeas() {
-    console.log('Loading community ideas...');
     // In production, fetch from API
 }
 
 // Load user's ideas
 function loadUserIdeas() {
-    console.log('Loading user ideas...');
     // In production, fetch from API
 }
 
 // Notifications content loader
 function loadNotificationsContent() {
-    console.log('Loading notifications content...');
-    
     // Initialize if the function exists from notifications.js
     if (typeof window.initializeNotifications === 'function') {
         window.initializeNotifications();
@@ -263,13 +241,11 @@ function loadNotificationsContent() {
 
 // Load time data
 function loadTimeData() {
-    console.log('Loading time data...');
     // In production, fetch from API
 }
 
 // Update time charts
 function updateTimeCharts() {
-    console.log('Updating time charts...');
     // In production, update charts
 }
 
@@ -277,8 +253,6 @@ function updateTimeCharts() {
 
 // Projects content loader
 function loadProjectsContent() {
-    console.log('Loading projects content...');
-    
     // Load active projects
     loadActiveProjects();
     
@@ -288,20 +262,16 @@ function loadProjectsContent() {
 
 // Load active projects
 function loadActiveProjects() {
-    console.log('Loading active projects...');
     // In production, fetch from API
 }
 
-// Load available projects  
+// Load available projects
 function loadAvailableProjects() {
-    console.log('Loading available projects...');
     // In production, fetch from API
 }
 
 // Companies content loader
 function loadCompaniesContent() {
-    console.log('Loading companies content...');
-    
     // Ensure companies filters are properly initialized
     if (typeof window.activeFilters !== 'undefined' && window.activeFilters.size === 0) {
         window.activeFilters.add('All');
@@ -326,8 +296,6 @@ function loadCompaniesContent() {
 
 // Network content loader
 function loadNetworkContent() {
-    console.log('Loading network content...');
-    
     // Load connections
     loadConnections();
     
@@ -337,20 +305,16 @@ function loadNetworkContent() {
 
 // Load connections
 function loadConnections() {
-    console.log('Loading connections...');
     // In production, fetch from API
 }
 
 // Load peer suggestions
 function loadPeerSuggestions() {
-    console.log('Loading peer suggestions...');
     // In production, fetch from API
 }
 
 // Resources content loader
 function loadResourcesContent() {
-    console.log('Loading resources content...');
-    
     // Load publications
     loadPublications();
     
@@ -360,20 +324,16 @@ function loadResourcesContent() {
 
 // Load publications
 function loadPublications() {
-    console.log('Loading publications...');
     // In production, fetch from API
 }
 
 // Load AI tools
 function loadAITools() {
-    console.log('Loading AI tools...');
     // In production, fetch from API
 }
 
 // Time tracking content loader
 function loadTimeTrackingContent() {
-    console.log('Loading time tracking content...');
-    
     // Load time data
     loadTimeData();
     
@@ -383,14 +343,10 @@ function loadTimeTrackingContent() {
 
 // Profile content loader
 function loadProfileContent() {
-    console.log('Loading profile content...');
-
     try {
         // Initialize profile functionality completely
-        console.log('About to call initializeProfile...');
         if (typeof initializeProfile === 'function') {
             initializeProfile();
-            console.log('initializeProfile called successfully');
         } else {
             console.error('initializeProfile function not available');
             // Fallback to just loading data
@@ -399,10 +355,8 @@ function loadProfileContent() {
     } catch (error) {
         console.error('Error in loadProfileContent:', error);
         // Fallback: try to initialize profile directly
-        console.log('Trying fallback initialization...');
         setTimeout(() => {
             if (typeof initializeProfile === 'function') {
-                console.log('Fallback: initializeProfile available, calling it');
                 initializeProfile();
             } else {
                 console.error('Fallback: initializeProfile not available');
@@ -413,44 +367,31 @@ function loadProfileContent() {
 
 // Load profile data
 function loadProfileData() {
-    console.log('🔍 === LOAD PROFILE DATA STARTED ===');
-    console.log('📋 Checking if initializeProfile exists:', typeof initializeProfile);
-    console.log('📁 Profile.js loaded?', !!window.initializeProfile);
-
-    // Force initialize profile functionality - try multiple approaches
-    console.log('🔄 Attempting to initialize profile...');
-
     // Try direct call first
     if (typeof initializeProfile === 'function') {
-        console.log('✅ initializeProfile available, calling directly');
         initializeProfile();
         return;
     }
 
     // Try window.initializeProfile
     if (typeof window.initializeProfile === 'function') {
-        console.log('✅ window.initializeProfile available, calling it');
         window.initializeProfile();
         return;
     }
 
     // Force load profile functionality with retries
-    console.log('⚠️ initializeProfile not available, forcing initialization...');
     let retryCount = 0;
     const maxRetries = 5;
 
     const tryInitialize = () => {
         retryCount++;
-        console.log(`🔄 Initialization attempt ${retryCount}/${maxRetries}`);
 
         if (typeof initializeProfile === 'function') {
-            console.log('✅ initializeProfile now available');
             initializeProfile();
             return;
         }
 
         if (typeof window.initializeProfile === 'function') {
-            console.log('✅ window.initializeProfile now available');
             window.initializeProfile();
             return;
         }
@@ -460,15 +401,10 @@ function loadProfileData() {
         } else {
             console.error('❌ Failed to initialize profile after all retries');
             // Manual fallback - call the core functions directly
-            console.log('🚨 Attempting manual profile initialization...');
-
-            // Call the core functions directly if available
             if (typeof window.setupDocumentUploads === 'function') {
-                console.log('📁 Calling setupDocumentUploads directly');
                 window.setupDocumentUploads();
             }
             if (typeof window.loadDocumentsFromLibrary === 'function') {
-                console.log('📚 Calling loadDocumentsFromLibrary directly');
                 window.loadDocumentsFromLibrary();
             }
         }
@@ -479,7 +415,6 @@ function loadProfileData() {
 
 // Setup profile forms
 function setupProfileForms() {
-    console.log('Setting up profile forms...');
     // Setup form validation and submission handlers
 }
 
@@ -565,74 +500,39 @@ function setupMobileMenu() {
 function setupUserMenu() {
     const userAvatar = document.querySelector('.user-avatar');
 
-    console.log('🔍 Looking for user avatar element...');
-    console.log('Avatar element found:', !!userAvatar);
-    console.log('Avatar element:', userAvatar);
-
     if (userAvatar) {
-        console.log('✅ Setting up user avatar click handler');
-        console.log('Avatar classes:', userAvatar.className);
-        console.log('Avatar parent:', userAvatar.parentElement);
-
         userAvatar.addEventListener('click', (e) => {
-            console.log('🎯 AVATAR CLICKED! Event details:');
-            console.log('- Event target:', e.target);
-            console.log('- Current target:', e.currentTarget);
-            console.log('- Event type:', e.type);
-            console.log('- Timestamp:', e.timeStamp);
-            console.log('🚀 Navigating to profile...');
             e.stopPropagation();
             e.preventDefault();
             // Navigate directly to profile page instead of showing dropdown
             showPage('profile');
         });
-        console.log('✅ User avatar click handler set up successfully');
 
         // Store a reference to test later
         window.avatarElement = userAvatar;
 
         // Test function to verify click handler is still working
         window.testAvatarClick = () => {
-            console.log('🧪 Testing if avatar click handler is still attached...');
             const currentAvatar = document.querySelector('.user-avatar');
-            console.log('Current avatar element:', currentAvatar);
-            console.log('Same as stored avatar?', currentAvatar === window.avatarElement);
-            console.log('Avatar classes:', currentAvatar?.className);
-            console.log('Avatar computed styles - pointer-events:', window.getComputedStyle(currentAvatar).pointerEvents);
-            console.log('Avatar computed styles - cursor:', window.getComputedStyle(currentAvatar).cursor);
-
-            // Manually trigger a click to test
-            console.log('🔬 Simulating click...');
+            console.log('Testing avatar click - Same element?', currentAvatar === window.avatarElement);
+            console.log('Pointer events:', window.getComputedStyle(currentAvatar).pointerEvents);
             currentAvatar.click();
         };
     } else {
         console.error('❌ User avatar element not found');
-        console.log('Available elements with "avatar" in class:',
-            document.querySelectorAll('*[class*="avatar"]'));
-        console.log('Available elements with "user" in class:',
-            document.querySelectorAll('*[class*="user"]'));
     }
 }
 
 // Test function to check if avatar navigation is working
 function testAvatarNavigation() {
-    console.log('🧪 Testing avatar navigation...');
     const userAvatar = document.querySelector('.user-avatar');
     if (userAvatar) {
-        console.log('✅ User avatar found');
-        console.log('Avatar element:', userAvatar);
-        console.log('Avatar classes:', userAvatar.className);
-        console.log('Click listeners count:', getEventListeners ? Object.keys(getEventListeners(userAvatar)).length : 'unknown');
-
         // Try to re-establish the click handler as a fallback
-        console.log('🔧 Re-establishing avatar click handler as fallback...');
         userAvatar.removeEventListener('click', setupUserMenu); // Remove any existing
         userAvatar.addEventListener('click', (e) => {
-            console.log('🎯 FALLBACK: User avatar clicked! Navigating to profile...');
             e.stopPropagation();
             showPage('profile');
         });
-        console.log('✅ Fallback click handler established');
     } else {
         console.error('❌ User avatar not found during test');
     }
@@ -665,25 +565,39 @@ function setupHistoryManagement() {
 
     // Handle hash changes (for direct navigation)
     window.addEventListener('hashchange', () => {
-        console.log('🔄 === HASHCHANGE EVENT FIRED ===');
-        console.log('📍 New hash:', window.location.hash);
-
         const currentPage = getPageFromURL();
-        console.log('📄 Parsed page:', currentPage);
 
         if (currentPage.startsWith('data-room-preview/') || currentPage.startsWith('data-room/')) {
-            console.log('🎯 Detected data room route, calling handleDataRoomRoute...');
             handleDataRoomRoute(currentPage);
         } else {
-            console.log('📄 Regular page route, calling showPage...');
+            // Check if we're leaving a data room preview - clean up if so
+            const previewContainer = document.getElementById('data-room-preview-container');
+            if (previewContainer && previewContainer.style.display !== 'none') {
+                // Hide preview container
+                previewContainer.style.display = 'none';
+
+                // Restore nav bar
+                const nav = document.querySelector('.nav');
+                if (nav) nav.style.display = '';
+
+                // Restore main container
+                const mainContainer = document.querySelector('.container');
+                if (mainContainer) mainContainer.style.display = '';
+            }
+
             showPage(currentPage, false);
         }
-        console.log('🔄 === HASHCHANGE HANDLING COMPLETE ===');
     });
 
-    // Set initial state but don't show page here (it's handled in initializeNavigation)
-    const initialPage = getPageFromURL() || 'dashboard';
-    history.replaceState({ page: initialPage }, '', `#${initialPage}`);
+    // Set initial state only if not already set correctly
+    // (Page has already been shown in initializeNavigation before this function is called)
+    const currentHash = window.location.hash.slice(1);
+    const currentPage = getPageFromURL();
+
+    // Only update history state if the current state is not set or is different
+    if (!history.state || history.state.page !== currentPage) {
+        history.replaceState({ page: currentPage }, '', `#${currentPage}`);
+    }
 }
 
 // Handle data room preview and external routes
@@ -692,7 +606,22 @@ function handleDataRoomRoute(route) {
     const mode = parts[0]; // 'data-room-preview' or 'data-room'
     const roomId = parts[1];
 
-    console.log('Handling data room route:', route, 'Mode:', mode, 'Room ID:', roomId);
+    // IMMEDIATELY hide nav bar and all page sections before doing anything else
+    // This prevents the dashboard from flashing while we wait for user data
+    const nav = document.querySelector('.nav');
+    if (nav) {
+        nav.style.display = 'none';
+    }
+
+    const mainContainer = document.querySelector('.container');
+    if (mainContainer) {
+        mainContainer.style.display = 'none';
+    }
+
+    // Hide all page sections
+    document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.remove('active');
+    });
 
     // Check if the preview function is available
     if (typeof window.showDataRoomPreview === 'function') {
@@ -724,7 +653,6 @@ function handleDataRoomRoute(route) {
 // Update URL without page reload
 function updateURL(pageId) {
     const newURL = `#${pageId}`;
-    console.log(`Updating URL to: ${newURL}`);
     history.pushState({ page: pageId }, '', newURL);
 }
 
@@ -764,32 +692,28 @@ function updatePageTitle(pageId) {
 // Update dashboard statistics
 function updateDashboardStats() {
     // In production, fetch from API
-    console.log('Updating dashboard stats...');
 }
 
 // Load recent activity
 function loadRecentActivity() {
     // In production, fetch from API
-    console.log('Loading recent activity...');
 }
 
 // Update leaderboard
 function updateLeaderboard() {
     // In production, fetch from API
-    console.log('Updating leaderboard...');
-    
+
     // Simulate data update
     const leaderboardData = [
         { rank: 1, name: 'Alex Chen', points: 3240 },
         { rank: 2, name: 'Maria G.', points: 3180 },
         { rank: 3, name: 'James W.', points: 2950 }
     ];
-    
+
     // Update UI
     const leaderboardList = document.querySelector('.leaderboard-list');
     if (leaderboardList) {
         // Update with new data
-        console.log('Leaderboard updated');
     }
 }
 
@@ -814,8 +738,6 @@ function showPageWithFilter(pageId, filter) {
     // Apply the filter after a short delay to ensure page is loaded
     setTimeout(() => {
         if (pageId === 'companies' && filter === 'referral') {
-            console.log('Applying referral filter...');
-            
             // Clear all existing filters first
             if (typeof window.clearAllFilters === 'function') {
                 window.clearAllFilters();

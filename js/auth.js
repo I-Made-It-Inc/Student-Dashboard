@@ -49,7 +49,8 @@ async function handleRedirectResponse() {
         const response = await msalInstance.handleRedirectPromise();
 
         if (response) {
-            console.log('✅ Microsoft login successful (redirect):', response);
+            const azureAdUserId = response.account.localAccountId || response.account.homeAccountId;
+            console.log('✅ Microsoft login successful:', response.account.name, `(${azureAdUserId})`);
 
             // Store authentication data
             sessionStorage.setItem('imi_authenticated', 'true');
@@ -57,6 +58,13 @@ async function handleRedirectResponse() {
             sessionStorage.setItem('imi_user_email', response.account.username);
             sessionStorage.setItem('imi_user_name', response.account.name || response.account.username);
             sessionStorage.setItem('imi_access_token', response.accessToken);
+
+            // Store Azure AD User ID (Object ID) - use localAccountId which is the AAD Object ID
+            if (azureAdUserId) {
+                sessionStorage.setItem('imi_user_id', azureAdUserId);
+            } else {
+                console.warn('⚠️ Could not extract Azure AD User ID from MSAL response');
+            }
 
             // Show notification
             if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
@@ -84,15 +92,14 @@ function isAuthenticated() {
 
 // Login with developer mode
 function loginDeveloperMode() {
-    console.log('🚀 Developer mode login');
+    // Clear any old profile data from localStorage (developer mode uses session-only data)
+    localStorage.removeItem('profileData');
 
     // Store auth
     sessionStorage.setItem('imi_authenticated', 'true');
     sessionStorage.setItem('imi_auth_mode', 'developer');
     sessionStorage.setItem('imi_user_email', 'developer@imadeit.ai');
     sessionStorage.setItem('imi_user_name', 'Jane Doe (Developer)');
-
-    console.log('✅ Session stored, reloading page to initialize app...');
 
     // Show notification before reload
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
@@ -159,7 +166,6 @@ function logout() {
     // Prevent URL manipulation after logout - force back to login if they change the hash
     window.addEventListener('hashchange', function preventURLBypass() {
         if (sessionStorage.getItem('imi_authenticated') !== 'true') {
-            console.log('❌ Hash change blocked - not authenticated');
             window.location.hash = 'login';
             // Hide all pages except login
             document.querySelectorAll('.page-section').forEach(section => {
@@ -182,14 +188,12 @@ function logout() {
 document.addEventListener('click', function(e) {
     // Developer mode button
     if (e.target && (e.target.id === 'developer-mode-btn' || e.target.closest('#developer-mode-btn'))) {
-        console.log('🎯 Developer mode button clicked');
         e.preventDefault();
         loginDeveloperMode();
     }
 
     // Microsoft login button
     if (e.target && (e.target.id === 'microsoft-login-btn' || e.target.closest('#microsoft-login-btn'))) {
-        console.log('🎯 Microsoft login button clicked');
         e.preventDefault();
         loginWithMicrosoft();
     }

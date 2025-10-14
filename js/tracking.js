@@ -30,8 +30,6 @@ let sessionData = {
 
 // Initialize time tracking
 function initializeTimeTracking() {
-    console.log('Initializing time tracking...');
-    
     // Set up time entry form
     setupTimeEntryForm();
     
@@ -87,9 +85,7 @@ function handleTimeEntry(e) {
         description: formData.get('description'),
         timestamp: Date.now()
     };
-    
-    console.log('Time entry:', entry);
-    
+
     // Validate entry
     if (!entry.activity) {
         window.IMI.utils.showNotification('Please select an activity type', 'warning');
@@ -162,9 +158,8 @@ function saveTimeEntry(entry) {
     
     // Update current week data
     updateCurrentWeekData(entry);
-    
-    // In production, send to API
-    console.log('Saving time entry to backend...', entry);
+
+    // In production, send to API (currently saving to localStorage only)
 }
 
 // Update current week data
@@ -185,8 +180,6 @@ function updateCurrentWeekData(entry) {
 
 // Initialize time charts
 function initializeTimeCharts() {
-    console.log('Initializing time charts...');
-    
     // Create weekly bar chart
     createWeeklyBarChart();
     
@@ -271,8 +264,6 @@ function updateTrendIndicators() {
 
 // Start automatic tracking
 function startAutomaticTracking() {
-    console.log('Starting automatic time tracking...');
-    
     // Track page focus time
     let focusStartTime = Date.now();
     let isPageFocused = true;
@@ -313,8 +304,6 @@ function startAutomaticTracking() {
 function logAutomaticTime(duration) {
     const minutes = Math.floor(duration / 60000);
     if (minutes > 0) {
-        console.log(`Auto-tracked ${minutes} minutes of activity`);
-        
         sessionData.activityLog.push({
             activity: sessionData.currentActivity || 'dashboard',
             duration: minutes,
@@ -327,8 +316,6 @@ function logAutomaticTime(duration) {
 function logActivityTime(activity, duration) {
     const minutes = Math.floor(duration / 60000);
     if (minutes > 0) {
-        console.log(`Activity "${activity}" tracked for ${minutes} minutes`);
-        
         // Map page to activity category
         const activityMap = {
             'innovation': 'innovationChallenge',
@@ -354,8 +341,6 @@ function saveSessionData() {
     };
     
     if (sessionSummary.totalMinutes > 0) {
-        console.log('Saving session data:', sessionSummary);
-        
         // Save to localStorage (in production, send to API)
         const sessions = JSON.parse(localStorage.getItem('sessions') || '[]');
         sessions.push(sessionSummary);
@@ -368,8 +353,6 @@ function saveSessionData() {
 
 // Setup manual time entry
 function setupManualTimeEntry() {
-    console.log('Setting up manual time entry...');
-    
     // Add quick time buttons
     const quickButtons = [
         { label: '15 min', minutes: 15 },
@@ -400,8 +383,6 @@ function quickAddTime(minutes) {
 
 // Load time data
 function loadTimeData() {
-    console.log('Loading time tracking data...');
-    
     // Load from localStorage or API
     const savedEntries = JSON.parse(localStorage.getItem('timeEntries') || '[]');
     
@@ -490,8 +471,6 @@ function generateVolunteerCertificate() {
         return;
     }
     
-    console.log('Generating volunteer certificate...');
-    
     // In production, generate PDF certificate
     const certificateData = {
         studentName: 'Jane Doe',
@@ -503,9 +482,9 @@ function generateVolunteerCertificate() {
         },
         dateIssued: new Date().toLocaleDateString()
     };
-    
-    console.log('Certificate data:', certificateData);
-    
+
+    console.log('✅ Generated volunteer certificate:', timeTrackingData.totalHours, 'hours');
+
     window.IMI.utils.showNotification(
         'Volunteer certificate generated! Check your downloads.',
         'success'
@@ -531,8 +510,6 @@ window.resetProofOfWorkSection = resetProofOfWorkSection;
 
 // Setup proof of work handlers
 function setupProofOfWorkHandlers() {
-    console.log('Setting up proof of work handlers...');
-    
     // File upload handler
     const fileInput = document.getElementById('proof-files');
     if (fileInput) {

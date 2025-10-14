@@ -53,6 +53,56 @@
                             </div>
                         </div>
 
+                        <!-- Article Information (Required) -->
+                        <div class="article-info-section">
+                            <h4 class="article-info-title"><i class="fa-solid fa-newspaper"></i> Article Information</h4>
+                            <p class="article-info-description">Tell us about the article you read that inspired your Blueprint</p>
+
+                            <div class="article-info-fields">
+                                <div class="form-group">
+                                    <label for="article-title" class="required-label">
+                                        Article Title
+                                        <span class="required-indicator">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="article-title"
+                                        class="form-input article-input"
+                                        placeholder="e.g., The Future of Smart Cities in a Changing Climate"
+                                        required
+                                    />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="article-source" class="required-label">
+                                        Publication Source
+                                        <span class="required-indicator">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="article-source"
+                                        class="form-input article-input"
+                                        placeholder="e.g., Harvard Business Review, MIT Technology Review, Bloomberg"
+                                        required
+                                    />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="article-url" class="required-label">
+                                        Article URL
+                                        <span class="required-indicator">*</span>
+                                    </label>
+                                    <input
+                                        type="url"
+                                        id="article-url"
+                                        class="form-input article-input"
+                                        placeholder="https://example.com/article-link"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="submission-sections">
                             <div class="submission-section">
                                 <div class="section-header-small">
@@ -104,6 +154,25 @@
                             <button class="btn btn-secondary btn-save-draft">Save Draft</button>
                             <button class="btn btn-primary btn-submit-challenge">Submit Blueprint</button>
                             <span class="points-earned-right">XP Earned: 20/100</span>
+                        </div>
+                    </div>
+
+                    <!-- Past Blueprints -->
+                    <div class="card past-blueprints-card">
+                        <div class="section-header">
+                            <h3 class="section-title">Past Blueprints</h3>
+                            <span class="text-muted" id="past-blueprints-count">0 submissions</span>
+                        </div>
+
+                        <div class="past-blueprints-container" id="past-blueprints-container">
+                            <!-- Blueprint cards will be dynamically inserted here -->
+                            <p class="empty-state">No blueprints submitted yet.</p>
+                        </div>
+
+                        <!-- Load More -->
+                        <div class="load-more-blueprints" id="load-more-blueprints" style="display: none;">
+                            <button class="btn btn-secondary" onclick="loadMoreBlueprints()">Load More Blueprints</button>
+                            <span class="blueprints-count" id="blueprints-showing-count">Showing 0 of 0 blueprints</span>
                         </div>
                     </div>
 

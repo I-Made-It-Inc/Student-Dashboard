@@ -149,29 +149,91 @@ function setupProfileForms() {
 }
 
 // Handle personal info form submission
-function handlePersonalInfoSubmit(e) {
+async function handlePersonalInfoSubmit(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(e.target);
     const profileData = {
-        firstName: formData.get('firstName') || document.querySelector('input[type="text"]').value,
-        lastName: formData.get('lastName') || document.querySelectorAll('input[type="text"]')[1].value,
-        displayName: formData.get('displayName') || document.querySelectorAll('input[type="text"]')[2].value,
-        bio: formData.get('bio') || document.querySelector('textarea').value,
-        school: formData.get('school') || document.querySelectorAll('input[type="text"]')[3].value,
-        graduationYear: formData.get('graduationYear'),
-        phoneNumber: formData.get('phoneNumber'),
+        // firstName and lastName are read-only (managed by Azure AD), so we don't collect them
+        displayName: formData.get('displayName') || '',
+        bio: formData.get('bio') || '',
+        jobTitle: formData.get('jobTitle') || '',
+        city: formData.get('city') || '',
+        school: formData.get('school') || '',
+        graduationYear: formData.get('graduationYear') || '',
+        phoneNumber: formData.get('phoneNumber') || '',
         interests: getSelectedInterests()
     };
-    
-    console.log('Saving profile data:', profileData);
-    
-    // Save to localStorage (in production, send to API)
-    localStorage.setItem('profileData', JSON.stringify(profileData));
-    
+
+    // Check auth mode before calling Dataverse
+    const authMode = sessionStorage.getItem('imi_auth_mode');
+
+    // Only save to Dataverse in Microsoft mode
+    if (authMode === 'microsoft' && window.IMI && window.IMI.api && window.IMI.data.userData) {
+        try {
+            const email = window.IMI.data.userData.email;
+
+            // Convert interests array to Dataverse format (comma-separated numbers)
+            const careerInterestsString = window.IMI.interestsToDataverse(profileData.interests);
+
+            // Convert graduation year to number (or null if empty)
+            const gradYear = profileData.graduationYear ? parseInt(profileData.graduationYear) : null;
+
+            // Update profile in Dataverse
+            const updated = await window.IMI.api.updateProfile(email, {
+                mobilePhone: profileData.phoneNumber,
+                nickname: profileData.displayName,
+                description: profileData.bio,
+                careerInterests: careerInterestsString,
+                school: profileData.school,
+                graduationYear: gradYear,
+                jobTitle: profileData.jobTitle,
+                city: profileData.city
+            });
+
+            // Update global userData object with synced values
+            window.IMI.data.userData.mobilePhone = updated.mobilePhone;
+            window.IMI.data.userData.name = updated.nickname || profileData.displayName;
+            window.IMI.data.userData.bio = updated.description || profileData.bio;
+            window.IMI.data.userData.interests = window.IMI.interestsFromDataverse(updated.careerInterests) || profileData.interests;
+            window.IMI.data.userData.school = updated.school || profileData.school;
+            window.IMI.data.userData.graduationYear = updated.graduationYear || profileData.graduationYear;
+            window.IMI.data.userData.jobTitle = updated.jobTitle || profileData.jobTitle;
+            window.IMI.data.userData.city = updated.city || profileData.city;
+
+            console.log('✅ Profile saved to Dataverse');
+        } catch (error) {
+            console.error('❌ Failed to save to Dataverse:', error);
+            if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
+                window.IMI.utils.showNotification('Warning: Failed to sync with server. Changes saved locally.', 'warning');
+            }
+            // Continue with localStorage fallback
+        }
+    } else if (authMode === 'developer') {
+        // Update global userData object so changes persist across pages (until hard refresh)
+        if (window.IMI && window.IMI.data && window.IMI.data.userData) {
+            // Update editable fields in the single source of truth
+            // firstName and lastName are NOT updated (managed by Azure AD)
+            window.IMI.data.userData.name = profileData.displayName;
+            window.IMI.data.userData.bio = profileData.bio;
+            window.IMI.data.userData.jobTitle = profileData.jobTitle;
+            window.IMI.data.userData.city = profileData.city;
+            window.IMI.data.userData.school = profileData.school;
+            window.IMI.data.userData.graduationYear = profileData.graduationYear;
+            window.IMI.data.userData.mobilePhone = profileData.phoneNumber;
+            window.IMI.data.userData.interests = profileData.interests;
+        }
+    }
+
+    // Only save to localStorage in Microsoft mode (as backup)
+    // In developer mode, userData is the single source of truth
+    if (authMode === 'microsoft') {
+        localStorage.setItem('profileData', JSON.stringify(profileData));
+    }
+
     // Update preview
     updateProfilePreview(profileData);
-    
+
     // Show success message
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('Profile updated successfully!', 'success');
@@ -207,8 +269,8 @@ function handleSocialLinksSubmit(e) {
 
 // Get selected interests
 function getSelectedInterests() {
-    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
-    return Array.from(checkboxes).map(cb => cb.parentElement.textContent.trim());
+    const checkboxes = document.querySelectorAll('#interests-checkboxes input[type="checkbox"]:checked');
+    return Array.from(checkboxes).map(cb => cb.value);
 }
 
 // Validate individual fields
@@ -691,46 +753,56 @@ function updateDefaultDescription(docId, description) {
 }
 
 // Load profile data
-function loadProfileData() {
-    // First, populate with real user data from Microsoft Graph
+async function loadProfileData() {
+    // Single source of truth: window.IMI.data.userData
     if (window.IMI && window.IMI.data && window.IMI.data.userData) {
         const userData = window.IMI.data.userData;
 
-        // Populate form fields with Microsoft Graph data
+        // Populate all form fields from userData
         const firstNameInput = document.getElementById('profile-first-name');
         const lastNameInput = document.getElementById('profile-last-name');
         const displayNameInput = document.getElementById('profile-display-name');
         const emailInput = document.getElementById('profile-email');
+        const bioTextarea = document.getElementById('profile-bio');
+        const jobTitleInput = document.getElementById('profile-job-title');
+        const cityInput = document.getElementById('profile-city');
+        const schoolInput = document.getElementById('profile-school');
+        const graduationYearSelect = document.getElementById('profile-graduation-year');
+        const phoneInput = document.getElementById('profile-phone');
 
-        if (firstNameInput) firstNameInput.value = userData.firstName || '[FIRST NAME]';
-        if (lastNameInput) lastNameInput.value = userData.lastName || '[LAST NAME]';
-        if (displayNameInput) displayNameInput.value = userData.name || '[FULL NAME]';
-        if (emailInput) emailInput.value = userData.email || '[EMAIL]';
+        // Basic fields
+        if (firstNameInput) firstNameInput.value = userData.firstName || '';
+        if (lastNameInput) lastNameInput.value = userData.lastName || '';
+        if (displayNameInput) displayNameInput.value = userData.name || '';
+        if (emailInput) emailInput.value = userData.email || '';
 
-        // Update profile preview with real user data
-        updateProfilePreviewWithUserData(userData);
+        // Extended fields
+        if (bioTextarea) bioTextarea.value = userData.bio || '';
+        if (jobTitleInput) jobTitleInput.value = userData.jobTitle || '';
+        if (cityInput) cityInput.value = userData.city || '';
+        if (schoolInput) schoolInput.value = userData.school || '';
+        if (graduationYearSelect && userData.graduationYear) graduationYearSelect.value = userData.graduationYear;
+        if (phoneInput) phoneInput.value = userData.mobilePhone || '';
 
-        console.log('✅ Profile form populated with Microsoft Graph data');
+        // Interests checkboxes
+        if (userData.interests && Array.isArray(userData.interests)) {
+            const checkboxes = document.querySelectorAll('#interests-checkboxes input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                const value = checkbox.value;
+                checkbox.checked = userData.interests.includes(value);
+            });
+        }
+
+        // Update profile preview (wait for photo to load)
+        await updateProfilePreviewWithUserData(userData);
     }
 
-    // Then, load any saved profile data from localStorage (this overrides Graph data if saved)
-    const savedProfile = localStorage.getItem('profileData');
-    if (savedProfile) {
-        const profileData = JSON.parse(savedProfile);
-        populateProfileForm(profileData);
-        updateProfilePreview(profileData);
-    }
-
-    const savedSocial = localStorage.getItem('socialLinks');
-    if (savedSocial) {
-        const socialData = JSON.parse(savedSocial);
-        populateSocialForm(socialData);
-        updateSocialLinksPreview(socialData);
-    }
+    // Initialize preview with current form values
+    updatePreview();
 }
 
 // Update profile preview with user data from Microsoft Graph
-function updateProfilePreviewWithUserData(userData) {
+async function updateProfilePreviewWithUserData(userData) {
     const previewName = document.getElementById('preview-name');
     const previewAvatar = document.getElementById('preview-avatar');
     const previewSchool = document.getElementById('preview-school');
@@ -740,21 +812,25 @@ function updateProfilePreviewWithUserData(userData) {
     }
 
     if (previewAvatar) {
-        // Check if user has a photo
+        // Check if user has a photo - fetch it first to avoid flash
+        let photoUrl = null;
         if (window.IMI && window.IMI.graph) {
-            window.IMI.graph.fetchUserPhoto().then(photoUrl => {
-                if (photoUrl) {
-                    previewAvatar.style.backgroundImage = `url(${photoUrl})`;
-                    previewAvatar.style.backgroundSize = 'cover';
-                    previewAvatar.style.backgroundPosition = 'center';
-                    previewAvatar.textContent = '';
-                } else {
-                    previewAvatar.textContent = userData.initials || 'NA';
-                }
-            });
+            photoUrl = await window.IMI.graph.fetchUserPhoto();
+        }
+
+        // Update avatar once with final result (photo or initials)
+        if (photoUrl) {
+            previewAvatar.style.backgroundImage = `url(${photoUrl})`;
+            previewAvatar.style.backgroundSize = 'cover';
+            previewAvatar.style.backgroundPosition = 'center';
+            previewAvatar.textContent = '';
         } else {
+            previewAvatar.style.backgroundImage = 'none';
             previewAvatar.textContent = userData.initials || 'NA';
         }
+
+        // Mark as loaded to trigger fade-in
+        previewAvatar.classList.add('loaded');
     }
 
     // Update school info if available from department or job title
@@ -823,24 +899,33 @@ function setupProfilePreviewUpdates() {
 
 // Update preview in real-time
 function updatePreview() {
-    const displayName = document.querySelector('#personal-info-form input[type="text"]')?.value || 'Jane Doe';
-    const bio = document.querySelector('#personal-info-form textarea')?.value || '';
-    const school = document.querySelector('#personal-info-form input[type="text"]')?.value || '';
+    // Use specific IDs to get the correct form fields
+    const displayNameInput = document.getElementById('profile-display-name');
+    const bioTextarea = document.getElementById('profile-bio');
+    const schoolInput = document.getElementById('profile-school');
+    const graduationYearSelect = document.getElementById('profile-graduation-year');
+
+    const displayName = displayNameInput?.value || 'Jane Doe';
+    const bio = bioTextarea?.value || '';
+    const school = schoolInput?.value || '';
+    const graduationYear = graduationYearSelect?.value || '2025';
     const interests = getSelectedInterests();
-    
+
     // Update preview elements
     const previewName = document.querySelector('.profile-preview h4');
     if (previewName) previewName.textContent = displayName;
-    
+
     const previewBio = document.querySelector('.preview-bio');
     if (previewBio) previewBio.textContent = bio || 'No bio added yet.';
-    
+
     const previewSchool = document.querySelector('.preview-school');
-    if (previewSchool) previewSchool.textContent = school ? `${school} • Class of 2025` : 'School not specified';
-    
+    if (previewSchool) {
+        previewSchool.textContent = school ? `${school} • Class of ${graduationYear}` : 'School not specified';
+    }
+
     const previewInterests = document.querySelector('.preview-interests');
     if (previewInterests) {
-        previewInterests.innerHTML = interests.map(interest => 
+        previewInterests.innerHTML = interests.map(interest =>
             `<span class="interest-tag">${interest}</span>`
         ).join('');
     }
