@@ -774,20 +774,12 @@ window.showPointsMarketplace = showPointsMarketplace;
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
     try {
-        // Detect hard refresh (Ctrl+Shift+R) vs soft refresh (F5)
-        // Use sessionStorage flag method - sessionStorage persists through soft refresh but not hard refresh
-        const isHardRefresh = !sessionStorage.getItem('pageLoadFlag');
-        sessionStorage.setItem('pageLoadFlag', 'loaded');
-
-        // Clear draft only on hard refresh
-        if (isHardRefresh) {
-            localStorage.removeItem('blueprint_draft');
-            localStorage.removeItem('innovation_draft'); // Also clear old key if it exists
-            console.log('Hard refresh detected - cleared blueprint draft');
-        } else {
-            // On soft refresh, try to load draft regardless of current hash
-            // because the hash might not be set yet when DOMContentLoaded fires
-            console.log('Soft refresh detected - attempting to load draft');
+        // Load draft on initial page load
+        // Note: sessionStorage (blueprints) persists through ALL refresh types
+        // It only clears when tab/window is closed or on logout
+        const hasDraft = localStorage.getItem('blueprint_draft');
+        if (hasDraft) {
+            console.log('📋 Draft found on page load - will load if on blueprint page');
             console.log('localStorage blueprint_draft:', localStorage.getItem('blueprint_draft'));
             console.log('localStorage innovation_draft:', localStorage.getItem('innovation_draft'));
             setTimeout(() => {

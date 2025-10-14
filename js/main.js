@@ -236,7 +236,13 @@ function updateUserInterface(userData) {
 
     // Update stats
     updateDashboardStats(userData);
-    updateDashboardBlueprintChallenge();
+
+    // Update dashboard blueprint challenge if on dashboard page
+    const currentPage = window.location.hash.slice(1) || 'dashboard';
+    if (currentPage === 'dashboard') {
+        console.log('📍 Currently on dashboard, updating blueprint challenge');
+        updateDashboardBlueprintChallenge();
+    }
 }
 
 // Update dashboard statistics
@@ -282,6 +288,14 @@ async function updateDashboardBlueprintChallenge() {
     console.log('📊 Updating dashboard blueprint challenge...');
 
     const authMode = sessionStorage.getItem('imi_auth_mode');
+    console.log('🔐 Auth mode in updateDashboardBlueprintChallenge:', authMode);
+
+    // Don't update if elements don't exist (not on dashboard page)
+    if (!document.querySelector('.challenge-progress .progress-section')) {
+        console.log('⚠️ Dashboard elements not found, skipping update');
+        return;
+    }
+
     const { monday, sunday } = getCurrentWeekRange();
 
     console.log('📅 Current week:', monday.toLocaleDateString(), '-', sunday.toLocaleDateString());
@@ -292,6 +306,8 @@ async function updateDashboardBlueprintChallenge() {
         if (authMode === 'developer') {
             // Developer mode: get blueprints from sessionStorage
             const sessionBlueprints = JSON.parse(sessionStorage.getItem('imi_blueprints') || '[]');
+            console.log('📦 Session blueprints in storage:', sessionBlueprints.length);
+            console.log('📦 Raw sessionStorage imi_blueprints:', sessionStorage.getItem('imi_blueprints'));
 
             // Filter blueprints submitted this week
             thisWeekBlueprints = sessionBlueprints.filter(bp => {
@@ -300,6 +316,7 @@ async function updateDashboardBlueprintChallenge() {
             });
 
             console.log('📦 Developer mode - This week blueprints:', thisWeekBlueprints.length);
+            console.log('📦 Filtered blueprints:', thisWeekBlueprints);
         } else if (authMode === 'microsoft') {
             // Microsoft mode: fetch from API
             const userData = window.IMI?.data?.userData;
@@ -339,9 +356,13 @@ async function updateDashboardBlueprintChallenge() {
 
         // Update UI
         const progressSections = document.querySelectorAll('.challenge-progress .progress-section');
+        console.log('📝 Found progress sections:', progressSections.length);
+
         progressSections.forEach((element, index) => {
             const section = sections[index];
             const isCompleted = completedSections.has(section);
+
+            console.log(`📝 Updating section ${index} (${section}): ${isCompleted ? 'completed' : 'incomplete'}`);
 
             if (isCompleted) {
                 element.classList.add('completed');
@@ -354,8 +375,10 @@ async function updateDashboardBlueprintChallenge() {
 
         // Update XP display
         const xpDisplay = document.querySelector('.challenge-progress .points-earned');
+        console.log('📝 XP display element found:', !!xpDisplay);
         if (xpDisplay) {
             xpDisplay.textContent = `${totalXP} XP earned`;
+            console.log('📝 Updated XP display to:', xpDisplay.textContent);
         }
 
     } catch (error) {

@@ -141,15 +141,23 @@ function loadPageContent(pageId) {
 // Dashboard content loader
 function loadDashboardContent() {
     console.log('Loading dashboard content...');
-    
+
     // Refresh stats
     updateDashboardStats();
-    
+
     // Load recent activity
     loadRecentActivity();
-    
+
     // Update leaderboard
     updateLeaderboard();
+
+    // Update blueprint challenge AFTER everything else loads (delay ensures DOM is fully ready)
+    if (typeof updateDashboardBlueprintChallenge === 'function') {
+        setTimeout(() => {
+            console.log('📋 Calling updateDashboardBlueprintChallenge (delayed)');
+            updateDashboardBlueprintChallenge();
+        }, 100);
+    }
 }
 
 // Innovation content loader
