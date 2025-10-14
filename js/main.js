@@ -237,11 +237,13 @@ function updateUserInterface(userData) {
     // Update stats
     updateDashboardStats(userData);
 
-    // Update dashboard blueprint challenge if on dashboard page
+    // Update dashboard blueprint challenge if on dashboard page (after delay to let DOM settle)
     const currentPage = window.location.hash.slice(1) || 'dashboard';
     if (currentPage === 'dashboard') {
-        console.log('📍 Currently on dashboard, updating blueprint challenge');
-        updateDashboardBlueprintChallenge();
+        setTimeout(() => {
+            console.log('📍 Currently on dashboard, updating blueprint challenge (delayed)');
+            updateDashboardBlueprintChallenge();
+        }, 200);
     }
 }
 
@@ -320,9 +322,15 @@ async function updateDashboardBlueprintChallenge() {
         } else if (authMode === 'microsoft') {
             // Microsoft mode: fetch from API
             const userData = window.IMI?.data?.userData;
+            console.log('👤 User data available:', !!userData);
+            console.log('📧 User email:', userData?.email);
+            console.log('📡 API available:', !!window.IMI?.api?.getBlueprints);
+
             if (userData && userData.email && window.IMI?.api?.getBlueprints) {
                 // Get all blueprints and filter by date
+                console.log('📡 Fetching blueprints from API...');
                 const allBlueprints = await window.IMI.api.getBlueprints(userData.email, 100, 0); // Get up to 100 to ensure we get this week's
+                console.log('📡 Total blueprints fetched:', allBlueprints.length);
 
                 thisWeekBlueprints = allBlueprints.filter(bp => {
                     const submissionDate = new Date(bp.submissionDate);
@@ -330,6 +338,13 @@ async function updateDashboardBlueprintChallenge() {
                 });
 
                 console.log('📡 Microsoft mode - This week blueprints:', thisWeekBlueprints.length);
+                console.log('📡 Filtered blueprints:', thisWeekBlueprints);
+            } else {
+                console.warn('⚠️ Cannot fetch blueprints - missing requirements:', {
+                    hasUserData: !!userData,
+                    hasEmail: !!userData?.email,
+                    hasAPI: !!window.IMI?.api?.getBlueprints
+                });
             }
         }
 
@@ -405,12 +420,8 @@ function startSessionTracking() {
         currentPage = event.detail.page;
         sessionStartTime = Date.now();
 
-        // Update dashboard blueprint challenge when navigating to dashboard
-        if (event.detail.page === 'dashboard') {
-            setTimeout(() => {
-                updateDashboardBlueprintChallenge();
-            }, 100);
-        }
+        // Note: Dashboard blueprint challenge is updated via loadDashboardContent()
+        // No need to call it here as well
     });
     
     // Track before unload

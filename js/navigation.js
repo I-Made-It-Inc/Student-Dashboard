@@ -151,12 +151,13 @@ function loadDashboardContent() {
     // Update leaderboard
     updateLeaderboard();
 
-    // Update blueprint challenge AFTER everything else loads (delay ensures DOM is fully ready)
+    // Update blueprint challenge AFTER everything else has settled
+    // The setTimeout is necessary because something is resetting the dashboard HTML after this function
     if (typeof updateDashboardBlueprintChallenge === 'function') {
         setTimeout(() => {
             console.log('📋 Calling updateDashboardBlueprintChallenge (delayed)');
             updateDashboardBlueprintChallenge();
-        }, 100);
+        }, 200); // Single timeout value for both modes
     }
 }
 
