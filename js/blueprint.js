@@ -145,6 +145,27 @@ function setupSubmissionHandlers() {
 async function submitBlueprint(e) {
     e.preventDefault();
 
+    // Validate article information first
+    const articleTitle = document.getElementById('article-title')?.value.trim();
+    const articleSource = document.getElementById('article-source')?.value.trim();
+    const articleUrl = document.getElementById('article-url')?.value.trim();
+
+    if (!articleTitle || !articleSource || !articleUrl) {
+        window.IMI.utils.showNotification('Please fill in all article information fields (Title, Source, and URL).', 'warning');
+        // Scroll to article info section
+        document.querySelector('.article-info-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    // Validate URL format
+    try {
+        new URL(articleUrl);
+    } catch {
+        window.IMI.utils.showNotification('Please enter a valid URL for the article link.', 'warning');
+        document.getElementById('article-url')?.focus();
+        return;
+    }
+
     const progress = updateOverallProgress();
 
     if (progress.completedSections === 0) {
@@ -181,9 +202,9 @@ async function submitBlueprint(e) {
         const blueprintData = {
             studentEmail: userData.email,
             contactId: userData.contactId || null,
-            articleTitle: 'The Future of Sustainable Cities', // TODO: Make this dynamic
-            articleSource: null, // TODO: Add article source field
-            articleUrl: null, // TODO: Add article URL field
+            articleTitle: articleTitle,
+            articleSource: articleSource,
+            articleUrl: articleUrl,
             trendspotter: responses['trendspotter']?.content || null,
             futureVisionary: responses['future-visionary']?.content || null,
             innovationCatalyst: responses['innovation-catalyst']?.content || null,
@@ -284,8 +305,16 @@ function saveDraft() {
     const responses = collectResponses();
     console.log('Collected responses:', responses);
 
+    // Collect article information
+    const articleInfo = {
+        title: document.getElementById('article-title')?.value || '',
+        source: document.getElementById('article-source')?.value || '',
+        url: document.getElementById('article-url')?.value || ''
+    };
+
     // Save to localStorage (in production, save to backend)
     const draftData = {
+        articleInfo,
         responses,
         timestamp: Date.now()
     };
@@ -293,7 +322,7 @@ function saveDraft() {
     console.log('Saved to localStorage:', draftData);
 
     window.IMI.utils.showNotification('Draft saved successfully!', 'success');
-    
+
     // Update all section statuses to saved
     document.querySelectorAll('.section-status').forEach(status => {
         if (status.textContent !== 'Not started') {
@@ -306,6 +335,16 @@ function saveDraft() {
 
 // Clear submission form
 function clearSubmissionForm() {
+    // Clear article information fields
+    const articleTitle = document.getElementById('article-title');
+    const articleSource = document.getElementById('article-source');
+    const articleUrl = document.getElementById('article-url');
+
+    if (articleTitle) articleTitle.value = '';
+    if (articleSource) articleSource.value = '';
+    if (articleUrl) articleUrl.value = '';
+
+    // Clear all Blueprint section textareas
     document.querySelectorAll('.submission-textarea').forEach(textarea => {
         textarea.value = '';
         updateWordCount(textarea);
@@ -536,14 +575,14 @@ function setupRedemptionHandlers() {
 // Track if draft has been loaded to prevent multiple notifications during same initialization
 let blueprintDraftLoadedThisInitialization = false;
 
-// Load saved draft - only when on innovation page
+// Load saved draft - only when on blueprint page
 function loadDraft() {
-    // Check if we're on the innovation page
+    // Check if we're on the blueprint page
     const currentPage = window.location.hash.slice(1) || 'dashboard';
-    console.log('Innovation loadDraft called, current page:', currentPage);
-    if (currentPage !== 'innovation') {
-        console.log('Not on innovation page, skipping draft load');
-        return; // Don't load draft if not on innovation page
+    console.log('Blueprint loadDraft called, current page:', currentPage);
+    if (currentPage !== 'blueprint') {
+        console.log('Not on blueprint page, skipping draft load');
+        return; // Don't load draft if not on blueprint page
     }
 
     // Prevent multiple draft loads during the same initialization cycle
@@ -571,6 +610,23 @@ function loadDraft() {
         const age = Date.now() - draft.timestamp;
         console.log('Draft age (days):', age / (24 * 60 * 60 * 1000));
         if (age < 7 * 24 * 60 * 60 * 1000) {
+            // Restore article information
+            if (draft.articleInfo) {
+                const articleTitle = document.getElementById('article-title');
+                const articleSource = document.getElementById('article-source');
+                const articleUrl = document.getElementById('article-url');
+
+                if (articleTitle && draft.articleInfo.title) {
+                    articleTitle.value = draft.articleInfo.title;
+                }
+                if (articleSource && draft.articleInfo.source) {
+                    articleSource.value = draft.articleInfo.source;
+                }
+                if (articleUrl && draft.articleInfo.url) {
+                    articleUrl.value = draft.articleInfo.url;
+                }
+            }
+
             // Restore responses
             Object.entries(draft.responses).forEach(([section, data]) => {
                 const textarea = document.querySelector(`#${section}-textarea`);
@@ -733,9 +789,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Load draft when navigating to innovation page
+// Load draft when navigating to blueprint page
 document.addEventListener('pageChange', function(event) {
-    if (event.detail && event.detail.page === 'innovation') {
+    if (event.detail && event.detail.page === 'blueprint') {
         setTimeout(loadDraft, 100); // Small delay to ensure DOM is ready
     }
 });
