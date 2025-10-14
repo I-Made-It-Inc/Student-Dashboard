@@ -9,8 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize notifications functionality
 function initializeNotifications() {
-    console.log('Initializing notifications...');
-    
     // Set up filter chips
     setupNotificationFilters();
     
@@ -27,8 +25,6 @@ function initializeNotifications() {
     // Update the notification badge based on current unread count
     const unreadCount = document.querySelectorAll('.notification-item.unread').length;
     updateNotificationBadge(unreadCount);
-    
-    console.log(`Notifications initialized. ${unreadCount} unread notifications found.`);
 }
 
 // Set up notification filters
@@ -64,14 +60,11 @@ function filterNotifications(category) {
             notification.style.display = 'none';
         }
     });
-    
-    console.log(`Filtered notifications by: ${category}`);
 }
 
 // Set up notification actions
 function setupNotificationActions() {
     // Note: Buttons use onclick attributes in HTML, so no event listeners needed here
-    console.log('Notification actions setup complete');
 }
 
 // Mark all notifications as read
@@ -108,8 +101,6 @@ function markAllAsRead() {
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('All notifications marked as read!', 'success');
     }
-    
-    console.log('All notifications marked as read');
 }
 
 // Clear read notifications
@@ -128,8 +119,6 @@ function clearReadNotifications() {
         if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
             window.IMI.utils.showNotification('Read notifications cleared!', 'success');
         }
-        
-        console.log('Read notifications cleared');
     }
 }
 
@@ -159,8 +148,6 @@ function markAsRead(button) {
         
         // Update filter chips
         updateFilterChips();
-        
-        console.log('Notification marked as read');
     }
 }
 
@@ -192,8 +179,6 @@ function clearNotification(button) {
                 if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
                     window.IMI.utils.showNotification('Notification cleared!', 'success');
                 }
-                
-                console.log('Notification cleared');
             }, 300);
         }
     }
@@ -210,8 +195,6 @@ function updateNotificationBadge(count) {
             badge.style.display = 'none';
         }
     }
-    
-    console.log(`Notification badge updated to: ${count}`);
 }
 
 // Update filter chip counts
@@ -260,8 +243,6 @@ function setupNotificationSettings() {
             const settingOption = this.closest('.setting-option');
             const settingName = settingOption.querySelector('h4').textContent;
 
-            console.log(`${settingName} setting ${this.checked ? 'enabled' : 'disabled'}`);
-
             // Show toast notification
             if (window.showToast) {
                 window.showToast(
@@ -280,8 +261,6 @@ function setupNotificationSettings() {
 
 // RSVP to event
 function rsvpToEvent(eventId) {
-    console.log(`RSVPing to event: ${eventId}`);
-
     // Disable the button
     const button = event.target;
     if (button) {
@@ -317,8 +296,6 @@ function rsvpToEvent(eventId) {
 
 // Download certificate
 function downloadCertificate(projectId) {
-    console.log(`Downloading certificate for: ${projectId}`);
-
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('Certificate downloaded successfully!', 'success');
     }
@@ -326,8 +303,6 @@ function downloadCertificate(projectId) {
 
 // Join Teams channel
 function joinTeamsChannel(channelId) {
-    console.log(`Opening Teams channel: ${channelId}`);
-    
     // Simulate opening Teams
     window.open(`https://teams.microsoft.com/l/channel/${channelId}`, '_blank');
     
@@ -338,8 +313,6 @@ function joinTeamsChannel(channelId) {
 
 // Claim reward
 function claimReward(rewardId) {
-    console.log(`Claiming reward: ${rewardId}`);
-
     // Disable the button
     const button = event.target;
     if (button) {
@@ -362,8 +335,6 @@ function claimReward(rewardId) {
 
 // Register for workshop
 function registerForWorkshop(workshopId) {
-    console.log(`Registering for workshop: ${workshopId}`);
-
     // Disable the button
     const button = event.target;
     if (button) {
@@ -386,8 +357,6 @@ function registerForWorkshop(workshopId) {
 
 // Schedule mentor meeting
 function scheduleMentorMeeting() {
-    console.log('Scheduling mentor meeting...');
-
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification('Redirecting to calendar to schedule mentor meeting...', 'info');
     }
@@ -395,8 +364,6 @@ function scheduleMentorMeeting() {
 
 // Load more notifications
 function loadMoreNotifications() {
-    console.log('Loading more notifications...');
-    
     // Simulate loading more notifications
     setTimeout(() => {
         if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
@@ -407,8 +374,6 @@ function loadMoreNotifications() {
 
 // Export notification history
 function exportNotificationHistory() {
-    console.log('Exporting notification history...');
-    
     // Create a simple CSV export simulation
     const notifications = document.querySelectorAll('.notification-item');
     let csvContent = "Date,Title,Category,Status\\n";
@@ -441,8 +406,6 @@ function exportNotificationHistory() {
 
 // Load notifications content when page is shown
 function loadNotificationsContent() {
-    console.log('Loading notifications content...');
-    
     // Initialize if not already done
     if (typeof initializeNotifications === 'function') {
         initializeNotifications();

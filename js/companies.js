@@ -2,8 +2,6 @@
 
 // Initialize companies features
 function initializeCompanies() {
-    console.log('Initializing companies features...');
-    
     // Set up search functionality
     setupCompanySearch();
     
@@ -209,8 +207,7 @@ function setupFilterChips() {
                     allChip.classList.add('active');
                 }
             }
-            
-            console.log('Active filters:', Array.from(activeFilters));
+
             filterCompanies();
         });
     });
@@ -219,12 +216,7 @@ function setupFilterChips() {
 // Filter companies based on search and chips
 function filterCompanies() {
     let filteredCompanies = [...companiesData];
-    
-    console.log('Filtering with:', { 
-        searchQuery, 
-        activeFilters: Array.from(activeFilters) 
-    });
-    
+
     // Apply search filter
     if (searchQuery) {
         filteredCompanies = filteredCompanies.filter(company => {
@@ -250,9 +242,7 @@ function filterCompanies() {
             });
         });
     }
-    
-    console.log('Filtered companies:', filteredCompanies.length);
-    
+
     // Update display
     displayCompanies(filteredCompanies);
     
@@ -360,8 +350,6 @@ function showNoResultsMessage() {
 
 // Clear all filters and show all companies
 function showAllCompanies() {
-    console.log('Showing all companies - clearing filters...');
-    
     // Clear filters state
     activeFilters.clear();
     activeFilters.add('All');
@@ -443,8 +431,6 @@ function setupCompanyCards() {
 
 // Load company directory
 function loadCompanyDirectory() {
-    console.log('Loading company directory...');
-    
     // Ensure filter state is initialized
     if (activeFilters.size === 0) {
         activeFilters.add('All');
@@ -476,8 +462,6 @@ function syncFilterChipsWithState() {
 
 // Load company recommendations
 function loadCompanyRecommendations() {
-    console.log('Loading company recommendations...');
-    
     // In production, this would use AI/ML to recommend companies
     const recommendations = companiesData.filter(c => c.rating >= 4.5).slice(0, 3);
     
@@ -500,8 +484,6 @@ function loadCompanyRecommendations() {
 
 // Setup review system
 function setupReviewSystem() {
-    console.log('Setting up review system...');
-    
     // Initialize star rating interactions
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('star-rating')) {
@@ -526,8 +508,6 @@ function handleStarRating(element) {
 
 // View company details
 function viewCompanyDetails(companyId) {
-    console.log(`Viewing details for company ${companyId}`);
-    
     const company = companiesData.find(c => c.id === companyId);
     if (!company) return;
     
@@ -537,8 +517,6 @@ function viewCompanyDetails(companyId) {
 
 // Apply for co-op
 function applyForCoop(companyId) {
-    console.log(`Applying for co-op at company ${companyId}`);
-    
     const company = companiesData.find(c => c.id === companyId);
     if (!company) return;
     
@@ -548,8 +526,6 @@ function applyForCoop(companyId) {
 
 // Open review modal
 function openReviewModal(companyId) {
-    console.log(`Opening review modal for company ${companyId}`);
-    
     const company = companiesData.find(c => c.id === companyId);
     if (!company) return;
     
@@ -608,8 +584,6 @@ function openReviewModal(companyId) {
 
 // Submit review
 function submitReview(companyId) {
-    console.log(`Submitting review for company ${companyId}`);
-    
     // Collect review data
     const reviewData = {
         companyId,
@@ -624,9 +598,7 @@ function submitReview(companyId) {
         const rating = container.dataset.selectedRating || 0;
         reviewData.dimensions[dimension] = parseInt(rating);
     });
-    
-    console.log('Review data:', reviewData);
-    
+
     // In production, submit to API
     window.IMI.utils.showNotification('Review submitted successfully!', 'success');
     window.closeModal();
@@ -634,8 +606,6 @@ function submitReview(companyId) {
 
 // View referral program
 function viewReferralProgram(companyId) {
-    console.log(`Viewing referral program for company ${companyId}`);
-    
     const company = companiesData.find(c => c.id === companyId);
     if (!company) return;
     

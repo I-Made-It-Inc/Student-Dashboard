@@ -5,20 +5,15 @@ const pageCache = new Map();
 
 // Initialize page loader
 function initializePageLoader() {
-    console.log('Initializing page loader...');
-
     // Preload the dashboard page (most commonly accessed)
     preloadPage('dashboard');
 }
 
 // Load page content dynamically
 async function loadPage(pageId) {
-    console.log(`Loading page: ${pageId}`);
-
     try {
         // Check cache first
         if (pageCache.has(pageId)) {
-            console.log(`Loading ${pageId} from cache`);
             return pageCache.get(pageId);
         }
 
@@ -34,7 +29,6 @@ async function loadPage(pageId) {
         // Cache the content
         pageCache.set(pageId, content);
 
-        console.log(`Successfully loaded and cached ${pageId}`);
         return content;
 
     } catch (error) {
@@ -62,7 +56,6 @@ function injectPageContent(pageId, content) {
     // Ensure the injected page section has the active class
     const pageSection = container.querySelector(`#${pageId}-page`);
     if (pageSection) {
-        console.log(`Found page section for ${pageId}, adding active class`);
         pageSection.classList.add('active');
         // Hide loading state and show content
         pageSection.style.display = 'block';
@@ -79,8 +72,6 @@ function injectPageContent(pageId, content) {
 
 // Initialize page-specific features after content injection
 function initializePageSpecificFeatures(pageId) {
-    console.log(`Initializing features for page: ${pageId}`);
-
     switch(pageId) {
         case 'dashboard':
             // Dashboard is already handled by main.js
@@ -139,7 +130,7 @@ function initializePageSpecificFeatures(pageId) {
             break;
 
         default:
-            console.log(`No specific initialization needed for ${pageId}`);
+            break;
     }
 
     // Re-initialize global features that might be needed
@@ -148,8 +139,6 @@ function initializePageSpecificFeatures(pageId) {
 
 // Initialize projects page features
 function initializeProjectsFeatures() {
-    console.log('Initializing projects features...');
-
     // Set up project interaction handlers
     const projectButtons = document.querySelectorAll('.btn');
     projectButtons.forEach(button => {
@@ -162,8 +151,6 @@ function initializeProjectsFeatures() {
 
 // Initialize network page features
 function initializeNetworkFeatures() {
-    console.log('Initializing network features...');
-
     // Set up connection interaction handlers
     const connectButtons = document.querySelectorAll('.connect-btn');
     connectButtons.forEach(button => {
@@ -176,8 +163,6 @@ function initializeNetworkFeatures() {
 
 // Initialize resources page features
 function initializeResourcesFeatures() {
-    console.log('Initializing resources features...');
-
     // Set up resource link handlers
     const resourceLinks = document.querySelectorAll('.resource-link');
     resourceLinks.forEach(link => {
@@ -193,8 +178,6 @@ function handleProjectActions(e) {
     const button = e.target;
     const action = button.textContent.trim();
 
-    console.log(`Project action: ${action}`);
-
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification(`${action} completed!`, 'success');
     }
@@ -204,8 +187,6 @@ function handleProjectActions(e) {
 function handleConnectionActions(e) {
     const button = e.target;
     const action = button.textContent.trim();
-
-    console.log(`Connection action: ${action}`);
 
     if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
         window.IMI.utils.showNotification(`${action} successful!`, 'success');
@@ -217,8 +198,6 @@ function handleResourceAccess(e) {
     const link = e.target;
     const resource = link.textContent.trim();
 
-    console.log(`Accessing resource: ${resource}`);
-
     // Track resource access for analytics
     if (typeof logPageTime === 'function') {
         logPageTime('resource_access', Date.now());
@@ -229,7 +208,6 @@ function handleResourceAccess(e) {
 async function preloadPage(pageId) {
     try {
         await loadPage(pageId);
-        console.log(`Preloaded page: ${pageId}`);
     } catch (error) {
         console.error(`Failed to preload page ${pageId}:`, error);
     }
