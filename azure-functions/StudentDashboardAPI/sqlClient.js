@@ -52,6 +52,7 @@ async function submitBlueprint(blueprintData) {
 
     try {
         const result = await pool.request()
+            .input('azureAdUserId', sql.NVarChar(100), blueprintData.azureAdUserId || null)
             .input('studentEmail', sql.NVarChar(255), blueprintData.studentEmail)
             .input('contactId', sql.UniqueIdentifier, blueprintData.contactId || null)
             .input('submissionDate', sql.DateTime2, blueprintData.submissionDate || new Date())
@@ -71,14 +72,14 @@ async function submitBlueprint(blueprintData) {
             .input('aiQualityScore', sql.Decimal(3, 2), blueprintData.aiQualityScore || null)
             .query(`
                 INSERT INTO Blueprints (
-                    studentEmail, contactId, submissionDate,
+                    azureAdUserId, studentEmail, contactId, submissionDate,
                     articleTitle, articleSource, articleUrl,
                     trendspotter, futureVisionary, innovationCatalyst, connector, growthHacker,
                     xpEarned, connectorBonus, featuredInsight, status, wordCount, aiQualityScore
                 )
                 OUTPUT INSERTED.*
                 VALUES (
-                    @studentEmail, @contactId, @submissionDate,
+                    @azureAdUserId, @studentEmail, @contactId, @submissionDate,
                     @articleTitle, @articleSource, @articleUrl,
                     @trendspotter, @futureVisionary, @innovationCatalyst, @connector, @growthHacker,
                     @xpEarned, @connectorBonus, @featuredInsight, @status, @wordCount, @aiQualityScore
@@ -93,7 +94,38 @@ async function submitBlueprint(blueprintData) {
 }
 
 /**
- * Get blueprints for a student with pagination
+ * Get blueprints for a user by Azure AD User ID (PRIMARY METHOD)
+ * @param {string} azureAdUserId - Azure AD Object ID (immutable)
+ * @param {number} limit - Number of blueprints to return (default: 10)
+ * @param {number} offset - Number of blueprints to skip (default: 0)
+ * @returns {Array} List of blueprints
+ */
+async function getBlueprintsByUserId(azureAdUserId, limit = 10, offset = 0) {
+    const pool = await getPool();
+
+    try {
+        const result = await pool.request()
+            .input('azureAdUserId', sql.NVarChar(100), azureAdUserId)
+            .input('limit', sql.Int, limit)
+            .input('offset', sql.Int, offset)
+            .query(`
+                SELECT *
+                FROM Blueprints
+                WHERE azureAdUserId = @azureAdUserId
+                ORDER BY submissionDate DESC
+                OFFSET @offset ROWS
+                FETCH NEXT @limit ROWS ONLY
+            `);
+
+        return result.recordset;
+    } catch (error) {
+        console.error('❌ Error fetching blueprints by user ID:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get blueprints for a student with pagination (LEGACY - use getBlueprintsByUserId instead)
  * @param {string} studentEmail - Student's email address
  * @param {number} limit - Number of blueprints to return (default: 10)
  * @param {number} offset - Number of blueprints to skip (default: 0)
@@ -220,7 +252,37 @@ async function deleteBlueprint(blueprintId) {
 }
 
 /**
- * Get blueprint statistics for a student
+ * Get blueprint statistics for a user by Azure AD User ID (PRIMARY METHOD)
+ * @param {string} azureAdUserId - Azure AD Object ID
+ * @returns {Object} Statistics (total submissions, total XP, etc.)
+ */
+async function getBlueprintStatsByUserId(azureAdUserId) {
+    const pool = await getPool();
+
+    try {
+        const result = await pool.request()
+            .input('azureAdUserId', sql.NVarChar(100), azureAdUserId)
+            .query(`
+                SELECT
+                    COUNT(*) as totalSubmissions,
+                    SUM(xpEarned) as totalXP,
+                    AVG(wordCount) as avgWordCount,
+                    MAX(submissionDate) as lastSubmission,
+                    SUM(CASE WHEN connectorBonus = 1 THEN 1 ELSE 0 END) as connectorBonusCount,
+                    SUM(CASE WHEN featuredInsight = 1 THEN 1 ELSE 0 END) as featuredInsightCount
+                FROM Blueprints
+                WHERE azureAdUserId = @azureAdUserId
+            `);
+
+        return result.recordset[0];
+    } catch (error) {
+        console.error('❌ Error fetching blueprint stats by user ID:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get blueprint statistics for a student (LEGACY - use getBlueprintStatsByUserId instead)
  * @param {string} studentEmail - Student's email
  * @returns {Object} Statistics (total submissions, total XP, etc.)
  */
@@ -298,11 +360,13 @@ async function closePool() {
 
 module.exports = {
     submitBlueprint,
-    getBlueprintsByEmail,
+    getBlueprintsByUserId,       // PRIMARY: Query by Azure AD User ID
+    getBlueprintsByEmail,         // LEGACY: Fallback for old data
     getBlueprintById,
     updateBlueprint,
     deleteBlueprint,
-    getBlueprintStats,
+    getBlueprintStatsByUserId,   // PRIMARY: Stats by Azure AD User ID
+    getBlueprintStats,            // LEGACY: Stats by email
     getFeaturedBlueprints,
     closePool
 };

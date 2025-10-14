@@ -203,6 +203,7 @@ async function submitBlueprint(e) {
 
         // Prepare blueprint data for database
         const blueprintData = {
+            azureAdUserId: userData.id || null, // Azure AD Object ID (immutable)
             studentEmail: userData.email,
             contactId: userData.contactId || null,
             articleTitle: articleTitle,
@@ -229,6 +230,11 @@ async function submitBlueprint(e) {
                 `Blueprint #${result.data.blueprintId} submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections).`,
                 'success'
             );
+
+            // Refresh past blueprints list
+            if (typeof renderPastBlueprints === 'function') {
+                renderPastBlueprints();
+            }
 
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {
@@ -930,31 +936,57 @@ async function renderPastBlueprints(reset = true) {
             // Microsoft mode: fetch from API with pagination
             const userData = window.IMI?.data?.userData;
             console.log('👤 User data:', userData);
-            console.log('📡 API available:', !!window.IMI?.api?.getBlueprints);
+            console.log('📡 API available:', !!window.IMI?.api?.getBlueprintsByUserId, '(userId)', !!window.IMI?.api?.getBlueprints, '(email)');
 
-            if (userData && userData.email && window.IMI?.api?.getBlueprints) {
-                console.log('📡 Fetching blueprints for:', userData.email);
+            if (userData && window.IMI?.api) {
+                // Try Azure AD User ID first (PRIMARY METHOD)
+                if (userData.id && window.IMI.api.getBlueprintsByUserId) {
+                    console.log('📡 Fetching blueprints by userId:', userData.id);
 
-                blueprints = await window.IMI.api.getBlueprints(
-                    userData.email,
-                    blueprintsPaginationState.limit,
-                    blueprintsPaginationState.offset
-                );
-                console.log('✅ Blueprints fetched:', blueprints.length);
+                    blueprints = await window.IMI.api.getBlueprintsByUserId(
+                        userData.id,
+                        blueprintsPaginationState.limit,
+                        blueprintsPaginationState.offset
+                    );
+                    console.log('✅ Blueprints fetched by userId:', blueprints.length);
 
-                // Get total count (we need a separate API call for this, or track it from stats)
-                console.log('📊 Fetching blueprint stats...');
-                const stats = await window.IMI.api.getBlueprintStats(userData.email);
-                console.log('✅ Stats fetched:', stats);
+                    // Get total count from stats
+                    console.log('📊 Fetching blueprint stats by userId...');
+                    const stats = await window.IMI.api.getBlueprintStatsByUserId(userData.id);
+                    console.log('✅ Stats fetched:', stats);
 
-                blueprintsPaginationState.totalCount = stats.totalSubmissions || 0;
-                blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < blueprintsPaginationState.totalCount;
+                    blueprintsPaginationState.totalCount = stats.totalSubmissions || 0;
+                    blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < blueprintsPaginationState.totalCount;
+                }
+                // Fallback to email-based method (LEGACY)
+                else if (userData.email && window.IMI.api.getBlueprints) {
+                    console.log('📡 Fetching blueprints by email (LEGACY):', userData.email);
+
+                    blueprints = await window.IMI.api.getBlueprints(
+                        userData.email,
+                        blueprintsPaginationState.limit,
+                        blueprintsPaginationState.offset
+                    );
+                    console.log('✅ Blueprints fetched by email:', blueprints.length);
+
+                    // Get total count from stats
+                    console.log('📊 Fetching blueprint stats by email...');
+                    const stats = await window.IMI.api.getBlueprintStats(userData.email);
+                    console.log('✅ Stats fetched:', stats);
+
+                    blueprintsPaginationState.totalCount = stats.totalSubmissions || 0;
+                    blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < blueprintsPaginationState.totalCount;
+                } else {
+                    console.warn('⚠️ Cannot fetch blueprints - missing requirements:', {
+                        hasUserData: !!userData,
+                        hasUserId: !!userData?.id,
+                        hasEmail: !!userData?.email,
+                        hasUserIdAPI: !!window.IMI?.api?.getBlueprintsByUserId,
+                        hasEmailAPI: !!window.IMI?.api?.getBlueprints
+                    });
+                }
             } else {
-                console.warn('⚠️ Cannot fetch blueprints - missing requirements:', {
-                    hasUserData: !!userData,
-                    hasEmail: !!userData?.email,
-                    hasAPI: !!window.IMI?.api?.getBlueprints
-                });
+                console.warn('⚠️ Cannot fetch blueprints - missing userData or API');
             }
         }
 

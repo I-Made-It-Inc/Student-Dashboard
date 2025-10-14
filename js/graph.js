@@ -37,6 +37,12 @@ async function fetchUserProfile() {
         }
         if (!lastName) lastName = '[LAST NAME]';
 
+        // Get Azure AD User ID from Graph API, or fall back to stored value from MSAL
+        const userId = data.id || sessionStorage.getItem('imi_user_id');
+        console.log('🆔 Azure AD User ID from Graph API:', data.id);
+        console.log('🆔 Azure AD User ID from sessionStorage:', sessionStorage.getItem('imi_user_id'));
+        console.log('🆔 Final userId being used:', userId);
+
         return {
             name: data.displayName || '[FULL NAME]',
             email: data.userPrincipalName || data.mail || '[EMAIL]',
@@ -48,7 +54,7 @@ async function fetchUserProfile() {
             mobilePhone: data.mobilePhone || '[PHONE]',
             businessPhones: data.businessPhones || [],
             initials: getInitials(data.displayName),
-            id: data.id
+            id: userId
         };
     } catch (error) {
         console.error('❌ Failed to fetch user profile:', error);
@@ -124,6 +130,9 @@ function getPlaceholderUserData() {
     // Try to get from sessionStorage first
     const storedName = sessionStorage.getItem('imi_user_name');
     const storedEmail = sessionStorage.getItem('imi_user_email');
+    const storedUserId = sessionStorage.getItem('imi_user_id');
+
+    console.log('🆔 getPlaceholderUserData - stored userId:', storedUserId);
 
     return {
         name: storedName || '[FULL NAME]',
@@ -136,7 +145,7 @@ function getPlaceholderUserData() {
         mobilePhone: '[PHONE]',
         businessPhones: [],
         initials: getInitials(storedName),
-        id: null
+        id: storedUserId || null
     };
 }
 

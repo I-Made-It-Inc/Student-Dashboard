@@ -9,13 +9,14 @@ app.http('GetBlueprints', {
 
         try {
             // Get query parameters
+            const azureAdUserId = request.query.get('azureAdUserId');
             const studentEmail = request.query.get('studentEmail');
             const blueprintId = request.query.get('blueprintId');
             const featured = request.query.get('featured');
             const stats = request.query.get('stats');
 
-            // Validate required parameters (either email, blueprintId, or featured flag)
-            if (!studentEmail && !blueprintId && !featured && !stats) {
+            // Validate required parameters
+            if (!azureAdUserId && !studentEmail && !blueprintId && !featured && !stats) {
                 return {
                     status: 400,
                     headers: {
@@ -23,7 +24,7 @@ app.http('GetBlueprints', {
                         'Access-Control-Allow-Origin': '*'
                     },
                     jsonBody: {
-                        error: 'Either studentEmail, blueprintId, featured, or stats parameter is required'
+                        error: 'Either azureAdUserId, studentEmail, blueprintId, featured, or stats parameter is required'
                     }
                 };
             }
@@ -31,10 +32,15 @@ app.http('GetBlueprints', {
             let result;
 
             // Handle different query types
-            if (stats && studentEmail) {
+            if (stats) {
                 // Get statistics for a student
-                context.log('Fetching blueprint stats for:', studentEmail);
-                result = await sqlClient.getBlueprintStats(studentEmail);
+                if (azureAdUserId) {
+                    context.log('Fetching blueprint stats by userId:', azureAdUserId);
+                    result = await sqlClient.getBlueprintStatsByUserId(azureAdUserId);
+                } else if (studentEmail) {
+                    context.log('Fetching blueprint stats by email (LEGACY):', studentEmail);
+                    result = await sqlClient.getBlueprintStats(studentEmail);
+                }
             } else if (blueprintId) {
                 // Get specific blueprint by ID
                 context.log('Fetching blueprint:', blueprintId);
@@ -61,8 +67,14 @@ app.http('GetBlueprints', {
                 // Get blueprints for a student with pagination
                 const limit = parseInt(request.query.get('limit')) || 10;
                 const offset = parseInt(request.query.get('offset')) || 0;
-                context.log('Fetching blueprints for:', studentEmail, 'limit:', limit, 'offset:', offset);
-                result = await sqlClient.getBlueprintsByEmail(studentEmail, limit, offset);
+
+                if (azureAdUserId) {
+                    context.log('Fetching blueprints by userId:', azureAdUserId, 'limit:', limit, 'offset:', offset);
+                    result = await sqlClient.getBlueprintsByUserId(azureAdUserId, limit, offset);
+                } else if (studentEmail) {
+                    context.log('Fetching blueprints by email (LEGACY):', studentEmail, 'limit:', limit, 'offset:', offset);
+                    result = await sqlClient.getBlueprintsByEmail(studentEmail, limit, offset);
+                }
             }
 
             context.log('✅ Blueprints retrieved successfully');

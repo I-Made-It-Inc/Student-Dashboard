@@ -40,6 +40,7 @@ app.http('SubmitBlueprint', {
 
             // Prepare blueprint data
             const blueprintData = {
+                azureAdUserId: body.azureAdUserId || null, // Azure AD Object ID (immutable)
                 studentEmail: body.studentEmail,
                 contactId: body.contactId || null,
                 submissionDate: body.submissionDate ? new Date(body.submissionDate) : new Date(),

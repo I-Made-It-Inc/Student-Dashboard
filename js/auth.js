@@ -50,6 +50,7 @@ async function handleRedirectResponse() {
 
         if (response) {
             console.log('✅ Microsoft login successful (redirect):', response);
+            console.log('🆔 Azure AD Account ID:', response.account.localAccountId || response.account.homeAccountId);
 
             // Store authentication data
             sessionStorage.setItem('imi_authenticated', 'true');
@@ -57,6 +58,15 @@ async function handleRedirectResponse() {
             sessionStorage.setItem('imi_user_email', response.account.username);
             sessionStorage.setItem('imi_user_name', response.account.name || response.account.username);
             sessionStorage.setItem('imi_access_token', response.accessToken);
+
+            // Store Azure AD User ID (Object ID) - use localAccountId which is the AAD Object ID
+            const azureAdUserId = response.account.localAccountId || response.account.homeAccountId;
+            if (azureAdUserId) {
+                sessionStorage.setItem('imi_user_id', azureAdUserId);
+                console.log('🆔 Stored Azure AD User ID:', azureAdUserId);
+            } else {
+                console.warn('⚠️ Could not extract Azure AD User ID from MSAL response');
+            }
 
             // Show notification
             if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {

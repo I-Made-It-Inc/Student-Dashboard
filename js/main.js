@@ -323,15 +323,35 @@ async function updateDashboardBlueprintChallenge() {
             // Microsoft mode: fetch from API
             const userData = window.IMI?.data?.userData;
             console.log('👤 User data available:', !!userData);
+            console.log('🆔 User ID:', userData?.id);
             console.log('📧 User email:', userData?.email);
-            console.log('📡 API available:', !!window.IMI?.api?.getBlueprints);
+            console.log('📡 API available:', !!window.IMI?.api?.getBlueprintsByUserId, '(userId)', !!window.IMI?.api?.getBlueprints, '(email)');
 
-            if (userData && userData.email && window.IMI?.api?.getBlueprints) {
-                // Get all blueprints and filter by date
-                console.log('📡 Fetching blueprints from API...');
-                const allBlueprints = await window.IMI.api.getBlueprints(userData.email, 100, 0); // Get up to 100 to ensure we get this week's
-                console.log('📡 Total blueprints fetched:', allBlueprints.length);
+            let allBlueprints = [];
 
+            // Try Azure AD User ID first (PRIMARY METHOD)
+            if (userData && userData.id && window.IMI?.api?.getBlueprintsByUserId) {
+                console.log('📡 Fetching blueprints by userId from API...');
+                allBlueprints = await window.IMI.api.getBlueprintsByUserId(userData.id, 100, 0); // Get up to 100 to ensure we get this week's
+                console.log('📡 Total blueprints fetched by userId:', allBlueprints.length);
+            }
+            // Fallback to email-based method (LEGACY)
+            else if (userData && userData.email && window.IMI?.api?.getBlueprints) {
+                console.log('📡 Fetching blueprints by email (LEGACY) from API...');
+                allBlueprints = await window.IMI.api.getBlueprints(userData.email, 100, 0);
+                console.log('📡 Total blueprints fetched by email:', allBlueprints.length);
+            } else {
+                console.warn('⚠️ Cannot fetch blueprints - missing requirements:', {
+                    hasUserData: !!userData,
+                    hasUserId: !!userData?.id,
+                    hasEmail: !!userData?.email,
+                    hasUserIdAPI: !!window.IMI?.api?.getBlueprintsByUserId,
+                    hasEmailAPI: !!window.IMI?.api?.getBlueprints
+                });
+            }
+
+            // Filter blueprints submitted this week
+            if (allBlueprints.length > 0) {
                 thisWeekBlueprints = allBlueprints.filter(bp => {
                     const submissionDate = new Date(bp.submissionDate);
                     return submissionDate >= monday && submissionDate <= sunday;
@@ -339,12 +359,6 @@ async function updateDashboardBlueprintChallenge() {
 
                 console.log('📡 Microsoft mode - This week blueprints:', thisWeekBlueprints.length);
                 console.log('📡 Filtered blueprints:', thisWeekBlueprints);
-            } else {
-                console.warn('⚠️ Cannot fetch blueprints - missing requirements:', {
-                    hasUserData: !!userData,
-                    hasEmail: !!userData?.email,
-                    hasAPI: !!window.IMI?.api?.getBlueprints
-                });
             }
         }
 
