@@ -144,58 +144,104 @@ function setupSubmissionHandlers() {
 // Submit blueprint
 async function submitBlueprint(e) {
     e.preventDefault();
-    
+
     const progress = updateOverallProgress();
-    
+
     if (progress.completedSections === 0) {
         window.IMI.utils.showNotification('Please complete at least one section before submitting.', 'warning');
         return;
     }
-    
+
     // Collect all responses
     const responses = collectResponses();
-    
+
     // Show loading state
     const submitButton = e.target;
     submitButton.disabled = true;
     submitButton.textContent = 'Submitting...';
-    
+
     try {
-        // In production, submit blueprint
-        console.log('Submitting blueprint:', responses);
-        
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Show success - students get full XP for passing
-        window.IMI.utils.showNotification(
-            `Blueprint submitted successfully! You earned ${progress.totalXP} XP.`,
-            'success'
-        );
-        
+        // Check if user is authenticated
+        const userData = window.IMI?.data?.userData;
+        const authMode = sessionStorage.getItem('imi_auth_mode');
+
+        if (!userData || !userData.email) {
+            throw new Error('User not authenticated');
+        }
+
+        console.log('Submitting blueprint for user:', userData.email);
+
+        // Calculate total word count
+        const totalWordCount = Object.values(responses).reduce((sum, r) => sum + r.wordCount, 0);
+
+        // Prepare blueprint data for database
+        const blueprintData = {
+            studentEmail: userData.email,
+            contactId: userData.contactId || null,
+            articleTitle: 'The Future of Sustainable Cities', // TODO: Make this dynamic
+            articleSource: null, // TODO: Add article source field
+            articleUrl: null, // TODO: Add article URL field
+            trendspotter: responses['trendspotter']?.content || null,
+            futureVisionary: responses['future-visionary']?.content || null,
+            innovationCatalyst: responses['innovation-catalyst']?.content || null,
+            connector: responses['connector']?.content || null,
+            growthHacker: responses['growth-hacker']?.content || null,
+            xpEarned: 100, // Base XP for blueprint submission
+            wordCount: totalWordCount,
+            status: 'submitted'
+        };
+
+        // Only submit to database if in Microsoft mode and API is available
+        if (authMode === 'microsoft' && window.IMI?.api?.submitBlueprint) {
+            console.log('💾 Saving to database...', blueprintData);
+            const result = await window.IMI.api.submitBlueprint(blueprintData);
+            console.log('✅ Blueprint saved to database:', result);
+
+            // Show success with database confirmation
+            window.IMI.utils.showNotification(
+                `Blueprint #${result.data.blueprintId} submitted successfully! You earned ${blueprintData.xpEarned} XP.`,
+                'success'
+            );
+        } else {
+            // Developer mode or API not available - just show success
+            console.log('🔧 Developer mode - Blueprint not saved to database');
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
+
+            window.IMI.utils.showNotification(
+                `Blueprint submitted successfully! You earned ${blueprintData.xpEarned} XP. (Not saved - Developer mode)`,
+                'success'
+            );
+        }
+
         // Update streak and tier
         updateStreak();
-        updateTierProgress(progress.totalXP);
-        
+        updateTierProgress(blueprintData.xpEarned);
+
         // Trigger Blue Spark for Blueprint submission
         if (window.BlueSpark) {
             const event = new CustomEvent('blueprintSubmitted', {
                 detail: {
-                    topic: 'The Future of Sustainable Cities',
+                    topic: blueprintData.articleTitle,
                     sections: Object.keys(responses),
-                    xpEarned: progress.totalXP,
+                    xpEarned: blueprintData.xpEarned,
                     completedSections: progress.completedSections
                 }
             });
             document.dispatchEvent(event);
         }
-        
-        // Clear form
+
+        // Clear form after successful submission
         clearSubmissionForm();
-        
+
+        // Clear draft from localStorage
+        localStorage.removeItem('blueprint_draft');
+
     } catch (error) {
-        console.error('Submission error:', error);
-        window.IMI.utils.showNotification('Error submitting blueprint. Please try again.', 'error');
+        console.error('❌ Submission error:', error);
+        window.IMI.utils.showNotification(
+            `Error submitting blueprint: ${error.message}. Please try again.`,
+            'error'
+        );
     } finally {
         submitButton.disabled = false;
         submitButton.textContent = 'Submit Blueprint';
@@ -253,55 +299,7 @@ function saveDraft() {
     });
 }
 
-// Submit blueprint for review
-async function submitBlueprint(e) {
-    e.preventDefault();
-    
-    const progress = updateOverallProgress();
-    
-    if (progress.completedSections === 0) {
-        window.IMI.utils.showNotification('Please complete at least one section before submitting.', 'warning');
-        return;
-    }
-    
-    // Collect all responses
-    const responses = collectResponses();
-    
-    // Show loading state
-    const submitButton = e.target;
-    submitButton.disabled = true;
-    submitButton.textContent = 'Submitting...';
-    
-    try {
-        // In production, send to AI grading API
-        console.log('Submitting blueprint for review:', responses);
-        
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Show success - students get full XP when they pass
-        window.IMI.utils.showNotification(
-            `Blueprint submitted successfully! You earned ${progress.totalXP} XP.`,
-            'success'
-        );
-        
-        // Update streak
-        updateStreak();
-        
-        // Update tier progress
-        updateTierProgress(progress.totalXP);
-        
-        // Clear form
-        clearSubmissionForm();
-        
-    } catch (error) {
-        console.error('Submission error:', error);
-        window.IMI.utils.showNotification('Error submitting blueprint. Please try again.', 'error');
-    } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = 'Submit Blueprint';
-    }
-}
+// Note: submitBlueprint function is defined above (line 145)
 
 // Clear submission form
 function clearSubmissionForm() {
