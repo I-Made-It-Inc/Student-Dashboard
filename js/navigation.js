@@ -681,6 +681,26 @@ function setupHistoryManagement() {
             handleDataRoomRoute(currentPage);
         } else {
             console.log('📄 Regular page route, calling showPage...');
+
+            // Check if we're leaving a data room preview - clean up if so
+            const previewContainer = document.getElementById('data-room-preview-container');
+            if (previewContainer && previewContainer.style.display !== 'none') {
+                console.log('🔄 Leaving data room preview, cleaning up...');
+
+                // Hide preview container
+                previewContainer.style.display = 'none';
+
+                // Restore nav bar
+                const nav = document.querySelector('.nav');
+                if (nav) nav.style.display = '';
+
+                // Restore main container
+                const mainContainer = document.querySelector('.container');
+                if (mainContainer) mainContainer.style.display = '';
+
+                console.log('✅ Data room preview cleaned up');
+            }
+
             showPage(currentPage, false);
         }
         console.log('🔄 === HASHCHANGE HANDLING COMPLETE ===');
