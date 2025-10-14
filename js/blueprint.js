@@ -795,3 +795,245 @@ document.addEventListener('pageChange', function(event) {
         setTimeout(loadDraft, 100); // Small delay to ensure DOM is ready
     }
 });
+
+// ====================
+// Past Blueprints Feature
+// ====================
+
+// Mock blueprint data (developer mode only)
+const mockBlueprints = [
+    {
+        blueprintId: 1,
+        studentEmail: 'developer@imadeit.ai',
+        submissionDate: '2025-10-07T14:30:00Z',
+        articleTitle: 'The Rise of Vertical Farming in Urban Centers',
+        articleSource: 'MIT Technology Review',
+        articleUrl: 'https://technologyreview.com/vertical-farming',
+        trendspotter: 'Urban populations are growing rapidly, and traditional agriculture can\'t keep up. Vertical farming uses hydroponics and LED lighting to grow food in skyscrapers, reducing transportation costs and environmental impact. Singapore and the Netherlands are leading this revolution with government-backed initiatives.',
+        futureVisionary: 'In 10 years, every major city will have vertical farms integrated into residential buildings. Imagine apartment complexes with food-producing walls, where residents grow their own vegetables. This will reduce food waste, cut carbon emissions by 50%, and create new jobs in urban agriculture.',
+        innovationCatalyst: 'This trend could transform healthcare by creating "medical gardens" - vertical farms that grow medicinal plants tailored to individual patients. Pharmacies could become hyper-local, growing customized treatments on-demand using AI to optimize plant genetics.',
+        connector: 'This requires collaboration between urban planners, agricultural engineers, AI developers, and public health experts. Real estate developers need to partner with biotech firms to retrofit buildings with farming infrastructure.',
+        growthHacker: 'This article inspired me to explore sustainable technology careers. I\'m now researching agricultural engineering programs and considering internships in vertical farming startups. My first step: join a community garden and learn hydroponics basics.',
+        xpEarned: 100,
+        wordCount: 487,
+        status: 'submitted'
+    },
+    {
+        blueprintId: 2,
+        studentEmail: 'developer@imadeit.ai',
+        submissionDate: '2025-09-30T10:15:00Z',
+        articleTitle: 'AI-Powered Energy Grids Transform Power Distribution',
+        articleSource: 'Harvard Business Review',
+        articleUrl: 'https://hbr.org/ai-energy-grids',
+        trendspotter: 'Traditional power grids waste 30% of electricity due to inefficient routing. AI-powered smart grids use predictive algorithms to optimize energy distribution in real-time, reducing waste and costs. Companies like Google and Tesla are pioneering this technology.',
+        futureVisionary: null,
+        innovationCatalyst: null,
+        connector: null,
+        growthHacker: null,
+        xpEarned: 20,
+        wordCount: 95,
+        status: 'submitted'
+    },
+    {
+        blueprintId: 3,
+        studentEmail: 'developer@imadeit.ai',
+        submissionDate: '2025-09-23T16:45:00Z',
+        articleTitle: 'The Future of Remote Work: Hybrid Models and Virtual Offices',
+        articleSource: 'Bloomberg',
+        articleUrl: 'https://bloomberg.com/remote-work-future',
+        trendspotter: 'Post-pandemic, companies are adopting hybrid work models that balance flexibility with collaboration. Virtual reality offices are emerging, allowing remote teams to interact in immersive 3D spaces. This is reshaping corporate real estate and talent acquisition.',
+        futureVisionary: 'By 2030, most knowledge workers will split time between home offices, coworking spaces, and VR meeting rooms. Companies will hire globally without location constraints, creating truly international teams and driving innovation through diverse perspectives.',
+        innovationCatalyst: 'This trend could revolutionize education by creating "virtual campuses" where students from different countries attend the same classes in VR, collaborating on projects without travel costs. Universities could expand globally without building physical facilities.',
+        connector: null,
+        growthHacker: null,
+        xpEarned: 60,
+        wordCount: 312,
+        status: 'submitted'
+    }
+];
+
+// Render past blueprints
+function renderPastBlueprints() {
+    const container = document.getElementById('past-blueprints-container');
+    const countElement = document.getElementById('past-blueprints-count');
+
+    if (!container) return;
+
+    // Get blueprints (mock for developer mode, API for Microsoft mode)
+    const authMode = sessionStorage.getItem('imi_auth_mode');
+    let blueprints = [];
+
+    if (authMode === 'developer') {
+        blueprints = mockBlueprints;
+    } else if (authMode === 'microsoft') {
+        // TODO: Fetch from API for Microsoft mode
+        // const userData = window.IMI?.data?.userData;
+        // blueprints = await window.IMI.api.getBlueprints(userData.email);
+        blueprints = []; // Empty for now
+    }
+
+    // Update count
+    if (countElement) {
+        countElement.textContent = `${blueprints.length} submission${blueprints.length !== 1 ? 's' : ''}`;
+    }
+
+    // Clear container
+    container.innerHTML = '';
+
+    if (blueprints.length === 0) {
+        container.innerHTML = '<p class="empty-state">No blueprints submitted yet.</p>';
+        return;
+    }
+
+    // Render each blueprint card
+    blueprints.forEach(blueprint => {
+        const card = createBlueprintCard(blueprint);
+        container.appendChild(card);
+    });
+}
+
+function createBlueprintCard(blueprint) {
+    const card = document.createElement('div');
+    card.className = 'blueprint-card';
+    card.onclick = () => openBlueprintModal(blueprint);
+
+    // Format date
+    const date = new Date(blueprint.submissionDate);
+    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+    // Count completed sections
+    const sections = ['trendspotter', 'futureVisionary', 'innovationCatalyst', 'connector', 'growthHacker'];
+    const completedSections = sections.filter(s => blueprint[s] && blueprint[s].trim().length > 0);
+
+    // Three-column layout: Info | Stats | Sections
+    card.innerHTML = `
+        <div class="blueprint-card-info">
+            <div class="blueprint-card-header">
+                <span class="blueprint-card-date">
+                    <i class="fa-solid fa-calendar"></i>
+                    ${formattedDate}
+                </span>
+            </div>
+            <div class="blueprint-card-article-title">${blueprint.articleTitle}</div>
+            <div class="blueprint-card-article-source">${blueprint.articleSource}</div>
+        </div>
+
+        <div class="blueprint-card-stats">
+            <div class="blueprint-card-xp">${blueprint.xpEarned}</div>
+            <div class="blueprint-card-xp-label">XP Earned</div>
+        </div>
+
+        <div class="blueprint-card-sections">
+            <div class="blueprint-card-sections-label">${completedSections.length}/5 Sections</div>
+            <div class="blueprint-section-badges">
+                ${sections.map(s => {
+                    const isCompleted = completedSections.includes(s);
+                    return `<span class="blueprint-section-badge ${isCompleted ? 'completed' : ''}">${getSectionName(s)}</span>`;
+                }).join('')}
+            </div>
+        </div>
+    `;
+
+    return card;
+}
+
+function getSectionName(sectionKey) {
+    const names = {
+        trendspotter: 'Trendspotter',
+        futureVisionary: 'Future Visionary',
+        innovationCatalyst: 'Innovation Catalyst',
+        connector: 'Connector',
+        growthHacker: 'Growth Hacker'
+    };
+    return names[sectionKey] || sectionKey;
+}
+
+function openBlueprintModal(blueprint) {
+    console.log('Opening blueprint modal:', blueprint.blueprintId);
+
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modal-body');
+
+    if (!modal || !modalBody) {
+        console.error('Modal elements not found');
+        return;
+    }
+
+    const date = new Date(blueprint.submissionDate);
+    const formattedDate = date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    modalBody.innerHTML = getBlueprintModalContent(blueprint, formattedDate);
+
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+
+    console.log('Blueprint modal opened');
+}
+
+function getBlueprintModalContent(blueprint, formattedDate) {
+    const sections = [
+        { key: 'trendspotter', name: 'The Trendspotter', icon: 'fa-magnifying-glass' },
+        { key: 'futureVisionary', name: 'The Future Visionary', icon: 'fa-road' },
+        { key: 'innovationCatalyst', name: 'The Innovation Catalyst', icon: 'fa-bolt' },
+        { key: 'connector', name: 'The Connector', icon: 'fa-link' },
+        { key: 'growthHacker', name: 'The Growth Hacker', icon: 'fa-chart-line' }
+    ];
+
+    return `
+        <div class="blueprint-modal">
+            <div class="blueprint-modal-header">
+                <h2>Blueprint Submission #${blueprint.blueprintId}</h2>
+                <div class="blueprint-modal-meta">
+                    <span>${formattedDate}</span>
+                    <span class="blueprint-modal-xp">${blueprint.xpEarned} XP</span>
+                </div>
+            </div>
+
+            <div class="blueprint-modal-article">
+                <h3><i class="fa-solid fa-newspaper"></i> Article Information</h3>
+                <p><strong>${blueprint.articleTitle}</strong></p>
+                <p style="color: var(--text-gray); margin: var(--spacing-xs) 0;">${blueprint.articleSource}</p>
+                <p><a href="${blueprint.articleUrl}" target="_blank" class="blueprint-modal-article-link">${blueprint.articleUrl}</a></p>
+            </div>
+
+            ${sections.map(section => {
+                const content = blueprint[section.key];
+                const isEmpty = !content || content.trim().length === 0;
+
+                return `
+                    <div class="blueprint-modal-section ${isEmpty ? 'empty' : ''}">
+                        <h4><i class="fa-solid ${section.icon}"></i> ${section.name}</h4>
+                        <div class="blueprint-modal-section-content">
+                            ${isEmpty ? 'Not completed' : content}
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    `;
+}
+
+// Initialize past blueprints when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('past-blueprints-container')) {
+        renderPastBlueprints();
+    }
+});
+
+// Also render when navigating to blueprint page
+document.addEventListener('pageChange', function(event) {
+    if (event.detail && event.detail.page === 'blueprint') {
+        setTimeout(() => {
+            renderPastBlueprints();
+        }, 100);
+    }
+});
