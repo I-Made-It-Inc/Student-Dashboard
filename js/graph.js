@@ -175,6 +175,9 @@ async function updateUIWithUserData(userData, photoUrl = null) {
             avatar.style.backgroundImage = 'none'; // Clear any previous photo
             avatar.textContent = userData.initials;
         }
+
+        // Mark as loaded to trigger fade-in animation
+        avatar.classList.add('loaded');
     });
 
     // Update welcome message
@@ -269,16 +272,13 @@ async function initializeUserProfile() {
         console.log('💾 Using cached user data');
     }
 
-    // Fetch profile photo (don't block on this)
-    fetchUserPhoto().then(photoUrl => {
-        if (photoUrl) {
-            // Update avatars with photo
-            updateUIWithUserData(userData, photoUrl);
-        }
-    });
+    // In Microsoft mode, fetch profile photo first to avoid flashing initials
+    // before photo loads
+    console.log('📸 Fetching profile photo...');
+    const photoUrl = await fetchUserPhoto();
 
-    // Update UI with user data
-    await updateUIWithUserData(userData);
+    // Update UI once with either photo or initials (no flash)
+    await updateUIWithUserData(userData, photoUrl);
 
     return userData;
 }

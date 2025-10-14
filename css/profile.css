@@ -313,6 +313,11 @@
     font-size: var(--font-size-xl);
     font-weight: bold;
     margin: 0 auto var(--spacing-md);
+    opacity: 0; /* Start invisible until loaded */
+}
+
+.preview-avatar.loaded {
+    opacity: 1; /* Appear instantly when content is ready */
 }
 
 .profile-preview h4 {

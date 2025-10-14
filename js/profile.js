@@ -753,7 +753,7 @@ function updateDefaultDescription(docId, description) {
 }
 
 // Load profile data
-function loadProfileData() {
+async function loadProfileData() {
     // Single source of truth: window.IMI.data.userData
     if (window.IMI && window.IMI.data && window.IMI.data.userData) {
         const userData = window.IMI.data.userData;
@@ -793,8 +793,8 @@ function loadProfileData() {
             });
         }
 
-        // Update profile preview
-        updateProfilePreviewWithUserData(userData);
+        // Update profile preview (wait for photo to load)
+        await updateProfilePreviewWithUserData(userData);
     }
 
     // Initialize preview with current form values
@@ -802,7 +802,7 @@ function loadProfileData() {
 }
 
 // Update profile preview with user data from Microsoft Graph
-function updateProfilePreviewWithUserData(userData) {
+async function updateProfilePreviewWithUserData(userData) {
     const previewName = document.getElementById('preview-name');
     const previewAvatar = document.getElementById('preview-avatar');
     const previewSchool = document.getElementById('preview-school');
@@ -812,21 +812,25 @@ function updateProfilePreviewWithUserData(userData) {
     }
 
     if (previewAvatar) {
-        // Check if user has a photo
+        // Check if user has a photo - fetch it first to avoid flash
+        let photoUrl = null;
         if (window.IMI && window.IMI.graph) {
-            window.IMI.graph.fetchUserPhoto().then(photoUrl => {
-                if (photoUrl) {
-                    previewAvatar.style.backgroundImage = `url(${photoUrl})`;
-                    previewAvatar.style.backgroundSize = 'cover';
-                    previewAvatar.style.backgroundPosition = 'center';
-                    previewAvatar.textContent = '';
-                } else {
-                    previewAvatar.textContent = userData.initials || 'NA';
-                }
-            });
+            photoUrl = await window.IMI.graph.fetchUserPhoto();
+        }
+
+        // Update avatar once with final result (photo or initials)
+        if (photoUrl) {
+            previewAvatar.style.backgroundImage = `url(${photoUrl})`;
+            previewAvatar.style.backgroundSize = 'cover';
+            previewAvatar.style.backgroundPosition = 'center';
+            previewAvatar.textContent = '';
         } else {
+            previewAvatar.style.backgroundImage = 'none';
             previewAvatar.textContent = userData.initials || 'NA';
         }
+
+        // Mark as loaded to trigger fade-in
+        previewAvatar.classList.add('loaded');
     }
 
     // Update school info if available from department or job title

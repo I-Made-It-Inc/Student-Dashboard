@@ -404,6 +404,11 @@ label {
     width: 80px;
     height: 80px;
     font-size: var(--font-size-xxl);
+    opacity: 0; /* Start invisible until loaded */
+}
+
+.profile-avatar.loaded {
+    opacity: 1; /* Appear instantly when content is ready */
 }
 
 /* User Avatar (Navigation) */
@@ -421,6 +426,11 @@ label {
     transition: all var(--transition-fast);
     position: relative;
     overflow: visible;
+    opacity: 0; /* Start invisible until loaded */
+}
+
+.user-avatar.loaded {
+    opacity: 1; /* Appear instantly when content is ready */
 }
 
 .user-avatar:hover {

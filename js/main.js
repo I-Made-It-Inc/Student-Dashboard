@@ -52,27 +52,22 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeModal();
     initializeCompanies();
     initializeTimeTracking();
-    
-    // Initialize page-specific modules based on current page
+
+    // Initialize page-specific modules that don't depend on user data
     const currentPage = window.location.hash.slice(1) || 'dashboard';
-    if (currentPage === 'profile') {
-        setTimeout(() => {
-            if (typeof initializeProfile === 'function') {
-                initializeProfile();
-            }
-        }, 100);
-    } else if (currentPage === 'notifications') {
+    if (currentPage === 'notifications') {
         setTimeout(() => {
             if (typeof initializeNotifications === 'function') {
                 initializeNotifications();
             }
         }, 100);
     }
-    
+
     // Set up global event listeners
     setupGlobalEventListeners();
 
     // Load user data from Microsoft Graph or mock data
+    // Profile initialization will happen after userData is loaded
     loadUserData();
 
     // Start session tracking
@@ -171,6 +166,13 @@ async function loadUserData() {
                 window.IMI.data.userData = userData;
 
                 console.log('✅ User data loaded successfully');
+
+                // Initialize profile page if we're on it (must happen after userData is loaded)
+                const currentPage = window.location.hash.slice(1) || 'dashboard';
+                if (currentPage === 'profile' && typeof initializeProfile === 'function') {
+                    console.log('📄 Initializing profile page with loaded user data');
+                    initializeProfile();
+                }
             }
         } catch (error) {
             console.error('❌ Failed to load user data:', error);
@@ -203,6 +205,13 @@ function usePlaceholderData() {
 
     updateUserInterface(userData);
     window.IMI.data.userData = userData;
+
+    // Initialize profile page if we're on it
+    const currentPage = window.location.hash.slice(1) || 'dashboard';
+    if (currentPage === 'profile' && typeof initializeProfile === 'function') {
+        console.log('📄 Initializing profile page with placeholder data');
+        initializeProfile();
+    }
 }
 
 // Update user interface with data
