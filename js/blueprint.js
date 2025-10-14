@@ -229,15 +229,41 @@ async function submitBlueprint(e) {
                 `Blueprint #${result.data.blueprintId} submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections).`,
                 'success'
             );
+
+            // Update dashboard blueprint challenge (if function exists)
+            if (typeof updateDashboardBlueprintChallenge === 'function') {
+                updateDashboardBlueprintChallenge();
+            }
         } else {
-            // Developer mode or API not available - just show success
-            console.log('🔧 Developer mode - Blueprint not saved to database');
+            // Developer mode or API not available - save to sessionStorage
+            console.log('🔧 Developer mode - Saving Blueprint to sessionStorage');
             await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
 
+            // Save to sessionStorage (persists until browser closes or hard refresh)
+            const sessionBlueprints = JSON.parse(sessionStorage.getItem('imi_blueprints') || '[]');
+            const newBlueprint = {
+                ...blueprintData,
+                blueprintId: Date.now(), // Use timestamp as ID
+                submissionDate: new Date().toISOString(),
+                studentEmail: userData.email
+            };
+            sessionBlueprints.unshift(newBlueprint); // Add to beginning
+            sessionStorage.setItem('imi_blueprints', JSON.stringify(sessionBlueprints));
+
             window.IMI.utils.showNotification(
-                `Blueprint submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections). (Not saved - Developer mode)`,
+                `Blueprint submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections). (Saved to session)`,
                 'success'
             );
+
+            // Refresh past blueprints list
+            if (typeof renderPastBlueprints === 'function') {
+                renderPastBlueprints();
+            }
+
+            // Update dashboard blueprint challenge (if function exists)
+            if (typeof updateDashboardBlueprintChallenge === 'function') {
+                updateDashboardBlueprintChallenge();
+            }
         }
 
         // Update streak and tier
@@ -897,11 +923,17 @@ async function renderPastBlueprints(reset = true) {
 
     try {
         if (authMode === 'developer') {
-            // Developer mode: use mock data with pagination simulation
-            console.log('🔧 Developer mode - using mock data');
-            blueprints = mockBlueprints.slice(blueprintsPaginationState.offset, blueprintsPaginationState.offset + blueprintsPaginationState.limit);
-            blueprintsPaginationState.totalCount = mockBlueprints.length;
-            blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < mockBlueprints.length;
+            // Developer mode: combine sessionStorage blueprints with mock data
+            console.log('🔧 Developer mode - loading from sessionStorage + mock data');
+            const sessionBlueprints = JSON.parse(sessionStorage.getItem('imi_blueprints') || '[]');
+            console.log('📦 Session blueprints found:', sessionBlueprints.length);
+
+            // Combine session blueprints (newest first) with mock blueprints
+            const allBlueprints = [...sessionBlueprints, ...mockBlueprints];
+
+            blueprints = allBlueprints.slice(blueprintsPaginationState.offset, blueprintsPaginationState.offset + blueprintsPaginationState.limit);
+            blueprintsPaginationState.totalCount = allBlueprints.length;
+            blueprintsPaginationState.hasMore = (blueprintsPaginationState.offset + blueprints.length) < allBlueprints.length;
         } else if (authMode === 'microsoft') {
             // Microsoft mode: fetch from API with pagination
             const userData = window.IMI?.data?.userData;

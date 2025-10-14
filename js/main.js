@@ -236,6 +236,7 @@ function updateUserInterface(userData) {
 
     // Update stats
     updateDashboardStats(userData);
+    updateDashboardBlueprintChallenge();
 }
 
 // Update dashboard statistics
@@ -248,13 +249,118 @@ function updateDashboardStats(data) {
         '.points-value': `${data.points} pts`,
         '.rank-value': `#${data.rank}`
     };
-    
+
     Object.entries(statElements).forEach(([selector, value]) => {
         const element = document.querySelector(selector);
         if (element) {
             element.textContent = value;
         }
     });
+}
+
+// Get current week's date range (Monday to Sunday)
+function getCurrentWeekRange() {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+    // Calculate days to Monday (start of week)
+    const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + daysToMonday);
+    monday.setHours(0, 0, 0, 0);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
+
+    return { monday, sunday };
+}
+
+// Update dashboard blueprint challenge progress
+async function updateDashboardBlueprintChallenge() {
+    console.log('📊 Updating dashboard blueprint challenge...');
+
+    const authMode = sessionStorage.getItem('imi_auth_mode');
+    const { monday, sunday } = getCurrentWeekRange();
+
+    console.log('📅 Current week:', monday.toLocaleDateString(), '-', sunday.toLocaleDateString());
+
+    let thisWeekBlueprints = [];
+
+    try {
+        if (authMode === 'developer') {
+            // Developer mode: get blueprints from sessionStorage
+            const sessionBlueprints = JSON.parse(sessionStorage.getItem('imi_blueprints') || '[]');
+
+            // Filter blueprints submitted this week
+            thisWeekBlueprints = sessionBlueprints.filter(bp => {
+                const submissionDate = new Date(bp.submissionDate);
+                return submissionDate >= monday && submissionDate <= sunday;
+            });
+
+            console.log('📦 Developer mode - This week blueprints:', thisWeekBlueprints.length);
+        } else if (authMode === 'microsoft') {
+            // Microsoft mode: fetch from API
+            const userData = window.IMI?.data?.userData;
+            if (userData && userData.email && window.IMI?.api?.getBlueprints) {
+                // Get all blueprints and filter by date
+                const allBlueprints = await window.IMI.api.getBlueprints(userData.email, 100, 0); // Get up to 100 to ensure we get this week's
+
+                thisWeekBlueprints = allBlueprints.filter(bp => {
+                    const submissionDate = new Date(bp.submissionDate);
+                    return submissionDate >= monday && submissionDate <= sunday;
+                });
+
+                console.log('📡 Microsoft mode - This week blueprints:', thisWeekBlueprints.length);
+            }
+        }
+
+        // Check which sections are completed this week (any blueprint with ≥100 words counts)
+        const sections = ['trendspotter', 'futureVisionary', 'innovationCatalyst', 'connector', 'growthHacker'];
+        const sectionNames = ['The Trendspotter', 'The Future Visionary', 'The Innovation Catalyst', 'The Connector', 'The Growth Hacker'];
+        const completedSections = new Set();
+
+        thisWeekBlueprints.forEach(bp => {
+            sections.forEach(section => {
+                const content = bp[section] || '';
+                const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
+                if (wordCount >= 100) {
+                    completedSections.add(section);
+                }
+            });
+        });
+
+        // Calculate total XP this week
+        const totalXP = thisWeekBlueprints.reduce((sum, bp) => sum + (bp.xpEarned || 0), 0);
+
+        console.log('✅ Completed sections this week:', Array.from(completedSections));
+        console.log('💰 Total XP this week:', totalXP);
+
+        // Update UI
+        const progressSections = document.querySelectorAll('.challenge-progress .progress-section');
+        progressSections.forEach((element, index) => {
+            const section = sections[index];
+            const isCompleted = completedSections.has(section);
+
+            if (isCompleted) {
+                element.classList.add('completed');
+                element.querySelector('span:first-child').textContent = '✓';
+            } else {
+                element.classList.remove('completed');
+                element.querySelector('span:first-child').textContent = '○';
+            }
+        });
+
+        // Update XP display
+        const xpDisplay = document.querySelector('.challenge-progress .points-earned');
+        if (xpDisplay) {
+            xpDisplay.textContent = `${totalXP} XP earned`;
+        }
+
+    } catch (error) {
+        console.error('❌ Error updating dashboard blueprint challenge:', error);
+    }
 }
 
 // Session tracking
@@ -275,6 +381,13 @@ function startSessionTracking() {
         logPageTime(currentPage, Date.now() - sessionStartTime);
         currentPage = event.detail.page;
         sessionStartTime = Date.now();
+
+        // Update dashboard blueprint challenge when navigating to dashboard
+        if (event.detail.page === 'dashboard') {
+            setTimeout(() => {
+                updateDashboardBlueprintChallenge();
+            }, 100);
+        }
     });
     
     // Track before unload
