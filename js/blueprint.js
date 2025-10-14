@@ -174,6 +174,9 @@ async function submitBlueprint(e) {
         // Calculate total word count
         const totalWordCount = Object.values(responses).reduce((sum, r) => sum + r.wordCount, 0);
 
+        // Calculate XP: 20 XP per section with ≥100 words (max 100 XP for basic submission)
+        const xpEarned = progress.totalXP; // Already calculated in updateOverallProgress()
+
         // Prepare blueprint data for database
         const blueprintData = {
             studentEmail: userData.email,
@@ -186,7 +189,7 @@ async function submitBlueprint(e) {
             innovationCatalyst: responses['innovation-catalyst']?.content || null,
             connector: responses['connector']?.content || null,
             growthHacker: responses['growth-hacker']?.content || null,
-            xpEarned: 100, // Base XP for blueprint submission
+            xpEarned: xpEarned, // 20 XP per completed section (≥100 words)
             wordCount: totalWordCount,
             status: 'submitted'
         };
@@ -199,7 +202,7 @@ async function submitBlueprint(e) {
 
             // Show success with database confirmation
             window.IMI.utils.showNotification(
-                `Blueprint #${result.data.blueprintId} submitted successfully! You earned ${blueprintData.xpEarned} XP.`,
+                `Blueprint #${result.data.blueprintId} submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections).`,
                 'success'
             );
         } else {
@@ -208,14 +211,14 @@ async function submitBlueprint(e) {
             await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
 
             window.IMI.utils.showNotification(
-                `Blueprint submitted successfully! You earned ${blueprintData.xpEarned} XP. (Not saved - Developer mode)`,
+                `Blueprint submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections). (Not saved - Developer mode)`,
                 'success'
             );
         }
 
         // Update streak and tier
         updateStreak();
-        updateTierProgress(blueprintData.xpEarned);
+        updateTierProgress(xpEarned);
 
         // Trigger Blue Spark for Blueprint submission
         if (window.BlueSpark) {
@@ -223,7 +226,7 @@ async function submitBlueprint(e) {
                 detail: {
                     topic: blueprintData.articleTitle,
                     sections: Object.keys(responses),
-                    xpEarned: blueprintData.xpEarned,
+                    xpEarned: xpEarned,
                     completedSections: progress.completedSections
                 }
             });
