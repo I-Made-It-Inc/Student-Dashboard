@@ -160,15 +160,6 @@ async function submitBlueprint(e) {
         return;
     }
 
-    // Validate URL format
-    try {
-        new URL(articleUrl);
-    } catch {
-        window.IMI.utils.showNotification('Please enter a valid URL for the article link.', 'warning');
-        document.getElementById('article-url')?.focus();
-        return;
-    }
-
     const progress = updateOverallProgress();
 
     if (progress.completedSections === 0) {

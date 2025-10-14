@@ -78,12 +78,10 @@
     border-color: var(--imi-blue);
 }
 
-.form-input.valid {
-    border-color: var(--success-green);
-}
-
-.form-input.invalid {
-    border-color: var(--error-red);
+.form-input[readonly], .form-input[disabled], .form-input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    color: #666;
 }
 
 .field-error {

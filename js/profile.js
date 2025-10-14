@@ -277,48 +277,37 @@ function getSelectedInterests() {
 function validateField(e) {
     const field = e.target;
     const value = field.value.trim();
-    
-    // Remove existing validation classes
-    field.classList.remove('valid', 'invalid');
-    
-    // Field-specific validation
+
+    // Field-specific validation (error messages only, no border styling)
     switch(field.type) {
         case 'email':
             if (value && !isValidEmail(value)) {
-                field.classList.add('invalid');
                 showFieldError(field, 'Please enter a valid email address');
             } else {
-                field.classList.add('valid');
                 clearFieldError(field);
             }
             break;
-            
+
         case 'url':
             if (value && !isValidURL(value)) {
-                field.classList.add('invalid');
                 showFieldError(field, 'Please enter a valid URL (including https://)');
             } else {
-                field.classList.add('valid');
                 clearFieldError(field);
             }
             break;
-            
+
         case 'tel':
             if (value && !isValidPhone(value)) {
-                field.classList.add('invalid');
                 showFieldError(field, 'Please enter a valid phone number');
             } else {
-                field.classList.add('valid');
                 clearFieldError(field);
             }
             break;
-            
+
         default:
             if (field.hasAttribute('required') && !value) {
-                field.classList.add('invalid');
                 showFieldError(field, 'This field is required');
             } else {
-                field.classList.add('valid');
                 clearFieldError(field);
             }
     }

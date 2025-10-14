@@ -159,14 +159,6 @@
     color: #aaa;
 }
 
-.form-input:invalid:not(:placeholder-shown) {
-    border-color: #e74c3c;
-}
-
-.form-input:valid:not(:placeholder-shown) {
-    border-color: #27ae60;
-}
-
 /* Submission Sections */
 .submission-sections {
     display: flex;
