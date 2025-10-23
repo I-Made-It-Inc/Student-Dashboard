@@ -181,10 +181,10 @@ async function updateUIWithUserData(userData, photoUrl = null) {
         avatar.classList.add('loaded');
     });
 
-    // Update welcome message
+    // Update welcome message with display name (nickname)
     const welcomeMessage = document.querySelector('.profile-info h2');
     if (welcomeMessage) {
-        welcomeMessage.textContent = `Welcome back, ${userData.firstName}!`;
+        welcomeMessage.textContent = `Welcome back, ${userData.name}!`;
     }
 
     // Update profile details with job title (leave blank if not available)

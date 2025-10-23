@@ -228,10 +228,10 @@ function updateUserInterface(userData) {
     // Note: Avatar updates are handled by graph.js updateUIWithUserData() to properly support photos
     // Don't update avatars here to avoid overwriting photo backgrounds
 
-    // Update welcome message
+    // Update welcome message with display name (nickname)
     const welcomeMessage = document.querySelector('.profile-info h2');
     if (welcomeMessage) {
-        welcomeMessage.textContent = `Welcome back, ${userData.name.split(' ')[0]}!`;
+        welcomeMessage.textContent = `Welcome back, ${userData.name}!`;
     }
 
     // Update profile details (job title) - important for Dataverse sync

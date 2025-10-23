@@ -128,9 +128,17 @@ function loadPageContent(pageId) {
 
 // Dashboard content loader
 function loadDashboardContent() {
-    // Refresh profile details (job title) from latest userData
+    // Refresh profile information from latest userData
     if (window.IMI && window.IMI.data && window.IMI.data.userData) {
         const userData = window.IMI.data.userData;
+
+        // Update welcome message with display name (nickname)
+        const welcomeMessage = document.querySelector('.profile-info h2');
+        if (welcomeMessage) {
+            welcomeMessage.textContent = `Welcome back, ${userData.name}!`;
+        }
+
+        // Update profile details (job title)
         const profileDetails = document.querySelector('.profile-details');
         if (profileDetails) {
             // Use jobTitle if available and not a placeholder, otherwise leave blank
