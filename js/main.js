@@ -234,6 +234,17 @@ function updateUserInterface(userData) {
         welcomeMessage.textContent = `Welcome back, ${userData.name.split(' ')[0]}!`;
     }
 
+    // Update profile details (job title) - important for Dataverse sync
+    const profileDetails = document.querySelector('.profile-details');
+    if (profileDetails) {
+        // Use jobTitle if available and not a placeholder, otherwise leave blank
+        if (userData.jobTitle && !userData.jobTitle.startsWith('[')) {
+            profileDetails.textContent = userData.jobTitle;
+        } else {
+            profileDetails.textContent = '';
+        }
+    }
+
     // Update stats
     updateDashboardStats(userData);
 

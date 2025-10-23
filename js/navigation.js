@@ -128,6 +128,20 @@ function loadPageContent(pageId) {
 
 // Dashboard content loader
 function loadDashboardContent() {
+    // Refresh profile details (job title) from latest userData
+    if (window.IMI && window.IMI.data && window.IMI.data.userData) {
+        const userData = window.IMI.data.userData;
+        const profileDetails = document.querySelector('.profile-details');
+        if (profileDetails) {
+            // Use jobTitle if available and not a placeholder, otherwise leave blank
+            if (userData.jobTitle && !userData.jobTitle.startsWith('[')) {
+                profileDetails.textContent = userData.jobTitle;
+            } else {
+                profileDetails.textContent = '';
+            }
+        }
+    }
+
     // Refresh stats
     updateDashboardStats();
 

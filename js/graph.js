@@ -187,11 +187,15 @@ async function updateUIWithUserData(userData, photoUrl = null) {
         welcomeMessage.textContent = `Welcome back, ${userData.firstName}!`;
     }
 
-    // Update profile details (department/job title can be repurposed for co-op info)
+    // Update profile details with job title (leave blank if not available)
     const profileDetails = document.querySelector('.profile-details');
-    if (profileDetails && userData.department !== '[PLACEHOLDER]') {
-        // Use department field for co-op stream info
-        profileDetails.textContent = userData.department;
+    if (profileDetails) {
+        // Use jobTitle if available and not a placeholder, otherwise leave blank
+        if (userData.jobTitle && !userData.jobTitle.startsWith('[')) {
+            profileDetails.textContent = userData.jobTitle;
+        } else {
+            profileDetails.textContent = '';
+        }
     }
 
     // Update any name displays
@@ -231,7 +235,7 @@ async function initializeUserProfile() {
             id: 'dev-123',
 
             // Azure AD fields (repurposed for demo)
-            jobTitle: 'Grade 11 Student',
+            jobTitle: 'Summer 2025 Co-op Student',
             department: 'Summer 2025 Co-op Stream',
             officeLocation: 'Toronto, ON',
             businessPhones: [],
