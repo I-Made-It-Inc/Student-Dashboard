@@ -173,12 +173,17 @@ function loadDashboardContent() {
 
 // Innovation content loader
 function loadInnovationContent() {
+    // Update XP display from userData (single source of truth)
+    if (typeof updateBlueprintXPDisplay === 'function') {
+        updateBlueprintXPDisplay();
+    }
+
     // Load current challenge
     loadCurrentChallenge();
-    
+
     // Update progress
     updateChallengeProgress();
-    
+
     // Load leaderboard
     loadInnovationLeaderboard();
 }

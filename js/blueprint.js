@@ -7,6 +7,9 @@ function initializeBlueprintChallenge() {
     // Reset draft loading flag for this initialization
     blueprintDraftLoadedThisInitialization = false;
 
+    // Update XP display from userData
+    updateBlueprintXPDisplay();
+
     // Set up word counters
     setupWordCounters();
 
@@ -27,6 +30,18 @@ function initializeBlueprintChallenge() {
 
     // Load past blueprints
     renderPastBlueprints();
+}
+
+// Update XP display from userData
+function updateBlueprintXPDisplay() {
+    if (window.IMI && window.IMI.data && window.IMI.data.userData) {
+        const currentXP = window.IMI.data.userData.currentXP || 0;
+        const balanceElement = document.querySelector('.balance-amount');
+        if (balanceElement) {
+            balanceElement.textContent = currentXP.toLocaleString();
+            console.log('✅ Blueprint XP display updated:', currentXP);
+        }
+    }
 }
 
 // Setup word counters for each section
@@ -546,12 +561,19 @@ function setupRedemptionHandlers() {
                 if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
                     window.IMI.utils.showNotification(`Successfully redeemed ${itemName}!`, 'success');
                 }
-                
+
                 // Parse cost properly
                 const costMatch = costText.match(/(\d+)/);
                 if (costMatch) {
                     const costXP = parseInt(costMatch[1]);
-                    
+
+                    // Update userData.currentXP (single source of truth)
+                    if (window.IMI && window.IMI.data && window.IMI.data.userData) {
+                        window.IMI.data.userData.currentXP -= costXP;
+                        window.IMI.data.userData.xpSpent = (window.IMI.data.userData.xpSpent || 0) + costXP;
+                        console.log('✅ XP updated in userData:', window.IMI.data.userData.currentXP);
+                    }
+
                     // Update available XP
                     const balanceElement = document.querySelector('.balance-amount');
                     if (balanceElement) {
@@ -559,15 +581,15 @@ function setupRedemptionHandlers() {
                         const newBalance = currentXP - costXP;
                         const formattedBalance = newBalance.toLocaleString();
                         balanceElement.textContent = formattedBalance;
-                        
+
                         // Also update the dashboard XP display
                         const dashboardXPElements = document.querySelectorAll('.stat-main');
                         dashboardXPElements.forEach(el => {
-                            if (el.textContent.includes('pts')) {
-                                el.textContent = `${formattedBalance} pts`;
+                            if (el.textContent.includes('XP') || el.textContent.includes('pts')) {
+                                el.textContent = `${formattedBalance} XP`;
                             }
                         });
-                        
+
                         // Update the sidebar XP display too
                         const sidebarXPElement = document.querySelector('.text-muted.small');
                         if (sidebarXPElement && sidebarXPElement.textContent.includes('XP available')) {
@@ -575,7 +597,7 @@ function setupRedemptionHandlers() {
                         }
                     }
                 }
-                
+
                 // Disable the button
                 this.disabled = true;
                 this.textContent = 'Redeemed';

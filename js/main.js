@@ -164,9 +164,9 @@ async function loadUserData() {
                     // Dataverse contact ID (MS mode only)
                     contactId: dataverseProfile?.contactId,
 
-                    // XP data (from Azure SQL in MS mode, mock in dev mode)
-                    currentXP: xpData?.currentXP || 0,
-                    lifetimeXP: xpData?.lifetimeXP || 0,
+                    // XP data (from Azure SQL in MS mode, mock 1850 in dev mode)
+                    currentXP: xpData?.currentXP ?? (authMode === 'developer' ? 1850 : 0),
+                    lifetimeXP: xpData?.lifetimeXP ?? (authMode === 'developer' ? 1850 : 0),
                     xpSpent: xpData?.xpSpent || 0,
 
                     // Other gamification data (still mock for now)
@@ -219,8 +219,8 @@ function usePlaceholderData() {
         email: '[EMAIL]',
         jobTitle: '[JOB TITLE]',
         department: '[DEPARTMENT]',
-        currentXP: 0,
-        lifetimeXP: 0,
+        currentXP: 1850,
+        lifetimeXP: 1850,
         xpSpent: 0,
         streak: 12,
         tier: 'Gold',
@@ -639,6 +639,13 @@ function handleRedemption(btn) {
         }
         const costXP = parseInt(costMatch[1]);
 
+        // Update userData.currentXP (single source of truth)
+        if (window.IMI && window.IMI.data && window.IMI.data.userData) {
+            window.IMI.data.userData.currentXP -= costXP;
+            window.IMI.data.userData.xpSpent = (window.IMI.data.userData.xpSpent || 0) + costXP;
+            console.log('✅ XP updated in userData:', window.IMI.data.userData.currentXP);
+        }
+
         // Update available XP in sidebar
         const xpAvailableElement = document.querySelector('.text-muted.small');
         if (xpAvailableElement && xpAvailableElement.textContent.includes('XP available')) {
@@ -654,13 +661,13 @@ function handleRedemption(btn) {
         // Update the gamification stats XP display
         const statMainElements = document.querySelectorAll('.stat-main');
         statMainElements.forEach(el => {
-            if (el.textContent.includes('pts')) {
+            if (el.textContent.includes('XP') || el.textContent.includes('pts')) {
                 const currentXPMatch = el.textContent.match(/([\d,]+)/);
                 if (currentXPMatch) {
                     const currentXP = parseInt(currentXPMatch[1].replace(/,/g, ''));
                     const newBalance = currentXP - costXP;
                     const formattedBalance = newBalance.toLocaleString();
-                    el.textContent = `${formattedBalance} pts`;
+                    el.textContent = `${formattedBalance} XP`;
                 }
             }
         });
