@@ -743,6 +743,16 @@ function updateDefaultDescription(docId, description) {
 
 // Load profile data
 async function loadProfileData() {
+    // Helper function to check if a value is a placeholder
+    const isPlaceholder = (value) => {
+        return !value || value.startsWith('[') || value === '';
+    };
+
+    // Helper function to get clean value (empty string if placeholder)
+    const getCleanValue = (value) => {
+        return isPlaceholder(value) ? '' : value;
+    };
+
     // Single source of truth: window.IMI.data.userData
     if (window.IMI && window.IMI.data && window.IMI.data.userData) {
         const userData = window.IMI.data.userData;
@@ -759,19 +769,19 @@ async function loadProfileData() {
         const graduationYearSelect = document.getElementById('profile-graduation-year');
         const phoneInput = document.getElementById('profile-phone');
 
-        // Basic fields
-        if (firstNameInput) firstNameInput.value = userData.firstName || '';
-        if (lastNameInput) lastNameInput.value = userData.lastName || '';
-        if (displayNameInput) displayNameInput.value = userData.name || '';
-        if (emailInput) emailInput.value = userData.email || '';
+        // Basic fields (firstName, lastName, email should always have values from Azure AD)
+        if (firstNameInput) firstNameInput.value = getCleanValue(userData.firstName);
+        if (lastNameInput) lastNameInput.value = getCleanValue(userData.lastName);
+        if (displayNameInput) displayNameInput.value = getCleanValue(userData.name);
+        if (emailInput) emailInput.value = getCleanValue(userData.email);
 
-        // Extended fields
-        if (bioTextarea) bioTextarea.value = userData.bio || '';
-        if (jobTitleInput) jobTitleInput.value = userData.jobTitle || '';
-        if (cityInput) cityInput.value = userData.city || '';
-        if (schoolInput) schoolInput.value = userData.school || '';
+        // Extended fields (use clean values to avoid showing placeholders)
+        if (bioTextarea) bioTextarea.value = getCleanValue(userData.bio);
+        if (jobTitleInput) jobTitleInput.value = getCleanValue(userData.jobTitle);
+        if (cityInput) cityInput.value = getCleanValue(userData.city);
+        if (schoolInput) schoolInput.value = getCleanValue(userData.school);
         if (graduationYearSelect && userData.graduationYear) graduationYearSelect.value = userData.graduationYear;
-        if (phoneInput) phoneInput.value = userData.mobilePhone || '';
+        if (phoneInput) phoneInput.value = getCleanValue(userData.mobilePhone);
 
         // Interests checkboxes
         if (userData.interests && Array.isArray(userData.interests)) {
