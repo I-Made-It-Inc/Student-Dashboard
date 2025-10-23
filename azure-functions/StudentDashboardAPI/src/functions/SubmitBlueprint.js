@@ -38,6 +38,30 @@ app.http('SubmitBlueprint', {
                 wordCount = allText.trim().split(/\s+/).filter(word => word.length > 0).length;
             }
 
+            // Calculate XP based on sections with >100 words (20 XP per complete section)
+            const sections = [
+                body.trendspotter || '',
+                body.futureVisionary || '',
+                body.innovationCatalyst || '',
+                body.connector || '',
+                body.growthHacker || ''
+            ];
+
+            let completeSections = 0;
+            sections.forEach(section => {
+                const sectionWordCount = section.trim().split(/\s+/).filter(word => word.length > 0).length;
+                if (sectionWordCount >= 100) {
+                    completeSections++;
+                }
+            });
+
+            const xpEarned = completeSections * 20;
+
+            // If no sections are complete, save as draft (no XP)
+            const status = completeSections > 0 ? 'submitted' : 'draft';
+
+            context.log(`Calculated XP: ${xpEarned} (${completeSections} complete sections)`);
+
             // Prepare blueprint data
             const blueprintData = {
                 azureAdUserId: body.azureAdUserId || null, // Azure AD Object ID (immutable)
@@ -52,10 +76,10 @@ app.http('SubmitBlueprint', {
                 innovationCatalyst: body.innovationCatalyst || null,
                 connector: body.connector || null,
                 growthHacker: body.growthHacker || null,
-                xpEarned: body.xpEarned || 100,
+                xpEarned: xpEarned,
                 connectorBonus: body.connectorBonus || false,
                 featuredInsight: body.featuredInsight || false,
-                status: body.status || 'submitted',
+                status: status,
                 wordCount: wordCount,
                 aiQualityScore: body.aiQualityScore || null
             };
@@ -67,6 +91,37 @@ app.http('SubmitBlueprint', {
 
             context.log('✅ Blueprint submitted successfully:', result.blueprintId);
 
+            // If XP was earned and we have azureAdUserId, update UserXP table
+            let updatedXP = null;
+            if (xpEarned > 0 && body.azureAdUserId) {
+                try {
+                    // Ensure user XP record exists (create if needed)
+                    let userXP = await sqlClient.getUserXP(body.azureAdUserId);
+                    if (!userXP) {
+                        context.log('Creating initial UserXP record for new user');
+                        userXP = await sqlClient.createUserXP(
+                            body.azureAdUserId,
+                            body.studentEmail,
+                            body.contactId || null
+                        );
+                    }
+
+                    // Add XP transaction
+                    updatedXP = await sqlClient.addXPTransaction(
+                        body.azureAdUserId,
+                        xpEarned,
+                        'blueprint',
+                        result.blueprintId,
+                        `Blueprint submission: ${completeSections} complete sections`
+                    );
+
+                    context.log('✅ XP updated:', updatedXP);
+                } catch (xpError) {
+                    context.log.error('⚠️ Failed to update XP (blueprint saved):', xpError);
+                    // Continue - blueprint is saved even if XP update fails
+                }
+            }
+
             return {
                 status: 201,
                 headers: {
@@ -75,13 +130,19 @@ app.http('SubmitBlueprint', {
                 },
                 jsonBody: {
                     success: true,
-                    message: 'Blueprint submitted successfully',
+                    message: status === 'draft'
+                        ? 'Blueprint saved as draft (complete at least one section to earn XP)'
+                        : 'Blueprint submitted successfully',
                     data: {
                         blueprintId: result.blueprintId,
                         submissionDate: result.submissionDate,
                         xpEarned: result.xpEarned,
                         wordCount: result.wordCount,
-                        status: result.status
+                        status: result.status,
+                        completeSections: completeSections,
+                        // Include updated XP balance if available
+                        currentXP: updatedXP?.currentXP || null,
+                        lifetimeXP: updatedXP?.lifetimeXP || null
                     }
                 }
             };

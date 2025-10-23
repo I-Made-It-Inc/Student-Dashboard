@@ -213,11 +213,24 @@ async function submitBlueprint(e) {
             const result = await window.IMI.api.submitBlueprint(blueprintData);
             console.log('✅ Blueprint submitted:', totalWordCount, 'words,', xpEarned, 'XP');
 
-            // Show success with database confirmation
-            window.IMI.utils.showNotification(
-                `Blueprint #${result.data.blueprintId} submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections).`,
-                'success'
-            );
+            // Update userData with new XP values from response
+            if (result.data.currentXP !== null && result.data.lifetimeXP !== null) {
+                window.IMI.data.userData.currentXP = result.data.currentXP;
+                window.IMI.data.userData.lifetimeXP = result.data.lifetimeXP;
+                console.log('✅ XP updated:', result.data.currentXP, 'current,', result.data.lifetimeXP, 'lifetime');
+
+                // Show success with XP update
+                window.IMI.utils.showNotification(
+                    `Blueprint submitted! +${xpEarned} XP earned. Total: ${result.data.currentXP.toLocaleString()} XP`,
+                    'success'
+                );
+            } else {
+                // Show success without XP update (e.g., draft saved)
+                window.IMI.utils.showNotification(
+                    result.message || 'Blueprint saved!',
+                    result.data.status === 'draft' ? 'warning' : 'success'
+                );
+            }
 
             // Refresh past blueprints list
             if (typeof renderPastBlueprints === 'function') {

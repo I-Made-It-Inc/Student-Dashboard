@@ -148,10 +148,13 @@ function loadDashboardContent() {
                 profileDetails.textContent = '';
             }
         }
-    }
 
-    // Refresh stats
-    updateDashboardStats();
+        // Refresh stats (including XP)
+        updateDashboardStats(userData);
+    } else {
+        // Fallback if userData not available
+        updateDashboardStats();
+    }
 
     // Load recent activity
     loadRecentActivity();

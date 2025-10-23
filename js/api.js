@@ -270,6 +270,45 @@ async function getFeaturedBlueprints(limit = 10) {
     }
 }
 
+/**
+ * Fetch user XP data from Azure SQL Database
+ * @param {string} azureAdUserId - Azure AD Object ID
+ * @param {string} studentEmail - Student email (optional, for auto-create)
+ * @returns {Promise<Object>} User XP data (currentXP, lifetimeXP, xpSpent)
+ */
+async function fetchUserXP(azureAdUserId, studentEmail = null) {
+    const baseUrl = window.IMI.config.API.baseUrl;
+    let url = `${baseUrl}/GetUserXP?azureAdUserId=${encodeURIComponent(azureAdUserId)}`;
+
+    // Include email if provided (for auto-create on first fetch)
+    if (studentEmail) {
+        url += `&studentEmail=${encodeURIComponent(studentEmail)}`;
+    }
+
+    console.log('📡 Fetching user XP from SQL Database:', azureAdUserId);
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log('✅ User XP fetched:', result.data.currentXP, 'XP');
+        return result.data;
+    } catch (error) {
+        console.error('❌ Failed to fetch user XP:', error);
+        // Return default values if fetch fails
+        return {
+            currentXP: 0,
+            lifetimeXP: 0,
+            xpSpent: 0
+        };
+    }
+}
+
 // Export to global namespace
 window.IMI = window.IMI || {};
 window.IMI.api = {
@@ -281,7 +320,8 @@ window.IMI.api = {
     getBlueprintById,
     getBlueprintStatsByUserId,  // PRIMARY: Stats by Azure AD User ID
     getBlueprintStats,           // LEGACY: Stats by email
-    getFeaturedBlueprints
+    getFeaturedBlueprints,
+    fetchUserXP                  // XP: Get user XP data
 };
 
 console.log('📡 API module loaded');

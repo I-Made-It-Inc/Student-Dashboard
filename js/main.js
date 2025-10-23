@@ -126,7 +126,18 @@ async function loadUserData() {
                     console.log('🔧 Developer mode - skipping Dataverse API call, using session-only data');
                 }
 
-                // Combine profile data with mock gamification data (will be from backend later)
+                // Fetch XP data from Azure SQL (Microsoft mode only)
+                let xpData = null;
+                if (authMode === 'microsoft' && window.IMI.api && graphData.id) {
+                    try {
+                        xpData = await window.IMI.api.fetchUserXP(graphData.id, graphData.email);
+                        console.log('✅ XP data loaded:', xpData.currentXP, 'XP');
+                    } catch (error) {
+                        console.warn('⚠️ Failed to load XP data, using defaults:', error);
+                    }
+                }
+
+                // Combine profile data with XP data from backend
                 const userData = {
                     // Identity
                     name: dataverseProfile?.nickname || graphData.name,  // Prefer Dataverse nickname (display name)
@@ -153,9 +164,13 @@ async function loadUserData() {
                     // Dataverse contact ID (MS mode only)
                     contactId: dataverseProfile?.contactId,
 
-                    // Gamification data (TODO: fetch from backend)
+                    // XP data (from Azure SQL in MS mode, mock in dev mode)
+                    currentXP: xpData?.currentXP || 0,
+                    lifetimeXP: xpData?.lifetimeXP || 0,
+                    xpSpent: xpData?.xpSpent || 0,
+
+                    // Other gamification data (still mock for now)
                     streak: 12,
-                    xp: 1850,
                     tier: 'Gold',
                     totalHours: 324,
                     activeProjects: 5,
@@ -204,8 +219,10 @@ function usePlaceholderData() {
         email: '[EMAIL]',
         jobTitle: '[JOB TITLE]',
         department: '[DEPARTMENT]',
+        currentXP: 0,
+        lifetimeXP: 0,
+        xpSpent: 0,
         streak: 12,
-        xp: 1850,
         tier: 'Gold',
         totalHours: 324,
         activeProjects: 5,
@@ -260,18 +277,33 @@ function updateUserInterface(userData) {
 
 // Update dashboard statistics
 function updateDashboardStats(data) {
+    // Update gamification stats badge (XP display)
+    const statMainElements = document.querySelectorAll('.stat-main');
+    statMainElements.forEach(el => {
+        if (el.textContent.includes('pts') || el.textContent.includes('XP')) {
+            // Format XP with comma separator
+            el.textContent = `${data.currentXP.toLocaleString()} XP`;
+        }
+    });
+
+    // Update sidebar "XP available" text
+    const xpAvailableElements = document.querySelectorAll('.text-muted.small');
+    xpAvailableElements.forEach(el => {
+        if (el.textContent.includes('XP available')) {
+            el.textContent = `${data.currentXP.toLocaleString()} XP available`;
+        }
+    });
+
+    // Update other stats if elements exist (these are less critical)
     const statElements = {
         '.stat-value.hours': data.totalHours,
         '.stat-value.projects': data.activeProjects,
-        '.stat-value.companies': data.companies,
-        '.streak-value': `${data.streak} day streak`,
-        '.points-value': `${data.points} pts`,
-        '.rank-value': `#${data.rank}`
+        '.stat-value.companies': data.companies
     };
 
     Object.entries(statElements).forEach(([selector, value]) => {
         const element = document.querySelector(selector);
-        if (element) {
+        if (element && value !== undefined) {
             element.textContent = value;
         }
     });

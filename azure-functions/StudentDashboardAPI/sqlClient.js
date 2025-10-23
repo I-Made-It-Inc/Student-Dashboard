@@ -348,6 +348,191 @@ async function getFeaturedBlueprints(limit = 10) {
 }
 
 /**
+ * Get user XP data by Azure AD User ID
+ * @param {string} azureAdUserId - Azure AD Object ID
+ * @returns {Object} User XP data or null if not exists
+ */
+async function getUserXP(azureAdUserId) {
+    const pool = await getPool();
+
+    try {
+        const result = await pool.request()
+            .input('azureAdUserId', sql.NVarChar(100), azureAdUserId)
+            .query(`
+                SELECT
+                    xpId,
+                    azureAdUserId,
+                    studentEmail,
+                    dataverseContactId,
+                    currentXP,
+                    lifetimeXP,
+                    xpSpent,
+                    createdAt,
+                    updatedAt
+                FROM UserXP
+                WHERE azureAdUserId = @azureAdUserId
+            `);
+
+        return result.recordset[0] || null;
+    } catch (error) {
+        console.error('❌ Error fetching user XP:', error);
+        throw error;
+    }
+}
+
+/**
+ * Create initial XP record for new user
+ * @param {string} azureAdUserId - Azure AD Object ID
+ * @param {string} studentEmail - Student email
+ * @param {string} dataverseContactId - Dataverse contact ID (optional)
+ * @returns {Object} Created user XP record
+ */
+async function createUserXP(azureAdUserId, studentEmail, dataverseContactId = null) {
+    const pool = await getPool();
+
+    try {
+        const result = await pool.request()
+            .input('azureAdUserId', sql.NVarChar(100), azureAdUserId)
+            .input('studentEmail', sql.NVarChar(255), studentEmail)
+            .input('dataverseContactId', sql.UniqueIdentifier, dataverseContactId)
+            .query(`
+                INSERT INTO UserXP (azureAdUserId, studentEmail, dataverseContactId, currentXP, lifetimeXP, xpSpent)
+                OUTPUT INSERTED.*
+                VALUES (@azureAdUserId, @studentEmail, @dataverseContactId, 0, 0, 0)
+            `);
+
+        console.log('✅ Created new UserXP record for:', studentEmail);
+        return result.recordset[0];
+    } catch (error) {
+        console.error('❌ Error creating user XP:', error);
+        throw error;
+    }
+}
+
+/**
+ * Add XP transaction (earn or spend) - updates UserXP and creates transaction record
+ * @param {string} azureAdUserId - Azure AD Object ID
+ * @param {number} xpAmount - Amount of XP (positive for earn, negative for spend)
+ * @param {string} source - Source of XP ('blueprint', 'idea', 'project', etc.)
+ * @param {number} sourceId - ID of the source record (blueprintId, ideaId, etc.)
+ * @param {string} description - Description of transaction
+ * @returns {Object} Updated XP balance
+ */
+async function addXPTransaction(azureAdUserId, xpAmount, source, sourceId, description) {
+    const pool = await getPool();
+    const transaction = pool.transaction();
+
+    try {
+        await transaction.begin();
+
+        // Update UserXP table
+        const updateResult = await transaction.request()
+            .input('azureAdUserId', sql.NVarChar(100), azureAdUserId)
+            .input('xpAmount', sql.Int, xpAmount)
+            .query(`
+                UPDATE UserXP
+                SET
+                    currentXP = currentXP + @xpAmount,
+                    lifetimeXP = CASE
+                        WHEN @xpAmount > 0 THEN lifetimeXP + @xpAmount
+                        ELSE lifetimeXP
+                    END,
+                    xpSpent = CASE
+                        WHEN @xpAmount < 0 THEN xpSpent + ABS(@xpAmount)
+                        ELSE xpSpent
+                    END,
+                    updatedAt = GETUTCDATE()
+                OUTPUT INSERTED.currentXP, INSERTED.lifetimeXP, INSERTED.xpSpent
+                WHERE azureAdUserId = @azureAdUserId
+            `);
+
+        if (updateResult.recordset.length === 0) {
+            throw new Error('User XP record not found');
+        }
+
+        const updatedXP = updateResult.recordset[0];
+
+        // Insert transaction record
+        await transaction.request()
+            .input('azureAdUserId', sql.NVarChar(100), azureAdUserId)
+            .input('transactionType', sql.NVarChar(50), xpAmount > 0 ? 'earn' : 'spend')
+            .input('source', sql.NVarChar(50), source)
+            .input('sourceId', sql.Int, sourceId)
+            .input('xpAmount', sql.Int, xpAmount)
+            .input('xpBalance', sql.Int, updatedXP.currentXP)
+            .input('description', sql.NVarChar(500), description)
+            .query(`
+                INSERT INTO XPTransactions (
+                    azureAdUserId, transactionType, source, sourceId,
+                    xpAmount, xpBalance, description
+                )
+                VALUES (
+                    @azureAdUserId, @transactionType, @source, @sourceId,
+                    @xpAmount, @xpBalance, @description
+                )
+            `);
+
+        await transaction.commit();
+
+        console.log('✅ XP transaction completed:', {
+            azureAdUserId,
+            xpAmount,
+            newBalance: updatedXP.currentXP
+        });
+
+        return {
+            currentXP: updatedXP.currentXP,
+            lifetimeXP: updatedXP.lifetimeXP,
+            xpSpent: updatedXP.xpSpent
+        };
+
+    } catch (error) {
+        await transaction.rollback();
+        console.error('❌ Error in XP transaction:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get XP transaction history for a user
+ * @param {string} azureAdUserId - Azure AD Object ID
+ * @param {number} limit - Number of transactions to return (default: 50)
+ * @param {number} offset - Number of transactions to skip (default: 0)
+ * @returns {Array} List of transactions
+ */
+async function getXPTransactions(azureAdUserId, limit = 50, offset = 0) {
+    const pool = await getPool();
+
+    try {
+        const result = await pool.request()
+            .input('azureAdUserId', sql.NVarChar(100), azureAdUserId)
+            .input('limit', sql.Int, limit)
+            .input('offset', sql.Int, offset)
+            .query(`
+                SELECT
+                    transactionId,
+                    transactionType,
+                    source,
+                    sourceId,
+                    xpAmount,
+                    xpBalance,
+                    description,
+                    transactionDate
+                FROM XPTransactions
+                WHERE azureAdUserId = @azureAdUserId
+                ORDER BY transactionDate DESC
+                OFFSET @offset ROWS
+                FETCH NEXT @limit ROWS ONLY
+            `);
+
+        return result.recordset;
+    } catch (error) {
+        console.error('❌ Error fetching XP transactions:', error);
+        throw error;
+    }
+}
+
+/**
  * Close the connection pool (for cleanup)
  */
 async function closePool() {
@@ -368,5 +553,9 @@ module.exports = {
     getBlueprintStatsByUserId,   // PRIMARY: Stats by Azure AD User ID
     getBlueprintStats,            // LEGACY: Stats by email
     getFeaturedBlueprints,
+    getUserXP,                    // XP: Get user XP data
+    createUserXP,                 // XP: Create new user XP record
+    addXPTransaction,             // XP: Add XP transaction (earn/spend)
+    getXPTransactions,            // XP: Get transaction history
     closePool
 };
