@@ -264,6 +264,9 @@ async function submitBlueprint(e) {
                 renderPastBlueprints();
             }
 
+            // Refresh XP display with updated values
+            updateBlueprintXPDisplay();
+
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {
                 updateDashboardBlueprintChallenge();
@@ -283,6 +286,13 @@ async function submitBlueprint(e) {
             sessionBlueprints.unshift(newBlueprint); // Add to beginning
             sessionStorage.setItem('imi_blueprints', JSON.stringify(sessionBlueprints));
 
+            // Update userData with new XP values (developer mode)
+            if (window.IMI.data.userData) {
+                window.IMI.data.userData.currentXP = (window.IMI.data.userData.currentXP || 0) + xpEarned;
+                window.IMI.data.userData.lifetimeXP = (window.IMI.data.userData.lifetimeXP || 0) + xpEarned;
+                console.log('✅ XP updated (dev mode):', window.IMI.data.userData.currentXP, 'current,', window.IMI.data.userData.lifetimeXP, 'lifetime');
+            }
+
             window.IMI.utils.showNotification(
                 `Blueprint submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections). (Saved to session)`,
                 'success'
@@ -292,6 +302,9 @@ async function submitBlueprint(e) {
             if (typeof renderPastBlueprints === 'function') {
                 renderPastBlueprints();
             }
+
+            // Refresh XP display with updated values
+            updateBlueprintXPDisplay();
 
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {
