@@ -145,7 +145,7 @@ function updateBlueprintHeaderStats() {
 
 // Load and render past season performance
 async function renderPastSeasons() {
-    const authMode = sessionStorage.getItem('authMode');
+    const authMode = sessionStorage.getItem('imi_auth_mode');
     const userData = window.IMI?.data?.userData;
 
     if (authMode === 'microsoft' && userData?.id && window.IMI.api) {
@@ -162,12 +162,21 @@ async function renderPastSeasons() {
         const mockHistory = [
             {
                 seasonName: 'Summer 2025',
-                startDate: '2025-06-01',
+                startDate: '2025-05-01',
                 endDate: '2025-08-31',
-                seasonPoints: 2450,
-                maxStreakDuringSeason: 7,
-                blueprintCount: 21,
-                finalTier: 'gold'
+                seasonPoints: 1450,
+                maxStreakDuringSeason: 11,
+                blueprintCount: 14,
+                finalTier: 'bronze'
+            },
+            {
+                seasonName: 'Winter 2025',
+                startDate: '2025-01-01',
+                endDate: '2025-04-30',
+                seasonPoints: 1000,
+                maxStreakDuringSeason: 8,
+                blueprintCount: 12,
+                finalTier: 'bronze'
             }
         ];
         displayPastSeasons(mockHistory);
@@ -216,7 +225,7 @@ function displayPastSeasons(seasons) {
 
 // Format date range helper
 function formatDateRange(startDate, endDate) {
-    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    const options = { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' };
     const start = new Date(startDate).toLocaleDateString('en-US', options);
     const end = new Date(endDate).toLocaleDateString('en-US', options);
     return `${start} - ${end}`;
