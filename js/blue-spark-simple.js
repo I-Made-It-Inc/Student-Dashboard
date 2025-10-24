@@ -21,9 +21,9 @@ class SimpleBlueSparkManager {
         
         // Update activity indicator with countdown
         this.updateActivityIndicator();
-        
-        // Update countdown every minute
-        setInterval(() => this.updateActivityIndicator(), 60000);
+
+        // Update countdown at configured interval
+        setInterval(() => this.updateActivityIndicator(), window.IMI.config.SESSION.updateInterval);
         
         console.log('Simple Blue Spark system initialized');
     }

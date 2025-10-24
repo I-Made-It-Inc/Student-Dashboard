@@ -266,8 +266,10 @@ function updateSectionStatus(textarea) {
     const statusElement = textarea.closest('.submission-section')?.querySelector('.section-status');
     
     if (statusElement) {
-        if (wordCount >= 100) {
-            statusElement.textContent = '✓ Complete - 20 XP';
+        const minWords = window.IMI.config.GAMIFICATION.minWordsPerSection;
+        const xpPerSection = window.IMI.config.GAMIFICATION.xpPerSection;
+        if (wordCount >= minWords) {
+            statusElement.textContent = `✓ Complete - ${xpPerSection} XP`;
             statusElement.className = 'section-status completed';
         } else if (wordCount > 0) {
             statusElement.textContent = '⏱ In progress';
@@ -291,10 +293,12 @@ function updateOverallProgress() {
     sections.forEach(section => {
         const textarea = section.querySelector('.submission-textarea');
         const wordCount = updateWordCount(textarea);
-        
-        if (wordCount >= 100) {
+
+        const minWords = window.IMI.config.GAMIFICATION.minWordsPerSection;
+        const xpPerSection = window.IMI.config.GAMIFICATION.xpPerSection;
+        if (wordCount >= minWords) {
             completedSections++;
-            totalXP += 20; // 20 XP per section in blueprint system
+            totalXP += xpPerSection;
         }
     });
     
@@ -463,7 +467,7 @@ async function submitBlueprint(e) {
             }
         } else {
             // Developer mode or API not available - save to sessionStorage
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
+            await new Promise(resolve => setTimeout(resolve, window.IMI.config.DEBUG.simulatedApiDelay));
 
             // Save to sessionStorage (persists until browser closes or hard refresh)
             const sessionBlueprints = JSON.parse(sessionStorage.getItem('imi_blueprints') || '[]');
@@ -659,10 +663,10 @@ function setupAutoSaveDrafts() {
                 statusElement.textContent = '⏱ Saving...';
             }
 
-            // Auto-save after 2 seconds of inactivity
+            // Auto-save after configured interval of inactivity
             autoSaveTimer = setTimeout(() => {
                 saveDraft();
-            }, 2000);
+            }, window.IMI.config.SESSION.autoSaveInterval);
         });
     });
 
@@ -844,9 +848,9 @@ function loadDraft() {
     if (saved) {
         const draft = JSON.parse(saved);
 
-        // Check if draft is not too old (7 days)
+        // Check if draft is not too old (Blue Spark duration)
         const age = Date.now() - draft.timestamp;
-        if (age < 7 * 24 * 60 * 60 * 1000) {
+        if (age < window.IMI.config.GAMIFICATION.blueSparkDuration) {
             // Restore article information
             if (draft.articleInfo) {
                 const articleTitle = document.getElementById('article-title');
@@ -888,7 +892,7 @@ function loadCurrentChallenge() {
     const challengeData = {
         topic: 'The Future of Sustainable Cities',
         description: 'Explore how technology and innovation can create more sustainable urban environments through the lens of your personal Blueprint for the Future.',
-        deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+        deadline: new Date(Date.now() + window.IMI.config.GAMIFICATION.blueSparkDuration),
         weeklySubmission: true,
         multipleSubmissionsAllowed: false, // Changed for blueprint system
         fullXPOnPass: true, // Students get full XP when they pass

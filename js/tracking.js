@@ -297,7 +297,7 @@ function startAutomaticTracking() {
     });
     
     // Save session data periodically
-    setInterval(saveSessionData, 60000); // Every minute
+    setInterval(saveSessionData, window.IMI.config.SESSION.updateInterval);
 }
 
 // Log automatic time

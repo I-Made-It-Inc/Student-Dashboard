@@ -155,7 +155,7 @@ function handleIdeaSubmission(event) {
         if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
             window.IMI.utils.showNotification('<i class="fa-solid fa-lightbulb"></i> Your idea is now live in the community feed!', 'info');
         }
-    }, 2000);
+    }, window.IMI.config.DEBUG.simulatedApiDelay);
 }
 
 function saveDraft() {

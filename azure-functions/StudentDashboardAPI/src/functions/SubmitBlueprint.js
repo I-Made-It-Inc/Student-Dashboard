@@ -1,5 +1,6 @@
 const { app } = require('@azure/functions');
 const sqlClient = require('../../sqlClient');
+const { GAMIFICATION } = require('../../config');
 
 app.http('SubmitBlueprint', {
     methods: ['POST'],
@@ -38,7 +39,7 @@ app.http('SubmitBlueprint', {
                 wordCount = allText.trim().split(/\s+/).filter(word => word.length > 0).length;
             }
 
-            // Calculate XP based on sections with >100 words (20 XP per complete section)
+            // Calculate XP based on sections with minimum word count
             const sections = [
                 body.trendspotter || '',
                 body.futureVisionary || '',
@@ -50,12 +51,12 @@ app.http('SubmitBlueprint', {
             let completeSections = 0;
             sections.forEach(section => {
                 const sectionWordCount = section.trim().split(/\s+/).filter(word => word.length > 0).length;
-                if (sectionWordCount >= 100) {
+                if (sectionWordCount >= GAMIFICATION.minWordsPerSection) {
                     completeSections++;
                 }
             });
 
-            const xpEarned = completeSections * 20;
+            const xpEarned = completeSections * GAMIFICATION.xpPerSection;
 
             // If no sections are complete, save as draft (no XP)
             const status = completeSections > 0 ? 'submitted' : 'draft';

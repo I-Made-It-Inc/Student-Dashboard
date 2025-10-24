@@ -428,15 +428,16 @@ async function updateDashboardBlueprintChallenge() {
             }
         }
 
-        // Check which sections are completed this week (any blueprint with ≥100 words counts)
+        // Check which sections are completed this week (any blueprint with minimum word count)
         const sections = ['trendspotter', 'futureVisionary', 'innovationCatalyst', 'connector', 'growthHacker'];
         const completedSections = new Set();
+        const minWords = window.IMI.config.GAMIFICATION.minWordsPerSection;
 
         thisWeekBlueprints.forEach(bp => {
             sections.forEach(section => {
                 const content = bp[section] || '';
                 const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
-                if (wordCount >= 100) {
+                if (wordCount >= minWords) {
                     completedSections.add(section);
                 }
             });
@@ -484,7 +485,7 @@ function startSessionTracking() {
         const elapsedMinutes = Math.floor((Date.now() - sessionStartTime) / 60000);
         // Update session timer in UI if needed
         updateSessionTime(elapsedMinutes);
-    }, 60000); // Update every minute
+    }, window.IMI.config.SESSION.updateInterval);
     
     // Track page changes
     document.addEventListener('pageChange', (event) => {
