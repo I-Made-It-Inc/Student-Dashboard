@@ -185,8 +185,16 @@ async function loadUserData() {
 
                 console.log('✅ User data loaded successfully');
 
-                // Initialize profile page if we're on it (must happen after userData is loaded)
+                // Refresh current page content with loaded user data
                 const currentPage = window.location.hash.slice(1) || 'dashboard';
+
+                // Refresh dashboard if we're on it (must happen after userData is loaded)
+                if (currentPage === 'dashboard' && typeof loadDashboardContent === 'function') {
+                    console.log('📄 Refreshing dashboard with loaded user data');
+                    loadDashboardContent();
+                }
+
+                // Initialize profile page if we're on it (must happen after userData is loaded)
                 if (currentPage === 'profile' && typeof initializeProfile === 'function') {
                     console.log('📄 Initializing profile page with loaded user data');
                     initializeProfile();
@@ -277,20 +285,34 @@ function updateUserInterface(userData) {
 
 // Update dashboard statistics
 function updateDashboardStats(data) {
+    // Safety check
+    if (!data || data.currentXP === undefined) {
+        console.warn('⚠️ updateDashboardStats called without valid data:', data);
+        return;
+    }
+
+    console.log('📊 Updating dashboard stats with XP:', data.currentXP);
+
     // Update gamification stats badge (XP display)
     const statMainElements = document.querySelectorAll('.stat-main');
-    statMainElements.forEach(el => {
+    console.log('📍 Found', statMainElements.length, '.stat-main elements');
+    statMainElements.forEach((el, index) => {
+        console.log(`📍 .stat-main[${index}] text:`, el.textContent);
         if (el.textContent.includes('pts') || el.textContent.includes('XP')) {
             // Format XP with comma separator
             el.textContent = `${data.currentXP.toLocaleString()} XP`;
+            console.log('✅ Updated stat-main XP to:', data.currentXP);
         }
     });
 
     // Update sidebar "XP available" text
     const xpAvailableElements = document.querySelectorAll('.text-muted.small');
-    xpAvailableElements.forEach(el => {
+    console.log('📍 Found', xpAvailableElements.length, '.text-muted.small elements');
+    xpAvailableElements.forEach((el, index) => {
+        console.log(`📍 .text-muted.small[${index}] text:`, el.textContent);
         if (el.textContent.includes('XP available')) {
             el.textContent = `${data.currentXP.toLocaleString()} XP available`;
+            console.log('✅ Updated sidebar XP to:', data.currentXP);
         }
     });
 

@@ -128,9 +128,12 @@ function loadPageContent(pageId) {
 
 // Dashboard content loader
 function loadDashboardContent() {
+    console.log('📄 loadDashboardContent() called');
+
     // Refresh profile information from latest userData
     if (window.IMI && window.IMI.data && window.IMI.data.userData) {
         const userData = window.IMI.data.userData;
+        console.log('📊 userData available in loadDashboardContent, XP:', userData.currentXP);
 
         // Update welcome message with display name (nickname)
         const welcomeMessage = document.querySelector('.profile-info h2');
@@ -150,8 +153,10 @@ function loadDashboardContent() {
         }
 
         // Refresh stats (including XP)
+        console.log('📊 Calling updateDashboardStats with userData.currentXP:', userData.currentXP);
         updateDashboardStats(userData);
     } else {
+        console.warn('⚠️ userData NOT available in loadDashboardContent, calling updateDashboardStats() with no data');
         // Fallback if userData not available
         updateDashboardStats();
     }
@@ -720,9 +725,7 @@ function updatePageTitle(pageId) {
 }
 
 // Update dashboard statistics
-function updateDashboardStats() {
-    // In production, fetch from API
-}
+// updateDashboardStats is defined in main.js
 
 // Load recent activity
 function loadRecentActivity() {
