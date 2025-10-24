@@ -177,6 +177,8 @@ app.http('SubmitBlueprint', {
                         // Include streak and tier info
                         currentStreak: updatedXP?.currentStreak || null,
                         currentTier: updatedXP?.currentTier || null,
+                        // Include lastBlueprintSubmission for Blue Spark
+                        lastBlueprintSubmission: updatedXP?.lastBlueprintSubmission || null,
                         // Include season info if available
                         seasonId: currentSeason?.seasonId || null,
                         seasonName: currentSeason?.seasonName || null,

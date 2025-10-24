@@ -440,6 +440,11 @@ async function submitBlueprint(e) {
                     window.IMI.data.userData.seasonBlueprintCount = result.data.seasonBlueprintCount;
                 }
 
+                // Update lastBlueprintSubmission for Blue Spark
+                if (result.data.lastBlueprintSubmission) {
+                    window.IMI.data.userData.lastBlueprintSubmission = result.data.lastBlueprintSubmission;
+                }
+
                 console.log('✅ XP updated:', result.data.currentXP, 'current,', result.data.lifetimeXP, 'lifetime');
                 console.log('✅ Streak:', result.data.currentStreak, 'Tier:', result.data.currentTier);
 
@@ -473,6 +478,11 @@ async function submitBlueprint(e) {
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {
                 updateDashboardBlueprintChallenge();
+            }
+
+            // Refresh Blue Spark display
+            if (window.simpleBlueSpark) {
+                window.simpleBlueSpark.refresh();
             }
         } else {
             // Developer mode or API not available - save to sessionStorage
@@ -508,6 +518,9 @@ async function submitBlueprint(e) {
                 userData.seasonPoints = (userData.seasonPoints || 0) + xpEarned;
                 userData.seasonBlueprintCount = (userData.seasonBlueprintCount || 0) + 1;
 
+                // Update lastBlueprintSubmission for Blue Spark (developer mode)
+                userData.lastBlueprintSubmission = new Date().toISOString();
+
                 // Recalculate tier using config thresholds
                 const tierThresholds = window.IMI.config.GAMIFICATION.tiers;
                 if (userData.lifetimeXP >= tierThresholds.platinum) userData.currentTier = 'platinum';
@@ -541,6 +554,11 @@ async function submitBlueprint(e) {
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {
                 updateDashboardBlueprintChallenge();
+            }
+
+            // Refresh Blue Spark display
+            if (window.simpleBlueSpark) {
+                window.simpleBlueSpark.refresh();
             }
         }
 

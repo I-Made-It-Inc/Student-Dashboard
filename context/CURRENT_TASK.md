@@ -3,8 +3,6 @@ I just added a login page that allows user to either sign in as developers (stat
 TODOs:
 - XP system backend test season system
   - Developer mode
-    - Make sure default season points & lifetime xp are consistent
-    - Upon blueprint submission, add 1 to streak
     - Trigger blue spark upon new submission
   - Microsoft mode (TODO)
     - Trigger blue spark upon new submission
@@ -19,7 +17,7 @@ Testing Checklist:
 7. Past seasons: Shows historical performance (when you have completed a past season)
 
 
-
+- XP redemption items & check available
 - idea submission backend
 - Connection request
 - course catalogue

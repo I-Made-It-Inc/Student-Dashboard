@@ -371,6 +371,7 @@ async function getUserXP(azureAdUserId) {
                     currentStreak,
                     lastSubmissionWeek,
                     currentTier,
+                    lastBlueprintSubmission,
                     createdAt,
                     updatedAt
                 FROM UserXP
@@ -400,9 +401,9 @@ async function createUserXP(azureAdUserId, studentEmail, dataverseContactId = nu
             .input('studentEmail', sql.NVarChar(255), studentEmail)
             .input('dataverseContactId', sql.UniqueIdentifier, dataverseContactId)
             .query(`
-                INSERT INTO UserXP (azureAdUserId, studentEmail, dataverseContactId, currentXP, lifetimeXP, xpSpent, currentStreak, lastSubmissionWeek, currentTier)
+                INSERT INTO UserXP (azureAdUserId, studentEmail, dataverseContactId, currentXP, lifetimeXP, xpSpent, currentStreak, lastSubmissionWeek, currentTier, lastBlueprintSubmission)
                 OUTPUT INSERTED.*
-                VALUES (@azureAdUserId, @studentEmail, @dataverseContactId, 0, 0, 0, 0, NULL, 'bronze')
+                VALUES (@azureAdUserId, @studentEmail, @dataverseContactId, 0, 0, 0, 0, NULL, 'bronze', NULL)
             `);
 
         console.log('✅ Created new UserXP record for:', studentEmail);
@@ -459,13 +460,14 @@ async function addXPTransaction(azureAdUserId, xpAmount, source, sourceId, descr
             : currentUserXP.lifetimeXP;
         const newTier = calculateTier(newLifetimeXP);
 
-        // Update UserXP table with XP, streak, and tier
+        // Update UserXP table with XP, streak, tier, and lastBlueprintSubmission
         const updateResult = await transaction.request()
             .input('azureAdUserId', sql.NVarChar(100), azureAdUserId)
             .input('xpAmount', sql.Int, xpAmount)
             .input('newStreak', sql.Int, newStreak)
             .input('newWeekMonday', sql.Date, newWeekMonday)
             .input('newTier', sql.NVarChar(50), newTier)
+            .input('submissionDate', sql.DateTime, source === 'blueprint' && xpAmount > 0 ? submissionDate : null)
             .query(`
                 UPDATE UserXP
                 SET
@@ -481,8 +483,12 @@ async function addXPTransaction(azureAdUserId, xpAmount, source, sourceId, descr
                     currentStreak = @newStreak,
                     lastSubmissionWeek = @newWeekMonday,
                     currentTier = @newTier,
+                    lastBlueprintSubmission = CASE
+                        WHEN @submissionDate IS NOT NULL THEN @submissionDate
+                        ELSE lastBlueprintSubmission
+                    END,
                     updatedAt = GETUTCDATE()
-                OUTPUT INSERTED.currentXP, INSERTED.lifetimeXP, INSERTED.xpSpent, INSERTED.currentStreak, INSERTED.currentTier
+                OUTPUT INSERTED.currentXP, INSERTED.lifetimeXP, INSERTED.xpSpent, INSERTED.currentStreak, INSERTED.currentTier, INSERTED.lastBlueprintSubmission
                 WHERE azureAdUserId = @azureAdUserId
             `);
 
@@ -527,7 +533,8 @@ async function addXPTransaction(azureAdUserId, xpAmount, source, sourceId, descr
             lifetimeXP: updatedXP.lifetimeXP,
             xpSpent: updatedXP.xpSpent,
             currentStreak: updatedXP.currentStreak,
-            currentTier: updatedXP.currentTier
+            currentTier: updatedXP.currentTier,
+            lastBlueprintSubmission: updatedXP.lastBlueprintSubmission
         };
 
     } catch (error) {

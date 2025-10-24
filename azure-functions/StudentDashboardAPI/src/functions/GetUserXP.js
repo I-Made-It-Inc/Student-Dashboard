@@ -66,6 +66,7 @@ app.http('GetUserXP', {
                         currentStreak: userXP.currentStreak || 0,
                         lastSubmissionWeek: userXP.lastSubmissionWeek,
                         currentTier: userXP.currentTier || 'bronze',
+                        lastBlueprintSubmission: userXP.lastBlueprintSubmission,
                         createdAt: userXP.createdAt,
                         updatedAt: userXP.updatedAt
                     }

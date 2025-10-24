@@ -182,6 +182,9 @@ async function loadUserData() {
                     currentTier: xpData?.currentTier ?? (authMode === 'developer' ? 'silver' : 'bronze'),
                     lastSubmissionWeek: xpData?.lastSubmissionWeek ?? (authMode === 'developer' ? '2025-09-23' : null),
 
+                    // Blue Spark data (lastBlueprintSubmission)
+                    lastBlueprintSubmission: xpData?.lastBlueprintSubmission ?? (authMode === 'developer' ? new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() : null), // 2 days ago in dev mode
+
                     // Season data (from SeasonalStats in MS mode, mock in dev mode)
                     currentSeasonId: seasonData?.season?.seasonId ?? (authMode === 'developer' ? 1 : null),
                     currentSeasonName: seasonData?.season?.seasonName ?? (authMode === 'developer' ? 'Fall 2025' : null),
@@ -202,6 +205,11 @@ async function loadUserData() {
                 window.IMI.data.userData = userData;
 
                 console.log('✅ User data loaded successfully');
+
+                // Refresh Blue Spark display now that userData is loaded
+                if (window.simpleBlueSpark) {
+                    window.simpleBlueSpark.refresh();
+                }
 
                 // Refresh current page content with loaded user data
                 const currentPage = window.location.hash.slice(1) || 'dashboard';
