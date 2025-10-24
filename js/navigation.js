@@ -94,7 +94,7 @@ function loadPageContent(pageId) {
             loadDashboardContent();
             break;
         case 'blueprint':
-            loadInnovationContent();
+            loadBlueprintContent();
             break;
         case 'ideas':
             loadIdeasContent();
@@ -176,8 +176,8 @@ function loadDashboardContent() {
     }
 }
 
-// Innovation content loader
-function loadInnovationContent() {
+// Blueprint content loader
+function loadBlueprintContent() {
     // Update XP display from userData (single source of truth)
     if (typeof updateBlueprintXPDisplay === 'function') {
         updateBlueprintXPDisplay();
@@ -190,7 +190,7 @@ function loadInnovationContent() {
     updateChallengeProgress();
 
     // Load leaderboard
-    loadInnovationLeaderboard();
+    loadBlueprintLeaderboard();
 }
 
 // Ideas content loader
@@ -240,8 +240,8 @@ function updateChallengeProgress() {
     // In production, fetch from API
 }
 
-// Load innovation leaderboard
-function loadInnovationLeaderboard() {
+// Load blueprint leaderboard
+function loadBlueprintLeaderboard() {
     // In production, fetch from API
 }
 

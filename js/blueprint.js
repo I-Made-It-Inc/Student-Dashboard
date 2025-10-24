@@ -767,7 +767,6 @@ function showPointsMarketplace() {
 
 // Export functions
 window.initializeBlueprintChallenge = initializeBlueprintChallenge;
-window.initializeInnovationChallenge = initializeBlueprintChallenge; // Backward compatibility
 window.loadCurrentChallenge = loadCurrentChallenge;
 window.showPointsMarketplace = showPointsMarketplace;
 
