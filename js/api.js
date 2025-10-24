@@ -274,7 +274,7 @@ async function getFeaturedBlueprints(limit = 10) {
  * Fetch user XP data from Azure SQL Database
  * @param {string} azureAdUserId - Azure AD Object ID
  * @param {string} studentEmail - Student email (optional, for auto-create)
- * @returns {Promise<Object>} User XP data (currentXP, lifetimeXP, xpSpent)
+ * @returns {Promise<Object>} User XP data (currentXP, lifetimeXP, xpSpent, streak, tier)
  */
 async function fetchUserXP(azureAdUserId, studentEmail = null) {
     const baseUrl = window.IMI.config.API.baseUrl;
@@ -296,7 +296,7 @@ async function fetchUserXP(azureAdUserId, studentEmail = null) {
         }
 
         const result = await response.json();
-        console.log('✅ User XP fetched:', result.data.currentXP, 'XP');
+        console.log('✅ User XP fetched:', result.data.currentXP, 'XP, Streak:', result.data.currentStreak, 'Tier:', result.data.currentTier);
         return result.data;
     } catch (error) {
         console.error('❌ Failed to fetch user XP:', error);
@@ -304,8 +304,81 @@ async function fetchUserXP(azureAdUserId, studentEmail = null) {
         return {
             currentXP: 0,
             lifetimeXP: 0,
-            xpSpent: 0
+            xpSpent: 0,
+            currentStreak: 0,
+            lastSubmissionWeek: null,
+            currentTier: 'bronze'
         };
+    }
+}
+
+/**
+ * Fetch user's seasonal stats
+ * @param {string} azureAdUserId - Azure AD Object ID
+ * @param {number} seasonId - Optional, defaults to current season
+ * @returns {Promise<Object>} Seasonal stats with season info
+ */
+async function fetchSeasonalStats(azureAdUserId, seasonId = null) {
+    const baseUrl = window.IMI.config.API.baseUrl;
+    let url = `${baseUrl}/GetSeasonalStats?azureAdUserId=${encodeURIComponent(azureAdUserId)}`;
+
+    if (seasonId) {
+        url += `&seasonId=${seasonId}`;
+    }
+
+    console.log('📡 Fetching seasonal stats from SQL Database:', azureAdUserId);
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log('✅ Seasonal stats fetched:', result.data.season?.seasonName);
+        return result.data;
+    } catch (error) {
+        console.error('❌ Failed to fetch seasonal stats:', error);
+        // Return default values if fetch fails
+        return {
+            season: null,
+            stats: {
+                seasonPoints: 0,
+                blueprintCount: 0,
+                maxStreakDuringSeason: 0,
+                finalTier: null
+            }
+        };
+    }
+}
+
+/**
+ * Fetch all seasons user participated in
+ * @param {string} azureAdUserId - Azure AD Object ID
+ * @returns {Promise<Array>} Historical season stats
+ */
+async function fetchSeasonHistory(azureAdUserId) {
+    const baseUrl = window.IMI.config.API.baseUrl;
+    const url = `${baseUrl}/GetSeasonalStats?azureAdUserId=${encodeURIComponent(azureAdUserId)}&history=true`;
+
+    console.log('📡 Fetching season history from SQL Database:', azureAdUserId);
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log('✅ Season history fetched:', result.data.length, 'seasons');
+        return result.data;
+    } catch (error) {
+        console.error('❌ Failed to fetch season history:', error);
+        return [];
     }
 }
 
@@ -321,7 +394,9 @@ window.IMI.api = {
     getBlueprintStatsByUserId,  // PRIMARY: Stats by Azure AD User ID
     getBlueprintStats,           // LEGACY: Stats by email
     getFeaturedBlueprints,
-    fetchUserXP                  // XP: Get user XP data
+    fetchUserXP,                 // XP: Get user XP data with streak/tier
+    fetchSeasonalStats,          // Season: Get current/specific season stats
+    fetchSeasonHistory           // Season: Get all season history
 };
 
 console.log('📡 API module loaded');

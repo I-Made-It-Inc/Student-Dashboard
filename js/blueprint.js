@@ -1,5 +1,15 @@
 // js/blueprint.js - Blueprint for the Future Functionality
 
+// Helper function to get Monday of week (simplified for dev mode)
+function getMondayOfWeekSimple(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    d.setDate(d.getDate() + diff);
+    d.setHours(0, 0, 0, 0);
+    return d.toISOString().split('T')[0];
+}
+
 // Initialize Blueprint Challenge
 function initializeBlueprintChallenge() {
     console.log('Initializing Blueprint Challenge...');
@@ -9,6 +19,9 @@ function initializeBlueprintChallenge() {
 
     // Update XP display from userData
     updateBlueprintXPDisplay();
+
+    // Update seasonal stats display
+    updateBlueprintSeasonStats();
 
     // Set up word counters
     setupWordCounters();
@@ -30,6 +43,9 @@ function initializeBlueprintChallenge() {
 
     // Load past blueprints
     renderPastBlueprints();
+
+    // Load past seasons
+    renderPastSeasons();
 }
 
 // Update XP display from userData
@@ -54,6 +70,119 @@ function updateBlueprintXPDisplay() {
             console.log('✅ Blueprint XP display updated (Available only):', currentXP);
         }
     }
+}
+
+// Update current season stats display on blueprint page
+function updateBlueprintSeasonStats() {
+    const userData = window.IMI?.data?.userData;
+    if (!userData) return;
+
+    // Update current streak
+    const streakEl = document.getElementById('current-streak');
+    if (streakEl) {
+        const streak = userData.currentStreak || 0;
+        streakEl.textContent = `${streak} ${streak === 1 ? 'week' : 'weeks'}`;
+    }
+
+    // Update season points
+    const seasonPointsEl = document.getElementById('season-points');
+    if (seasonPointsEl) {
+        seasonPointsEl.textContent = `${(userData.seasonPoints || 0).toLocaleString()} XP`;
+    }
+
+    // Update season submissions
+    const submissionsEl = document.getElementById('season-submissions');
+    if (submissionsEl) {
+        submissionsEl.textContent = userData.seasonBlueprintCount || 0;
+    }
+
+    // Update current tier
+    const tierEl = document.getElementById('current-tier');
+    if (tierEl) {
+        const tier = userData.currentTier || 'bronze';
+        tierEl.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+    }
+
+    console.log('✅ Blueprint season stats updated');
+}
+
+// Load and render past season performance
+async function renderPastSeasons() {
+    const authMode = sessionStorage.getItem('authMode');
+    const userData = window.IMI?.data?.userData;
+
+    if (authMode === 'microsoft' && userData?.id && window.IMI.api) {
+        try {
+            const history = await window.IMI.api.fetchSeasonHistory(userData.id);
+            // Filter out current season from history
+            const pastSeasons = history.filter(s => s.seasonId !== userData.currentSeasonId);
+            displayPastSeasons(pastSeasons);
+        } catch (error) {
+            console.error('Failed to load season history:', error);
+        }
+    } else if (authMode === 'developer') {
+        // Mock past seasons for developer mode
+        const mockHistory = [
+            {
+                seasonName: 'Summer 2025',
+                startDate: '2025-06-01',
+                endDate: '2025-08-31',
+                seasonPoints: 420,
+                maxStreakDuringSeason: 7,
+                blueprintCount: 21,
+                finalTier: 'gold'
+            }
+        ];
+        displayPastSeasons(mockHistory);
+    }
+}
+
+// Display past seasons in DOM
+function displayPastSeasons(seasons) {
+    const container = document.getElementById('past-seasons-container');
+    if (!container) return;
+
+    if (!seasons || seasons.length === 0) {
+        container.innerHTML = '<p class="empty-state">No past seasons yet.</p>';
+        return;
+    }
+
+    container.innerHTML = seasons.map(season => `
+        <div class="season-card">
+            <div class="season-header">
+                <h4 class="season-name">${season.seasonName}</h4>
+                <span class="season-dates">${formatDateRange(season.startDate, season.endDate)}</span>
+            </div>
+            <div class="season-stats-grid">
+                <div class="season-stat">
+                    <span class="label">Season XP</span>
+                    <span class="value">${season.seasonPoints.toLocaleString()} pts</span>
+                </div>
+                <div class="season-stat">
+                    <span class="label">Longest Streak</span>
+                    <span class="value">${season.maxStreakDuringSeason} ${season.maxStreakDuringSeason === 1 ? 'week' : 'weeks'}</span>
+                </div>
+                <div class="season-stat">
+                    <span class="label">Submissions</span>
+                    <span class="value">${season.blueprintCount}</span>
+                </div>
+                <div class="season-stat">
+                    <span class="label">Final Tier</span>
+                    <span class="value">${season.finalTier ? season.finalTier.charAt(0).toUpperCase() + season.finalTier.slice(1) : 'N/A'}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    console.log('✅ Past seasons displayed:', seasons.length);
+}
+
+// Format date range helper
+function formatDateRange(startDate, endDate) {
+    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    const start = new Date(startDate).toLocaleDateString('en-US', options);
+    const end = new Date(endDate).toLocaleDateString('en-US', options);
+    return `${start} - ${end}`;
 }
 
 // Setup word counters for each section
@@ -240,11 +369,29 @@ async function submitBlueprint(e) {
             const result = await window.IMI.api.submitBlueprint(blueprintData);
             console.log('✅ Blueprint submitted:', totalWordCount, 'words,', xpEarned, 'XP');
 
-            // Update userData with new XP values from response
+            // Update userData with new XP values and seasonal data from response
             if (result.data.currentXP !== null && result.data.lifetimeXP !== null) {
                 window.IMI.data.userData.currentXP = result.data.currentXP;
                 window.IMI.data.userData.lifetimeXP = result.data.lifetimeXP;
+
+                // Update streak and tier if available
+                if (result.data.currentStreak !== undefined) {
+                    window.IMI.data.userData.currentStreak = result.data.currentStreak;
+                }
+                if (result.data.currentTier) {
+                    window.IMI.data.userData.currentTier = result.data.currentTier;
+                }
+
+                // Update seasonal data if available
+                if (result.data.seasonPoints !== undefined) {
+                    window.IMI.data.userData.seasonPoints = result.data.seasonPoints;
+                }
+                if (result.data.seasonBlueprintCount !== undefined) {
+                    window.IMI.data.userData.seasonBlueprintCount = result.data.seasonBlueprintCount;
+                }
+
                 console.log('✅ XP updated:', result.data.currentXP, 'current,', result.data.lifetimeXP, 'lifetime');
+                console.log('✅ Streak:', result.data.currentStreak, 'Tier:', result.data.currentTier);
 
                 // Show success with XP update
                 window.IMI.utils.showNotification(
@@ -267,6 +414,9 @@ async function submitBlueprint(e) {
             // Refresh XP display with updated values
             updateBlueprintXPDisplay();
 
+            // Refresh seasonal stats display
+            updateBlueprintSeasonStats();
+
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {
                 updateDashboardBlueprintChallenge();
@@ -286,11 +436,33 @@ async function submitBlueprint(e) {
             sessionBlueprints.unshift(newBlueprint); // Add to beginning
             sessionStorage.setItem('imi_blueprints', JSON.stringify(sessionBlueprints));
 
-            // Update userData with new XP values (developer mode)
+            // Update userData with new XP values and seasonal stats (developer mode)
             if (window.IMI.data.userData) {
-                window.IMI.data.userData.currentXP = (window.IMI.data.userData.currentXP || 0) + xpEarned;
-                window.IMI.data.userData.lifetimeXP = (window.IMI.data.userData.lifetimeXP || 0) + xpEarned;
-                console.log('✅ XP updated (dev mode):', window.IMI.data.userData.currentXP, 'current,', window.IMI.data.userData.lifetimeXP, 'lifetime');
+                const userData = window.IMI.data.userData;
+
+                // Update XP
+                userData.currentXP = (userData.currentXP || 0) + xpEarned;
+                userData.lifetimeXP = (userData.lifetimeXP || 0) + xpEarned;
+
+                // Mock streak calculation (simplified - doesn't check actual week boundaries)
+                const currentWeekMonday = getMondayOfWeekSimple(new Date());
+                if (!userData.lastSubmissionWeek || userData.lastSubmissionWeek !== currentWeekMonday) {
+                    userData.currentStreak = (userData.currentStreak || 0) + 1;
+                    userData.lastSubmissionWeek = currentWeekMonday;
+                }
+
+                // Update season stats
+                userData.seasonPoints = (userData.seasonPoints || 0) + xpEarned;
+                userData.seasonBlueprintCount = (userData.seasonBlueprintCount || 0) + 1;
+
+                // Recalculate tier
+                if (userData.lifetimeXP >= 10000) userData.currentTier = 'platinum';
+                else if (userData.lifetimeXP >= 5000) userData.currentTier = 'gold';
+                else if (userData.lifetimeXP >= 2500) userData.currentTier = 'silver';
+                else userData.currentTier = 'bronze';
+
+                console.log('✅ XP updated (dev mode):', userData.currentXP, 'current,', userData.lifetimeXP, 'lifetime');
+                console.log('✅ Streak (dev mode):', userData.currentStreak, 'Tier:', userData.currentTier);
             }
 
             window.IMI.utils.showNotification(
@@ -305,6 +477,9 @@ async function submitBlueprint(e) {
 
             // Refresh XP display with updated values
             updateBlueprintXPDisplay();
+
+            // Refresh seasonal stats display
+            updateBlueprintSeasonStats();
 
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {

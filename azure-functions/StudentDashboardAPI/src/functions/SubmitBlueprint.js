@@ -91,8 +91,11 @@ app.http('SubmitBlueprint', {
 
             context.log('✅ Blueprint submitted successfully:', result.blueprintId);
 
-            // If XP was earned and we have azureAdUserId, update UserXP table
+            // If XP was earned and we have azureAdUserId, update UserXP table and seasonal stats
             let updatedXP = null;
+            let currentSeason = null;
+            let seasonStats = null;
+
             if (xpEarned > 0 && body.azureAdUserId) {
                 try {
                     // Ensure user XP record exists (create if needed)
@@ -106,16 +109,43 @@ app.http('SubmitBlueprint', {
                         );
                     }
 
-                    // Add XP transaction
+                    // Add XP transaction (also calculates streak and tier)
                     updatedXP = await sqlClient.addXPTransaction(
                         body.azureAdUserId,
                         xpEarned,
                         'blueprint',
                         result.blueprintId,
-                        `Blueprint submission: ${completeSections} complete sections`
+                        `Blueprint submission: ${completeSections} complete sections`,
+                        blueprintData.submissionDate
                     );
 
                     context.log('✅ XP updated:', updatedXP);
+
+                    // Get current season and update seasonal stats
+                    try {
+                        currentSeason = await sqlClient.getSeasonByDate(blueprintData.submissionDate);
+
+                        if (currentSeason) {
+                            context.log('📅 Current season:', currentSeason.seasonName);
+
+                            // Update seasonal stats
+                            seasonStats = await sqlClient.updateSeasonalStats(
+                                body.azureAdUserId,
+                                currentSeason.seasonId,
+                                xpEarned,
+                                updatedXP.currentStreak,
+                                updatedXP.currentTier
+                            );
+
+                            context.log('✅ Seasonal stats updated:', seasonStats);
+                        } else {
+                            context.log('⚠️ No active season found for submission date');
+                        }
+                    } catch (seasonError) {
+                        context.log.error('⚠️ Failed to update seasonal stats (XP saved):', seasonError);
+                        // Continue - XP is saved even if season update fails
+                    }
+
                 } catch (xpError) {
                     context.log.error('⚠️ Failed to update XP (blueprint saved):', xpError);
                     // Continue - blueprint is saved even if XP update fails
@@ -142,7 +172,15 @@ app.http('SubmitBlueprint', {
                         completeSections: completeSections,
                         // Include updated XP balance if available
                         currentXP: updatedXP?.currentXP || null,
-                        lifetimeXP: updatedXP?.lifetimeXP || null
+                        lifetimeXP: updatedXP?.lifetimeXP || null,
+                        // Include streak and tier info
+                        currentStreak: updatedXP?.currentStreak || null,
+                        currentTier: updatedXP?.currentTier || null,
+                        // Include season info if available
+                        seasonId: currentSeason?.seasonId || null,
+                        seasonName: currentSeason?.seasonName || null,
+                        seasonPoints: seasonStats?.seasonPoints || null,
+                        seasonBlueprintCount: seasonStats?.blueprintCount || null
                     }
                 }
             };

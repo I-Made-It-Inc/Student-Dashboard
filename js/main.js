@@ -128,12 +128,20 @@ async function loadUserData() {
 
                 // Fetch XP data from Azure SQL (Microsoft mode only)
                 let xpData = null;
+                let seasonData = null;
                 if (authMode === 'microsoft' && window.IMI.api && graphData.id) {
                     try {
                         xpData = await window.IMI.api.fetchUserXP(graphData.id, graphData.email);
                         console.log('✅ XP data loaded:', xpData.currentXP, 'XP');
                     } catch (error) {
                         console.warn('⚠️ Failed to load XP data, using defaults:', error);
+                    }
+
+                    try {
+                        seasonData = await window.IMI.api.fetchSeasonalStats(graphData.id);
+                        console.log('✅ Season data loaded:', seasonData.season?.seasonName);
+                    } catch (error) {
+                        console.warn('⚠️ Failed to load season data, using defaults:', error);
                     }
                 }
 
@@ -164,14 +172,24 @@ async function loadUserData() {
                     // Dataverse contact ID (MS mode only)
                     contactId: dataverseProfile?.contactId,
 
-                    // XP data (from Azure SQL in MS mode, mock 1850 in dev mode)
+                    // XP data (from Azure SQL in MS mode, mock in dev mode)
                     currentXP: xpData?.currentXP ?? (authMode === 'developer' ? 1850 : 0),
                     lifetimeXP: xpData?.lifetimeXP ?? (authMode === 'developer' ? 1850 : 0),
                     xpSpent: xpData?.xpSpent || 0,
 
+                    // Streak and tier (from UserXP table in MS mode, mock in dev mode)
+                    currentStreak: xpData?.currentStreak ?? (authMode === 'developer' ? 5 : 0),
+                    currentTier: xpData?.currentTier ?? (authMode === 'developer' ? 'silver' : 'bronze'),
+                    lastSubmissionWeek: xpData?.lastSubmissionWeek ?? (authMode === 'developer' ? '2025-09-23' : null),
+
+                    // Season data (from SeasonalStats in MS mode, mock in dev mode)
+                    currentSeasonId: seasonData?.season?.seasonId ?? (authMode === 'developer' ? 1 : null),
+                    currentSeasonName: seasonData?.season?.seasonName ?? (authMode === 'developer' ? 'Fall 2025' : null),
+                    seasonPoints: seasonData?.stats?.seasonPoints ?? (authMode === 'developer' ? 380 : 0),
+                    seasonBlueprintCount: seasonData?.stats?.blueprintCount ?? (authMode === 'developer' ? 19 : 0),
+                    maxStreakThisSeason: seasonData?.stats?.maxStreakDuringSeason ?? (authMode === 'developer' ? 5 : 0),
+
                     // Other gamification data (still mock for now)
-                    streak: 12,
-                    tier: 'Gold',
                     totalHours: 324,
                     activeProjects: 5,
                     companies: 3
@@ -291,7 +309,36 @@ function updateDashboardStats(data) {
         return;
     }
 
-    console.log('📊 Updating dashboard stats with XP:', data.currentXP);
+    console.log('📊 Updating dashboard stats with XP:', data.currentXP, 'Streak:', data.currentStreak, 'Tier:', data.currentTier);
+
+    // Update dashboard streak
+    const streakEl = document.getElementById('dashboard-streak');
+    if (streakEl && data.currentStreak !== undefined) {
+        streakEl.textContent = `${data.currentStreak} ${data.currentStreak === 1 ? 'week' : 'weeks'}`;
+        console.log('✅ Updated dashboard streak to:', data.currentStreak);
+    }
+
+    // Update dashboard season XP
+    const seasonXpEl = document.getElementById('dashboard-season-xp');
+    if (seasonXpEl && data.seasonPoints !== undefined) {
+        seasonXpEl.textContent = `${data.seasonPoints.toLocaleString()} pts`;
+        console.log('✅ Updated dashboard season XP to:', data.seasonPoints);
+    }
+
+    // Update season name in subtitle
+    const seasonNameEl = document.getElementById('dashboard-season-name');
+    if (seasonNameEl && data.currentSeasonName) {
+        seasonNameEl.textContent = data.currentSeasonName;
+        console.log('✅ Updated season name to:', data.currentSeasonName);
+    }
+
+    // Update dashboard tier
+    const tierEl = document.getElementById('dashboard-tier');
+    if (tierEl && data.currentTier) {
+        const tierCapitalized = data.currentTier.charAt(0).toUpperCase() + data.currentTier.slice(1);
+        tierEl.textContent = tierCapitalized;
+        console.log('✅ Updated dashboard tier to:', tierCapitalized);
+    }
 
     // Update gamification stats badge (XP display)
     const statMainElements = document.querySelectorAll('.stat-main');

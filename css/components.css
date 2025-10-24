@@ -528,3 +528,132 @@ label {
     pointer-events: none;
     color: #0ea5e9; /* Blue color for the award */
 }
+
+/* ========================================
+   SEASONAL TRACKING COMPONENTS
+   ======================================== */
+
+/* Current Season Stats (Blueprint Page) */
+.season-stats-current {
+    background: var(--card-bg, #ffffff);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color, #e5e7eb);
+}
+
+.season-stats-current h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary, #111827);
+}
+
+.season-metrics {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.metric {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.metric-label {
+    color: var(--text-muted, #6b7280);
+    font-size: 0.9rem;
+}
+
+.metric-value {
+    font-weight: 600;
+    color: var(--text-primary, #111827);
+    font-size: 1rem;
+}
+
+/* Past Seasons Display */
+.past-seasons-card {
+    margin-top: 2rem;
+}
+
+#past-seasons-container .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted, #6b7280);
+    font-style: italic;
+}
+
+.season-card {
+    background: var(--card-bg, #ffffff);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color, #e5e7eb);
+    transition: box-shadow 0.2s ease;
+}
+
+.season-card:hover {
+    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+}
+
+.season-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    padding-bottom: 0.5rem;
+}
+
+.season-name {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary, #111827);
+}
+
+.season-dates {
+    color: var(--text-muted, #6b7280);
+    font-size: 0.85rem;
+}
+
+.season-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.season-stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.season-stat .label {
+    color: var(--text-muted, #6b7280);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.season-stat .value {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-primary, #111827);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .season-metrics {
+        gap: 1rem;
+    }
+
+    .season-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .season-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

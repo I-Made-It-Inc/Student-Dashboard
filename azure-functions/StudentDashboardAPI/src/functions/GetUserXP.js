@@ -63,6 +63,9 @@ app.http('GetUserXP', {
                         currentXP: userXP.currentXP,
                         lifetimeXP: userXP.lifetimeXP,
                         xpSpent: userXP.xpSpent,
+                        currentStreak: userXP.currentStreak || 0,
+                        lastSubmissionWeek: userXP.lastSubmissionWeek,
+                        currentTier: userXP.currentTier || 'bronze',
                         createdAt: userXP.createdAt,
                         updatedAt: userXP.updatedAt
                     }
