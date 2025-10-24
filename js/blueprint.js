@@ -35,11 +35,23 @@ function initializeBlueprintChallenge() {
 // Update XP display from userData
 function updateBlueprintXPDisplay() {
     if (window.IMI && window.IMI.data && window.IMI.data.userData) {
-        const currentXP = window.IMI.data.userData.currentXP || 0;
-        const balanceElement = document.querySelector('.balance-amount');
-        if (balanceElement) {
-            balanceElement.textContent = currentXP.toLocaleString();
-            console.log('✅ Blueprint XP display updated:', currentXP);
+        const userData = window.IMI.data.userData;
+        const currentXP = userData.currentXP || 0;
+        const lifetimeXP = userData.lifetimeXP || 0;
+
+        // Get both balance amount elements (Available XP and Lifetime XP)
+        const balanceElements = document.querySelectorAll('.balance-amount');
+
+        if (balanceElements.length >= 2) {
+            // First element is Available XP
+            balanceElements[0].textContent = currentXP.toLocaleString();
+            // Second element is Lifetime XP
+            balanceElements[1].textContent = lifetimeXP.toLocaleString();
+            console.log('✅ Blueprint XP display updated - Available:', currentXP, 'Lifetime:', lifetimeXP);
+        } else if (balanceElements.length === 1) {
+            // Fallback for single element (Available XP only)
+            balanceElements[0].textContent = currentXP.toLocaleString();
+            console.log('✅ Blueprint XP display updated (Available only):', currentXP);
         }
     }
 }
