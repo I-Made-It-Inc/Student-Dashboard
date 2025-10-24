@@ -78,7 +78,7 @@ function initializePageSpecificFeatures(pageId) {
             setupDashboardRedemptionHandlers();
             break;
 
-        case 'innovation':
+        case 'blueprint':
             if (typeof initializeBlueprintChallenge === 'function') {
                 initializeBlueprintChallenge();
             }

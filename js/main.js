@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeNavigation();
 
     // Initialize other modules
-    initializeBlueprintChallenge();
+    // Note: initializeBlueprintChallenge() is called by page-loader.js when blueprint page loads
     initializeModal();
     initializeCompanies();
     initializeTimeTracking();
@@ -126,7 +126,26 @@ async function loadUserData() {
                     console.log('🔧 Developer mode - skipping Dataverse API call, using session-only data');
                 }
 
-                // Combine profile data with mock gamification data (will be from backend later)
+                // Fetch XP data from Azure SQL (Microsoft mode only)
+                let xpData = null;
+                let seasonData = null;
+                if (authMode === 'microsoft' && window.IMI.api && graphData.id) {
+                    try {
+                        xpData = await window.IMI.api.fetchUserXP(graphData.id, graphData.email);
+                        console.log('✅ XP data loaded:', xpData.currentXP, 'XP');
+                    } catch (error) {
+                        console.warn('⚠️ Failed to load XP data, using defaults:', error);
+                    }
+
+                    try {
+                        seasonData = await window.IMI.api.fetchSeasonalStats(graphData.id);
+                        console.log('✅ Season data loaded:', seasonData.season?.seasonName);
+                    } catch (error) {
+                        console.warn('⚠️ Failed to load season data, using defaults:', error);
+                    }
+                }
+
+                // Combine profile data with XP data from backend
                 const userData = {
                     // Identity
                     name: dataverseProfile?.nickname || graphData.name,  // Prefer Dataverse nickname (display name)
@@ -153,10 +172,27 @@ async function loadUserData() {
                     // Dataverse contact ID (MS mode only)
                     contactId: dataverseProfile?.contactId,
 
-                    // Gamification data (TODO: fetch from backend)
-                    streak: 12,
-                    xp: 1850,
-                    tier: 'Gold',
+                    // XP data (from Azure SQL in MS mode, mock in dev mode)
+                    currentXP: xpData?.currentXP ?? (authMode === 'developer' ? 1850 : 0),
+                    lifetimeXP: xpData?.lifetimeXP ?? (authMode === 'developer' ? 4950 : 0), // 2450 (Summer 2025) + 2500 (current season)
+                    xpSpent: xpData?.xpSpent || 0,
+
+                    // Streak and tier (from UserXP table in MS mode, mock in dev mode)
+                    currentStreak: xpData?.currentStreak ?? (authMode === 'developer' ? 5 : 0),
+                    currentTier: xpData?.currentTier ?? (authMode === 'developer' ? 'silver' : 'bronze'),
+                    lastSubmissionWeek: xpData?.lastSubmissionWeek ?? (authMode === 'developer' ? '2025-09-23' : null),
+
+                    // Blue Spark data (lastBlueprintSubmission)
+                    lastBlueprintSubmission: xpData?.lastBlueprintSubmission ?? (authMode === 'developer' ? new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() : null), // 2 days ago in dev mode
+
+                    // Season data (from SeasonalStats in MS mode, mock in dev mode)
+                    currentSeasonId: seasonData?.season?.seasonId ?? (authMode === 'developer' ? 1 : null),
+                    currentSeasonName: seasonData?.season?.seasonName ?? (authMode === 'developer' ? 'Fall 2025' : null),
+                    seasonPoints: seasonData?.stats?.seasonPoints ?? (authMode === 'developer' ? 2500 : 0),
+                    seasonBlueprintCount: seasonData?.stats?.blueprintCount ?? (authMode === 'developer' ? 19 : 0),
+                    maxStreakThisSeason: seasonData?.stats?.maxStreakDuringSeason ?? (authMode === 'developer' ? 5 : 0),
+
+                    // Other gamification data (still mock for now)
                     totalHours: 324,
                     activeProjects: 5,
                     companies: 3
@@ -170,8 +206,21 @@ async function loadUserData() {
 
                 console.log('✅ User data loaded successfully');
 
-                // Initialize profile page if we're on it (must happen after userData is loaded)
+                // Refresh Blue Spark display now that userData is loaded
+                if (window.simpleBlueSpark) {
+                    window.simpleBlueSpark.refresh();
+                }
+
+                // Refresh current page content with loaded user data
                 const currentPage = window.location.hash.slice(1) || 'dashboard';
+
+                // Refresh dashboard if we're on it (must happen after userData is loaded)
+                if (currentPage === 'dashboard' && typeof loadDashboardContent === 'function') {
+                    console.log('📄 Refreshing dashboard with loaded user data');
+                    loadDashboardContent();
+                }
+
+                // Initialize profile page if we're on it (must happen after userData is loaded)
                 if (currentPage === 'profile' && typeof initializeProfile === 'function') {
                     console.log('📄 Initializing profile page with loaded user data');
                     initializeProfile();
@@ -181,6 +230,20 @@ async function loadUserData() {
                 if (currentPage === 'blueprint' && typeof renderPastBlueprints === 'function') {
                     console.log('📄 Loading blueprints with user data');
                     renderPastBlueprints();
+                }
+
+                // Update blueprint page stats if we're on it (must happen after userData is loaded)
+                if (currentPage === 'blueprint') {
+                    console.log('📄 Refreshing blueprint page stats with loaded user data');
+                    if (typeof updateBlueprintHeaderStats === 'function') {
+                        updateBlueprintHeaderStats();
+                    }
+                    if (typeof updateBlueprintSeasonStats === 'function') {
+                        updateBlueprintSeasonStats();
+                    }
+                    if (typeof updateBlueprintXPDisplay === 'function') {
+                        updateBlueprintXPDisplay();
+                    }
                 }
             }
         } catch (error) {
@@ -204,9 +267,13 @@ function usePlaceholderData() {
         email: '[EMAIL]',
         jobTitle: '[JOB TITLE]',
         department: '[DEPARTMENT]',
-        streak: 12,
-        xp: 1850,
-        tier: 'Gold',
+        currentXP: 1850,
+        lifetimeXP: 4950, // 2450 (Summer 2025) + 2500 (current season)
+        xpSpent: 0,
+        currentStreak: 5,
+        currentTier: 'silver',
+        seasonPoints: 2500,
+        seasonBlueprintCount: 19,
         totalHours: 324,
         activeProjects: 5,
         companies: 3
@@ -260,18 +327,60 @@ function updateUserInterface(userData) {
 
 // Update dashboard statistics
 function updateDashboardStats(data) {
+    // Safety check
+    if (!data || data.currentXP === undefined) {
+        console.warn('⚠️ updateDashboardStats called without valid data:', data);
+        return;
+    }
+
+    console.log('📊 Updating dashboard stats with XP:', data.currentXP, 'Streak:', data.currentStreak, 'Tier:', data.currentTier);
+
+    // Update dashboard streak
+    const streakEl = document.getElementById('dashboard-streak');
+    if (streakEl && data.currentStreak !== undefined) {
+        streakEl.textContent = `${data.currentStreak} ${data.currentStreak === 1 ? 'week' : 'weeks'}`;
+        console.log('✅ Updated dashboard streak to:', data.currentStreak);
+    }
+
+    // Update dashboard season XP
+    const seasonXpEl = document.getElementById('dashboard-season-xp');
+    if (seasonXpEl && data.seasonPoints !== undefined) {
+        seasonXpEl.textContent = `${data.seasonPoints.toLocaleString()} pts`;
+        console.log('✅ Updated dashboard season XP to:', data.seasonPoints);
+    }
+
+    // Update season name in subtitle
+    const seasonNameEl = document.getElementById('dashboard-season-name');
+    if (seasonNameEl && data.currentSeasonName) {
+        seasonNameEl.textContent = data.currentSeasonName;
+        console.log('✅ Updated season name to:', data.currentSeasonName);
+    }
+
+    // Update dashboard tier
+    const tierEl = document.getElementById('dashboard-tier');
+    if (tierEl && data.currentTier) {
+        const tierCapitalized = data.currentTier.charAt(0).toUpperCase() + data.currentTier.slice(1);
+        tierEl.textContent = tierCapitalized;
+        console.log('✅ Updated dashboard tier to:', tierCapitalized);
+    }
+
+    // Update sidebar "XP available" text
+    const xpAvailableEl = document.getElementById('dashboard-xp-available');
+    if (xpAvailableEl && data.currentXP !== undefined) {
+        xpAvailableEl.textContent = `${data.currentXP.toLocaleString()} XP available`;
+        console.log('✅ Updated sidebar XP to:', data.currentXP);
+    }
+
+    // Update other stats if elements exist (these are less critical)
     const statElements = {
         '.stat-value.hours': data.totalHours,
         '.stat-value.projects': data.activeProjects,
-        '.stat-value.companies': data.companies,
-        '.streak-value': `${data.streak} day streak`,
-        '.points-value': `${data.points} pts`,
-        '.rank-value': `#${data.rank}`
+        '.stat-value.companies': data.companies
     };
 
     Object.entries(statElements).forEach(([selector, value]) => {
         const element = document.querySelector(selector);
-        if (element) {
+        if (element && value !== undefined) {
             element.textContent = value;
         }
     });
@@ -341,15 +450,16 @@ async function updateDashboardBlueprintChallenge() {
             }
         }
 
-        // Check which sections are completed this week (any blueprint with ≥100 words counts)
+        // Check which sections are completed this week (any blueprint with minimum word count)
         const sections = ['trendspotter', 'futureVisionary', 'innovationCatalyst', 'connector', 'growthHacker'];
         const completedSections = new Set();
+        const minWords = window.IMI.config.GAMIFICATION.minWordsPerSection;
 
         thisWeekBlueprints.forEach(bp => {
             sections.forEach(section => {
                 const content = bp[section] || '';
                 const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
-                if (wordCount >= 100) {
+                if (wordCount >= minWords) {
                     completedSections.add(section);
                 }
             });
@@ -397,7 +507,7 @@ function startSessionTracking() {
         const elapsedMinutes = Math.floor((Date.now() - sessionStartTime) / 60000);
         // Update session timer in UI if needed
         updateSessionTime(elapsedMinutes);
-    }, 60000); // Update every minute
+    }, window.IMI.config.SESSION.updateInterval);
     
     // Track page changes
     document.addEventListener('pageChange', (event) => {
@@ -607,6 +717,13 @@ function handleRedemption(btn) {
         }
         const costXP = parseInt(costMatch[1]);
 
+        // Update userData.currentXP (single source of truth)
+        if (window.IMI && window.IMI.data && window.IMI.data.userData) {
+            window.IMI.data.userData.currentXP -= costXP;
+            window.IMI.data.userData.xpSpent = (window.IMI.data.userData.xpSpent || 0) + costXP;
+            console.log('✅ XP updated in userData:', window.IMI.data.userData.currentXP);
+        }
+
         // Update available XP in sidebar
         const xpAvailableElement = document.querySelector('.text-muted.small');
         if (xpAvailableElement && xpAvailableElement.textContent.includes('XP available')) {
@@ -622,13 +739,13 @@ function handleRedemption(btn) {
         // Update the gamification stats XP display
         const statMainElements = document.querySelectorAll('.stat-main');
         statMainElements.forEach(el => {
-            if (el.textContent.includes('pts')) {
+            if (el.textContent.includes('XP') || el.textContent.includes('pts')) {
                 const currentXPMatch = el.textContent.match(/([\d,]+)/);
                 if (currentXPMatch) {
                     const currentXP = parseInt(currentXPMatch[1].replace(/,/g, ''));
                     const newBalance = currentXP - costXP;
                     const formattedBalance = newBalance.toLocaleString();
-                    el.textContent = `${formattedBalance} pts`;
+                    el.textContent = `${formattedBalance} XP`;
                 }
             }
         });

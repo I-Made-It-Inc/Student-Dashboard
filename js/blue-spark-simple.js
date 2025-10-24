@@ -1,43 +1,73 @@
 /**
  * Simplified Blue Spark Visual Reward System
  * Uses CSS classes to show/hide Blue Spark overlays on avatars
+ * Blue Spark is active for 7 days after a blueprint submission
  */
 
 class SimpleBlueSparkManager {
     constructor() {
-        // Set Blue Spark end time (6 days from now for demo)
-        this.endTime = new Date();
-        this.endTime.setDate(this.endTime.getDate() + 6);
-        this.endTime.setHours(this.endTime.getHours() - 1); // 5d 23h remaining
-        
+        this.BLUE_SPARK_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
         this.init();
     }
 
     init() {
         console.log('Simple Blue Spark system initializing...');
-        
-        // For demo purposes, activate Blue Spark on both avatars
-        this.activateBlueSpark();
-        
-        // Update activity indicator with countdown
-        this.updateActivityIndicator();
-        
-        // Update countdown every minute
-        setInterval(() => this.updateActivityIndicator(), 60000);
-        
+
+        // Calculate and set Blue Spark state based on last submission
+        this.refresh();
+
+        // Update countdown at configured interval
+        setInterval(() => this.updateActivityIndicator(), window.IMI.config.SESSION.updateInterval);
+
         console.log('Simple Blue Spark system initialized');
     }
 
-    getTimeRemaining() {
+    /**
+     * Refresh Blue Spark state based on current userData
+     * Call this after blueprint submission or when userData changes
+     */
+    refresh() {
+        const userData = window.IMI?.data?.userData;
+
+        if (!userData || !userData.lastBlueprintSubmission) {
+            // No submission data - deactivate Blue Spark
+            this.deactivateBlueSpark();
+            return;
+        }
+
+        const lastSubmission = new Date(userData.lastBlueprintSubmission);
         const now = new Date();
-        const diff = this.endTime - now;
-        
+        const timeSinceSubmission = now - lastSubmission;
+
+        // Check if within 7 days
+        if (timeSinceSubmission < this.BLUE_SPARK_DURATION_MS && timeSinceSubmission >= 0) {
+            // Blue Spark is active
+            this.activateBlueSpark();
+            this.updateActivityIndicator();
+        } else {
+            // Blue Spark expired or future date
+            this.deactivateBlueSpark();
+        }
+    }
+
+    getTimeRemaining() {
+        const userData = window.IMI?.data?.userData;
+
+        if (!userData || !userData.lastBlueprintSubmission) {
+            return null;
+        }
+
+        const lastSubmission = new Date(userData.lastBlueprintSubmission);
+        const now = new Date();
+        const endTime = new Date(lastSubmission.getTime() + this.BLUE_SPARK_DURATION_MS);
+        const diff = endTime - now;
+
         if (diff <= 0) return null;
-        
+
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        
+
         if (days > 0) {
             return `${days}d ${hours}h remaining`;
         } else if (hours > 0) {
@@ -67,17 +97,22 @@ class SimpleBlueSparkManager {
     deactivateBlueSpark() {
         const profileAvatar = document.querySelector('.profile-avatar');
         const navAvatar = document.querySelector('.user-avatar');
-        
+        const activityIndicator = document.getElementById('blueprint-activity-indicator');
+
         if (profileAvatar) {
             profileAvatar.classList.remove('blue-spark-active');
             profileAvatar.title = '';
         }
-        
+
         if (navAvatar) {
-            navAvatar.classList.remove('blue-spark-active');  
+            navAvatar.classList.remove('blue-spark-active');
             navAvatar.title = 'Profile Settings';
         }
-        
+
+        if (activityIndicator) {
+            activityIndicator.style.display = 'none';
+        }
+
         console.log('Blue Spark deactivated on avatars');
     }
 

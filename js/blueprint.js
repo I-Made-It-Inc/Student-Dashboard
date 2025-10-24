@@ -1,11 +1,27 @@
 // js/blueprint.js - Blueprint for the Future Functionality
 
+// Helper function to get Monday of week (simplified for dev mode)
+function getMondayOfWeekSimple(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    d.setDate(d.getDate() + diff);
+    d.setHours(0, 0, 0, 0);
+    return d.toISOString().split('T')[0];
+}
+
 // Initialize Blueprint Challenge
 function initializeBlueprintChallenge() {
-    console.log('Initializing Blueprint Challenge...');
+    console.log('🎯 Initializing Blueprint Challenge...');
+    console.log('🎯 userData at init:', window.IMI?.data?.userData ? 'EXISTS' : 'NOT LOADED');
 
     // Reset draft loading flag for this initialization
     blueprintDraftLoadedThisInitialization = false;
+
+    // Update stats displays immediately since userData should already be loaded
+    updateBlueprintXPDisplay();
+    updateBlueprintSeasonStats();
+    updateBlueprintHeaderStats();
 
     // Set up word counters
     setupWordCounters();
@@ -27,6 +43,199 @@ function initializeBlueprintChallenge() {
 
     // Load past blueprints
     renderPastBlueprints();
+
+    // Load past seasons
+    renderPastSeasons();
+}
+
+// Update XP display from userData
+function updateBlueprintXPDisplay() {
+    if (window.IMI && window.IMI.data && window.IMI.data.userData) {
+        const userData = window.IMI.data.userData;
+        const currentXP = userData.currentXP || 0;
+        const lifetimeXP = userData.lifetimeXP || 0;
+
+        // Get both balance amount elements (Available XP and Lifetime XP)
+        const balanceElements = document.querySelectorAll('.balance-amount');
+
+        if (balanceElements.length >= 2) {
+            // First element is Available XP
+            balanceElements[0].textContent = currentXP.toLocaleString();
+            // Second element is Lifetime XP
+            balanceElements[1].textContent = lifetimeXP.toLocaleString();
+            console.log('✅ Blueprint XP display updated - Available:', currentXP, 'Lifetime:', lifetimeXP);
+        } else if (balanceElements.length === 1) {
+            // Fallback for single element (Available XP only)
+            balanceElements[0].textContent = currentXP.toLocaleString();
+            console.log('✅ Blueprint XP display updated (Available only):', currentXP);
+        }
+    }
+}
+
+// Update current season stats display on blueprint page
+function updateBlueprintSeasonStats() {
+    const userData = window.IMI?.data?.userData;
+    if (!userData) return;
+
+    // Update current streak
+    const streakEl = document.getElementById('current-streak');
+    if (streakEl) {
+        const streak = userData.currentStreak || 0;
+        streakEl.textContent = `${streak} ${streak === 1 ? 'week' : 'weeks'}`;
+    }
+
+    // Update season points
+    const seasonPointsEl = document.getElementById('season-points');
+    if (seasonPointsEl) {
+        seasonPointsEl.textContent = `${(userData.seasonPoints || 0).toLocaleString()} XP`;
+    }
+
+    // Update season submissions
+    const submissionsEl = document.getElementById('season-submissions');
+    if (submissionsEl) {
+        submissionsEl.textContent = userData.seasonBlueprintCount || 0;
+    }
+
+    // Update current tier
+    const tierEl = document.getElementById('current-tier');
+    if (tierEl) {
+        const tier = userData.currentTier || 'bronze';
+        tierEl.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+    }
+
+    console.log('✅ Blueprint season stats updated');
+}
+
+// Update header stats display on blueprint page
+function updateBlueprintHeaderStats() {
+    const userData = window.IMI?.data?.userData;
+    if (!userData) {
+        console.warn('⚠️ updateBlueprintHeaderStats: userData not available yet');
+        return;
+    }
+
+    console.log('📊 Updating blueprint header stats with:', {
+        streak: userData.currentStreak,
+        seasonPoints: userData.seasonPoints,
+        blueprintCount: userData.seasonBlueprintCount,
+        tier: userData.currentTier
+    });
+
+    // Update header streak
+    const headerStreakEl = document.getElementById('header-streak');
+    if (headerStreakEl) {
+        const streak = userData.currentStreak || 0;
+        headerStreakEl.textContent = `${streak} ${streak === 1 ? 'week' : 'weeks'}`;
+    }
+
+    // Update header season points
+    const headerSeasonPointsEl = document.getElementById('header-season-points');
+    if (headerSeasonPointsEl) {
+        headerSeasonPointsEl.textContent = (userData.seasonPoints || 0).toLocaleString();
+    }
+
+    // Update header submissions
+    const headerSubmissionsEl = document.getElementById('header-submissions');
+    if (headerSubmissionsEl) {
+        headerSubmissionsEl.textContent = userData.seasonBlueprintCount || 0;
+    }
+
+    // Update header tier
+    const headerTierEl = document.getElementById('header-tier');
+    if (headerTierEl) {
+        const tier = userData.currentTier || 'bronze';
+        headerTierEl.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+    }
+
+    console.log('✅ Blueprint header stats updated');
+}
+
+// Load and render past season performance
+async function renderPastSeasons() {
+    const authMode = sessionStorage.getItem('imi_auth_mode');
+    const userData = window.IMI?.data?.userData;
+
+    if (authMode === 'microsoft' && userData?.id && window.IMI.api) {
+        try {
+            const history = await window.IMI.api.fetchSeasonHistory(userData.id);
+            // Filter out current season from history
+            const pastSeasons = history.filter(s => s.seasonId !== userData.currentSeasonId);
+            displayPastSeasons(pastSeasons);
+        } catch (error) {
+            console.error('Failed to load season history:', error);
+        }
+    } else if (authMode === 'developer') {
+        // Mock past seasons for developer mode
+        const mockHistory = [
+            {
+                seasonName: 'Summer 2025',
+                startDate: '2025-05-01',
+                endDate: '2025-08-31',
+                seasonPoints: 1450,
+                maxStreakDuringSeason: 11,
+                blueprintCount: 14,
+                finalTier: 'bronze'
+            },
+            {
+                seasonName: 'Winter 2025',
+                startDate: '2025-01-01',
+                endDate: '2025-04-30',
+                seasonPoints: 1000,
+                maxStreakDuringSeason: 8,
+                blueprintCount: 12,
+                finalTier: 'bronze'
+            }
+        ];
+        displayPastSeasons(mockHistory);
+    }
+}
+
+// Display past seasons in DOM
+function displayPastSeasons(seasons) {
+    const container = document.getElementById('past-seasons-container');
+    if (!container) return;
+
+    if (!seasons || seasons.length === 0) {
+        container.innerHTML = '<p class="empty-state">No past seasons yet.</p>';
+        return;
+    }
+
+    container.innerHTML = seasons.map(season => `
+        <div class="season-card">
+            <div class="season-header">
+                <h4 class="season-name">${season.seasonName}</h4>
+                <span class="season-dates">${formatDateRange(season.startDate, season.endDate)}</span>
+            </div>
+            <div class="season-stats-grid">
+                <div class="season-stat">
+                    <span class="label">Season XP</span>
+                    <span class="value">${season.seasonPoints.toLocaleString()} pts</span>
+                </div>
+                <div class="season-stat">
+                    <span class="label">Longest Streak</span>
+                    <span class="value">${season.maxStreakDuringSeason} ${season.maxStreakDuringSeason === 1 ? 'week' : 'weeks'}</span>
+                </div>
+                <div class="season-stat">
+                    <span class="label">Submissions</span>
+                    <span class="value">${season.blueprintCount}</span>
+                </div>
+                <div class="season-stat">
+                    <span class="label">Final Tier</span>
+                    <span class="value">${season.finalTier ? season.finalTier.charAt(0).toUpperCase() + season.finalTier.slice(1) : 'N/A'}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    console.log('✅ Past seasons displayed:', seasons.length);
+}
+
+// Format date range helper
+function formatDateRange(startDate, endDate) {
+    const options = { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' };
+    const start = new Date(startDate).toLocaleDateString('en-US', options);
+    const end = new Date(endDate).toLocaleDateString('en-US', options);
+    return `${start} - ${end}`;
 }
 
 // Setup word counters for each section
@@ -73,8 +282,10 @@ function updateSectionStatus(textarea) {
     const statusElement = textarea.closest('.submission-section')?.querySelector('.section-status');
     
     if (statusElement) {
-        if (wordCount >= 100) {
-            statusElement.textContent = '✓ Complete - 20 XP';
+        const minWords = window.IMI.config.GAMIFICATION.minWordsPerSection;
+        const xpPerSection = window.IMI.config.GAMIFICATION.xpPerSection;
+        if (wordCount >= minWords) {
+            statusElement.textContent = `✓ Complete - ${xpPerSection} XP`;
             statusElement.className = 'section-status completed';
         } else if (wordCount > 0) {
             statusElement.textContent = '⏱ In progress';
@@ -98,10 +309,12 @@ function updateOverallProgress() {
     sections.forEach(section => {
         const textarea = section.querySelector('.submission-textarea');
         const wordCount = updateWordCount(textarea);
-        
-        if (wordCount >= 100) {
+
+        const minWords = window.IMI.config.GAMIFICATION.minWordsPerSection;
+        const xpPerSection = window.IMI.config.GAMIFICATION.xpPerSection;
+        if (wordCount >= minWords) {
             completedSections++;
-            totalXP += 20; // 20 XP per section in blueprint system
+            totalXP += xpPerSection;
         }
     });
     
@@ -213,24 +426,74 @@ async function submitBlueprint(e) {
             const result = await window.IMI.api.submitBlueprint(blueprintData);
             console.log('✅ Blueprint submitted:', totalWordCount, 'words,', xpEarned, 'XP');
 
-            // Show success with database confirmation
-            window.IMI.utils.showNotification(
-                `Blueprint #${result.data.blueprintId} submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections).`,
-                'success'
-            );
+            // Update userData with new XP values and seasonal data from response
+            if (result.data.currentXP !== null && result.data.lifetimeXP !== null) {
+                window.IMI.data.userData.currentXP = result.data.currentXP;
+                window.IMI.data.userData.lifetimeXP = result.data.lifetimeXP;
+
+                // Update streak and tier if available
+                if (result.data.currentStreak !== undefined) {
+                    window.IMI.data.userData.currentStreak = result.data.currentStreak;
+                }
+                if (result.data.currentTier) {
+                    window.IMI.data.userData.currentTier = result.data.currentTier;
+                }
+
+                // Update seasonal data if available
+                if (result.data.seasonPoints !== undefined) {
+                    window.IMI.data.userData.seasonPoints = result.data.seasonPoints;
+                }
+                if (result.data.seasonBlueprintCount !== undefined) {
+                    window.IMI.data.userData.seasonBlueprintCount = result.data.seasonBlueprintCount;
+                }
+
+                // Update lastBlueprintSubmission for Blue Spark
+                if (result.data.lastBlueprintSubmission) {
+                    window.IMI.data.userData.lastBlueprintSubmission = result.data.lastBlueprintSubmission;
+                }
+
+                console.log('✅ XP updated:', result.data.currentXP, 'current,', result.data.lifetimeXP, 'lifetime');
+                console.log('✅ Streak:', result.data.currentStreak, 'Tier:', result.data.currentTier);
+
+                // Show success with XP update
+                window.IMI.utils.showNotification(
+                    `Blueprint submitted! +${xpEarned} XP earned. Total: ${result.data.currentXP.toLocaleString()} XP`,
+                    'success'
+                );
+            } else {
+                // Show success without XP update (e.g., draft saved)
+                window.IMI.utils.showNotification(
+                    result.message || 'Blueprint saved!',
+                    result.data.status === 'draft' ? 'warning' : 'success'
+                );
+            }
 
             // Refresh past blueprints list
             if (typeof renderPastBlueprints === 'function') {
                 renderPastBlueprints();
             }
 
+            // Refresh XP display with updated values
+            updateBlueprintXPDisplay();
+
+            // Refresh seasonal stats display
+            updateBlueprintSeasonStats();
+
+            // Refresh header stats display
+            updateBlueprintHeaderStats();
+
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {
                 updateDashboardBlueprintChallenge();
             }
+
+            // Refresh Blue Spark display
+            if (window.simpleBlueSpark) {
+                window.simpleBlueSpark.refresh();
+            }
         } else {
             // Developer mode or API not available - save to sessionStorage
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
+            await new Promise(resolve => setTimeout(resolve, window.IMI.config.DEBUG.simulatedApiDelay));
 
             // Save to sessionStorage (persists until browser closes or hard refresh)
             const sessionBlueprints = JSON.parse(sessionStorage.getItem('imi_blueprints') || '[]');
@@ -243,6 +506,39 @@ async function submitBlueprint(e) {
             sessionBlueprints.unshift(newBlueprint); // Add to beginning
             sessionStorage.setItem('imi_blueprints', JSON.stringify(sessionBlueprints));
 
+            // Update userData with new XP values and seasonal stats (developer mode)
+            if (window.IMI.data.userData) {
+                const userData = window.IMI.data.userData;
+
+                // Update XP
+                userData.currentXP = (userData.currentXP || 0) + xpEarned;
+                userData.lifetimeXP = (userData.lifetimeXP || 0) + xpEarned;
+
+                // Mock streak calculation (simplified - doesn't check actual week boundaries)
+                const currentWeekMonday = getMondayOfWeekSimple(new Date());
+                if (!userData.lastSubmissionWeek || userData.lastSubmissionWeek !== currentWeekMonday) {
+                    userData.currentStreak = (userData.currentStreak || 0) + 1;
+                    userData.lastSubmissionWeek = currentWeekMonday;
+                }
+
+                // Update season stats
+                userData.seasonPoints = (userData.seasonPoints || 0) + xpEarned;
+                userData.seasonBlueprintCount = (userData.seasonBlueprintCount || 0) + 1;
+
+                // Update lastBlueprintSubmission for Blue Spark (developer mode)
+                userData.lastBlueprintSubmission = new Date().toISOString();
+
+                // Recalculate tier using config thresholds
+                const tierThresholds = window.IMI.config.GAMIFICATION.tiers;
+                if (userData.lifetimeXP >= tierThresholds.platinum) userData.currentTier = 'platinum';
+                else if (userData.lifetimeXP >= tierThresholds.gold) userData.currentTier = 'gold';
+                else if (userData.lifetimeXP >= tierThresholds.silver) userData.currentTier = 'silver';
+                else userData.currentTier = 'bronze';
+
+                console.log('✅ XP updated (dev mode):', userData.currentXP, 'current,', userData.lifetimeXP, 'lifetime');
+                console.log('✅ Streak (dev mode):', userData.currentStreak, 'Tier:', userData.currentTier);
+            }
+
             window.IMI.utils.showNotification(
                 `Blueprint submitted successfully! You earned ${xpEarned} XP (${progress.completedSections}/5 sections). (Saved to session)`,
                 'success'
@@ -253,15 +549,25 @@ async function submitBlueprint(e) {
                 renderPastBlueprints();
             }
 
+            // Refresh XP display with updated values
+            updateBlueprintXPDisplay();
+
+            // Refresh seasonal stats display
+            updateBlueprintSeasonStats();
+
+            // Refresh header stats display
+            updateBlueprintHeaderStats();
+
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {
                 updateDashboardBlueprintChallenge();
             }
-        }
 
-        // Update streak and tier
-        updateStreak();
-        updateTierProgress(xpEarned);
+            // Refresh Blue Spark display
+            if (window.simpleBlueSpark) {
+                window.simpleBlueSpark.refresh();
+            }
+        }
 
         // Trigger Blue Spark for Blueprint submission
         if (window.BlueSpark) {
@@ -391,46 +697,14 @@ function setupAutoSaveDrafts() {
                 statusElement.textContent = '⏱ Saving...';
             }
 
-            // Auto-save after 2 seconds of inactivity
+            // Auto-save after configured interval of inactivity
             autoSaveTimer = setTimeout(() => {
                 saveDraft();
-            }, 2000);
+            }, window.IMI.config.SESSION.autoSaveInterval);
         });
     });
 
     autoSaveSetupComplete = true;
-}
-
-// Update tier progress
-function updateTierProgress(earnedXP) {
-    // Tier thresholds based on Blueprint system
-    const tiers = {
-        bronze: { min: 0, max: 999, name: 'Bronze', icon: '🥉' },
-        silver: { min: 1000, max: 2499, name: 'Silver', icon: '🥈' },
-        gold: { min: 2500, max: 4999, name: 'Gold', icon: '🥇' },
-        platinum: { min: 5000, max: Infinity, name: 'Platinum', icon: '🏆' }
-    };
-    
-    // In a real app, this would be calculated from total lifetime XP
-    const totalXP = 1850 + earnedXP;
-    
-    let currentTier = 'bronze';
-    for (const [tierName, tierData] of Object.entries(tiers)) {
-        if (totalXP >= tierData.min && totalXP < tierData.max) {
-            currentTier = tierName;
-            break;
-        }
-    }
-    
-    // Update tier displays
-    const tierElements = document.querySelectorAll('.challenge-stat-value, .stat-main');
-    tierElements.forEach(el => {
-        if (el.textContent.includes('#') || el.textContent.includes('Gold')) {
-            el.textContent = tiers[currentTier].name;
-        }
-    });
-    
-    console.log(`Updated to ${tiers[currentTier].name} tier with ${totalXP} total XP`);
 }
 
 // Setup XP Chart
@@ -533,12 +807,19 @@ function setupRedemptionHandlers() {
                 if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
                     window.IMI.utils.showNotification(`Successfully redeemed ${itemName}!`, 'success');
                 }
-                
+
                 // Parse cost properly
                 const costMatch = costText.match(/(\d+)/);
                 if (costMatch) {
                     const costXP = parseInt(costMatch[1]);
-                    
+
+                    // Update userData.currentXP (single source of truth)
+                    if (window.IMI && window.IMI.data && window.IMI.data.userData) {
+                        window.IMI.data.userData.currentXP -= costXP;
+                        window.IMI.data.userData.xpSpent = (window.IMI.data.userData.xpSpent || 0) + costXP;
+                        console.log('✅ XP updated in userData:', window.IMI.data.userData.currentXP);
+                    }
+
                     // Update available XP
                     const balanceElement = document.querySelector('.balance-amount');
                     if (balanceElement) {
@@ -546,15 +827,15 @@ function setupRedemptionHandlers() {
                         const newBalance = currentXP - costXP;
                         const formattedBalance = newBalance.toLocaleString();
                         balanceElement.textContent = formattedBalance;
-                        
+
                         // Also update the dashboard XP display
                         const dashboardXPElements = document.querySelectorAll('.stat-main');
                         dashboardXPElements.forEach(el => {
-                            if (el.textContent.includes('pts')) {
-                                el.textContent = `${formattedBalance} pts`;
+                            if (el.textContent.includes('XP') || el.textContent.includes('pts')) {
+                                el.textContent = `${formattedBalance} XP`;
                             }
                         });
-                        
+
                         // Update the sidebar XP display too
                         const sidebarXPElement = document.querySelector('.text-muted.small');
                         if (sidebarXPElement && sidebarXPElement.textContent.includes('XP available')) {
@@ -562,7 +843,7 @@ function setupRedemptionHandlers() {
                         }
                     }
                 }
-                
+
                 // Disable the button
                 this.disabled = true;
                 this.textContent = 'Redeemed';
@@ -601,9 +882,9 @@ function loadDraft() {
     if (saved) {
         const draft = JSON.parse(saved);
 
-        // Check if draft is not too old (7 days)
+        // Check if draft is not too old (Blue Spark duration)
         const age = Date.now() - draft.timestamp;
-        if (age < 7 * 24 * 60 * 60 * 1000) {
+        if (age < window.IMI.config.GAMIFICATION.blueSparkDuration) {
             // Restore article information
             if (draft.articleInfo) {
                 const articleTitle = document.getElementById('article-title');
@@ -645,7 +926,7 @@ function loadCurrentChallenge() {
     const challengeData = {
         topic: 'The Future of Sustainable Cities',
         description: 'Explore how technology and innovation can create more sustainable urban environments through the lens of your personal Blueprint for the Future.',
-        deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+        deadline: new Date(Date.now() + window.IMI.config.GAMIFICATION.blueSparkDuration),
         weeklySubmission: true,
         multipleSubmissionsAllowed: false, // Changed for blueprint system
         fullXPOnPass: true, // Students get full XP when they pass
@@ -710,20 +991,6 @@ function updateChallengeUI(data) {
     });
 }
 
-// Update streak
-function updateStreak() {
-    const streakElements = document.querySelectorAll('.challenge-stat-value, .stat-main');
-    streakElements.forEach(el => {
-        if (el.textContent && el.textContent.includes('week')) {
-            const currentStreak = parseInt(el.textContent) || 0;
-            el.textContent = `${currentStreak + 1} weeks`;
-            
-            // Animate streak update
-            el.classList.add('updated');
-            setTimeout(() => el.classList.remove('updated'), 1000);
-        }
-    });
-}
 
 // Show points marketplace (placeholder function)
 function showPointsMarketplace() {
@@ -732,7 +999,6 @@ function showPointsMarketplace() {
 
 // Export functions
 window.initializeBlueprintChallenge = initializeBlueprintChallenge;
-window.initializeInnovationChallenge = initializeBlueprintChallenge; // Backward compatibility
 window.loadCurrentChallenge = loadCurrentChallenge;
 window.showPointsMarketplace = showPointsMarketplace;
 

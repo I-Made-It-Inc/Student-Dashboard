@@ -9,28 +9,28 @@
                         <div class="challenge-stat">
                             <div class="challenge-stat-icon"><i class="fa-solid fa-fire"></i></div>
                             <div>
-                                <div class="challenge-stat-value">12 weeks</div>
+                                <div class="challenge-stat-value" id="header-streak">0 weeks</div>
                                 <div class="challenge-stat-label">Current Streak</div>
                             </div>
                         </div>
                         <div class="challenge-stat">
                             <div class="challenge-stat-icon"><i class="fa-solid fa-star"></i></div>
                             <div>
-                                <div class="challenge-stat-value">1,850</div>
+                                <div class="challenge-stat-value" id="header-season-points">0</div>
                                 <div class="challenge-stat-label">Season Points</div>
                             </div>
                         </div>
                         <div class="challenge-stat">
                             <div class="challenge-stat-icon"><i class="fa-solid fa-pen-to-square"></i></div>
                             <div>
-                                <div class="challenge-stat-value">19</div>
+                                <div class="challenge-stat-value" id="header-submissions">0</div>
                                 <div class="challenge-stat-label">Submissions</div>
                             </div>
                         </div>
                         <div class="challenge-stat">
                             <div class="challenge-stat-icon"><i class="fa-solid fa-trophy"></i></div>
                             <div>
-                                <div class="challenge-stat-value">Gold</div>
+                                <div class="challenge-stat-value" id="header-tier">Bronze</div>
                                 <div class="challenge-stat-label">Current Tier</div>
                             </div>
                         </div>
@@ -181,33 +181,9 @@
                         <div class="section-header">
                             <h3 class="section-title">Past Season Performance</h3>
                         </div>
-                        <div class="seasons-grid">
-                            <div class="season-box">
-                                <h4>Season 2 - Winter 2024</h4>
-                                <div class="season-stats">
-                                    <div class="season-stat-item">
-                                        <span class="season-stat-icon"><i class="fa-solid fa-star"></i></span>
-                                        <span>Total XP: 2,450</span>
-                                    </div>
-                                    <div class="season-stat-item">
-                                        <span class="season-stat-icon"><i class="fa-solid fa-fire"></i></span>
-                                        <span>Longest Streak: 18 weeks</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="season-box">
-                                <h4>Season 1 - Fall 2024</h4>
-                                <div class="season-stats">
-                                    <div class="season-stat-item">
-                                        <span class="season-stat-icon"><i class="fa-solid fa-star"></i></span>
-                                        <span>Total XP: 1,820</span>
-                                    </div>
-                                    <div class="season-stat-item">
-                                        <span class="season-stat-icon"><i class="fa-solid fa-fire"></i></span>
-                                        <span>Longest Streak: 14 weeks</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div id="past-seasons-container">
+                            <!-- Season cards will be dynamically inserted here -->
+                            <p class="empty-state">No past seasons yet.</p>
                         </div>
                     </div>
 
@@ -263,11 +239,11 @@
                         <div class="xp-balance">
                             <div class="balance-info">
                                 <span class="balance-label">Available XP</span>
-                                <span class="balance-amount">1,850</span>
+                                <span class="balance-amount">0</span>
                             </div>
                             <div class="balance-info">
                                 <span class="balance-label">Lifetime XP</span>
-                                <span class="balance-amount">4,120</span>
+                                <span class="balance-amount">0</span>
                             </div>
                         </div>
 

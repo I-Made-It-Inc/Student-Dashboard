@@ -94,7 +94,7 @@ function loadPageContent(pageId) {
             loadDashboardContent();
             break;
         case 'blueprint':
-            loadInnovationContent();
+            loadBlueprintContent();
             break;
         case 'ideas':
             loadIdeasContent();
@@ -128,9 +128,12 @@ function loadPageContent(pageId) {
 
 // Dashboard content loader
 function loadDashboardContent() {
+    console.log('📄 loadDashboardContent() called');
+
     // Refresh profile information from latest userData
     if (window.IMI && window.IMI.data && window.IMI.data.userData) {
         const userData = window.IMI.data.userData;
+        console.log('📊 userData available in loadDashboardContent, XP:', userData.currentXP);
 
         // Update welcome message with display name (nickname)
         const welcomeMessage = document.querySelector('.profile-info h2');
@@ -148,10 +151,15 @@ function loadDashboardContent() {
                 profileDetails.textContent = '';
             }
         }
-    }
 
-    // Refresh stats
-    updateDashboardStats();
+        // Refresh stats (including XP)
+        console.log('📊 Calling updateDashboardStats with userData.currentXP:', userData.currentXP);
+        updateDashboardStats(userData);
+    } else {
+        console.warn('⚠️ userData NOT available in loadDashboardContent, calling updateDashboardStats() with no data');
+        // Fallback if userData not available
+        updateDashboardStats();
+    }
 
     // Load recent activity
     loadRecentActivity();
@@ -168,16 +176,33 @@ function loadDashboardContent() {
     }
 }
 
-// Innovation content loader
-function loadInnovationContent() {
+// Blueprint content loader
+function loadBlueprintContent() {
+    console.log('📄 loadBlueprintContent() called');
+
+    // Update all displays from userData (single source of truth)
+    if (typeof updateBlueprintXPDisplay === 'function') {
+        updateBlueprintXPDisplay();
+    }
+
+    // Update header stats (season points, streak, submissions, tier)
+    if (typeof updateBlueprintHeaderStats === 'function') {
+        updateBlueprintHeaderStats();
+    }
+
+    // Update seasonal stats display
+    if (typeof updateBlueprintSeasonStats === 'function') {
+        updateBlueprintSeasonStats();
+    }
+
     // Load current challenge
     loadCurrentChallenge();
-    
+
     // Update progress
     updateChallengeProgress();
-    
+
     // Load leaderboard
-    loadInnovationLeaderboard();
+    loadBlueprintLeaderboard();
 }
 
 // Ideas content loader
@@ -227,8 +252,8 @@ function updateChallengeProgress() {
     // In production, fetch from API
 }
 
-// Load innovation leaderboard
-function loadInnovationLeaderboard() {
+// Load blueprint leaderboard
+function loadBlueprintLeaderboard() {
     // In production, fetch from API
 }
 
@@ -712,9 +737,7 @@ function updatePageTitle(pageId) {
 }
 
 // Update dashboard statistics
-function updateDashboardStats() {
-    // In production, fetch from API
-}
+// updateDashboardStats is defined in main.js
 
 // Load recent activity
 function loadRecentActivity() {

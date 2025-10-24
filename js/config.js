@@ -103,8 +103,9 @@ const IMI_CONFIG = {
 
     // Session Configuration
     SESSION: {
-        timeout: 30 * 60 * 1000, // 30 minutes in milliseconds
-        autoSaveInterval: 2000, // Auto-save interval in milliseconds (2 seconds)
+        timeout: 30 * 60 * 1000,    // 30 minutes in milliseconds
+        autoSaveInterval: 2000,      // Auto-save interval in milliseconds (2 seconds)
+        updateInterval: 60000,       // Session update interval in milliseconds (1 minute)
     },
 
     // IMI Brand Colors
@@ -120,17 +121,23 @@ const IMI_CONFIG = {
 
     // Gamification Settings
     GAMIFICATION: {
-        xpPerBlueprint: 100,
+        // Blueprint XP Rewards
+        xpPerSection: 20,           // XP earned per completed section (≥100 words)
+        minWordsPerSection: 100,    // Minimum words required for section to count as complete
+        maxSectionsPerBlueprint: 5, // Total sections in a blueprint
+        xpPerBlueprint: 100,        // Maximum XP per blueprint (5 sections × 20 XP)
         connectorBonus: 25,
         featuredInsightBonus: 50,
         blueSparkDuration: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
 
-        // XP Milestones
+        // XP Tier Thresholds (based on lifetime XP)
+        // IMPORTANT: Must match azure-functions/StudentDashboardAPI/config.js
+        // If you update these values, update BOTH config files!
         tiers: {
-            bronze: 0,
-            silver: 2500,
-            gold: 5000,
-            platinum: 10000,
+            bronze: 0,      // 0-2,499 XP
+            silver: 2500,   // 2,500-4,999 XP
+            gold: 5000,     // 5,000-9,999 XP
+            platinum: 10000, // 10,000+ XP
         },
     },
 
@@ -144,9 +151,10 @@ const IMI_CONFIG = {
 
     // Development Settings
     DEBUG: {
-        logApiCalls: true, // Log all API calls to console
-        logStateChanges: false, // Log state changes
-        showLoadingStates: true, // Show loading spinners
+        logApiCalls: true,          // Log all API calls to console
+        logStateChanges: false,     // Log state changes
+        showLoadingStates: true,    // Show loading spinners
+        simulatedApiDelay: 1000,    // Simulated API delay in developer mode (milliseconds)
     },
 
     // Career Interests Mapping (for Dataverse multi-select field)
