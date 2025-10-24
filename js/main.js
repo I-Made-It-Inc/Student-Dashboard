@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeNavigation();
 
     // Initialize other modules
-    initializeBlueprintChallenge();
+    // Note: initializeBlueprintChallenge() is called by page-loader.js when blueprint page loads
     initializeModal();
     initializeCompanies();
     initializeTimeTracking();
@@ -230,6 +230,20 @@ async function loadUserData() {
                 if (currentPage === 'blueprint' && typeof renderPastBlueprints === 'function') {
                     console.log('📄 Loading blueprints with user data');
                     renderPastBlueprints();
+                }
+
+                // Update blueprint page stats if we're on it (must happen after userData is loaded)
+                if (currentPage === 'blueprint') {
+                    console.log('📄 Refreshing blueprint page stats with loaded user data');
+                    if (typeof updateBlueprintHeaderStats === 'function') {
+                        updateBlueprintHeaderStats();
+                    }
+                    if (typeof updateBlueprintSeasonStats === 'function') {
+                        updateBlueprintSeasonStats();
+                    }
+                    if (typeof updateBlueprintXPDisplay === 'function') {
+                        updateBlueprintXPDisplay();
+                    }
                 }
             }
         } catch (error) {

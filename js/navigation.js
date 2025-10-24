@@ -178,9 +178,21 @@ function loadDashboardContent() {
 
 // Blueprint content loader
 function loadBlueprintContent() {
-    // Update XP display from userData (single source of truth)
+    console.log('📄 loadBlueprintContent() called');
+
+    // Update all displays from userData (single source of truth)
     if (typeof updateBlueprintXPDisplay === 'function') {
         updateBlueprintXPDisplay();
+    }
+
+    // Update header stats (season points, streak, submissions, tier)
+    if (typeof updateBlueprintHeaderStats === 'function') {
+        updateBlueprintHeaderStats();
+    }
+
+    // Update seasonal stats display
+    if (typeof updateBlueprintSeasonStats === 'function') {
+        updateBlueprintSeasonStats();
     }
 
     // Load current challenge

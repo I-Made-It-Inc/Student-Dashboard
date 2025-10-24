@@ -12,18 +12,15 @@ function getMondayOfWeekSimple(date) {
 
 // Initialize Blueprint Challenge
 function initializeBlueprintChallenge() {
-    console.log('Initializing Blueprint Challenge...');
+    console.log('🎯 Initializing Blueprint Challenge...');
+    console.log('🎯 userData at init:', window.IMI?.data?.userData ? 'EXISTS' : 'NOT LOADED');
 
     // Reset draft loading flag for this initialization
     blueprintDraftLoadedThisInitialization = false;
 
-    // Update XP display from userData
+    // Update stats displays immediately since userData should already be loaded
     updateBlueprintXPDisplay();
-
-    // Update seasonal stats display
     updateBlueprintSeasonStats();
-
-    // Update header stats display
     updateBlueprintHeaderStats();
 
     // Set up word counters
@@ -112,7 +109,17 @@ function updateBlueprintSeasonStats() {
 // Update header stats display on blueprint page
 function updateBlueprintHeaderStats() {
     const userData = window.IMI?.data?.userData;
-    if (!userData) return;
+    if (!userData) {
+        console.warn('⚠️ updateBlueprintHeaderStats: userData not available yet');
+        return;
+    }
+
+    console.log('📊 Updating blueprint header stats with:', {
+        streak: userData.currentStreak,
+        seasonPoints: userData.seasonPoints,
+        blueprintCount: userData.seasonBlueprintCount,
+        tier: userData.currentTier
+    });
 
     // Update header streak
     const headerStreakEl = document.getElementById('header-streak');
