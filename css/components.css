@@ -573,10 +573,6 @@ label {
 }
 
 /* Past Seasons Display */
-.past-seasons-card {
-    margin-top: 2rem;
-}
-
 #past-seasons-container .empty-state {
     text-align: center;
     padding: 2rem;

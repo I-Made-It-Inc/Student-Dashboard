@@ -1,8 +1,13 @@
 I just added a login page that allows user to either sign in as developers (static data), or with their Microsoft account (sync profile with Dataverse Contacts). I also stored Blueprint submissions in Azure SQL Database.
 
 TODOs:
-- XP system backend
-  - MS mode season points (both dashboard & blueprint pages)
+- XP system backend test season system
+  - Developer mode
+    - Make sure default season points & lifetime xp are consistent
+    - Upon blueprint submission, add 1 to streak
+    - Trigger blue spark upon new submission
+  - Microsoft mode (TODO)
+    - Trigger blue spark upon new submission
 
 Testing Checklist:
 1. First login: Dashboard shows 0 weeks streak, 0 pts, Bronze tier

@@ -1,5 +1,6 @@
 // sqlClient.js - Azure SQL Database Client for Blueprint Storage
 const sql = require('mssql');
+const { GAMIFICATION } = require('./config');
 
 // SQL connection configuration
 const sqlConfig = {
@@ -641,13 +642,15 @@ function calculateStreak(lastSubmissionWeek, currentSubmissionDate) {
 
 /**
  * Calculate tier from lifetimeXP
+ * Uses thresholds from config.js to ensure consistency with frontend
  * @param {number} lifetimeXP - Total lifetime XP
  * @returns {string} 'bronze' | 'silver' | 'gold' | 'platinum'
  */
 function calculateTier(lifetimeXP) {
-    if (lifetimeXP >= 10000) return 'platinum';
-    if (lifetimeXP >= 5000) return 'gold';
-    if (lifetimeXP >= 2500) return 'silver';
+    const tiers = GAMIFICATION.tiers;
+    if (lifetimeXP >= tiers.platinum) return 'platinum';
+    if (lifetimeXP >= tiers.gold) return 'gold';
+    if (lifetimeXP >= tiers.silver) return 'silver';
     return 'bronze';
 }
 

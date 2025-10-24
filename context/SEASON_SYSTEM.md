@@ -329,7 +329,7 @@ Data Loading (js/main.js)
 
 - Fetches seasonal stats on login (Microsoft mode)
 - Stores in userData: currentStreak, currentTier, seasonPoints, seasonBlueprintCount, currentSeasonName, etc.
-- Developer mode mock: 5-week streak, 380 season XP, silver tier
+- Developer mode mock: 5-week streak, 2500 season XP, silver tier, 4950 lifetime XP (2450 from Summer 2025 + 2500 current season)
 
 Dashboard (pages/dashboard.html)
 

@@ -125,12 +125,14 @@ const IMI_CONFIG = {
         featuredInsightBonus: 50,
         blueSparkDuration: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
 
-        // XP Milestones
+        // XP Tier Thresholds (based on lifetime XP)
+        // IMPORTANT: Must match azure-functions/StudentDashboardAPI/config.js
+        // If you update these values, update BOTH config files!
         tiers: {
-            bronze: 0,
-            silver: 2500,
-            gold: 5000,
-            platinum: 10000,
+            bronze: 0,      // 0-2,499 XP
+            silver: 2500,   // 2,500-4,999 XP
+            gold: 5000,     // 5,000-9,999 XP
+            platinum: 10000, // 10,000+ XP
         },
     },
 

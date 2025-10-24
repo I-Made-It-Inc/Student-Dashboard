@@ -174,7 +174,7 @@ async function loadUserData() {
 
                     // XP data (from Azure SQL in MS mode, mock in dev mode)
                     currentXP: xpData?.currentXP ?? (authMode === 'developer' ? 1850 : 0),
-                    lifetimeXP: xpData?.lifetimeXP ?? (authMode === 'developer' ? 1850 : 0),
+                    lifetimeXP: xpData?.lifetimeXP ?? (authMode === 'developer' ? 4950 : 0), // 2450 (Summer 2025) + 2500 (current season)
                     xpSpent: xpData?.xpSpent || 0,
 
                     // Streak and tier (from UserXP table in MS mode, mock in dev mode)
@@ -185,7 +185,7 @@ async function loadUserData() {
                     // Season data (from SeasonalStats in MS mode, mock in dev mode)
                     currentSeasonId: seasonData?.season?.seasonId ?? (authMode === 'developer' ? 1 : null),
                     currentSeasonName: seasonData?.season?.seasonName ?? (authMode === 'developer' ? 'Fall 2025' : null),
-                    seasonPoints: seasonData?.stats?.seasonPoints ?? (authMode === 'developer' ? 380 : 0),
+                    seasonPoints: seasonData?.stats?.seasonPoints ?? (authMode === 'developer' ? 2500 : 0),
                     seasonBlueprintCount: seasonData?.stats?.blueprintCount ?? (authMode === 'developer' ? 19 : 0),
                     maxStreakThisSeason: seasonData?.stats?.maxStreakDuringSeason ?? (authMode === 'developer' ? 5 : 0),
 
@@ -246,10 +246,12 @@ function usePlaceholderData() {
         jobTitle: '[JOB TITLE]',
         department: '[DEPARTMENT]',
         currentXP: 1850,
-        lifetimeXP: 1850,
+        lifetimeXP: 4950, // 2450 (Summer 2025) + 2500 (current season)
         xpSpent: 0,
-        streak: 12,
-        tier: 'Gold',
+        currentStreak: 5,
+        currentTier: 'silver',
+        seasonPoints: 2500,
+        seasonBlueprintCount: 19,
         totalHours: 324,
         activeProjects: 5,
         companies: 3
@@ -340,28 +342,12 @@ function updateDashboardStats(data) {
         console.log('✅ Updated dashboard tier to:', tierCapitalized);
     }
 
-    // Update gamification stats badge (XP display)
-    const statMainElements = document.querySelectorAll('.stat-main');
-    console.log('📍 Found', statMainElements.length, '.stat-main elements');
-    statMainElements.forEach((el, index) => {
-        console.log(`📍 .stat-main[${index}] text:`, el.textContent);
-        if (el.textContent.includes('pts') || el.textContent.includes('XP')) {
-            // Format XP with comma separator
-            el.textContent = `${data.currentXP.toLocaleString()} XP`;
-            console.log('✅ Updated stat-main XP to:', data.currentXP);
-        }
-    });
-
     // Update sidebar "XP available" text
-    const xpAvailableElements = document.querySelectorAll('.text-muted.small');
-    console.log('📍 Found', xpAvailableElements.length, '.text-muted.small elements');
-    xpAvailableElements.forEach((el, index) => {
-        console.log(`📍 .text-muted.small[${index}] text:`, el.textContent);
-        if (el.textContent.includes('XP available')) {
-            el.textContent = `${data.currentXP.toLocaleString()} XP available`;
-            console.log('✅ Updated sidebar XP to:', data.currentXP);
-        }
-    });
+    const xpAvailableEl = document.getElementById('dashboard-xp-available');
+    if (xpAvailableEl && data.currentXP !== undefined) {
+        xpAvailableEl.textContent = `${data.currentXP.toLocaleString()} XP available`;
+        console.log('✅ Updated sidebar XP to:', data.currentXP);
+    }
 
     // Update other stats if elements exist (these are less critical)
     const statElements = {

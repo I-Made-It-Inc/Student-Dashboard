@@ -298,13 +298,17 @@ function handleXPInvestment(event) {
     
     const ideaCard = event.target.closest('.idea-card');
     const ideaTitle = ideaCard.querySelector('h4').textContent;
-    
+
+    // Get current XP from userData
+    const userData = window.IMI?.data?.userData;
+    const currentXP = userData?.currentXP || 0;
+
     // Show investment modal (simplified for demo)
-    const investmentAmount = prompt(`How many XP would you like to invest in "${ideaTitle}"?\n\nCurrent available XP: 1,850`, '100');
-    
+    const investmentAmount = prompt(`How many XP would you like to invest in "${ideaTitle}"?\n\nCurrent available XP: ${currentXP.toLocaleString()}`, '100');
+
     if (investmentAmount && !isNaN(investmentAmount) && parseInt(investmentAmount) > 0) {
         const amount = parseInt(investmentAmount);
-        if (amount <= 1850) { // Check available XP
+        if (amount <= currentXP) { // Check available XP
             if (window.IMI && window.IMI.utils && window.IMI.utils.showNotification) {
                 window.IMI.utils.showNotification(`<i class="fa-solid fa-circle-check"></i> Successfully invested ${amount} XP in "${ideaTitle}"!`, 'success');
             }

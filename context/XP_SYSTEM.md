@@ -61,7 +61,7 @@ Microsoft Mode:
 
 Developer Mode:
 1. No API calls made
-2. userData created with mock values: currentXP: 1850, lifetimeXP: 1850
+2. userData created with mock values: currentXP: 1850, lifetimeXP: 4950 (2450 past + 2500 current season)
 3. XP increments on blueprint submission (in-memory only)
 
 Key Files & Functions
@@ -72,7 +72,7 @@ js/api.js - API client
 
 js/main.js - Core initialization
 - Lines 129-138: Fetch XP in Microsoft mode
-- Lines 168-170: Initialize XP values (xpData?.currentXP ?? (authMode === 'developer' ? 1850 : 0))
+- Lines 176-178: Initialize XP values (currentXP: 1850, lifetimeXP: 4950 in developer mode)
 - Lines 287-317: updateDashboardStats(data) - Updates dashboard XP displays
 
 js/navigation.js - Page navigation
@@ -132,5 +132,5 @@ Testing Notes
 
 - Hard refresh clears developer mode sessionStorage
 - Microsoft mode: Check console for "✅ User XP fetched: X XP"
-- Developer mode: Starts with 1850 XP, increments on submission
+- Developer mode: Starts with 1850 current XP, 4950 lifetime XP (2450 from Summer 2025 + 2500 current season), increments on submission
 - Both modes should show "0 XP" briefly on initial load before updating

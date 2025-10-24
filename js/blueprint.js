@@ -23,6 +23,9 @@ function initializeBlueprintChallenge() {
     // Update seasonal stats display
     updateBlueprintSeasonStats();
 
+    // Update header stats display
+    updateBlueprintHeaderStats();
+
     // Set up word counters
     setupWordCounters();
 
@@ -106,6 +109,40 @@ function updateBlueprintSeasonStats() {
     console.log('✅ Blueprint season stats updated');
 }
 
+// Update header stats display on blueprint page
+function updateBlueprintHeaderStats() {
+    const userData = window.IMI?.data?.userData;
+    if (!userData) return;
+
+    // Update header streak
+    const headerStreakEl = document.getElementById('header-streak');
+    if (headerStreakEl) {
+        const streak = userData.currentStreak || 0;
+        headerStreakEl.textContent = `${streak} ${streak === 1 ? 'week' : 'weeks'}`;
+    }
+
+    // Update header season points
+    const headerSeasonPointsEl = document.getElementById('header-season-points');
+    if (headerSeasonPointsEl) {
+        headerSeasonPointsEl.textContent = (userData.seasonPoints || 0).toLocaleString();
+    }
+
+    // Update header submissions
+    const headerSubmissionsEl = document.getElementById('header-submissions');
+    if (headerSubmissionsEl) {
+        headerSubmissionsEl.textContent = userData.seasonBlueprintCount || 0;
+    }
+
+    // Update header tier
+    const headerTierEl = document.getElementById('header-tier');
+    if (headerTierEl) {
+        const tier = userData.currentTier || 'bronze';
+        headerTierEl.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+    }
+
+    console.log('✅ Blueprint header stats updated');
+}
+
 // Load and render past season performance
 async function renderPastSeasons() {
     const authMode = sessionStorage.getItem('authMode');
@@ -127,7 +164,7 @@ async function renderPastSeasons() {
                 seasonName: 'Summer 2025',
                 startDate: '2025-06-01',
                 endDate: '2025-08-31',
-                seasonPoints: 420,
+                seasonPoints: 2450,
                 maxStreakDuringSeason: 7,
                 blueprintCount: 21,
                 finalTier: 'gold'
@@ -417,6 +454,9 @@ async function submitBlueprint(e) {
             // Refresh seasonal stats display
             updateBlueprintSeasonStats();
 
+            // Refresh header stats display
+            updateBlueprintHeaderStats();
+
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {
                 updateDashboardBlueprintChallenge();
@@ -455,10 +495,11 @@ async function submitBlueprint(e) {
                 userData.seasonPoints = (userData.seasonPoints || 0) + xpEarned;
                 userData.seasonBlueprintCount = (userData.seasonBlueprintCount || 0) + 1;
 
-                // Recalculate tier
-                if (userData.lifetimeXP >= 10000) userData.currentTier = 'platinum';
-                else if (userData.lifetimeXP >= 5000) userData.currentTier = 'gold';
-                else if (userData.lifetimeXP >= 2500) userData.currentTier = 'silver';
+                // Recalculate tier using config thresholds
+                const tierThresholds = window.IMI.config.GAMIFICATION.tiers;
+                if (userData.lifetimeXP >= tierThresholds.platinum) userData.currentTier = 'platinum';
+                else if (userData.lifetimeXP >= tierThresholds.gold) userData.currentTier = 'gold';
+                else if (userData.lifetimeXP >= tierThresholds.silver) userData.currentTier = 'silver';
                 else userData.currentTier = 'bronze';
 
                 console.log('✅ XP updated (dev mode):', userData.currentXP, 'current,', userData.lifetimeXP, 'lifetime');
@@ -481,15 +522,14 @@ async function submitBlueprint(e) {
             // Refresh seasonal stats display
             updateBlueprintSeasonStats();
 
+            // Refresh header stats display
+            updateBlueprintHeaderStats();
+
             // Update dashboard blueprint challenge (if function exists)
             if (typeof updateDashboardBlueprintChallenge === 'function') {
                 updateDashboardBlueprintChallenge();
             }
         }
-
-        // Update streak and tier
-        updateStreak();
-        updateTierProgress(xpEarned);
 
         // Trigger Blue Spark for Blueprint submission
         if (window.BlueSpark) {
@@ -627,38 +667,6 @@ function setupAutoSaveDrafts() {
     });
 
     autoSaveSetupComplete = true;
-}
-
-// Update tier progress
-function updateTierProgress(earnedXP) {
-    // Tier thresholds based on Blueprint system
-    const tiers = {
-        bronze: { min: 0, max: 999, name: 'Bronze', icon: '🥉' },
-        silver: { min: 1000, max: 2499, name: 'Silver', icon: '🥈' },
-        gold: { min: 2500, max: 4999, name: 'Gold', icon: '🥇' },
-        platinum: { min: 5000, max: Infinity, name: 'Platinum', icon: '🏆' }
-    };
-    
-    // In a real app, this would be calculated from total lifetime XP
-    const totalXP = 1850 + earnedXP;
-    
-    let currentTier = 'bronze';
-    for (const [tierName, tierData] of Object.entries(tiers)) {
-        if (totalXP >= tierData.min && totalXP < tierData.max) {
-            currentTier = tierName;
-            break;
-        }
-    }
-    
-    // Update tier displays
-    const tierElements = document.querySelectorAll('.challenge-stat-value, .stat-main');
-    tierElements.forEach(el => {
-        if (el.textContent.includes('#') || el.textContent.includes('Gold')) {
-            el.textContent = tiers[currentTier].name;
-        }
-    });
-    
-    console.log(`Updated to ${tiers[currentTier].name} tier with ${totalXP} total XP`);
 }
 
 // Setup XP Chart
@@ -945,20 +953,6 @@ function updateChallengeUI(data) {
     });
 }
 
-// Update streak
-function updateStreak() {
-    const streakElements = document.querySelectorAll('.challenge-stat-value, .stat-main');
-    streakElements.forEach(el => {
-        if (el.textContent && el.textContent.includes('week')) {
-            const currentStreak = parseInt(el.textContent) || 0;
-            el.textContent = `${currentStreak + 1} weeks`;
-            
-            // Animate streak update
-            el.classList.add('updated');
-            setTimeout(() => el.classList.remove('updated'), 1000);
-        }
-    });
-}
 
 // Show points marketplace (placeholder function)
 function showPointsMarketplace() {
