@@ -280,3 +280,190 @@ Additional season notes
 - A student has participated in a season if they've made any blueprint submissions during that season
   - Since max streak and final tier are calculated on every blueprint submission, no need to post-process after season ends
   - When showing past seasons' performance, only pull from seasons participated in
+
+===============================================
+
+Seasonal Tracking System - Implementation Summary
+
+Overview
+
+Implemented a comprehensive seasonal tracking system that records user performance across defined time periods with week-based streaks, automatic tier progression, and historical season performance tracking.
+
+Database Changes (Already Applied)
+
+- Seasons table: Stores season definitions (seasonId, seasonName, startDate, endDate)
+- SeasonalStats table: Tracks per-user, per-season performance (seasonPoints, blueprintCount, maxStreakDuringSeason, finalTier)
+- UserXP table: Added 3 new columns (currentStreak, lastSubmissionWeek, currentTier)
+
+Current season in DB: "Fall 2025" (2025-09-01 to 2025-12-31)
+
+Backend Changes
+
+sqlClient.js
+
+New Functions:
+- Timezone helpers: getMondayOfWeek(), calculateStreak(), calculateTier()
+- Season queries: getCurrentSeason(), getSeasonById(), getSeasonByDate()
+- Seasonal stats: getUserSeasonStats(), getUserAllSeasonStats(), updateSeasonalStats()
+
+Modified Functions:
+- getUserXP(): Returns currentStreak, lastSubmissionWeek, currentTier
+- createUserXP(): Initializes new columns (streak=0, tier='bronze')
+- addXPTransaction(): Now calculates streak/tier, updates seasonal stats
+
+Azure Functions
+
+- GetUserXP.js: Returns new streak/tier columns
+- SubmitBlueprint.js: Calculates streaks, updates seasonal stats, returns season data in response
+- GetSeasonalStats.js: NEW - Fetches current season stats or full history (supports ?history=true)
+
+Frontend Changes
+
+API Layer (js/api.js)
+
+New Functions:
+- fetchSeasonalStats(azureAdUserId, seasonId): Get current/specific season
+- fetchSeasonHistory(azureAdUserId): Get all past seasons
+
+Data Loading (js/main.js)
+
+- Fetches seasonal stats on login (Microsoft mode)
+- Stores in userData: currentStreak, currentTier, seasonPoints, seasonBlueprintCount, currentSeasonName, etc.
+- Developer mode mock: 5-week streak, 380 season XP, silver tier
+
+Dashboard (pages/dashboard.html)
+
+Updated Stats Display:
+- Current Streak (weeks)
+- Season XP (points for Fall 2025)
+- Current Tier (Bronze/Silver/Gold/Platinum)
+
+Updated updateDashboardStats() to populate these fields from userData.
+
+Blueprint Page (pages/blueprint.html + js/blueprint.js)
+
+Current Season Performance Section:
+- Shows: Streak, Season Points, Submissions, Tier
+- Updates via updateBlueprintSeasonStats()
+
+Past Season Performance Section:
+- Displays all past seasons (excludes current season)
+- Shows: Season XP, Longest Streak, Submissions, Final Tier
+- Populated via renderPastSeasons() and displayPastSeasons()
+
+Blueprint Submission Updates:
+- Microsoft mode: Updates userData with streak/tier/season data from API response
+- Developer mode: Mock streak calculation, tier recalculation, season points increment
+
+CSS (css/components.css)
+
+Added styling for:
+- .season-stats-current: Current season metrics display
+- .season-card: Past season card layout
+- .season-stats-grid: Responsive grid for season stats
+- Mobile responsive adjustments
+
+Key Behaviors
+
+Streak Calculation
+
+- Week-based (Monday 00:00 to Sunday 23:59 EST/EDT via America/New_York timezone)
+- Increments only when submitting in a consecutive new week
+- Multiple submissions same week: XP increases, streak stays same
+- Skipped week: Streak resets to 1
+- Never resets between seasons (global counter)
+
+Tier Progression
+
+- Auto-calculated from lifetimeXP
+- Thresholds: Bronze (0), Silver (2500), Gold (5000), Platinum (10000)
+- Updates on every XP change
+- Stored in UserXP.currentTier
+
+Seasonal Stats
+
+- seasonPoints: Total XP earned from blueprints during season dates
+- blueprintCount: Number of blueprints submitted during season
+- maxStreakDuringSeason: Highest streak achieved during season
+- finalTier: User's tier snapshot (updated on every submission during active season)
+
+Developer Mode
+
+- Static mock data (resets on hard refresh)
+- Simplified streak logic (increments on different weeks, doesn't verify consecutive)
+- Shows mock past season ("Summer 2025")
+
+Testing Checklist
+
+Initial State
+
+- Dashboard shows: 0 weeks streak, 0 pts season XP, Bronze tier
+- Blueprint page shows: 0 weeks streak, 0 season points, 0 submissions, Bronze tier
+- Past seasons section shows: "No past seasons yet"
+
+Blueprint Submission (Week 1, Monday)
+
+- XP increases by 20 per completed section (≥100 words)
+- Streak increases to 1 week
+- Season points = XP earned
+- Season submissions = 1
+- Dashboard and blueprint page update immediately
+
+Same Week Submission (Week 1, Wednesday)
+
+- XP increases
+- Streak stays at 1 week (same week)
+- Season points increase
+- Season submissions = 2
+
+Next Week Submission (Week 2, Monday)
+
+- Streak increases to 2 weeks
+- Season points continue accumulating
+
+Skipped Week (Week 4, after skipping Week 3)
+
+- Streak resets to 1 week
+- Season points continue accumulating (no reset)
+
+Tier Progression
+
+- At 2500 XP: Tier upgrades to Silver
+- At 5000 XP: Tier upgrades to Gold
+- At 10000 XP: Tier upgrades to Platinum
+- Dashboard and blueprint page show updated tier
+
+Developer Mode
+
+- All features work without database connection
+- Data persists during session
+- Hard refresh resets to mock defaults
+- Mock past season appears in past seasons section
+
+Potential Issues to Watch
+
+1. Timezone Discrepancies: Streak calculation uses America/New_York. If server/client are in different timezones, verify week boundaries are correct.
+2. Season Not Found: If no season is active (today's date not within any season's date range), seasonal stats won't update. Verify Fall 2025 season exists: SELECT * FROM Seasons
+3. First Submission: New users auto-create UserXP record with default values. Verify this works correctly.
+4. Past Seasons Display: Only shows seasons where user has SeasonalStats records. Empty if user hasn't participated in any past seasons.
+5. Developer Mode Streak: Uses simplified logic (doesn't check consecutive weeks), so behavior may differ from production.
+6. Response Data: Blueprint submission returns many new fields. Check console logs for: currentStreak, currentTier, seasonPoints, seasonBlueprintCount
+
+Files Modified
+
+- Backend: sqlClient.js, SubmitBlueprint.js, GetUserXP.js, GetSeasonalStats.js (new)
+- Frontend API: js/api.js
+- Data loading: js/main.js
+- UI: pages/dashboard.html, pages/blueprint.html, js/blueprint.js
+- Styles: css/components.css
+
+Quick Debug Commands
+
+// Check userData in console
+console.log(window.IMI.data.userData);
+
+// Check current season stats
+window.IMI.api.fetchSeasonalStats('user-azure-id');
+
+// Check season history
+window.IMI.api.fetchSeasonalStats('user-azure-id').then(console.log);
